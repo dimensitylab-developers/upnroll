@@ -106,7 +106,7 @@ export function ButtonsControls() {
               <TooltipContent>Rank #1 — Lightweight</TooltipContent>
             </Tooltip>
           </div>
-          <label className="flex items-center gap-2 border border-dashed border-white/20 rounded-md px-3 py-4 text-sm text-muted-foreground cursor-pointer hover:border-white/40">
+          <label className="flex items-center gap-2 border border-dashed border-black/20 rounded-md px-3 py-4 text-sm text-muted-foreground cursor-pointer hover:border-black/40">
             <UploadCloud className="size-4" /> Upload payment screenshot
           </label>
         </div>
@@ -152,7 +152,7 @@ export function ButtonsControls() {
         </div>
         <div>
           <p className="text-sm font-semibold text-muted-foreground mb-2">Empty state</p>
-          <Empty className="border border-dashed border-white/15 rounded-md">
+          <Empty className="border border-dashed border-black/15 rounded-md">
             <EmptyHeader>
               <EmptyMedia variant="icon"><Trophy /></EmptyMedia>
               <EmptyTitle>No registrations yet</EmptyTitle>

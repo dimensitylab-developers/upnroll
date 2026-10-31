@@ -32,7 +32,7 @@ export default function UiPreviewPage() {
       <PreviewNav />
       <main className="lg:pl-64 pt-16 lg:pt-0">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-10 py-10">
-          <header className="mb-4 pb-8 border-b border-white/10">
+          <header className="mb-4 pb-8 border-b border-black/10">
             <p className="text-xs uppercase tracking-widest text-brand-red font-semibold mb-2">Phase 1 deliverable</p>
             <h1 className="text-display text-4xl sm:text-5xl font-semibold">/ui-preview</h1>
             <p className="text-muted-foreground mt-3 max-w-2xl">

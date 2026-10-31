@@ -43,7 +43,7 @@ export function PaymentFlow() {
 
         {state === "AWAITING_SUBMISSION" && (
           <div className="space-y-4">
-            <div className="flex items-center justify-center size-40 mx-auto bg-muted rounded-md border border-dashed border-white/20">
+            <div className="flex items-center justify-center size-40 mx-auto bg-muted rounded-md border border-dashed border-black/20">
               <QrCode className="size-16 text-muted-foreground" />
             </div>
             <p className="text-xs text-muted-foreground text-center">Client-supplied QR image placeholder — pending OD-006</p>
@@ -54,7 +54,7 @@ export function PaymentFlow() {
               <Label className="mb-1.5 block">UTR / transaction reference</Label>
               <Input value={utr} onChange={(e) => setUtr(e.target.value)} placeholder="e.g. 409872165310" />
             </div>
-            <label className="flex items-center gap-2 border border-dashed border-white/20 rounded-md px-3 py-4 text-sm text-muted-foreground cursor-pointer hover:border-white/40">
+            <label className="flex items-center gap-2 border border-dashed border-black/20 rounded-md px-3 py-4 text-sm text-muted-foreground cursor-pointer hover:border-black/40">
               <UploadCloud className="size-4" /> Upload payment screenshot
             </label>
             <Button className="w-full" disabled={!utr} onClick={() => setState("PENDING_REVIEW")}>

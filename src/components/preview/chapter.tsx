@@ -37,7 +37,7 @@ export function Chapter({
   children: React.ReactNode;
 }) {
   return (
-    <section id={id} className="scroll-mt-24 py-14 border-b border-white/10">
+    <section id={id} className="scroll-mt-24 py-14 border-b border-black/10">
       <div className="mb-8 max-w-3xl">
         <span className="text-xs uppercase tracking-widest text-brand-red font-semibold">
           UI Preview Showroom
@@ -52,7 +52,7 @@ export function Chapter({
 
 export function FixtureBadge({ children = "Fictional preview data" }: { children?: React.ReactNode }) {
   return (
-    <Badge variant="outline" className="text-muted-foreground border-white/15 mb-4">
+    <Badge variant="outline" className="text-muted-foreground border-black/15 mb-4">
       {children}
     </Badge>
   );

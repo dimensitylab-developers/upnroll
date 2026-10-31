@@ -45,7 +45,7 @@ export function Brackets() {
                       <span>{m.a}</span>
                       {m.winner === m.a && <span className="text-brand-gold text-xs">W</span>}
                     </div>
-                    <div className="h-px bg-white/10 my-1.5" />
+                    <div className="h-px bg-black/10 my-1.5" />
                     <div className={cn("flex justify-between", m.winner === m.b && "text-foreground font-medium")}>
                       <span>{m.b}</span>
                       {m.winner === m.b && <span className="text-brand-gold text-xs">W</span>}

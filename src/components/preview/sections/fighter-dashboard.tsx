@@ -30,17 +30,17 @@ export function FighterDashboard() {
         <p className="text-display text-2xl font-semibold mb-4">Welcome back, Rhea</p>
 
         <div className="grid sm:grid-cols-2 gap-4 mb-4">
-          <div className="border border-white/10 rounded-md p-4">
+          <div className="border border-black/10 rounded-md p-4">
             <p className="text-xs text-muted-foreground mb-1">Registration status</p>
             <Badge variant="outline">{s.status.replaceAll("_", " ")}</Badge>
           </div>
-          <div className="border border-white/10 rounded-md p-4">
+          <div className="border border-black/10 rounded-md p-4">
             <p className="text-xs text-muted-foreground mb-1">Payment status</p>
             <Badge variant="outline">{s.paymentStatus ? s.paymentStatus.replaceAll("_", " ") : "—"}</Badge>
           </div>
         </div>
 
-        <div className="border border-white/10 rounded-md p-4">
+        <div className="border border-black/10 rounded-md p-4">
           <p className="text-xs text-muted-foreground mb-1">Next action</p>
           <p className={scenario === "matchInProgress" ? "text-brand-cyan font-medium" : ""}>{s.nextAction}</p>
         </div>

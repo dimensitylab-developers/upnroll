@@ -57,7 +57,7 @@ export function PaymentVerification() {
                           {p.duplicateFlag && " This UTR also appears on another submission — verify carefully."}
                         </DialogDescription>
                       </DialogHeader>
-                      <div className="h-32 rounded-md border border-dashed border-white/20 flex items-center justify-center text-xs text-muted-foreground">
+                      <div className="h-32 rounded-md border border-dashed border-black/20 flex items-center justify-center text-xs text-muted-foreground">
                         Payment screenshot preview (private, admin-only)
                       </div>
                       <DialogFooter className="gap-2">

@@ -25,7 +25,7 @@ export function NavigationSystems() {
         <div>
           <p className="text-sm font-semibold text-muted-foreground mb-2">Admin sidebar shell</p>
           <div className="manga-panel flex overflow-hidden h-56">
-            <div className="w-48 bg-sidebar border-r border-white/10 p-3 space-y-1 text-sm">
+            <div className="w-48 bg-sidebar border-r border-black/10 p-3 space-y-1 text-sm">
               {[
                 { icon: LayoutDashboard, label: "Overview" },
                 { icon: Users, label: "Athletes" },

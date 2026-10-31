@@ -18,7 +18,7 @@ export function MatchDetails() {
           <span className="flex items-center gap-1.5"><MapPin className="size-4" /> Mat 2</span>
           <span className="flex items-center gap-1.5"><Clock className="size-4" /> Round of 16</span>
         </div>
-        <div className="border-t border-white/10 mt-6 pt-4 text-sm text-muted-foreground">
+        <div className="border-t border-black/10 mt-6 pt-4 text-sm text-muted-foreground">
           Result method, winner, and bracket advancement will appear here once the match is recorded by an admin.
         </div>
       </div>

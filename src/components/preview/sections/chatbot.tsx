@@ -30,7 +30,7 @@ export function Chatbot() {
         )}
         {open && (
           <div className="manga-panel flex flex-col h-full">
-            <div className="flex items-center justify-between px-4 py-3 border-b border-white/10">
+            <div className="flex items-center justify-between px-4 py-3 border-b border-black/10">
               <span className="font-medium text-sm">Up &apos;n Roll Support — UI demo</span>
               <Button variant="ghost" size="icon" onClick={() => setOpen(false)}><X className="size-4" /></Button>
             </div>
@@ -49,7 +49,7 @@ export function Chatbot() {
               ))}
               {loading && <Loader2 className="size-4 animate-spin text-muted-foreground" />}
             </div>
-            <div className="p-3 border-t border-white/10">
+            <div className="p-3 border-t border-black/10">
               <Button size="sm" className="w-full" disabled={shown >= previewChatScript.length} onClick={advance}>
                 {shown >= previewChatScript.length ? "Scripted demo complete" : "Show next scripted exchange"}
               </Button>

@@ -24,7 +24,7 @@ export function ResponsiveBehavior() {
           </Button>
         ))}
       </div>
-      <div className="border border-white/10 rounded-md overflow-x-auto p-4 bg-black/20">
+      <div className="border border-black/10 rounded-md overflow-x-auto p-4 bg-black/20">
         <div
           className="manga-panel p-5 mx-auto transition-all"
           style={{ width: Math.min(bp.width, 900), maxWidth: "100%" }}

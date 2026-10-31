@@ -2,13 +2,13 @@ import { Chapter, FixtureBadge } from "../chapter";
 import { Badge } from "@/components/ui/badge";
 
 const palette = [
-  { name: "Background", varName: "--background", className: "bg-background border border-white/15" },
-  { name: "Card surface", varName: "--card", className: "bg-card border border-white/15" },
+  { name: "Background", varName: "--background", className: "bg-background border border-black/15" },
+  { name: "Card surface", varName: "--card", className: "bg-card border border-black/15" },
   { name: "Foreground (text)", varName: "--foreground", className: "bg-foreground" },
   { name: "Brand red (primary)", varName: "--primary", className: "bg-primary" },
   { name: "Live-state cyan", varName: "--color-brand-cyan", className: "bg-brand-cyan" },
   { name: "Championship gold", varName: "--color-brand-gold", className: "bg-brand-gold" },
-  { name: "Muted", varName: "--muted", className: "bg-muted border border-white/10" },
+  { name: "Muted", varName: "--muted", className: "bg-muted border border-black/10" },
   { name: "Border", varName: "--border", className: "bg-transparent border-2 border-border" },
 ];
 
@@ -28,7 +28,7 @@ export function BrandAndTokens() {
       <Chapter
         id="brand-foundation"
         title="Brand Foundation"
-        subtitle="Up 'n Roll — The Underground Arena. Dark-first editorial combat-sports identity, adapted from the manga-panel/halftone/speed-lines technique audited from the prior project, recolored for a premium fight-night feel rather than a hackathon aesthetic."
+        subtitle="Up 'n Roll — The Underground Arena. Light editorial combat-sports identity, reusing TechBlitz's manga-panel/halftone/speed-lines background structure by direct instruction — Up 'n Roll content and branding only, no hackathon copy or imagery carried over."
       >
         <div className="grid sm:grid-cols-3 gap-4">
           <div className="manga-panel p-6 speed-lines">
@@ -85,9 +85,9 @@ export function BrandAndTokens() {
             </div>
             <h3 className="text-sm font-semibold uppercase tracking-wide text-muted-foreground mb-3 mt-6">Radius / shadow</h3>
             <div className="flex gap-3">
-              <div className="size-16 bg-card border border-white/15 rounded-sm flex items-center justify-center text-xs">sm</div>
-              <div className="size-16 bg-card border border-white/15 rounded-md flex items-center justify-center text-xs">md</div>
-              <div className="size-16 bg-card border border-white/15 rounded-lg flex items-center justify-center text-xs">lg</div>
+              <div className="size-16 bg-card border border-black/15 rounded-sm flex items-center justify-center text-xs">sm</div>
+              <div className="size-16 bg-card border border-black/15 rounded-md flex items-center justify-center text-xs">md</div>
+              <div className="size-16 bg-card border border-black/15 rounded-lg flex items-center justify-center text-xs">lg</div>
               <div className="size-16 bg-card manga-panel flex items-center justify-center text-xs">panel</div>
             </div>
           </div>

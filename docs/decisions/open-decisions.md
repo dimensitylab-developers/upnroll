@@ -22,3 +22,12 @@ Tracks everything still pending client approval. Nothing here is to be treated a
 ## Resolution process
 
 Each item resolves via explicit client sign-off recorded here with a date and the resolved value, then promoted into the relevant architecture doc (data model, route map, etc.) and the requirements matrix in `docs/product/scope-matrix.md`. No item is closed by an engineering assumption.
+
+## Resolved decisions (log)
+
+| ID | Decision | Resolved | Date |
+|---|---|---|---|
+| RD-001 | Visual theme: light editorial palette (white/near-white background, black halftone dots, hard black panel borders/shadows — the TechBlitz background/structure technique), not the dark-charcoal palette originally proposed in Part O. TechBlitz content, copy, and imagery are still fully excluded — only the background/structure technique is reused, confirmed as owned by the client. | Confirmed by client in-session | 2026-10-31 |
+| RD-002 | TechBlitz photography/certificate assets (`hero.png`, `judges.png`, `prizes.png`, etc.) ownership is clear (client-owned), but they remain unused in Up 'n Roll — thematically hackathon-specific, not combat-sports content. `/ui-preview` continues using placeholders pending OD-014 (an actual Up 'n Roll brand asset set). | Confirmed by client in-session | 2026-10-31 |
+
+OD-014 narrows as a result of RD-002: the open question is now specifically the Up 'n Roll logo/wordmark and approved fighter/event photography, not a licensing concern.
