@@ -32,9 +32,13 @@ yarn-error.log*
 
 # env files (can opt-in for committing if needed)
 .env*
+!.env.example
 
 # vercel
 .vercel
+
+# local dev-only private file storage (src/server/storage/local-disk.ts)
+/.local-storage/
 
 # typescript
 *.tsbuildinfo

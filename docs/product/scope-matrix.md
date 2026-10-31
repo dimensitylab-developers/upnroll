@@ -13,8 +13,8 @@ Status column reflects what is actually approved vs. pending per the Phase 1 agr
 | BRK-002 | Automated bracket generation | Agreement | Rules pending (OD-003) | 4 |
 | BRK-003 | Bracket modifications, match assignment | Agreement | Approved | 4 |
 | RNK-001 | Fighter rankings | Agreement | Methodology pending (OD-004) | 5 |
-| FTR-001 | Fighter login + private dashboard | Agreement | Approved | 2–3 |
-| ADM-001 | Tournament/athlete/match/result/registration/content admin | Agreement | Approved | 2–5 |
+| FTR-001 | Fighter login + private dashboard | Agreement | Approved — auth/session/guarded shell built in Phase 2, dashboard content pending Phase 3 | 2–3 |
+| ADM-001 | Tournament/athlete/match/result/registration/content admin | Agreement | Approved — role-gated admin shell built in Phase 2, feature content pending Phase 3–5 | 2–5 |
 | NOT-001 | Registration acknowledgement/confirmation emails | Agreement | Approved, templates pending (OD-009) | 3 |
 | NOT-002 | Agreed status-change notifications | Agreement | Approved, scope of "agreed" pending | 3–5 |
 | PAY-001 | Client QR payment instructions | Agreement | Approved | 3 |
