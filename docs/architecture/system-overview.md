@@ -82,22 +82,19 @@ flowchart TD
     MatchAssign --> PublicSchedule[Public schedule/results]
 ```
 
-## Registration + payment state machine (proposed, pending final client sign-off on exact enum — see open-decisions.md)
+## Registration + payment state machine
+
+Implemented in Phase 3 (`src/server/models/Registration.ts`, `src/server/services/registrationStateMachine.ts`). `TRANSFER_REQUESTED`/`TRANSFERRED` are deferred to Phase 5 (cancellation/transfer requests aren't built yet) and not in the current enum. The resubmit action collapses what an earlier draft of this diagram drew as two arrows (`Rejected → AwaitingPayment → PendingVerification`) into one real transition, since the fighter submits a new UTR + screenshot in a single step:
 
 ```mermaid
 stateDiagram-v2
-    [*] --> Draft
-    Draft --> AwaitingPayment: registration validated
+    [*] --> AwaitingPayment: registration created
     AwaitingPayment --> PendingVerification: screenshot + UTR submitted
     PendingVerification --> Confirmed: admin approves payment
     PendingVerification --> Rejected: admin rejects payment
-    Rejected --> AwaitingPayment: fighter resubmits
-    Confirmed --> TransferRequested: fighter requests transfer
-    Confirmed --> Cancelled: fighter/admin cancels
-    TransferRequested --> Transferred: admin approves
-    TransferRequested --> Confirmed: admin denies
+    Rejected --> PendingVerification: fighter resubmits (new UTR + screenshot)
+    Confirmed --> Cancelled: fighter/admin cancels (Phase 5)
     Cancelled --> [*]
-    Transferred --> [*]
 ```
 
 Payment submission sub-state (independent field, per Part E):

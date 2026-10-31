@@ -9,5 +9,7 @@ export interface StorageAdapter {
   put(key: string, data: Buffer, contentType: string): Promise<string>;
   /** Returns a short-lived, authorized URL for reading a private file. */
   getSignedUrl(key: string, expiresInSeconds?: number): Promise<string>;
+  /** Reads a file's bytes back. Used by authorized Route Handlers that stream private files (e.g. admin payment screenshot review). */
+  get(key: string): Promise<{ data: Buffer; contentType: string }>;
   delete(key: string): Promise<void>;
 }

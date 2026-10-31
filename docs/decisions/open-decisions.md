@@ -9,7 +9,8 @@ Tracks everything still pending client approval. Nothing here is to be treated a
 | OD-003 | Bracket format(s) to support (single elimination confirmed as baseline; others?) | Part N: only approved formats get implemented | Bracket engine scope, PFL-style standings-table view (research doc §3) |
 | OD-004 | Ranking methodology | Part N forbids assuming any existing promotion's formula | Ranking engine, `/rankings`, fighter profile ranking display |
 | OD-005 | Registration fee amounts per event/division | Needed for payment-instruction screens | QR payment UI copy, `divisions.fee` field values |
-| OD-006 | Client-supplied payment QR artwork | Required for the real QR payment screen; placeholder used in `/ui-preview` | Payment submission flow visuals |
+| OD-005a | Real UTR/transaction-reference format (bank/UPI reference conventions) | Phase 3 shipped a conservative generic placeholder validator (alphanumeric, 6-30 chars, `src/features/payments/schemas.ts`) since the real format wasn't specified | Payment submission validation accuracy |
+| OD-006 | Client-supplied payment QR artwork | Required for the real QR payment screen; placeholder used in `/ui-preview` and the real Phase 3 payment page | Payment submission flow visuals |
 | OD-007 | Cancellation/transfer policy specifics (windows, eligibility, fees) | Part D §10 requires "client-approved policy enforcement" | `registration_requests` business rules |
 | OD-008 | Refund handling detail (manual, off-platform confirmed; exact admin workflow TBD) | Part D §8/E explicitly excludes automated refunds | Admin requests UI copy |
 | OD-009 | Email templates/copy for registration, payment, and status-change notifications | Part D §7 | Notification service content |
