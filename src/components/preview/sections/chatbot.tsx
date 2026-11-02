@@ -24,7 +24,7 @@ export function Chatbot() {
     <Chapter id="chatbot" title="Chatbot" subtitle="Scripted demonstration using fictional examples, bounded to approved-FAQ-style answers — including an honest unsupported-question fallback (last message below).">
       <div className="relative h-[420px] max-w-sm">
         {!open && (
-          <Button className="rounded-full size-14 p-0" onClick={() => setOpen(true)}>
+          <Button className="rounded-full size-14 p-0" aria-label="Open chat demo" onClick={() => setOpen(true)}>
             <MessageCircle className="size-6" />
           </Button>
         )}
@@ -32,7 +32,7 @@ export function Chatbot() {
           <div className="manga-panel flex flex-col h-full">
             <div className="flex items-center justify-between px-4 py-3 border-b border-black/10">
               <span className="font-medium text-sm">Up &apos;n Roll Support — UI demo</span>
-              <Button variant="ghost" size="icon" onClick={() => setOpen(false)}><X className="size-4" /></Button>
+              <Button variant="ghost" size="icon" aria-label="Close chat" onClick={() => setOpen(false)}><X className="size-4" /></Button>
             </div>
             <div className="flex-1 overflow-y-auto p-4 space-y-3">
               {previewChatScript.slice(0, shown).map((m, i) => (

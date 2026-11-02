@@ -16,7 +16,7 @@ export default async function PublicEventDetailPage({ params }: { params: Promis
   const divisions = await listDivisionsForEvent(String(event._id));
 
   return (
-    <div className="min-h-screen bg-background halftone-bg px-4 py-16">
+    <main className="min-h-screen bg-background halftone-bg px-4 py-16">
       <div className="max-w-2xl mx-auto">
         <Badge variant="outline" className="mb-3">{event.status.replaceAll("_", " ")}</Badge>
         <h1 className="text-display text-4xl font-semibold mb-2">{event.name}</h1>
@@ -40,6 +40,6 @@ export default async function PublicEventDetailPage({ params }: { params: Promis
           ))}
         </div>
       </div>
-    </div>
+    </main>
   );
 }

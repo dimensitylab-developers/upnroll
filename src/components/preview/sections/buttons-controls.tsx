@@ -63,7 +63,7 @@ export function ButtonsControls() {
         <div className="space-y-3">
           <p className="text-sm font-semibold text-muted-foreground">Selection controls</p>
           <Select defaultValue="lw">
-            <SelectTrigger><SelectValue /></SelectTrigger>
+            <SelectTrigger aria-label="Division"><SelectValue /></SelectTrigger>
             <SelectContent>
               <SelectItem value="lw">Lightweight</SelectItem>
               <SelectItem value="ww">Welterweight</SelectItem>

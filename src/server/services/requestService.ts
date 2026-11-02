@@ -64,7 +64,7 @@ export async function decideRequest(adminId: string, requestId: string, decision
   const updated = await RegistrationRequest.findOneAndUpdate(
     { _id: requestId, status: "PENDING" },
     { status: decision, reviewerId: adminId, reviewNote: note, reviewedAt: new Date() },
-    { new: true }
+    { returnDocument: "after" }
   );
   if (!updated) throw new ConflictError("This request has already been reviewed.");
 

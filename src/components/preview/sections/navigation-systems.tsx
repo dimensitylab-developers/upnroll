@@ -36,7 +36,7 @@ export function NavigationSystems() {
               ].map((item) => (
                 <div
                   key={item.label}
-                  className={`flex items-center gap-2 rounded-md px-2 py-1.5 ${item.active ? "bg-primary/15 text-primary" : "text-muted-foreground"}`}
+                  className={`flex items-center gap-2 rounded-md px-2 py-1.5 ${item.active ? "bg-primary/15 text-brand-red-dark font-medium" : "text-muted-foreground"}`}
                 >
                   <item.icon className="size-4" /> {item.label}
                 </div>

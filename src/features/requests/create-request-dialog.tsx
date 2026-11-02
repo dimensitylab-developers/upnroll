@@ -49,7 +49,7 @@ export function CreateRequestDialog({
 
           {type === "TRANSFER" && (
             <Select value={divisionId} onValueChange={setDivisionId}>
-              <SelectTrigger><SelectValue placeholder="Select target division" /></SelectTrigger>
+              <SelectTrigger aria-label="Target division"><SelectValue placeholder="Select target division" /></SelectTrigger>
               <SelectContent>
                 {otherDivisions.map((d) => <SelectItem key={d.id} value={d.id}>{d.name}</SelectItem>)}
               </SelectContent>

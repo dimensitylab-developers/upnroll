@@ -16,7 +16,7 @@ export default async function PublicResultsPage({ params }: { params: Promise<{ 
   }
 
   return (
-    <div className="min-h-screen bg-background halftone-bg px-4 py-16">
+    <main className="min-h-screen bg-background halftone-bg px-4 py-16">
       <div className="max-w-3xl mx-auto">
         <h1 className="text-display text-4xl font-semibold mb-8">Results</h1>
         <Table>
@@ -41,6 +41,6 @@ export default async function PublicResultsPage({ params }: { params: Promise<{ 
           </TableBody>
         </Table>
       </div>
-    </div>
+    </main>
   );
 }

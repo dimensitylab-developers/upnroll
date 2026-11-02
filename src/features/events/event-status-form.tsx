@@ -17,7 +17,7 @@ export function EventStatusForm({ eventId, currentStatus }: { eventId: string; c
       <input type="hidden" name="eventId" value={eventId} />
       <input type="hidden" name="status" value={status} />
       <Select value={status} onValueChange={setStatus}>
-        <SelectTrigger className="w-56"><SelectValue /></SelectTrigger>
+        <SelectTrigger className="w-56" aria-label="Event status"><SelectValue /></SelectTrigger>
         <SelectContent>
           {EVENT_STATUS_OPTIONS.map((s) => (
             <SelectItem key={s} value={s}>{s.replaceAll("_", " ")}</SelectItem>

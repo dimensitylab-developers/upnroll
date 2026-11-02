@@ -10,7 +10,7 @@ const statusColor: Record<string, string> = {
   COMPLETED: "text-muted-foreground",
   IN_PROGRESS: "text-brand-cyan",
   SCHEDULED: "text-foreground",
-  PENDING: "text-muted-foreground/50",
+  PENDING: "text-muted-foreground",
 };
 
 export function Brackets() {

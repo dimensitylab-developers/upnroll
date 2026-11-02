@@ -9,7 +9,7 @@ export default async function PublicEventsPage() {
   const events = await listPublicEvents();
 
   return (
-    <div className="min-h-screen bg-background halftone-bg px-4 py-16">
+    <main className="min-h-screen bg-background halftone-bg px-4 py-16">
       <div className="max-w-3xl mx-auto">
         <h1 className="text-display text-4xl font-semibold mb-8">Events</h1>
         <div className="grid sm:grid-cols-2 gap-4">
@@ -23,6 +23,6 @@ export default async function PublicEventsPage() {
           {events.length === 0 && <p className="text-sm text-muted-foreground">No events published yet.</p>}
         </div>
       </div>
-    </div>
+    </main>
   );
 }

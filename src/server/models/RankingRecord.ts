@@ -14,6 +14,9 @@ const rankingRecordSchema = new Schema(
   { timestamps: true }
 );
 
+// rankingService.listPublicRankings sorts by { points: -1, wins: -1 } on every load.
+rankingRecordSchema.index({ points: -1, wins: -1 });
+
 export type RankingRecordDoc = InferSchemaType<typeof rankingRecordSchema>;
 
 export const RankingRecord: Model<RankingRecordDoc> =

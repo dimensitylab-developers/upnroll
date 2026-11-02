@@ -6,7 +6,7 @@ import Link from "next/link";
  */
 export default function RootPlaceholder() {
   return (
-    <div className="min-h-screen bg-background flex items-center justify-center p-4 halftone-bg">
+    <main className="min-h-screen bg-background flex items-center justify-center p-4 halftone-bg">
       <div className="manga-panel p-10 max-w-lg text-center">
         <p className="text-xs uppercase tracking-widest text-brand-red font-semibold mb-3">
           Phase 1 — Design Foundation
@@ -23,6 +23,6 @@ export default function RootPlaceholder() {
           Open /ui-preview
         </Link>
       </div>
-    </div>
+    </main>
   );
 }

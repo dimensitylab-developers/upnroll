@@ -8,6 +8,8 @@ import { FighterProfile } from "@/server/models/FighterProfile";
 import { hashPassword, verifyPassword } from "@/server/auth/password";
 import { createSession, destroySession, getSession } from "@/server/auth/session";
 import { writeAuditLog } from "@/server/audit/log";
+import { checkRateLimit } from "@/server/http/rateLimit";
+import { getClientIp } from "@/server/http/clientIp";
 import { registerSchema, loginSchema } from "./schemas";
 
 export type AuthActionState = {
@@ -28,6 +30,12 @@ export async function registerAction(
   _prevState: AuthActionState,
   formData: FormData
 ): Promise<AuthActionState> {
+  const ip = await getClientIp();
+  const rate = checkRateLimit(`register:${ip}`);
+  if (!rate.allowed) {
+    return { error: `Too many attempts. Try again in about ${rate.retryAfterSeconds}s.` };
+  }
+
   const parsed = registerSchema.safeParse({
     displayName: formData.get("displayName"),
     email: formData.get("email"),
@@ -68,6 +76,12 @@ export async function loginAction(
   _prevState: AuthActionState,
   formData: FormData
 ): Promise<AuthActionState> {
+  const ip = await getClientIp();
+  const rate = checkRateLimit(`login:${ip}`);
+  if (!rate.allowed) {
+    return { error: `Too many attempts. Try again in about ${rate.retryAfterSeconds}s.` };
+  }
+
   const parsed = loginSchema.safeParse({
     email: formData.get("email"),
     password: formData.get("password"),

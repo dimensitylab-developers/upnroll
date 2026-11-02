@@ -36,7 +36,7 @@ export function RegistrationFlow() {
             <div>
               <Label className="mb-1.5 block">Division</Label>
               <Select value={division} onValueChange={setDivision}>
-                <SelectTrigger><SelectValue placeholder="Select a division" /></SelectTrigger>
+                <SelectTrigger aria-label="Division"><SelectValue placeholder="Select a division" /></SelectTrigger>
                 <SelectContent>
                   <SelectItem value="Lightweight">Lightweight</SelectItem>
                   <SelectItem value="Welterweight">Welterweight</SelectItem>

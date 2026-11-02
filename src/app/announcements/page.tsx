@@ -6,7 +6,7 @@ export default async function PublicAnnouncementsPage() {
   const announcements = await listPublished("ANNOUNCEMENT");
 
   return (
-    <div className="min-h-screen bg-background halftone-bg px-4 py-16">
+    <main className="min-h-screen bg-background halftone-bg px-4 py-16">
       <div className="max-w-2xl mx-auto">
         <h1 className="text-display text-4xl font-semibold mb-8">Announcements</h1>
         <div className="space-y-4">
@@ -20,6 +20,6 @@ export default async function PublicAnnouncementsPage() {
           {announcements.length === 0 && <p className="text-sm text-muted-foreground">No announcements yet.</p>}
         </div>
       </div>
-    </div>
+    </main>
   );
 }

@@ -15,6 +15,10 @@ const contentEntrySchema = new Schema(
   { timestamps: true }
 );
 
+// contentService.listPublished(type) always filters on both fields together
+// (the chatbot's FAQ lookup runs on every question asked).
+contentEntrySchema.index({ type: 1, publicationState: 1 });
+
 export type ContentEntryDoc = InferSchemaType<typeof contentEntrySchema>;
 
 export const ContentEntry: Model<ContentEntryDoc> =

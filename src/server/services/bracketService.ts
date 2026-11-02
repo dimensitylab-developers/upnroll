@@ -132,7 +132,7 @@ export async function generateBracket(
 export async function publishBracket(adminId: string, bracketId: string) {
   await connectDB();
 
-  const bracket = await Bracket.findOneAndUpdate({ _id: bracketId, status: "DRAFT" }, { status: "PUBLISHED" }, { new: true });
+  const bracket = await Bracket.findOneAndUpdate({ _id: bracketId, status: "DRAFT" }, { status: "PUBLISHED" }, { returnDocument: "after" });
   if (!bracket) throw new ConflictError("Bracket not found, or it has already been published.");
 
   await writeAuditLog({ actorId: adminId, action: "BRACKET_PUBLISHED", targetType: "Bracket", targetId: bracketId });

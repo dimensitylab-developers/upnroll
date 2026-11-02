@@ -2,6 +2,8 @@
 
 Status column reflects what is actually approved vs. pending per the Phase 1 agreement (Part D) and the manual-payment update (Part E). Extend this table as scope is confirmed; do not mark anything "Approved" without an actual client decision.
 
+**Phase 6 update**: the core fighter-to-admin lifecycle (REG-001, PAY-002, PAY-003, BRK-001/002, RNK-001, CHB-001, REQ-001) was actually run end to end against a real MongoDB this phase — register → pay → approve → bracket → publish → result → rank → FAQ/chatbot → cancellation, 19/19 live assertions passed. Every prior phase could only unit-test this logic; see `docs/phases/06-production-hardening.md` for the full run. Test data was deleted afterward.
+
 | ID | Requirement | Origin | Status | Phase |
 |---|---|---|---|---|
 | WEB-001 | Responsive public event website | Agreement | Approved | 1 (design), later (build) |

@@ -18,7 +18,7 @@ export default async function PublicFighterProfilePage({ params }: { params: Pro
   const { profile, record, history } = data;
 
   return (
-    <div className="min-h-screen bg-background halftone-bg px-4 py-16">
+    <main className="min-h-screen bg-background halftone-bg px-4 py-16">
       <div className="max-w-2xl mx-auto">
         <h1 className="text-display text-4xl font-semibold mb-2">{profile.displayName}</h1>
         <p className="text-muted-foreground mb-4">{profile.gym || "Independent"}{profile.discipline ? ` · ${profile.discipline}` : ""}</p>
@@ -47,6 +47,6 @@ export default async function PublicFighterProfilePage({ params }: { params: Pro
           </TableBody>
         </Table>
       </div>
-    </div>
+    </main>
   );
 }

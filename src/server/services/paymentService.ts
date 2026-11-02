@@ -111,7 +111,7 @@ async function decidePayment(
   const updated = await PaymentSubmission.findOneAndUpdate(
     { _id: paymentId, status: "PENDING_REVIEW" },
     { status: decision, reviewerId: adminId, reviewedAt: new Date(), reviewNote: note },
-    { new: true }
+    { returnDocument: "after" }
   );
   if (!updated) throw new ConflictError("This payment submission has already been reviewed.");
 

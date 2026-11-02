@@ -8,7 +8,7 @@ export default async function PublicRankingsPage() {
   const rankings = await listPublicRankings();
 
   return (
-    <div className="min-h-screen bg-background halftone-bg px-4 py-16">
+    <main className="min-h-screen bg-background halftone-bg px-4 py-16">
       <div className="max-w-2xl mx-auto">
         <h1 className="text-display text-4xl font-semibold mb-2">Rankings</h1>
         <p className="text-sm text-muted-foreground mb-8">
@@ -40,6 +40,6 @@ export default async function PublicRankingsPage() {
           </TableBody>
         </Table>
       </div>
-    </div>
+    </main>
   );
 }

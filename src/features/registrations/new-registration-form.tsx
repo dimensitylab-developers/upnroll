@@ -32,7 +32,7 @@ export function NewRegistrationForm({ divisions }: { divisions: DivisionOption[]
         <Label htmlFor="divisionId" className="mb-1.5 block">Division</Label>
         <input type="hidden" name="divisionId" value={divisionId} />
         <Select value={divisionId} onValueChange={setDivisionId}>
-          <SelectTrigger id="divisionId"><SelectValue placeholder="Select a division" /></SelectTrigger>
+          <SelectTrigger id="divisionId" aria-label="Division"><SelectValue placeholder="Select a division" /></SelectTrigger>
           <SelectContent>
             {divisions.map((d) => (
               <SelectItem key={d.id} value={d.id}>

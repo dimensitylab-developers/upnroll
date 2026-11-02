@@ -36,6 +36,10 @@ const matchSchema = new Schema(
 );
 
 matchSchema.index({ bracketId: 1, round: 1, order: 1 }, { unique: true });
+// rankingService.recalculateRankings scans every decided match across the
+// whole collection (Match.find({ status: { $in: ["COMPLETED", "BYE"] } })) —
+// without this, that query is a full collection scan as match volume grows.
+matchSchema.index({ status: 1 });
 
 export type MatchDoc = InferSchemaType<typeof matchSchema>;
 

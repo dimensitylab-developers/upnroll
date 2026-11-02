@@ -29,7 +29,7 @@ async function main() {
       status: "REGISTRATION_OPEN",
       paymentInstructions: { feeMinorUnits: 150000, currency: "INR", qrImageKey: "" },
     },
-    { upsert: true, new: true }
+    { upsert: true, returnDocument: "after" }
   );
 
   const divisions = [
@@ -41,7 +41,7 @@ async function main() {
     await Division.findOneAndUpdate(
       { eventId: event._id, name: d.name },
       { eventId: event._id, name: d.name, discipline: d.discipline, capacity: d.capacity, feeMinorUnitsOverride: null },
-      { upsert: true, new: true }
+      { upsert: true, returnDocument: "after" }
     );
   }
 

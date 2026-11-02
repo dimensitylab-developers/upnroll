@@ -27,7 +27,7 @@ export function FighterDirectory() {
           <Input placeholder="Search fighters…" className="pl-8" value={query} onChange={(e) => setQuery(e.target.value)} />
         </div>
         <Select value={division} onValueChange={setDivision}>
-          <SelectTrigger className="w-48"><SelectValue /></SelectTrigger>
+          <SelectTrigger className="w-48" aria-label="Filter by division"><SelectValue /></SelectTrigger>
           <SelectContent>
             <SelectItem value="all">All divisions</SelectItem>
             <SelectItem value="Lightweight">Lightweight</SelectItem>

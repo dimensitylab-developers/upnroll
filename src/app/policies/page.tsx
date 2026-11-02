@@ -6,7 +6,7 @@ export default async function PublicPoliciesPage() {
   const policies = await listPublished("POLICY");
 
   return (
-    <div className="min-h-screen bg-background halftone-bg px-4 py-16">
+    <main className="min-h-screen bg-background halftone-bg px-4 py-16">
       <div className="max-w-2xl mx-auto">
         <h1 className="text-display text-4xl font-semibold mb-8">Policies</h1>
         <div className="space-y-4">
@@ -19,6 +19,6 @@ export default async function PublicPoliciesPage() {
           {policies.length === 0 && <p className="text-sm text-muted-foreground">No policies published yet.</p>}
         </div>
       </div>
-    </div>
+    </main>
   );
 }

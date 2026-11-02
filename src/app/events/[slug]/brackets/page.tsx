@@ -28,7 +28,7 @@ export default async function PublicBracketsPage({ params }: { params: Promise<{
   const published = brackets.filter((b): b is NonNullable<typeof b> => b !== null);
 
   return (
-    <div className="min-h-screen bg-background halftone-bg px-4 py-16">
+    <main className="min-h-screen bg-background halftone-bg px-4 py-16">
       <div className="max-w-4xl mx-auto">
         <h1 className="text-display text-4xl font-semibold mb-8">{event.name} — Brackets</h1>
         {published.length === 0 && <p className="text-sm text-muted-foreground">No brackets published yet.</p>}
@@ -41,6 +41,6 @@ export default async function PublicBracketsPage({ params }: { params: Promise<{
           ))}
         </div>
       </div>
-    </div>
+    </main>
   );
 }

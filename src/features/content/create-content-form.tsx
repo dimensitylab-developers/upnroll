@@ -22,7 +22,7 @@ export function CreateContentForm() {
         <Label className="mb-1.5 block">Type</Label>
         <input type="hidden" name="type" value={type} />
         <Select value={type} onValueChange={setType}>
-          <SelectTrigger><SelectValue /></SelectTrigger>
+          <SelectTrigger aria-label="Content type"><SelectValue /></SelectTrigger>
           <SelectContent>
             {CONTENT_TYPE_OPTIONS.map((t) => <SelectItem key={t} value={t}>{t}</SelectItem>)}
           </SelectContent>
