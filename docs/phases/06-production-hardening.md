@@ -28,6 +28,22 @@ This phase is different in character from Phases 1–5: not new features, but ve
 
 Mongoose logged a deprecation warning during `seed-demo.ts`: the `{ new: true }` option on `findOneAndUpdate`/`findOneAndReplace` is deprecated in favor of `{ returnDocument: "after" }`. This was present in **five call sites** across `eventService.ts` (via `seed-demo.ts`'s direct model usage), `bracketService.publishBracket`, `paymentService`'s approve/reject, and `requestService.decideRequest` — every idempotent decision-making `findOneAndUpdate` in the app. All five fixed. **This is exactly the kind of bug that mocked unit tests (Phase 6's own `session.test.ts` included) cannot catch** — a mock returns whatever the test tells it to, regardless of whether the real Mongoose API still accepts the option being passed. Only hitting a real MongoDB driver surfaces it. Flagging this prominently because it's direct evidence for why the live-verification step mattered, not a formality.
 
+### Addendum — actual browser-driven UI verification (post-Phase-6 request to "verify everything")
+
+The run above called service functions directly. It proved the business logic and database layer, but not the UI layer on top of it — a Server Action could be wired to the wrong field, a form could submit malformed data, a page could render but silently fail to redirect, and a service-layer test would never catch any of it. So a second pass drove an actual Chromium browser through the real pages against the same live database:
+
+1. Register a new fighter account through the real `/register` form ✅ (redirects to `/fighter/dashboard`, dashboard greets the fighter by name)
+2. Fill out the real division dropdown and submit `/fighter/registrations/new` ✅ (redirects to the payment page)
+3. Fill in a UTR and upload a real file through the actual `<input type="file">` on the payment page ✅ (page shows the pending-review state)
+4. Log in as the real admin account (credentials read from `.env` without ever being printed) through the real `/login` form ✅
+5. Load every admin page (`/admin`, `/admin/events`, `/admin/payments`, `/admin/content`, `/admin/media`, `/admin/rankings`, `/admin/requests`) ✅ all return 200
+6. Click "Review" on the real pending payment in the admin queue, click "Approve" ✅ — the row actually flips to `APPROVED` after a page reload, through the real dialog and real Server Action, not a direct function call
+7. Load the real public pages (`/events`, `/faq`, `/rankings`, `/fighters`) ✅
+
+**20/20 assertions passed** on the clean run. Three script-only failures were debugged and fixed along the way (ambiguous button selectors matching both "Sign out" and "Register" on the same authenticated page, the account-signup button actually reading "Create account" not "Register", and a too-narrow text match on the payment-pending state) — in every case the Next.js dev server's own request log was checked first and showed the real request had already succeeded (a `303` redirect or `200`) before the test script's assertion was "fixed," so no app code changed as a result of this pass. One unrelated environment problem surfaced and was resolved along the way: Turbopack's persistent dev cache panicked twice (`range start index ... out of range for slice`) after repeated hard restarts on this filesystem — a tooling issue, fixed by a full `.next` cache wipe, not an application bug.
+
+All 4 real fighter accounts created during this pass (and their registrations/payments/audit log entries) were enumerated, confirmed, and deleted with the user's explicit sign-off; a follow-up count confirmed zero `uiverify-*` records remain.
+
 ## Accessibility review (real findings, real fixes)
 
 Automated `axe-core` + Playwright scan against `/ui-preview`, `/login`, `/register`, `/events`, `/faq`, `/rankings`. **Initial scan: 11 violations across 6 pages.** All fixed; re-scan: **0 violations across all 6 pages.**
