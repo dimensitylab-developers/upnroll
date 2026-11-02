@@ -6,7 +6,7 @@ Status column reflects what is actually approved vs. pending per the Phase 1 agr
 
 | ID | Requirement | Origin | Status | Phase |
 |---|---|---|---|---|
-| WEB-001 | Responsive public event website | Agreement | Approved | 1 (design), later (build) |
+| WEB-001 | Responsive public event website | Agreement | Approved — real homepage + shared `(public)` layout (header/nav/footer) built post-Phase 6 | 1 (design), 6 (build) |
 | WEB-002 | Anime/manga-inspired visual identity | Agreement | Approved | 1 |
 | WEB-003 | Public schedules, brackets, published results | Agreement | Built in Phase 4 — `/events/[slug]/{brackets,schedule,results}`, published-only, data-driven | 4 |
 | REG-001 | Fighter registration forms | Agreement | Approved — built in Phase 3 (event/division selection, duplicate-registration prevention) | 3 |

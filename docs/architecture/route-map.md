@@ -2,9 +2,9 @@
 
 Legend: **[built]** real route, live in the codebase · **[P1 fixture]** exists only as a `/ui-preview` chapter, no real route · **[later]** not built yet.
 
-## Public — plain routes under `src/app/` (not grouped; no shared public layout exists yet, see note below)
+## Public — `(public)` route group — **[built]** shared layout with `SiteHeader`/`SiteFooter` (see note below)
 ```
-/                               [P1 fixture] placeholder pointing to /ui-preview — real homepage not built
+/                               [built] real homepage — hero, featured/upcoming events, rankings preview, FAQ preview, all data-driven
 /about                          [later]
 /events                         [built, Phase 4] listing, published statuses only
 /events/[slug]                  [built, Phase 4]
@@ -19,7 +19,7 @@ Legend: **[built]** real route, live in the codebase · **[P1 fixture]** exists 
 /announcements                  [built, Phase 5] not in the original Part H sketch, added since Part D explicitly lists "tournament announcements" as Phase 5 scope
 /policies                       [built, Phase 5]
 ```
-Note: the plan called for a `(public)` route group with its own layout (per Part G). Phase 4 added the event/bracket/schedule/results pages as plain routes instead, since no shared public layout exists yet (the homepage is still Phase 1's placeholder) — a route group with no distinct layout would be pure ceremony. Revisit this once real homepage/public-layout work begins.
+Note: the plan called for a `(public)` route group with its own layout (per Part G). Phase 4/5 initially added the event/fighter/content pages as plain routes since no shared public layout existed yet. That gap was fixed post-Phase 6: all public pages now live under `src/app/(public)/` with a shared layout (`src/app/(public)/layout.tsx`) that mounts `SiteHeader` (logo, nav links, auth CTAs, mobile menu via `MobileNavToggle`) and `SiteFooter` on every public page. URLs are unchanged — route groups don't affect the URL path.
 
 ## Auth — `(auth)` route group — **[built, Phase 2]**
 ```
@@ -69,8 +69,7 @@ Note: the plan called for a `(public)` route group with its own layout (per Part
 
 ## Global — mounted in `src/app/layout.tsx` — **[built, Phase 5]**
 ```
-ChatbotWidget — site-wide floating support widget (no public homepage to anchor it to yet,
-so it's global rather than homepage-only); closed by default, bounded to published FAQ content
+ChatbotWidget — site-wide floating support widget; closed by default, bounded to published FAQ content
 ```
 
 ## Preview — `(preview)` route group — **[built, Phase 1]**
@@ -87,7 +86,7 @@ GET /api/v1/admin/payments/[id]/screenshot   [built, Phase 3] — the only real 
 
 | Old TechBlitz route | Disposition |
 |---|---|
-| `/` (marketing, client-rendered) | Still pending — Phase 1 placeholder remains until real homepage work begins |
+| `/` (marketing, client-rendered) | Replaced by the real, data-driven homepage under `(public)` |
 | `/register`, `/problem-statement/*` | Removed — replaced by the real, payment-aware `(fighter)` registration flow (Phase 3) |
 | `/certificates` | Removed — no Phase equivalent |
 | `/admin`, `/admin/dashboard` | Replaced by `(admin)/admin/*` with real auth (Phase 2) and real event/payment/bracket management (Phases 3–4) |
