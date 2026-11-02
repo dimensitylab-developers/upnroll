@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Inter, Oswald } from "next/font/google";
 import Providers from "@/components/Providers";
+import { ChatbotWidget } from "@/features/chatbot/chatbot-widget";
 import "./globals.css";
 
 const inter = Inter({
@@ -32,6 +33,7 @@ export default function RootLayout({
     <html lang="en">
       <body className={`${inter.variable} ${oswald.variable} antialiased`}>
         <Providers>{children}</Providers>
+        <ChatbotWidget />
       </body>
     </html>
   );

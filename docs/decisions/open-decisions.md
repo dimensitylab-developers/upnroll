@@ -7,7 +7,7 @@ Tracks everything still pending client approval. Nothing here is to be treated a
 | OD-001 | Actual combat discipline(s) run by Up 'n Roll (MMA only? grappling/submission too? mixed events?) | Part C explicitly forbids assuming MMA-only or UFC-style disciplines | Division taxonomy, fighter profile "discipline" field, rules content |
 | OD-002 | Weight classes / age/eligibility categories | No UFC-style weight classes may be assumed | Division model, registration eligibility checks |
 | OD-003 | Bracket format(s) to support beyond single elimination | Part N: only approved formats get implemented. **Phase 4 implemented the single-elimination baseline** (`src/server/services/bracketEngine.ts`) — this row stays open only for additional formats (round-robin, points-based, etc.), not the baseline itself | PFL-style standings-table view (research doc §3) if a points format is ever approved |
-| OD-004 | Ranking methodology | Part N forbids assuming any existing promotion's formula | Ranking engine, `/rankings`, fighter profile ranking display |
+| OD-004 | Ranking methodology | Part N forbids assuming any existing promotion's formula. **Phase 5 implemented the engine as a swappable `RankingStrategy`** (`src/server/services/rankingEngine.ts`) with one placeholder strategy (3 pts/win) explicitly labeled as not-approved in both the admin and public `/rankings` pages — swapping in a real formula touches one function, nothing else | Which formula is actually official — everything downstream already built and waiting |
 | OD-005 | Registration fee amounts per event/division | Needed for payment-instruction screens | QR payment UI copy, `divisions.fee` field values |
 | OD-005a | Real UTR/transaction-reference format (bank/UPI reference conventions) | Phase 3 shipped a conservative generic placeholder validator (alphanumeric, 6-30 chars, `src/features/payments/schemas.ts`) since the real format wasn't specified | Payment submission validation accuracy |
 | OD-006 | Client-supplied payment QR artwork | Required for the real QR payment screen; placeholder used in `/ui-preview` and the real Phase 3 payment page | Payment submission flow visuals |
@@ -16,7 +16,7 @@ Tracks everything still pending client approval. Nothing here is to be treated a
 | OD-009 | Email templates/copy for registration, payment, and status-change notifications | Part D §7 | Notification service content |
 | OD-010 | Content approval process for FAQs/policies/announcements | Part D §9/§10 | Content management workflow, chatbot's approved-FAQ source |
 | OD-011 | Data retention policy for payment screenshots and PII generally | Part E security requirements | Storage lifecycle rules, audit log retention |
-| OD-012 | Hosting/infra and third-party integration approvals (object storage provider, email provider, auth provider choice) | Part F / Part M | Phase 2 infra setup |
+| OD-012 | Hosting/infra and third-party integration approvals (object storage provider, email provider, auth provider choice) | Part F / Part M | Phase 2 infra setup; Phase 5's `MediaAsset` model stores an external URL rather than an uploaded file for the same reason |
 | OD-013 | Whether `middleware.ts` should become `proxy.ts` under Next 16 | Technical, not client-facing, but affects Phase 2 auth wiring | Phase 2 proxy/auth implementation |
 | OD-014 | Brand asset set (logo, approved photography license) | Part B §3 — existing TechBlitz imagery is unlicensed for this use | `/ui-preview` Brand Foundation chapter uses placeholders until resolved |
 

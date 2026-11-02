@@ -5,8 +5,10 @@ const fighterProfileSchema = new Schema(
     userId: { type: Schema.Types.ObjectId, ref: "User", required: true, unique: true },
     displayName: { type: String, required: true, trim: true },
     slug: { type: String, required: true, unique: true, lowercase: true, trim: true },
-    // Gym, discipline, division, photo, and public bio fields are added when
-    // the fighter profile / directory feature lands (Phase 3+) — not invented here.
+    gym: { type: String, default: "", trim: true },
+    discipline: { type: String, default: "", trim: true },
+    // Photo and public bio fields remain unbuilt — pending a real storage
+    // provider (OD-012) and no specific requirement for them yet.
   },
   { timestamps: true }
 );

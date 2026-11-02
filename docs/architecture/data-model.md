@@ -1,6 +1,6 @@
 # Data Model Proposal — Up 'n Roll
 
-Status: **largely implemented** as of Phase 4. `users`, `fighter_profiles`, `events`, `divisions`, `registrations`, `payment_submissions`, `brackets`, `matches`, `audit_logs` all exist as real Mongoose models. Still proposal-only: `ranking_records`, `registration_requests`, `notifications` (as a dedicated collection — acknowledgement emails exist but go through the dev `EmailAdapter`, not a persisted notification record), `content_entries`, `media_assets`.
+Status: **fully implemented** as of Phase 5. Every collection below exists as a real Mongoose model except `notifications` as a dedicated persisted collection — acknowledgement/decision emails exist and are sent through the dev `EmailAdapter`, but there's no standalone notification record; not needed yet since nothing currently queries notification history independently of the email send itself.
 
 ## Collections (per Part L)
 
@@ -36,11 +36,11 @@ erDiagram
 - **payment_submissions** — registration reference, athleteId, eventId, expected amount (integer minor units — never trust client-supplied amount), submitted UTR, private screenshot reference (object storage key, not a public URL), review status (`AWAITING_SUBMISSION`/`PENDING_REVIEW`/`APPROVED`/`REJECTED`), reviewerId, reviewedAt, review note, revision history. Index on UTR for duplicate-reference detection (flag, don't auto-block).
 - **brackets** — *(built, Phase 4)* event + division reference (unique per division — one bracket per division), format (`SINGLE_ELIMINATION` only, per OD-003 baseline), seed, locked-in participant list, roundsCount, publication state (`DRAFT`/`PUBLISHED`), version number (incremented on every regeneration; regenerating a `PUBLISHED` bracket is blocked entirely rather than silently overwritten).
 - **matches** — *(built, Phase 4)* event, division, bracket reference, round + order (the full addressing scheme — winner advancement is computed arithmetically from these, no stored "next match" pointer), competitor references (nullable — null means not-yet-filled or a bye), status (`PENDING`/`SCHEDULED`/`COMPLETED`/`BYE`), winner, result method, scheduling info (mat/time), `correctionHistory` array (previous winner/method/reason/corrector/timestamp — Part N's "preserve audit history" lives here *and* in the shared `audit_logs`).
-- **ranking_records** — fighter, scope, discipline, division, calculated value, calculation version (so methodology changes don't silently rewrite history), source match references.
-- **registration_requests** — type (`CANCELLATION`/`TRANSFER`), source registration reference, requested change, reason, status, reviewer, decision, policy snapshot/version at time of request.
-- **notifications** — recipient, type, trigger, delivery state, timestamp, error info.
-- **content_entries** — type (announcement/FAQ/policy — eligibility policy kept distinct per the IMMAF research note), body, publication state.
-- **media_assets** — event reference, type, storage reference, caption, publication state.
+- **ranking_records** — *(built, Phase 5)* userId (unique), scope (`GLOBAL` only — not per-division, since event-scoped `Division` documents aren't a stable long-term taxonomy per OD-001/OD-002), wins, losses, points, calculationVersion, computedAt. Points come from `rankingEngine.ts`'s `winLossPointsStrategy` — explicitly labeled a placeholder in the UI and here, pending OD-004.
+- **registration_requests** — *(built, Phase 5)* type (`CANCELLATION`/`TRANSFER`), registrationId, userId, requestedDivisionId (transfer only, must be same event, capacity-checked), reason, status (`PENDING`/`APPROVED`/`REJECTED`), reviewerId, reviewNote, reviewedAt. No policy-snapshot/window/fee fields yet — OD-007 still open, so none of that is enforced.
+- **notifications** — not a dedicated collection (see status note above).
+- **content_entries** — *(built, Phase 5)* type (`FAQ`/`ANNOUNCEMENT`/`POLICY` — eligibility policy kept distinct per the IMMAF research note isn't needed as its own type yet since no eligibility rules exist), title (doubles as the FAQ question), body (doubles as the FAQ answer), publicationState, createdBy.
+- **media_assets** — *(built, Phase 5)* eventId (optional), caption, externalUrl (not an uploaded file — OD-012 still open), publicationState, createdBy.
 - **audit_logs** — actor, action, target entity, before/after summary, timestamp, correlation id. No raw payment screenshot content or full PII dumped into audit entries — reference ids only.
 
 ## Concurrency / integrity notes carried into Phase 2 design
