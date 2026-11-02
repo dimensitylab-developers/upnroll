@@ -1,0 +1,63 @@
+"use server";
+
+import { revalidatePath } from "next/cache";
+import { requireRole } from "@/server/auth/session";
+import { recordMatchResult, correctMatchResult, updateMatchSchedule } from "@/server/services/matchService";
+import { toAppError } from "@/server/http/errors";
+
+export type MatchActionState = { error?: string };
+
+export async function recordResultAction(_prevState: MatchActionState, formData: FormData): Promise<MatchActionState> {
+  const { user } = await requireRole("ADMIN");
+  const matchId = String(formData.get("matchId") ?? "");
+  const eventId = String(formData.get("eventId") ?? "");
+  const winnerRegistrationId = String(formData.get("winnerRegistrationId") ?? "");
+  const method = String(formData.get("method") ?? "");
+
+  try {
+    await recordMatchResult(String(user._id), matchId, winnerRegistrationId, method);
+  } catch (err) {
+    return { error: toAppError(err).message };
+  }
+
+  revalidatePath(`/admin/events/${eventId}/matches`);
+  return {};
+}
+
+export async function correctResultAction(_prevState: MatchActionState, formData: FormData): Promise<MatchActionState> {
+  const { user } = await requireRole("ADMIN");
+  const matchId = String(formData.get("matchId") ?? "");
+  const eventId = String(formData.get("eventId") ?? "");
+  const winnerRegistrationId = String(formData.get("winnerRegistrationId") ?? "");
+  const method = String(formData.get("method") ?? "");
+  const reason = String(formData.get("reason") ?? "");
+
+  try {
+    await correctMatchResult(String(user._id), matchId, winnerRegistrationId, method, reason);
+  } catch (err) {
+    return { error: toAppError(err).message };
+  }
+
+  revalidatePath(`/admin/events/${eventId}/matches`);
+  return {};
+}
+
+export async function updateScheduleAction(_prevState: MatchActionState, formData: FormData): Promise<MatchActionState> {
+  const { user } = await requireRole("ADMIN");
+  const matchId = String(formData.get("matchId") ?? "");
+  const eventId = String(formData.get("eventId") ?? "");
+  const mat = String(formData.get("mat") ?? "");
+  const scheduledAtRaw = String(formData.get("scheduledAt") ?? "");
+
+  try {
+    await updateMatchSchedule(String(user._id), matchId, {
+      mat,
+      scheduledAt: scheduledAtRaw ? new Date(scheduledAtRaw) : null,
+    });
+  } catch (err) {
+    return { error: toAppError(err).message };
+  }
+
+  revalidatePath(`/admin/events/${eventId}/matches`);
+  return {};
+}

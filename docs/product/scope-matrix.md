@@ -6,12 +6,12 @@ Status column reflects what is actually approved vs. pending per the Phase 1 agr
 |---|---|---|---|---|
 | WEB-001 | Responsive public event website | Agreement | Approved | 1 (design), later (build) |
 | WEB-002 | Anime/manga-inspired visual identity | Agreement | Approved | 1 |
-| WEB-003 | Public schedules, brackets, published results | Agreement | Approved | 4 |
+| WEB-003 | Public schedules, brackets, published results | Agreement | Built in Phase 4 — `/events/[slug]/{brackets,schedule,results}`, published-only, data-driven | 4 |
 | REG-001 | Fighter registration forms | Agreement | Approved — built in Phase 3 (event/division selection, duplicate-registration prevention) | 3 |
-| REG-002 | Admin access to participant records | Agreement | Approved — admin payment queue built in Phase 3; full athlete-record admin view is Phase 4+ | 3 |
-| BRK-001 | Manual matchmaking | Agreement | Approved | 4 |
-| BRK-002 | Automated bracket generation | Agreement | Rules pending (OD-003) | 4 |
-| BRK-003 | Bracket modifications, match assignment | Agreement | Approved | 4 |
+| REG-002 | Admin access to participant records | Agreement | Approved — admin payment queue built in Phase 3; event/division/match admin built in Phase 4 | 3–4 |
+| BRK-001 | Manual matchmaking | Agreement | Built in Phase 4 — manual seed ordering before generation; see BRK-003 for the one deferred piece | 4 |
+| BRK-002 | Automated bracket generation | Agreement | Built in Phase 4 — deterministic single-elimination only (OD-003 baseline), seeded-random or manual-order modes, byes auto-resolved | 4 |
+| BRK-003 | Bracket modifications, match assignment | Agreement | Partially built in Phase 4: result recording, winner advancement, and audited result correction are complete; free-form competitor swapping in an already-published, not-yet-played match is explicitly deferred (documented limitation in `docs/phases/04-tournament-engine.md`) | 4 |
 | RNK-001 | Fighter rankings | Agreement | Methodology pending (OD-004) | 5 |
 | FTR-001 | Fighter login + private dashboard | Agreement | Approved — auth/session/guarded shell built in Phase 2, dashboard content pending Phase 3 | 2–3 |
 | ADM-001 | Tournament/athlete/match/result/registration/content admin | Agreement | Approved — role-gated admin shell built in Phase 2, feature content pending Phase 3–5 | 2–5 |

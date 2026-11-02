@@ -1,6 +1,6 @@
 # Data Model Proposal — Up 'n Roll
 
-Status: **proposal, not implemented.** No database work occurs in Phase 1. This exists so Phase 2 has a reviewed starting point and so `/ui-preview` fixture shapes (fictional data only) are consistent with where the real schema is headed.
+Status: **largely implemented** as of Phase 4. `users`, `fighter_profiles`, `events`, `divisions`, `registrations`, `payment_submissions`, `brackets`, `matches`, `audit_logs` all exist as real Mongoose models. Still proposal-only: `ranking_records`, `registration_requests`, `notifications` (as a dedicated collection — acknowledgement emails exist but go through the dev `EmailAdapter`, not a persisted notification record), `content_entries`, `media_assets`.
 
 ## Collections (per Part L)
 
@@ -34,8 +34,8 @@ erDiagram
 - **divisions** — belongs to an event; discipline, category, weight limits, age constraints (pending approval), capacity, bracket format, fee (integer minor units).
 - **registrations** — fighter + event + division references, status enum (see state machine in `system-overview.md`), status history array, timestamps. Compound index on `{fighterId, divisionId}` to prevent duplicate active registrations in the same division.
 - **payment_submissions** — registration reference, athleteId, eventId, expected amount (integer minor units — never trust client-supplied amount), submitted UTR, private screenshot reference (object storage key, not a public URL), review status (`AWAITING_SUBMISSION`/`PENDING_REVIEW`/`APPROVED`/`REJECTED`), reviewerId, reviewedAt, review note, revision history. Index on UTR for duplicate-reference detection (flag, don't auto-block).
-- **brackets** — event + division reference, format, participant list, round structure, publication state (`DRAFT`/`PUBLISHED`), version number (incremented on every structural edit to a published bracket, never overwritten silently).
-- **matches** — event, division, bracket reference, competitor references, round, order, status, winner, result + result method, scheduling info, mat/area, audit metadata.
+- **brackets** — *(built, Phase 4)* event + division reference (unique per division — one bracket per division), format (`SINGLE_ELIMINATION` only, per OD-003 baseline), seed, locked-in participant list, roundsCount, publication state (`DRAFT`/`PUBLISHED`), version number (incremented on every regeneration; regenerating a `PUBLISHED` bracket is blocked entirely rather than silently overwritten).
+- **matches** — *(built, Phase 4)* event, division, bracket reference, round + order (the full addressing scheme — winner advancement is computed arithmetically from these, no stored "next match" pointer), competitor references (nullable — null means not-yet-filled or a bye), status (`PENDING`/`SCHEDULED`/`COMPLETED`/`BYE`), winner, result method, scheduling info (mat/time), `correctionHistory` array (previous winner/method/reason/corrector/timestamp — Part N's "preserve audit history" lives here *and* in the shared `audit_logs`).
 - **ranking_records** — fighter, scope, discipline, division, calculated value, calculation version (so methodology changes don't silently rewrite history), source match references.
 - **registration_requests** — type (`CANCELLATION`/`TRANSFER`), source registration reference, requested change, reason, status, reviewer, decision, policy snapshot/version at time of request.
 - **notifications** — recipient, type, trigger, delivery state, timestamp, error info.

@@ -6,7 +6,7 @@ Tracks everything still pending client approval. Nothing here is to be treated a
 |---|---|---|---|
 | OD-001 | Actual combat discipline(s) run by Up 'n Roll (MMA only? grappling/submission too? mixed events?) | Part C explicitly forbids assuming MMA-only or UFC-style disciplines | Division taxonomy, fighter profile "discipline" field, rules content |
 | OD-002 | Weight classes / age/eligibility categories | No UFC-style weight classes may be assumed | Division model, registration eligibility checks |
-| OD-003 | Bracket format(s) to support (single elimination confirmed as baseline; others?) | Part N: only approved formats get implemented | Bracket engine scope, PFL-style standings-table view (research doc §3) |
+| OD-003 | Bracket format(s) to support beyond single elimination | Part N: only approved formats get implemented. **Phase 4 implemented the single-elimination baseline** (`src/server/services/bracketEngine.ts`) — this row stays open only for additional formats (round-robin, points-based, etc.), not the baseline itself | PFL-style standings-table view (research doc §3) if a points format is ever approved |
 | OD-004 | Ranking methodology | Part N forbids assuming any existing promotion's formula | Ranking engine, `/rankings`, fighter profile ranking display |
 | OD-005 | Registration fee amounts per event/division | Needed for payment-instruction screens | QR payment UI copy, `divisions.fee` field values |
 | OD-005a | Real UTR/transaction-reference format (bank/UPI reference conventions) | Phase 3 shipped a conservative generic placeholder validator (alphanumeric, 6-30 chars, `src/features/payments/schemas.ts`) since the real format wasn't specified | Payment submission validation accuracy |
