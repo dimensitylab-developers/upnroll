@@ -6,6 +6,7 @@ import { Bracket } from "@/server/models/Bracket";
 import { Registration } from "@/server/models/Registration";
 import { FighterProfile } from "@/server/models/FighterProfile";
 import { Event } from "@/server/models/Event";
+import { Division } from "@/server/models/Division";
 import { writeAuditLog } from "@/server/audit/log";
 import { nextSlot, canCorrectResult } from "./bracketEngine";
 import { NotFoundError, ConflictError, ValidationError } from "@/server/http/errors";
@@ -128,6 +129,15 @@ export async function updateMatchSchedule(adminId: string, matchId: string, inpu
   const match = await Match.findById(matchId);
   if (!match) throw new NotFoundError("Match not found.");
 
+  if (input.scheduledAt !== undefined && input.scheduledAt !== null) {
+    if (!match.competitorARegistrationId || !match.competitorBRegistrationId) {
+      throw new ValidationError("Both competitors must be set before this match can be scheduled.");
+    }
+    if (Number.isNaN(input.scheduledAt.getTime())) {
+      throw new ValidationError("The scheduled date/time is invalid.");
+    }
+  }
+
   if (input.scheduledAt !== undefined) match.scheduledAt = input.scheduledAt;
   if (input.mat !== undefined) match.mat = input.mat;
   await match.save();
@@ -143,10 +153,13 @@ async function enrichWithNamesAndEvent(matches: LeanMatch[]) {
     ),
   ];
   const eventIds = [...new Set(matches.map((m) => String(m.eventId)))];
-  const [registrations, events] = await Promise.all([
+  const divisionIds = [...new Set(matches.map((m) => String(m.divisionId)))];
+  const [registrations, events, divisions] = await Promise.all([
     Registration.find({ _id: { $in: registrationIds } }).lean(),
     Event.find({ _id: { $in: eventIds } }).lean(),
+    Division.find({ _id: { $in: divisionIds } }).lean(),
   ]);
+  const divisionById = new Map(divisions.map((d) => [String(d._id), d]));
   const userIds = registrations.map((r) => r.userId);
   const profiles = await FighterProfile.find({ userId: { $in: userIds } }).lean();
   const profileByUserId = new Map(profiles.map((p) => [String(p.userId), p]));
@@ -161,6 +174,7 @@ async function enrichWithNamesAndEvent(matches: LeanMatch[]) {
     competitorBName: m.competitorBRegistrationId ? nameByRegistrationId.get(String(m.competitorBRegistrationId)) ?? null : null,
     winnerName: m.winnerRegistrationId ? nameByRegistrationId.get(String(m.winnerRegistrationId)) ?? null : null,
     event: eventById.get(String(m.eventId)) ?? null,
+    divisionName: divisionById.get(String(m.divisionId))?.name ?? "Unknown division",
   }));
 }
 

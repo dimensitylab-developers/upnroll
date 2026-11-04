@@ -3,8 +3,9 @@ import { Event } from "@/server/models/Event";
 import { Division } from "@/server/models/Division";
 import { Registration, type RegistrationDoc } from "@/server/models/Registration";
 import { PaymentSubmission } from "@/server/models/PaymentSubmission";
+import { FighterProfile } from "@/server/models/FighterProfile";
 import { writeAuditLog } from "@/server/audit/log";
-import { isActiveRegistration } from "./registrationStateMachine";
+import { isActiveRegistration, ACTIVE_REGISTRATION_STATUSES } from "./registrationStateMachine";
 import { NotFoundError, ConflictError, ValidationError } from "@/server/http/errors";
 
 function resolveFeeMinorUnits(
@@ -35,7 +36,7 @@ export async function createRegistration(userId: string, divisionId: string) {
 
   const activeCount = await Registration.countDocuments({
     divisionId,
-    status: { $in: ["AWAITING_PAYMENT", "PENDING_VERIFICATION", "CONFIRMED"] },
+    status: { $in: ACTIVE_REGISTRATION_STATUSES },
   });
   if (activeCount >= division.capacity) {
     throw new ConflictError("This division is at capacity.");
@@ -100,6 +101,31 @@ export async function getRegistrationForFighter(userId: string, registrationId: 
   ]);
 
   return { registration, event, division, submissions, latestSubmission: submissions[0] ?? null };
+}
+
+/** Admin-dashboard feed: most recent registrations across every event, enriched for display. */
+export async function listRecentRegistrationsForAdmin(limit = 5) {
+  await connectDB();
+  const registrations = await Registration.find().sort({ createdAt: -1 }).limit(limit).lean();
+
+  const eventIds = [...new Set(registrations.map((r) => String(r.eventId)))];
+  const divisionIds = [...new Set(registrations.map((r) => String(r.divisionId)))];
+  const userIds = [...new Set(registrations.map((r) => String(r.userId)))];
+  const [events, divisions, profiles] = await Promise.all([
+    Event.find({ _id: { $in: eventIds } }).lean(),
+    Division.find({ _id: { $in: divisionIds } }).lean(),
+    FighterProfile.find({ userId: { $in: userIds } }).lean(),
+  ]);
+  const eventById = new Map(events.map((e) => [String(e._id), e]));
+  const divisionById = new Map(divisions.map((d) => [String(d._id), d]));
+  const profileByUserId = new Map(profiles.map((p) => [String(p.userId), p]));
+
+  return registrations.map((r) => ({
+    ...r,
+    event: eventById.get(String(r.eventId)) ?? null,
+    division: divisionById.get(String(r.divisionId)) ?? null,
+    fighterName: profileByUserId.get(String(r.userId))?.displayName ?? "Unknown fighter",
+  }));
 }
 
 export async function listOpenDivisionsForRegistration() {

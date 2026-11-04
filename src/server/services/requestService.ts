@@ -5,7 +5,7 @@ import { RegistrationRequest } from "@/server/models/RegistrationRequest";
 import { User } from "@/server/models/User";
 import { getEmailAdapter } from "@/server/email/console";
 import { writeAuditLog } from "@/server/audit/log";
-import { isActiveRegistration } from "./registrationStateMachine";
+import { isActiveRegistration, ACTIVE_REGISTRATION_STATUSES } from "./registrationStateMachine";
 import { NotFoundError, ConflictError, ValidationError } from "@/server/http/errors";
 
 export async function createRequest(
@@ -39,7 +39,7 @@ export async function createRequest(
     }
     const activeCount = await Registration.countDocuments({
       divisionId: targetDivision._id,
-      status: { $in: ["AWAITING_PAYMENT", "PENDING_VERIFICATION", "CONFIRMED"] },
+      status: { $in: ACTIVE_REGISTRATION_STATUSES },
     });
     if (activeCount >= targetDivision.capacity) throw new ConflictError("The target division is at capacity.");
     requestedDivisionId = String(targetDivision._id);
@@ -71,13 +71,50 @@ export async function decideRequest(adminId: string, requestId: string, decision
   if (decision === "APPROVED") {
     const registration = await Registration.findById(updated.registrationId);
     if (registration) {
-      if (updated.type === "CANCELLATION") {
-        registration.status = "CANCELLED";
-        registration.statusHistory.push({ status: "CANCELLED", at: new Date() });
-      } else if (updated.type === "TRANSFER" && updated.requestedDivisionId) {
-        registration.divisionId = updated.requestedDivisionId;
+      try {
+        if (updated.type === "CANCELLATION") {
+          registration.status = "CANCELLED";
+          registration.statusHistory.push({ status: "CANCELLED", at: new Date() });
+          await registration.save();
+        } else if (updated.type === "TRANSFER" && updated.requestedDivisionId) {
+          const targetDivision = await Division.findById(updated.requestedDivisionId);
+          if (!targetDivision) throw new NotFoundError("The target division no longer exists.");
+
+          // Re-validate capacity immediately before applying the transfer — the
+          // createRequest check above is only an early UX signal; this is the
+          // authoritative check and closes the TOCTOU window between request
+          // creation and admin approval (M-4). The window left after this check
+          // is a single DB round-trip, and a concurrent approval that fills the
+          // division first is caught here because the count reflects its change.
+          const activeCount = await Registration.countDocuments({
+            divisionId: updated.requestedDivisionId,
+            status: { $in: ACTIVE_REGISTRATION_STATUSES },
+            _id: { $ne: registration._id },
+          });
+          if (activeCount >= targetDivision.capacity) {
+            throw new ConflictError("The target division filled up before this transfer could be approved.");
+          }
+
+          registration.divisionId = updated.requestedDivisionId;
+          await registration.save();
+        }
+      } catch (err) {
+        // Leave no inconsistent state: don't let the request sit as "APPROVED"
+        // when its effect couldn't actually be applied. Revert to PENDING so
+        // the admin can retry (if capacity frees up) or reject it instead.
+        await RegistrationRequest.updateOne(
+          { _id: updated._id },
+          { status: "PENDING", reviewerId: null, reviewNote: "", reviewedAt: null }
+        );
+        await writeAuditLog({
+          actorId: adminId,
+          action: "REGISTRATION_REQUEST_APPROVAL_FAILED",
+          targetType: "RegistrationRequest",
+          targetId: requestId,
+          after: { reason: err instanceof Error ? err.message : "Unknown error" },
+        });
+        throw err;
       }
-      await registration.save();
     }
   }
 

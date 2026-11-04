@@ -7,7 +7,7 @@ export default async function AdminEventsPage() {
   const events = await listEventsForAdmin();
 
   return (
-    <div className="max-w-3xl mx-auto space-y-10">
+    <div className="max-w-3xl mx-auto px-4 sm:px-6 space-y-10">
       <div className="manga-panel p-8">
         <h1 className="text-display text-2xl font-semibold mb-6">Create event</h1>
         <CreateEventForm />
@@ -17,7 +17,7 @@ export default async function AdminEventsPage() {
         <h2 className="text-display text-xl font-semibold mb-4">Events</h2>
         <div className="space-y-3">
           {events.map((e) => (
-            <Link key={String(e._id)} href={`/admin/events/${e._id}`} className="manga-panel p-4 flex items-center justify-between">
+            <Link key={String(e._id)} href={`/admin/events/${e._id}`} className="manga-panel p-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
               <div>
                 <p className="font-medium">{e.name}</p>
                 <p className="text-xs text-muted-foreground">{e.slug}</p>

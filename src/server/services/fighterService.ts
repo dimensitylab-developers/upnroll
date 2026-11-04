@@ -22,6 +22,18 @@ export async function updateFighterProfile(
   return profile;
 }
 
+/** Fighter-dashboard feed: the authenticated fighter's own profile, or null if not yet created. */
+export async function getFighterProfile(userId: string) {
+  await connectDB();
+  return FighterProfile.findOne({ userId }).lean();
+}
+
+/** Admin-dashboard stat: total fighters registered on the platform. */
+export async function countFighters() {
+  await connectDB();
+  return FighterProfile.countDocuments();
+}
+
 export async function listPublicFighters() {
   await connectDB();
   return FighterProfile.find().sort({ displayName: 1 }).lean();

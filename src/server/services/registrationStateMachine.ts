@@ -19,8 +19,8 @@ export function canDecidePayment(submissionStatus: PaymentSubmissionStatus): boo
   return submissionStatus === "PENDING_REVIEW";
 }
 
-/** Only these registration statuses count as "active" (block a duplicate registration). */
-const ACTIVE_REGISTRATION_STATUSES: RegistrationStatus[] = ["AWAITING_PAYMENT", "PENDING_VERIFICATION", "CONFIRMED"];
+/** Only these registration statuses count as "active" (block a duplicate registration, count toward division capacity). */
+export const ACTIVE_REGISTRATION_STATUSES: RegistrationStatus[] = ["AWAITING_PAYMENT", "PENDING_VERIFICATION", "CONFIRMED"];
 
 export function isActiveRegistration(status: RegistrationStatus): boolean {
   return ACTIVE_REGISTRATION_STATUSES.includes(status);

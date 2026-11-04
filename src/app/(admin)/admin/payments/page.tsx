@@ -15,8 +15,9 @@ export default async function AdminPaymentsPage() {
   const queue = await listPaymentQueue();
 
   return (
-    <div className="max-w-4xl mx-auto">
+    <div className="max-w-4xl mx-auto px-4 sm:px-6">
       <h1 className="text-display text-2xl font-semibold mb-6">Payment verification</h1>
+      <div className="overflow-x-auto">
       <Table>
         <TableHeader>
           <TableRow>
@@ -65,6 +66,7 @@ export default async function AdminPaymentsPage() {
           )}
         </TableBody>
       </Table>
+      </div>
     </div>
   );
 }

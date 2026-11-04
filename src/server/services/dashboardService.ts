@@ -1,0 +1,54 @@
+import { listUpcomingEventsForAdmin } from "./eventService";
+import { listPaymentQueue } from "./paymentService";
+import { listRequestsForAdmin, listRequestsForFighter } from "./requestService";
+import { listRecentRegistrationsForAdmin, listMyRegistrations } from "./registrationService";
+import { countFighters, getFighterProfile } from "./fighterService";
+import { listRecentAuditLogs } from "@/server/audit/log";
+import { listMatchesForFighter } from "./matchService";
+
+/** Composes existing services into the data the admin overview page needs — no new queries beyond what each service already runs. */
+export async function getAdminDashboardData() {
+  const [fighterCount, upcomingEvents, pendingPayments, allRequests, recentRegistrations, recentActivity] = await Promise.all([
+    countFighters(),
+    listUpcomingEventsForAdmin(5),
+    listPaymentQueue("PENDING_REVIEW"),
+    listRequestsForAdmin(),
+    listRecentRegistrationsForAdmin(5),
+    listRecentAuditLogs(8),
+  ]);
+
+  return {
+    fighterCount,
+    upcomingEvents,
+    pendingPayments,
+    pendingRequests: allRequests.filter((r) => r.status === "PENDING"),
+    recentRegistrations,
+    recentActivity,
+  };
+}
+
+/** Composes existing services into the data the fighter dashboard needs — every call is already scoped to `userId`. */
+export async function getFighterDashboardData(userId: string) {
+  const [profile, registrations, matches, requests] = await Promise.all([
+    getFighterProfile(userId),
+    listMyRegistrations(userId),
+    listMatchesForFighter(userId),
+    listRequestsForFighter(userId),
+  ]);
+
+  const ownRegistrationIds = new Set(registrations.map((r) => String(r._id)));
+  const upcomingMatches = matches.filter((m) => m.status === "SCHEDULED" || m.status === "PENDING");
+  const recentResults = matches
+    .filter((m) => m.status === "COMPLETED" || m.status === "BYE")
+    .sort((a, b) => new Date(b.updatedAt as Date).getTime() - new Date(a.updatedAt as Date).getTime())
+    .slice(0, 5)
+    .map((m) => ({
+      ...m,
+      outcome: m.winnerRegistrationId
+        ? (ownRegistrationIds.has(String(m.winnerRegistrationId)) ? ("WIN" as const) : ("LOSS" as const))
+        : null,
+    }));
+  const pendingRequests = requests.filter((r) => r.status === "PENDING");
+
+  return { profile, registrations, upcomingMatches, recentResults, pendingRequests };
+}

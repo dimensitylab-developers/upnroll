@@ -6,9 +6,10 @@ export default async function AdminRankingsPage() {
   const rankings = await listPublicRankings();
 
   return (
-    <div className="max-w-2xl mx-auto">
+    <div className="max-w-2xl mx-auto px-4 sm:px-6">
       <h1 className="text-display text-2xl font-semibold mb-4">Rankings</h1>
       <RecalculateRankingsButton />
+      <div className="overflow-x-auto">
       <Table>
         <TableHeader>
           <TableRow>
@@ -32,6 +33,7 @@ export default async function AdminRankingsPage() {
           )}
         </TableBody>
       </Table>
+      </div>
     </div>
   );
 }

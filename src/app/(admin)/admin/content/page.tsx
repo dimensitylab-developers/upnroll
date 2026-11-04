@@ -7,7 +7,7 @@ export default async function AdminContentPage() {
   const entries = await listAllContent();
 
   return (
-    <div className="max-w-3xl mx-auto space-y-10">
+    <div className="max-w-3xl mx-auto px-4 sm:px-6 space-y-10">
       <div className="manga-panel p-8">
         <h1 className="text-display text-2xl font-semibold mb-6">Create content</h1>
         <CreateContentForm />
@@ -15,7 +15,7 @@ export default async function AdminContentPage() {
 
       <div className="space-y-2">
         {entries.map((e) => (
-          <div key={String(e._id)} className="manga-panel p-4 flex items-center justify-between gap-4">
+          <div key={String(e._id)} className="manga-panel p-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
             <div>
               <div className="flex items-center gap-2 mb-1">
                 <Badge variant="outline">{e.type}</Badge>

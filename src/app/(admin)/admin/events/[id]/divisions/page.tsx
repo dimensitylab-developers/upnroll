@@ -13,7 +13,7 @@ export default async function AdminDivisionsPage({ params }: { params: Promise<{
   const divisions = await listDivisionsForEvent(id);
 
   return (
-    <div className="max-w-2xl mx-auto space-y-8">
+    <div className="max-w-2xl mx-auto px-4 sm:px-6 space-y-8">
       <div className="manga-panel p-8">
         <h1 className="text-display text-2xl font-semibold mb-1">Divisions — {event.name}</h1>
         <p className="text-sm text-muted-foreground mb-6">Discipline/weight-class taxonomy pending client approval (OD-001/OD-002) — enter freely for now.</p>
@@ -22,7 +22,7 @@ export default async function AdminDivisionsPage({ params }: { params: Promise<{
 
       <div className="space-y-2">
         {divisions.map((d) => (
-          <div key={String(d._id)} className="manga-panel p-3 text-sm flex justify-between">
+          <div key={String(d._id)} className="manga-panel p-3 text-sm flex flex-col sm:flex-row sm:justify-between gap-1">
             <span>{d.name} — {d.discipline}</span>
             <span className="text-muted-foreground">Capacity {d.capacity}</span>
           </div>

@@ -17,7 +17,7 @@ export default async function AdminBracketsPage({ params }: { params: Promise<{ 
   const divisions = await listDivisionsForEvent(id);
 
   return (
-    <div className="max-w-4xl mx-auto space-y-10">
+    <div className="max-w-4xl mx-auto px-4 sm:px-6 space-y-10">
       <h1 className="text-display text-2xl font-semibold">Brackets — {event.name}</h1>
 
       {divisions.length === 0 && <p className="text-sm text-muted-foreground">No divisions yet — create one first.</p>}
@@ -32,7 +32,7 @@ export default async function AdminBracketsPage({ params }: { params: Promise<{ 
 
           return (
             <div key={divisionId} className="manga-panel p-8">
-              <div className="flex items-center justify-between mb-4">
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-4">
                 <h2 className="text-display text-xl font-semibold">{d.name}</h2>
                 {existing && <Badge variant="outline">{existing.bracket.status} · v{existing.bracket.version}</Badge>}
               </div>

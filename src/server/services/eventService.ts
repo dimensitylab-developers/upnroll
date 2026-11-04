@@ -69,6 +69,13 @@ export async function listEventsForAdmin() {
   return Event.find().sort({ createdAt: -1 }).lean();
 }
 
+/** Admin-dashboard feed: events that haven't started yet, soonest first. */
+export async function listUpcomingEventsForAdmin(limit = 5) {
+  await connectDB();
+  const now = new Date();
+  return Event.find({ startDate: { $gte: now } }).sort({ startDate: 1 }).limit(limit).lean();
+}
+
 export async function listPublicEvents() {
   await connectDB();
   return Event.find({ status: { $in: PUBLIC_EVENT_STATUSES } }).sort({ startDate: 1 }).lean();

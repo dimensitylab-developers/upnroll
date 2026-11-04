@@ -7,8 +7,9 @@ export default async function AdminRequestsPage() {
   const requests = await listRequestsForAdmin();
 
   return (
-    <div className="max-w-3xl mx-auto">
+    <div className="max-w-3xl mx-auto px-4 sm:px-6">
       <h1 className="text-display text-2xl font-semibold mb-6">Cancellation & transfer requests</h1>
+      <div className="overflow-x-auto">
       <Table>
         <TableHeader>
           <TableRow>
@@ -40,6 +41,7 @@ export default async function AdminRequestsPage() {
           )}
         </TableBody>
       </Table>
+      </div>
     </div>
   );
 }
