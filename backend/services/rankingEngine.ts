@@ -1,3 +1,5 @@
+import "server-only";
+
 /**
  * Pure ranking logic — no DB, no I/O. Separated per Part N: raw match
  * outcomes -> derived win/loss record -> official ranking calculation are

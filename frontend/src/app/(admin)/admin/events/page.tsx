@@ -1,10 +1,11 @@
 import Link from "next/link";
+import { requireActor } from "@/server/auth/session";
 import { listEventsForAdmin } from "@/server/services/eventService";
 import { Badge } from "@/components/ui/badge";
 import { CreateEventForm } from "@/features/events/create-event-form";
 
 export default async function AdminEventsPage() {
-  const events = await listEventsForAdmin();
+  const events = await listEventsForAdmin(await requireActor("ADMIN"));
 
   return (
     <div className="max-w-3xl mx-auto px-4 sm:px-6 space-y-10">

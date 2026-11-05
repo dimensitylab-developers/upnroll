@@ -1,3 +1,4 @@
+import "server-only";
 import type { RegistrationStatus } from "@/server/models/Registration";
 import type { PaymentSubmissionStatus } from "@/server/models/PaymentSubmission";
 

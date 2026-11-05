@@ -1,4 +1,6 @@
+import "server-only";
 import { connectDB } from "@/server/db/connect";
+import { assertAdmin, type Actor } from "@/server/auth/actor";
 import { Match } from "@/server/models/Match";
 import { Registration } from "@/server/models/Registration";
 import { RankingRecord } from "@/server/models/RankingRecord";
@@ -6,7 +8,8 @@ import { FighterProfile } from "@/server/models/FighterProfile";
 import { writeAuditLog } from "@/server/audit/log";
 import { computeRecord, winLossPointsStrategy, type DecidedMatch } from "./rankingEngine";
 
-export async function recalculateRankings(adminId: string) {
+export async function recalculateRankings(actor: Actor) {
+  assertAdmin(actor);
   await connectDB();
 
   const decided = await Match.find({ status: { $in: ["COMPLETED", "BYE"] } }).lean();
@@ -44,7 +47,7 @@ export async function recalculateRankings(adminId: string) {
   );
 
   await writeAuditLog({
-    actorId: adminId,
+    actorId: actor.userId,
     action: "RANKINGS_RECALCULATED",
     targetType: "RankingRecord",
     after: { calculationVersion: newVersion, fighterCount: fighterUserIds.length },
@@ -56,7 +59,7 @@ export async function recalculateRankings(adminId: string) {
 export async function listPublicRankings() {
   await connectDB();
   const records = await RankingRecord.find().sort({ points: -1, wins: -1 }).lean();
-  const profiles = await FighterProfile.find({ userId: { $in: records.map((r) => r.userId) } }).lean();
+  const profiles = await FighterProfile.find({ userId: { $in: records.map((r) => r.userId) } }).select("displayName slug userId").lean();
   const profileByUserId = new Map(profiles.map((p) => [String(p.userId), p]));
 
   return records.map((r, i) => ({

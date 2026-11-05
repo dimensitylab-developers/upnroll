@@ -6,7 +6,7 @@ import { connectDB } from "@/server/db/connect";
 import { User } from "@/server/models/User";
 import { FighterProfile } from "@/server/models/FighterProfile";
 import { hashPassword, verifyPassword } from "@/server/auth/password";
-import { createSession, destroySession, getSession } from "@/server/auth/session";
+import { actorFromSession, createSession, destroySession, getSession } from "@/server/auth/session";
 import { writeAuditLog } from "@/server/audit/log";
 import { checkRateLimit } from "@/server/http/rateLimit";
 import { getClientIp } from "@/server/http/clientIp";
@@ -67,7 +67,13 @@ export async function registerAction(
   // Public registration only ever creates FIGHTER accounts — see Part M:
   // admin accounts are created exclusively via scripts/create-admin.ts.
   const user = await User.create({ email, passwordHash, role: "FIGHTER" });
-  const photoKey = await saveProfilePhoto(String(user._id), photo.bytes, photo.ext);
+  await createSession(String(user._id));
+  const session = await getSession();
+  if (!session) {
+    return { error: "The account was created, but the session could not be started. Sign in to finish." };
+  }
+  const actor = actorFromSession(session);
+  const photoKey = await saveProfilePhoto(actor, photo.bytes, photo.ext);
 
   let slug = slugify(displayName);
   for (let attempt = 0; attempt < 5; attempt++) {
@@ -84,8 +90,7 @@ export async function registerAction(
     ...toProfileFields(parsed.data),
   });
 
-  await createSession(String(user._id));
-  await writeAuditLog({ actorId: String(user._id), action: "USER_REGISTERED", targetType: "User", targetId: String(user._id) });
+  await writeAuditLog({ actorId: actor.userId, action: "USER_REGISTERED", targetType: "User", targetId: actor.userId });
 
   redirect("/fighter/dashboard");
 }

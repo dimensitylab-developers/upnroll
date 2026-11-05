@@ -1,4 +1,4 @@
-import { getSession } from "@/server/auth/session";
+import { actorFromSession, getSession } from "@/server/auth/session";
 import { listMyRegistrations } from "@/server/services/registrationService";
 import { listDivisionsForEvent } from "@/server/services/eventService";
 import { listRequestsForFighter } from "@/server/services/requestService";
@@ -10,9 +10,10 @@ export default async function FighterRequestsPage() {
   const session = await getSession();
   if (!session) return null;
 
+  const actor = actorFromSession(session);
   const [registrations, requests] = await Promise.all([
-    listMyRegistrations(String(session.user._id)),
-    listRequestsForFighter(String(session.user._id)),
+    listMyRegistrations(actor),
+    listRequestsForFighter(actor),
   ]);
   const active = registrations.filter((r) => isActiveRegistration(r.status));
 

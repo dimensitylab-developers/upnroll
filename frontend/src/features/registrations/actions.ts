@@ -1,7 +1,7 @@
 "use server";
 
 import { redirect } from "next/navigation";
-import { requireSession } from "@/server/auth/session";
+import { actorFromSession, requireSession } from "@/server/auth/session";
 import { createRegistration } from "@/server/services/registrationService";
 import { toAppError } from "@/server/http/errors";
 import { createRegistrationSchema } from "./schemas";
@@ -12,7 +12,7 @@ export async function createRegistrationAction(
   _prevState: RegistrationActionState,
   formData: FormData
 ): Promise<RegistrationActionState> {
-  const { user } = await requireSession();
+  const actor = actorFromSession(await requireSession());
 
   const parsed = createRegistrationSchema.safeParse({ divisionId: formData.get("divisionId") });
   if (!parsed.success) {
@@ -21,7 +21,7 @@ export async function createRegistrationAction(
 
   let registrationId: string;
   try {
-    const { registration } = await createRegistration(String(user._id), parsed.data.divisionId);
+    const { registration } = await createRegistration(actor, parsed.data.divisionId);
     registrationId = String(registration._id);
   } catch (err) {
     const appError = toAppError(err);

@@ -1,3 +1,5 @@
+import "server-only";
+
 /**
  * Pure single-elimination bracket engine — no DB, no I/O. Kept separate
  * from bracketService.ts so the actual tournament-integrity rules are

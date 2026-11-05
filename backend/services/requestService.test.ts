@@ -5,6 +5,8 @@ import { describe, it, expect, vi, beforeEach } from "vitest";
 // DB integration test. Same mocking style as session.test.ts.
 vi.mock("@/server/db/connect", () => ({ connectDB: vi.fn().mockResolvedValue(undefined) }));
 
+const admin = Object.freeze({ userId: "admin1", role: "ADMIN" as const });
+
 const mockRegistrationFindOne = vi.fn();
 const mockRegistrationFindById = vi.fn();
 const mockRegistrationCountDocuments = vi.fn();
@@ -85,7 +87,7 @@ describe("decideRequest — TRANSFER capacity re-check (M-4 regression)", () => 
     mockRegistrationCountDocuments.mockResolvedValue(2);
 
     const { decideRequest } = await import("./requestService");
-    const result = await decideRequest("admin1", "req1", "APPROVED", "ok");
+    const result = await decideRequest(admin, "req1", "APPROVED", "ok");
 
     expect(reg.divisionId).toBe("divNew");
     expect(reg.save).toHaveBeenCalledTimes(1);
@@ -109,7 +111,7 @@ describe("decideRequest — TRANSFER capacity re-check (M-4 regression)", () => 
     const { decideRequest } = await import("./requestService");
     const { ConflictError } = await import("@/server/http/errors");
 
-    await expect(decideRequest("admin1", "req1", "APPROVED", "ok")).rejects.toBeInstanceOf(ConflictError);
+    await expect(decideRequest(admin, "req1", "APPROVED", "ok")).rejects.toBeInstanceOf(ConflictError);
 
     expect(reg.save).not.toHaveBeenCalled();
     expect(reg.divisionId).toBe("divOld"); // never mutated
@@ -145,8 +147,8 @@ describe("decideRequest — TRANSFER capacity re-check (M-4 regression)", () => 
     const { decideRequest } = await import("./requestService");
     const { ConflictError } = await import("@/server/http/errors");
 
-    await expect(decideRequest("admin1", "reqA", "APPROVED", "")).resolves.toBeDefined();
-    await expect(decideRequest("admin1", "reqB", "APPROVED", "")).rejects.toBeInstanceOf(ConflictError);
+    await expect(decideRequest(admin, "reqA", "APPROVED", "")).resolves.toBeDefined();
+    await expect(decideRequest(admin, "reqB", "APPROVED", "")).rejects.toBeInstanceOf(ConflictError);
 
     expect(regA.save).toHaveBeenCalledTimes(1);
     expect(regB.save).not.toHaveBeenCalled();
@@ -158,7 +160,7 @@ describe("decideRequest — TRANSFER capacity re-check (M-4 regression)", () => 
     const { decideRequest } = await import("./requestService");
     const { ConflictError } = await import("@/server/http/errors");
 
-    await expect(decideRequest("admin1", "req1", "APPROVED", "")).rejects.toBeInstanceOf(ConflictError);
+    await expect(decideRequest(admin, "req1", "APPROVED", "")).rejects.toBeInstanceOf(ConflictError);
     expect(mockRegistrationFindById).not.toHaveBeenCalled();
   });
 
@@ -173,7 +175,7 @@ describe("decideRequest — TRANSFER capacity re-check (M-4 regression)", () => 
     mockRegistrationFindById.mockResolvedValue(reg);
 
     const { decideRequest } = await import("./requestService");
-    await decideRequest("admin1", "req1", "APPROVED", "");
+    await decideRequest(admin, "req1", "APPROVED", "");
 
     expect(reg.status).toBe("CANCELLED");
     expect(reg.save).toHaveBeenCalledTimes(1);

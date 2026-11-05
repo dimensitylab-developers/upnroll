@@ -1,15 +1,18 @@
 import { NextResponse } from "next/server";
-import { getSession } from "@/server/auth/session";
-import { connectDB } from "@/server/db/connect";
-import { FighterProfile } from "@/server/models/FighterProfile";
+import { actorFromSession, getSession } from "@/server/auth/session";
+import { getFighterProfile } from "@/server/services/fighterService";
 import { getStorageAdapter } from "@/server/storage/local-disk";
 
 export async function GET() {
   const session = await getSession();
   if (!session) return new NextResponse("Sign in to view this photograph.", { status: 401 });
 
-  await connectDB();
-  const profile = await FighterProfile.findOne({ userId: session.user._id }).select("photoKey").lean();
+  const actor = actorFromSession(session);
+  if (actor.role !== "FIGHTER") {
+    return new NextResponse("You do not have access to this resource.", { status: 403 });
+  }
+
+  const profile = await getFighterProfile(actor);
   if (!profile?.photoKey) return new NextResponse("No photograph yet.", { status: 404 });
 
   try {
@@ -17,6 +20,7 @@ export async function GET() {
     return new NextResponse(new Uint8Array(data), {
       headers: {
         "Content-Type": contentType,
+        "X-Content-Type-Options": "nosniff",
         "Cache-Control": "private, no-store",
       },
     });

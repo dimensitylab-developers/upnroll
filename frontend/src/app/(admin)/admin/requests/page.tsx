@@ -1,10 +1,11 @@
+import { requireActor } from "@/server/auth/session";
 import { listRequestsForAdmin } from "@/server/services/requestService";
 import { Table, TableHeader, TableRow, TableHead, TableBody, TableCell } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { DecideRequestDialog } from "@/features/requests/decide-request-dialog";
 
 export default async function AdminRequestsPage() {
-  const requests = await listRequestsForAdmin();
+  const requests = await listRequestsForAdmin(await requireActor("ADMIN"));
 
   return (
     <div className="max-w-3xl mx-auto px-4 sm:px-6">

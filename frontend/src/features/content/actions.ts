@@ -1,7 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { requireRole } from "@/server/auth/session";
+import { requireActor } from "@/server/auth/session";
 import { createContentEntry, setContentPublicationState } from "@/server/services/contentService";
 import { toAppError } from "@/server/http/errors";
 import { createContentSchema } from "./schemas";
@@ -9,7 +9,7 @@ import { createContentSchema } from "./schemas";
 export type ContentActionState = { error?: string };
 
 export async function createContentAction(_prevState: ContentActionState, formData: FormData): Promise<ContentActionState> {
-  const { user } = await requireRole("ADMIN");
+  const actor = await requireActor("ADMIN");
 
   const parsed = createContentSchema.safeParse({
     type: formData.get("type"),
@@ -21,7 +21,7 @@ export async function createContentAction(_prevState: ContentActionState, formDa
   }
 
   try {
-    await createContentEntry(String(user._id), parsed.data);
+    await createContentEntry(actor, parsed.data);
   } catch (err) {
     return { error: toAppError(err).message };
   }
@@ -31,12 +31,12 @@ export async function createContentAction(_prevState: ContentActionState, formDa
 }
 
 export async function publishContentAction(_prevState: ContentActionState, formData: FormData): Promise<ContentActionState> {
-  const { user } = await requireRole("ADMIN");
+  const actor = await requireActor("ADMIN");
   const entryId = String(formData.get("entryId") ?? "");
   const state = String(formData.get("state") ?? "PUBLISHED") as "DRAFT" | "PUBLISHED";
 
   try {
-    await setContentPublicationState(String(user._id), entryId, state);
+    await setContentPublicationState(actor, entryId, state);
   } catch (err) {
     return { error: toAppError(err).message };
   }

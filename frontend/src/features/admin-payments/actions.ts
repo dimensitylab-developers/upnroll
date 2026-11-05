@@ -1,7 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { requireRole } from "@/server/auth/session";
+import { requireActor } from "@/server/auth/session";
 import { approvePayment, rejectPayment } from "@/server/services/paymentService";
 import { toAppError } from "@/server/http/errors";
 
@@ -11,12 +11,12 @@ export async function approvePaymentAction(
   _prevState: AdminPaymentActionState,
   formData: FormData
 ): Promise<AdminPaymentActionState> {
-  const { user } = await requireRole("ADMIN");
+  const actor = await requireActor("ADMIN");
   const paymentId = String(formData.get("paymentId") ?? "");
   const note = String(formData.get("note") ?? "");
 
   try {
-    await approvePayment(String(user._id), paymentId, note);
+    await approvePayment(actor, paymentId, note);
   } catch (err) {
     return { error: toAppError(err).message };
   }
@@ -29,12 +29,12 @@ export async function rejectPaymentAction(
   _prevState: AdminPaymentActionState,
   formData: FormData
 ): Promise<AdminPaymentActionState> {
-  const { user } = await requireRole("ADMIN");
+  const actor = await requireActor("ADMIN");
   const paymentId = String(formData.get("paymentId") ?? "");
   const note = String(formData.get("note") ?? "");
 
   try {
-    await rejectPayment(String(user._id), paymentId, note);
+    await rejectPayment(actor, paymentId, note);
   } catch (err) {
     return { error: toAppError(err).message };
   }

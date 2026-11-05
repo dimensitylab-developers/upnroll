@@ -40,12 +40,12 @@ export function PaymentReviewDialog({
         </DialogHeader>
 
         {hasScreenshot ? (
-          // eslint-disable-next-line @next/next/no-img-element -- private, auth-gated image, not eligible for next/image optimization pipeline
-          <img
-            src={`/api/v1/admin/payments/${paymentId}/screenshot`}
-            alt="Submitted payment screenshot"
-            className="max-h-64 w-full object-contain rounded-md border border-black/10"
-          />
+          <a
+            href={`/api/v1/admin/payments/${paymentId}/screenshot`}
+            className="text-sm underline"
+          >
+            Download payment screenshot
+          </a>
         ) : (
           <div className="h-32 rounded-md border border-dashed border-black/20 flex items-center justify-center text-xs text-muted-foreground">
             No screenshot on file

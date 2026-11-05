@@ -1,4 +1,6 @@
 import { notFound } from "next/navigation";
+import { requireActor } from "@/server/auth/session";
+import { NotFoundError } from "@/server/http/errors";
 import { getEventForAdmin, listDivisionsForEvent } from "@/server/services/eventService";
 import { listEligibleParticipants, getBracketForDivision } from "@/server/services/bracketService";
 import { ParticipantOrderForm } from "@/features/brackets/participant-order-form";
@@ -8,11 +10,13 @@ import { Badge } from "@/components/ui/badge";
 
 export default async function AdminBracketsPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
+  const actor = await requireActor("ADMIN");
   let event;
   try {
-    event = await getEventForAdmin(id);
-  } catch {
-    notFound();
+    event = await getEventForAdmin(actor, id);
+  } catch (err) {
+    if (err instanceof NotFoundError) notFound();
+    throw err;
   }
   const divisions = await listDivisionsForEvent(id);
 
@@ -26,8 +30,8 @@ export default async function AdminBracketsPage({ params }: { params: Promise<{ 
         divisions.map(async (d) => {
           const divisionId = String(d._id);
           const [participants, existing] = await Promise.all([
-            listEligibleParticipants(divisionId),
-            getBracketForDivision(divisionId),
+            listEligibleParticipants(actor, divisionId),
+            getBracketForDivision(actor, divisionId),
           ]);
 
           return (

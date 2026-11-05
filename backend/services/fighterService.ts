@@ -1,9 +1,10 @@
+import "server-only";
 import { connectDB } from "@/server/db/connect";
 import { FighterProfile } from "@/server/models/FighterProfile";
-import { Registration } from "@/server/models/Registration";
 import { writeAuditLog } from "@/server/audit/log";
-import { listMatchesForFighter } from "./matchService";
+import { listPublicMatchHistory } from "./matchService";
 import { NotFoundError } from "@/server/http/errors";
+import { assertAdmin, assertFighter, type Actor } from "@/server/auth/actor";
 
 export type FighterDetailsInput = {
   displayName: string;
@@ -35,9 +36,10 @@ export type FighterDetailsInput = {
   discipline?: string;
 };
 
-export async function updateFighterProfile(userId: string, input: FighterDetailsInput) {
+export async function updateFighterProfile(actor: Actor, input: FighterDetailsInput) {
+  assertFighter(actor);
   await connectDB();
-  const profile = await FighterProfile.findOne({ userId });
+  const profile = await FighterProfile.findOne({ userId: actor.userId });
   if (!profile) throw new NotFoundError("Fighter profile not found.");
 
   profile.displayName = input.displayName;
@@ -69,40 +71,44 @@ export async function updateFighterProfile(userId: string, input: FighterDetails
   if (input.discipline) profile.discipline = input.discipline;
   await profile.save();
 
-  await writeAuditLog({ actorId: userId, action: "FIGHTER_PROFILE_UPDATED", targetType: "FighterProfile", targetId: String(profile._id) });
+  await writeAuditLog({ actorId: actor.userId, action: "FIGHTER_PROFILE_UPDATED", targetType: "FighterProfile", targetId: String(profile._id) });
   return profile;
 }
 
 /** Fighter-dashboard feed: the authenticated fighter's own profile, or null if not yet created. */
-export async function getFighterProfile(userId: string) {
+export async function getFighterProfile(actor: Actor) {
+  assertFighter(actor);
   await connectDB();
-  return FighterProfile.findOne({ userId }).lean();
+  return FighterProfile.findOne({ userId: actor.userId }).lean();
 }
 
 /** Admin-dashboard stat: total fighters registered on the platform. */
-export async function countFighters() {
+export async function countFighters(actor: Actor) {
+  assertAdmin(actor);
   await connectDB();
   return FighterProfile.countDocuments();
 }
 
+const PUBLIC_FIGHTER_FIELDS = "displayName slug gym discipline userId";
+
 export async function listPublicFighters() {
   await connectDB();
-  return FighterProfile.find().sort({ displayName: 1 }).select("displayName slug gym discipline").lean();
+  const rows = await FighterProfile.find().sort({ displayName: 1 }).select("displayName slug gym discipline").lean();
+  return rows.map((p) => ({
+    _id: String(p._id),
+    displayName: p.displayName,
+    slug: p.slug,
+    gym: p.gym,
+    discipline: p.discipline,
+  }));
 }
 
 export async function getPublicFighterBySlug(slug: string) {
   await connectDB();
-  const profile = await FighterProfile.findOne({ slug }).lean();
+  const profile = await FighterProfile.findOne({ slug }).select(PUBLIC_FIGHTER_FIELDS).lean();
   if (!profile) throw new NotFoundError("Fighter not found.");
 
-  const [allMatches, ownRegistrations] = await Promise.all([
-    listMatchesForFighter(String(profile.userId)),
-    Registration.find({ userId: profile.userId }).lean(),
-  ]);
-  const ownRegistrationIds = new Set(ownRegistrations.map((r) => String(r._id)));
-  const decided = allMatches.filter((m) => m.status === "COMPLETED" || m.status === "BYE");
-  const wins = decided.filter((m) => m.winnerRegistrationId && ownRegistrationIds.has(String(m.winnerRegistrationId))).length;
-  const losses = decided.length - wins;
+  const record = await listPublicMatchHistory(String(profile.userId));
 
   return {
     profile: {
@@ -110,7 +116,7 @@ export async function getPublicFighterBySlug(slug: string) {
       gym: profile.gym,
       discipline: profile.discipline,
     },
-    record: { wins, losses },
-    history: decided,
+    record: { wins: record.wins, losses: record.losses },
+    history: record.history,
   };
 }

@@ -1,4 +1,6 @@
+import "server-only";
 import { connectDB } from "@/server/db/connect";
+import { assertAdmin, assertFighter, type Actor } from "@/server/auth/actor";
 import { Match, type MatchDoc } from "@/server/models/Match";
 
 type LeanMatch = MatchDoc & { _id: unknown };
@@ -11,7 +13,8 @@ import { writeAuditLog } from "@/server/audit/log";
 import { nextSlot, canCorrectResult } from "./bracketEngine";
 import { NotFoundError, ConflictError, ValidationError } from "@/server/http/errors";
 
-export async function recordMatchResult(adminId: string, matchId: string, winnerRegistrationId: string, method: string) {
+export async function recordMatchResult(actor: Actor, matchId: string, winnerRegistrationId: string, method: string) {
+  assertAdmin(actor);
   await connectDB();
 
   const match = await Match.findById(matchId);
@@ -28,14 +31,14 @@ export async function recordMatchResult(adminId: string, matchId: string, winner
   match.status = "COMPLETED";
   match.winnerRegistrationId = winnerRegistrationId as unknown as MatchDoc["winnerRegistrationId"];
   match.resultMethod = method;
-  match.resultRecordedBy = adminId as unknown as MatchDoc["resultRecordedBy"];
+  match.resultRecordedBy = actor.userId as unknown as MatchDoc["resultRecordedBy"];
   match.resultRecordedAt = new Date();
   await match.save();
 
   await advanceWinnerIfApplicable(match.bracketId.toString(), match.round, match.order, winnerRegistrationId);
 
   await writeAuditLog({
-    actorId: adminId,
+    actorId: actor.userId,
     action: "MATCH_RESULT_RECORDED",
     targetType: "Match",
     targetId: matchId,
@@ -63,12 +66,13 @@ async function advanceWinnerIfApplicable(bracketId: string, round: number, order
 }
 
 export async function correctMatchResult(
-  adminId: string,
+  actor: Actor,
   matchId: string,
   newWinnerRegistrationId: string,
   newMethod: string,
   reason: string
 ) {
+  assertAdmin(actor);
   await connectDB();
 
   if (!reason.trim()) throw new ValidationError("A reason is required to correct a result.");
@@ -100,7 +104,7 @@ export async function correctMatchResult(
     previousWinnerRegistrationId: match.winnerRegistrationId,
     previousResultMethod: match.resultMethod,
     reason,
-    correctedBy: adminId as unknown as MatchDoc["resultRecordedBy"],
+    correctedBy: actor.userId as unknown as MatchDoc["resultRecordedBy"],
     correctedAt: new Date(),
   });
   match.winnerRegistrationId = newWinnerRegistrationId as unknown as MatchDoc["winnerRegistrationId"];
@@ -113,7 +117,7 @@ export async function correctMatchResult(
   }
 
   await writeAuditLog({
-    actorId: adminId,
+    actorId: actor.userId,
     action: "MATCH_RESULT_CORRECTED",
     targetType: "Match",
     targetId: matchId,
@@ -124,7 +128,8 @@ export async function correctMatchResult(
   return match;
 }
 
-export async function updateMatchSchedule(adminId: string, matchId: string, input: { scheduledAt?: Date | null; mat?: string }) {
+export async function updateMatchSchedule(actor: Actor, matchId: string, input: { scheduledAt?: Date | null; mat?: string }) {
+  assertAdmin(actor);
   await connectDB();
   const match = await Match.findById(matchId);
   if (!match) throw new NotFoundError("Match not found.");
@@ -142,7 +147,7 @@ export async function updateMatchSchedule(adminId: string, matchId: string, inpu
   if (input.mat !== undefined) match.mat = input.mat;
   await match.save();
 
-  await writeAuditLog({ actorId: adminId, action: "MATCH_SCHEDULE_UPDATED", targetType: "Match", targetId: matchId });
+  await writeAuditLog({ actorId: actor.userId, action: "MATCH_SCHEDULE_UPDATED", targetType: "Match", targetId: matchId });
   return match;
 }
 
@@ -156,12 +161,12 @@ async function enrichWithNamesAndEvent(matches: LeanMatch[]) {
   const divisionIds = [...new Set(matches.map((m) => String(m.divisionId)))];
   const [registrations, events, divisions] = await Promise.all([
     Registration.find({ _id: { $in: registrationIds } }).lean(),
-    Event.find({ _id: { $in: eventIds } }).lean(),
+    Event.find({ _id: { $in: eventIds } }).select("name").lean(),
     Division.find({ _id: { $in: divisionIds } }).lean(),
   ]);
   const divisionById = new Map(divisions.map((d) => [String(d._id), d]));
   const userIds = registrations.map((r) => r.userId);
-  const profiles = await FighterProfile.find({ userId: { $in: userIds } }).lean();
+  const profiles = await FighterProfile.find({ userId: { $in: userIds } }).select("displayName userId").lean();
   const profileByUserId = new Map(profiles.map((p) => [String(p.userId), p]));
   const nameByRegistrationId = new Map(
     registrations.map((r) => [String(r._id), profileByUserId.get(String(r.userId))?.displayName ?? "Unknown fighter"])
@@ -173,20 +178,22 @@ async function enrichWithNamesAndEvent(matches: LeanMatch[]) {
     competitorAName: m.competitorARegistrationId ? nameByRegistrationId.get(String(m.competitorARegistrationId)) ?? null : null,
     competitorBName: m.competitorBRegistrationId ? nameByRegistrationId.get(String(m.competitorBRegistrationId)) ?? null : null,
     winnerName: m.winnerRegistrationId ? nameByRegistrationId.get(String(m.winnerRegistrationId)) ?? null : null,
-    event: eventById.get(String(m.eventId)) ?? null,
+    event: eventById.get(String(m.eventId)) ? { name: eventById.get(String(m.eventId))!.name } : null,
     divisionName: divisionById.get(String(m.divisionId))?.name ?? "Unknown division",
   }));
 }
 
-export async function listMatchesForEvent(eventId: string) {
+export async function listMatchesForEvent(actor: Actor, eventId: string) {
+  assertAdmin(actor);
   await connectDB();
   const matches = await Match.find({ eventId }).sort({ round: 1, order: 1 }).lean();
   return enrichWithNamesAndEvent(matches);
 }
 
-export async function listMatchesForFighter(userId: string) {
+/** Not exported. Callers must use listMatchesForFighter or listPublicMatchHistory. */
+async function loadMatchesForUser(userId: string) {
   await connectDB();
-  const registrations = await Registration.find({ userId }).lean();
+  const registrations = await Registration.find({ userId }).select("_id").lean();
   const registrationIds = registrations.map((r) => String(r._id));
   const matches = await Match.find({
     $or: [{ competitorARegistrationId: { $in: registrationIds } }, { competitorBRegistrationId: { $in: registrationIds } }],
@@ -194,6 +201,47 @@ export async function listMatchesForFighter(userId: string) {
     .sort({ round: 1 })
     .lean();
   return enrichWithNamesAndEvent(matches);
+}
+
+export async function listMatchesForFighter(actor: Actor) {
+  assertFighter(actor);
+  return loadMatchesForUser(actor.userId);
+}
+
+export type PublicMatchHistoryEntry = {
+  _id: string;
+  event: { name: string };
+  competitorAName: string | null;
+  competitorBName: string | null;
+  winnerName: string | null;
+  resultMethod: string;
+};
+
+/** Public record for a fighter looked up by the server. No caller-supplied user id is trusted as an owner. */
+export async function listPublicMatchHistory(userId: string): Promise<{
+  wins: number;
+  losses: number;
+  history: PublicMatchHistoryEntry[];
+}> {
+  const [allMatches, ownRegistrations] = await Promise.all([
+    loadMatchesForUser(userId),
+    Registration.find({ userId }).select("_id").lean(),
+  ]);
+  const ownRegistrationIds = new Set(ownRegistrations.map((r) => String(r._id)));
+  const decided = allMatches.filter((m) => m.status === "COMPLETED" || m.status === "BYE");
+  const wins = decided.filter((m) => m.winnerRegistrationId && ownRegistrationIds.has(String(m.winnerRegistrationId))).length;
+  return {
+    wins,
+    losses: decided.length - wins,
+    history: decided.map((m) => ({
+      _id: String(m._id),
+      event: { name: m.event?.name ?? "Unknown" },
+      competitorAName: m.competitorAName,
+      competitorBName: m.competitorBName,
+      winnerName: m.winnerName,
+      resultMethod: m.resultMethod ?? "",
+    })),
+  };
 }
 
 export async function listPublicSchedule(eventSlug: string) {

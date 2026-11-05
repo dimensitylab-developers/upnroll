@@ -1,3 +1,5 @@
+import "server-only";
+
 /**
  * Pure, bounded FAQ matcher — no LLM, no third-party API (that would be
  * its own infra decision, OD-012-class, not mine to pick unilaterally).

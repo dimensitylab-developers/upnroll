@@ -1,21 +1,25 @@
+import "server-only";
 import { connectDB } from "@/server/db/connect";
+import { assertAdmin, type Actor } from "@/server/auth/actor";
 import { MediaAsset } from "@/server/models/MediaAsset";
 import { writeAuditLog } from "@/server/audit/log";
 
-export async function createMediaAsset(adminId: string, input: { caption: string; externalUrl: string; eventId?: string }) {
+export async function createMediaAsset(actor: Actor, input: { caption: string; externalUrl: string; eventId?: string }) {
+  assertAdmin(actor);
   await connectDB();
   const asset = await MediaAsset.create({
     caption: input.caption,
     externalUrl: input.externalUrl,
     eventId: input.eventId || null,
     publicationState: "PUBLISHED",
-    createdBy: adminId,
+    createdBy: actor.userId,
   });
-  await writeAuditLog({ actorId: adminId, action: "MEDIA_CREATED", targetType: "MediaAsset", targetId: String(asset._id) });
+  await writeAuditLog({ actorId: actor.userId, action: "MEDIA_CREATED", targetType: "MediaAsset", targetId: String(asset._id) });
   return asset;
 }
 
-export async function listAllMedia() {
+export async function listAllMedia(actor: Actor) {
+  assertAdmin(actor);
   await connectDB();
   return MediaAsset.find().sort({ createdAt: -1 }).lean();
 }

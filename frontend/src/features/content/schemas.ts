@@ -1,8 +1,8 @@
 import { z } from "zod";
-import { CONTENT_TYPES } from "@/server/models/ContentEntry";
+import { CONTENT_TYPE_OPTIONS } from "./content-types";
 
 export const createContentSchema = z.object({
-  type: z.enum(CONTENT_TYPES),
+  type: z.enum(CONTENT_TYPE_OPTIONS),
   title: z.string().trim().min(2, "Enter a title."),
   body: z.string().trim().min(2, "Enter the body text."),
 });

@@ -33,6 +33,8 @@ function matchDoc(overrides: Record<string, unknown> = {}) {
   };
 }
 
+const admin = Object.freeze({ userId: "admin1", role: "ADMIN" as const });
+
 describe("updateMatchSchedule", () => {
   beforeEach(() => {
     vi.clearAllMocks();
@@ -43,7 +45,7 @@ describe("updateMatchSchedule", () => {
     const match = matchDoc();
     mockMatchFindById.mockResolvedValue(match);
 
-    const result = await updateMatchSchedule("admin1", "match1", { scheduledAt: new Date("2026-12-01T10:00:00Z"), mat: "Mat 1" });
+    const result = await updateMatchSchedule(admin, "match1", { scheduledAt: new Date("2026-12-01T10:00:00Z"), mat: "Mat 1" });
 
     expect(result.scheduledAt).toEqual(new Date("2026-12-01T10:00:00Z"));
     expect(result.mat).toBe("Mat 1");
@@ -57,7 +59,7 @@ describe("updateMatchSchedule", () => {
     mockMatchFindById.mockResolvedValue(match);
 
     await expect(
-      updateMatchSchedule("admin1", "match1", { scheduledAt: new Date("2026-12-01T10:00:00Z") })
+      updateMatchSchedule(admin, "match1", { scheduledAt: new Date("2026-12-01T10:00:00Z") })
     ).rejects.toThrow(/both competitors/i);
     expect(match.save).not.toHaveBeenCalled();
   });
@@ -68,7 +70,7 @@ describe("updateMatchSchedule", () => {
     mockMatchFindById.mockResolvedValue(match);
 
     await expect(
-      updateMatchSchedule("admin1", "match1", { scheduledAt: new Date("not-a-date") })
+      updateMatchSchedule(admin, "match1", { scheduledAt: new Date("not-a-date") })
     ).rejects.toThrow(/invalid/i);
     expect(match.save).not.toHaveBeenCalled();
   });
@@ -78,7 +80,7 @@ describe("updateMatchSchedule", () => {
     const match = matchDoc({ mat: "Mat 2" });
     mockMatchFindById.mockResolvedValue(match);
 
-    const result = await updateMatchSchedule("admin1", "match1", { mat: "" });
+    const result = await updateMatchSchedule(admin, "match1", { mat: "" });
 
     expect(result.mat).toBe("");
     expect(match.save).toHaveBeenCalled();
@@ -88,6 +90,6 @@ describe("updateMatchSchedule", () => {
     const { updateMatchSchedule } = await import("./matchService");
     mockMatchFindById.mockResolvedValue(null);
 
-    await expect(updateMatchSchedule("admin1", "missing", { mat: "Mat 1" })).rejects.toThrow(/not found/i);
+    await expect(updateMatchSchedule(admin, "missing", { mat: "Mat 1" })).rejects.toThrow(/not found/i);
   });
 });

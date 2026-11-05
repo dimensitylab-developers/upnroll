@@ -1,21 +1,21 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { requireRole } from "@/server/auth/session";
+import { requireActor } from "@/server/auth/session";
 import { recordMatchResult, correctMatchResult, updateMatchSchedule } from "@/server/services/matchService";
 import { toAppError } from "@/server/http/errors";
 
 export type MatchActionState = { error?: string };
 
 export async function recordResultAction(_prevState: MatchActionState, formData: FormData): Promise<MatchActionState> {
-  const { user } = await requireRole("ADMIN");
+  const actor = await requireActor("ADMIN");
   const matchId = String(formData.get("matchId") ?? "");
   const eventId = String(formData.get("eventId") ?? "");
   const winnerRegistrationId = String(formData.get("winnerRegistrationId") ?? "");
   const method = String(formData.get("method") ?? "");
 
   try {
-    await recordMatchResult(String(user._id), matchId, winnerRegistrationId, method);
+    await recordMatchResult(actor, matchId, winnerRegistrationId, method);
   } catch (err) {
     return { error: toAppError(err).message };
   }
@@ -25,7 +25,7 @@ export async function recordResultAction(_prevState: MatchActionState, formData:
 }
 
 export async function correctResultAction(_prevState: MatchActionState, formData: FormData): Promise<MatchActionState> {
-  const { user } = await requireRole("ADMIN");
+  const actor = await requireActor("ADMIN");
   const matchId = String(formData.get("matchId") ?? "");
   const eventId = String(formData.get("eventId") ?? "");
   const winnerRegistrationId = String(formData.get("winnerRegistrationId") ?? "");
@@ -33,7 +33,7 @@ export async function correctResultAction(_prevState: MatchActionState, formData
   const reason = String(formData.get("reason") ?? "");
 
   try {
-    await correctMatchResult(String(user._id), matchId, winnerRegistrationId, method, reason);
+    await correctMatchResult(actor, matchId, winnerRegistrationId, method, reason);
   } catch (err) {
     return { error: toAppError(err).message };
   }
@@ -43,14 +43,14 @@ export async function correctResultAction(_prevState: MatchActionState, formData
 }
 
 export async function updateScheduleAction(_prevState: MatchActionState, formData: FormData): Promise<MatchActionState> {
-  const { user } = await requireRole("ADMIN");
+  const actor = await requireActor("ADMIN");
   const matchId = String(formData.get("matchId") ?? "");
   const eventId = String(formData.get("eventId") ?? "");
   const mat = String(formData.get("mat") ?? "");
   const scheduledAtRaw = String(formData.get("scheduledAt") ?? "");
 
   try {
-    await updateMatchSchedule(String(user._id), matchId, {
+    await updateMatchSchedule(actor, matchId, {
       mat,
       scheduledAt: scheduledAtRaw ? new Date(scheduledAtRaw) : null,
     });

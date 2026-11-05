@@ -1,8 +1,9 @@
+import { requireActor } from "@/server/auth/session";
 import { listAllMedia } from "@/server/services/mediaService";
 import { CreateMediaForm } from "@/features/media/create-media-form";
 
 export default async function AdminMediaPage() {
-  const media = await listAllMedia();
+  const media = await listAllMedia(await requireActor("ADMIN"));
 
   return (
     <div className="max-w-2xl mx-auto space-y-10">

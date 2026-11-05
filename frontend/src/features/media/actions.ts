@@ -1,7 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { requireRole } from "@/server/auth/session";
+import { requireActor } from "@/server/auth/session";
 import { createMediaAsset } from "@/server/services/mediaService";
 import { toAppError } from "@/server/http/errors";
 import { createMediaSchema } from "./schemas";
@@ -9,7 +9,7 @@ import { createMediaSchema } from "./schemas";
 export type MediaActionState = { error?: string };
 
 export async function createMediaAction(_prevState: MediaActionState, formData: FormData): Promise<MediaActionState> {
-  const { user } = await requireRole("ADMIN");
+  const actor = await requireActor("ADMIN");
 
   const parsed = createMediaSchema.safeParse({
     caption: formData.get("caption"),
@@ -20,7 +20,7 @@ export async function createMediaAction(_prevState: MediaActionState, formData: 
   }
 
   try {
-    await createMediaAsset(String(user._id), parsed.data);
+    await createMediaAsset(actor, parsed.data);
   } catch (err) {
     return { error: toAppError(err).message };
   }

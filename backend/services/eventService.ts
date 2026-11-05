@@ -1,8 +1,10 @@
+import "server-only";
 import { connectDB } from "@/server/db/connect";
 import { Event, type EventStatus } from "@/server/models/Event";
 import { Division } from "@/server/models/Division";
 import { writeAuditLog } from "@/server/audit/log";
 import { NotFoundError, ConflictError } from "@/server/http/errors";
+import { assertAdmin, type Actor } from "@/server/auth/actor";
 
 export type CreateEventInput = {
   name: string;
@@ -18,7 +20,8 @@ export type CreateEventInput = {
 
 const PUBLIC_EVENT_STATUSES: EventStatus[] = ["REGISTRATION_OPEN", "REGISTRATION_CLOSED", "COMPLETED"];
 
-export async function createEvent(adminId: string, input: CreateEventInput) {
+export async function createEvent(actor: Actor, input: CreateEventInput) {
+  assertAdmin(actor);
   await connectDB();
 
   const existing = await Event.findOne({ slug: input.slug }).lean();
@@ -40,11 +43,12 @@ export async function createEvent(adminId: string, input: CreateEventInput) {
     },
   });
 
-  await writeAuditLog({ actorId: adminId, action: "EVENT_CREATED", targetType: "Event", targetId: String(event._id) });
+  await writeAuditLog({ actorId: actor.userId, action: "EVENT_CREATED", targetType: "Event", targetId: String(event._id) });
   return event;
 }
 
-export async function updateEventStatus(adminId: string, eventId: string, status: EventStatus) {
+export async function updateEventStatus(actor: Actor, eventId: string, status: EventStatus) {
+  assertAdmin(actor);
   await connectDB();
   const event = await Event.findById(eventId);
   if (!event) throw new NotFoundError("Event not found.");
@@ -54,7 +58,7 @@ export async function updateEventStatus(adminId: string, eventId: string, status
   await event.save();
 
   await writeAuditLog({
-    actorId: adminId,
+    actorId: actor.userId,
     action: "EVENT_STATUS_CHANGED",
     targetType: "Event",
     targetId: eventId,
@@ -64,13 +68,15 @@ export async function updateEventStatus(adminId: string, eventId: string, status
   return event;
 }
 
-export async function listEventsForAdmin() {
+export async function listEventsForAdmin(actor: Actor) {
+  assertAdmin(actor);
   await connectDB();
   return Event.find().sort({ createdAt: -1 }).lean();
 }
 
 /** Admin-dashboard feed: events that haven't started yet, soonest first. */
-export async function listUpcomingEventsForAdmin(limit = 5) {
+export async function listUpcomingEventsForAdmin(actor: Actor, limit = 5) {
+  assertAdmin(actor);
   await connectDB();
   const now = new Date();
   return Event.find({ startDate: { $gte: now } }).sort({ startDate: 1 }).limit(limit).lean();
@@ -88,7 +94,8 @@ export async function getEventBySlug(slug: string) {
   return event;
 }
 
-export async function getEventForAdmin(eventId: string) {
+export async function getEventForAdmin(actor: Actor, eventId: string) {
+  assertAdmin(actor);
   await connectDB();
   const event = await Event.findById(eventId).lean();
   if (!event) throw new NotFoundError("Event not found.");
@@ -103,7 +110,8 @@ export type CreateDivisionInput = {
   feeMinorUnitsOverride?: number | null;
 };
 
-export async function createDivision(adminId: string, input: CreateDivisionInput) {
+export async function createDivision(actor: Actor, input: CreateDivisionInput) {
+  assertAdmin(actor);
   await connectDB();
   const event = await Event.findById(input.eventId);
   if (!event) throw new NotFoundError("Event not found.");
@@ -116,7 +124,7 @@ export async function createDivision(adminId: string, input: CreateDivisionInput
     feeMinorUnitsOverride: input.feeMinorUnitsOverride ?? null,
   });
 
-  await writeAuditLog({ actorId: adminId, action: "DIVISION_CREATED", targetType: "Division", targetId: String(division._id) });
+  await writeAuditLog({ actorId: actor.userId, action: "DIVISION_CREATED", targetType: "Division", targetId: String(division._id) });
   return division;
 }
 

@@ -1,4 +1,6 @@
+import "server-only";
 import { connectDB } from "@/server/db/connect";
+import { assertAdmin, type Actor } from "@/server/auth/actor";
 import { Division } from "@/server/models/Division";
 import { Registration } from "@/server/models/Registration";
 import { FighterProfile } from "@/server/models/FighterProfile";
@@ -10,11 +12,12 @@ import { NotFoundError, ConflictError, ValidationError } from "@/server/http/err
 
 type LeanMatch = MatchDoc & { _id: unknown };
 
-export async function listEligibleParticipants(divisionId: string) {
+export async function listEligibleParticipants(actor: Actor, divisionId: string) {
+  assertAdmin(actor);
   await connectDB();
   const registrations = await Registration.find({ divisionId, status: "CONFIRMED" }).lean();
   const userIds = registrations.map((r) => r.userId);
-  const profiles = await FighterProfile.find({ userId: { $in: userIds } }).lean();
+  const profiles = await FighterProfile.find({ userId: { $in: userIds } }).select("displayName userId").lean();
   const profileByUserId = new Map(profiles.map((p) => [String(p.userId), p]));
 
   return registrations.map((r) => ({
@@ -35,7 +38,7 @@ async function enrichMatches(matches: LeanMatch[]) {
   ];
   const registrations = await Registration.find({ _id: { $in: registrationIds } }).lean();
   const userIds = registrations.map((r) => r.userId);
-  const profiles = await FighterProfile.find({ userId: { $in: userIds } }).lean();
+  const profiles = await FighterProfile.find({ userId: { $in: userIds } }).select("displayName userId").lean();
   const profileByUserId = new Map(profiles.map((p) => [String(p.userId), p]));
   const nameByRegistrationId = new Map(
     registrations.map((r) => [String(r._id), profileByUserId.get(String(r.userId))?.displayName ?? "Unknown fighter"])
@@ -50,11 +53,12 @@ async function enrichMatches(matches: LeanMatch[]) {
 }
 
 export async function generateBracket(
-  adminId: string,
+  actor: Actor,
   divisionId: string,
   orderedRegistrationIds: string[],
   mode: { type: "manual" } | { type: "random"; seed: number }
 ) {
+  assertAdmin(actor);
   await connectDB();
 
   const division = await Division.findById(divisionId);
@@ -119,7 +123,7 @@ export async function generateBracket(
   );
 
   await writeAuditLog({
-    actorId: adminId,
+    actorId: actor.userId,
     action: "BRACKET_GENERATED",
     targetType: "Bracket",
     targetId: String(bracket._id),
@@ -129,17 +133,19 @@ export async function generateBracket(
   return bracket;
 }
 
-export async function publishBracket(adminId: string, bracketId: string) {
+export async function publishBracket(actor: Actor, bracketId: string) {
+  assertAdmin(actor);
   await connectDB();
 
   const bracket = await Bracket.findOneAndUpdate({ _id: bracketId, status: "DRAFT" }, { status: "PUBLISHED" }, { returnDocument: "after" });
   if (!bracket) throw new ConflictError("Bracket not found, or it has already been published.");
 
-  await writeAuditLog({ actorId: adminId, action: "BRACKET_PUBLISHED", targetType: "Bracket", targetId: bracketId });
+  await writeAuditLog({ actorId: actor.userId, action: "BRACKET_PUBLISHED", targetType: "Bracket", targetId: bracketId });
   return bracket;
 }
 
-export async function getBracketForDivision(divisionId: string) {
+export async function getBracketForDivision(actor: Actor, divisionId: string) {
+  assertAdmin(actor);
   await connectDB();
   const bracket = await Bracket.findOne({ divisionId }).lean();
   if (!bracket) return null;
