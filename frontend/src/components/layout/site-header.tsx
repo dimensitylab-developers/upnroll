@@ -1,7 +1,9 @@
 import Link from "next/link";
 import { getSession } from "@/server/auth/session";
-import { Button } from "@/components/ui/button";
-import { BrandMark } from "./brand";
+import { listPublicEvents } from "@/server/services/eventService";
+import { HeaderLockup } from "./header-lockup";
+import { ComicNav } from "./comic-nav";
+import { comicCell, comicCellActive, comicCellIdle } from "./comic-cell";
 import { MobileNavToggle } from "./mobile-nav-toggle";
 
 const NAV_LINKS = [
@@ -12,38 +14,42 @@ const NAV_LINKS = [
 ];
 
 export async function SiteHeader() {
-  const session = await getSession();
+  const [session, events] = await Promise.all([getSession(), listPublicEvents()]);
   const dashboardHref = session ? (session.user.role === "ADMIN" ? "/admin" : "/fighter/dashboard") : null;
+  const openEvent = events.find((event) => event.status === "REGISTRATION_OPEN") ?? events[0] ?? null;
 
   return (
-    <header className="sticky top-0 z-40 bg-background/95 backdrop-blur-sm border-b border-black/10 relative">
+    <header className="sticky top-0 z-40 bg-background halftone-bg border-t-2 border-t-black border-b-2 border-b-brand-red relative">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-16">
-          <Link href="/" className="flex items-center gap-2 shrink-0">
-            <BrandMark />
-            <span className="text-display text-xl font-semibold">Up &apos;n Roll</span>
-          </Link>
+        <div className="flex items-center gap-3 min-h-16 py-3">
+          <HeaderLockup />
+          <ComicNav links={NAV_LINKS} />
 
-          <nav aria-label="Primary" className="hidden md:flex items-center gap-6">
-            {NAV_LINKS.map((link) => (
-              <Link key={link.href} href={link.href} className="text-sm text-muted-foreground hover:text-foreground transition-colors">
-                {link.label}
+          <div className="hidden md:flex items-center gap-2 ml-auto">
+            {openEvent && (
+              <Link
+                href={`/events/${openEvent.slug}`}
+                className={`${comicCell} ${comicCellActive} max-w-[11rem] overflow-hidden`}
+                style={{ transform: "rotate(-2deg)" }}
+              >
+                <span className="truncate">{openEvent.name}</span>
               </Link>
-            ))}
-          </nav>
-
-          <div className="hidden md:flex items-center gap-2">
+            )}
             {dashboardHref ? (
-              <Button asChild size="sm"><Link href={dashboardHref}>Dashboard</Link></Button>
+              <Link href={dashboardHref} className={`${comicCell} ${comicCellActive}`}>Dashboard</Link>
             ) : (
               <>
-                <Button asChild variant="ghost" size="sm"><Link href="/login">Sign in</Link></Button>
-                <Button asChild size="sm"><Link href="/register">Register</Link></Button>
+                <Link href="/login" className={`${comicCell} ${comicCellIdle}`}>Sign in</Link>
+                <Link href="/register" className={`${comicCell} ${comicCellActive}`}>Register</Link>
               </>
             )}
           </div>
 
-          <MobileNavToggle links={NAV_LINKS} dashboardHref={dashboardHref} />
+          <MobileNavToggle
+            links={NAV_LINKS}
+            dashboardHref={dashboardHref}
+            event={openEvent ? { href: `/events/${openEvent.slug}`, label: openEvent.name } : null}
+          />
         </div>
       </div>
     </header>

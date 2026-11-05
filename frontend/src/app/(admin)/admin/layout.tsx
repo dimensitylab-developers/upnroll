@@ -25,9 +25,11 @@ export default async function AdminLayout({ children }: { children: React.ReactN
         </form>
       </header>
       <main className="px-4 pb-10 flex-1">{children}</main>
-      <div className="px-5 pb-4 flex flex-wrap items-center justify-between gap-3">
-        <FounderCredit />
-        <BuiltBy />
+      <div className="px-5 pb-4 pr-16 flex justify-end">
+        <div className="flex flex-col items-end gap-1">
+          <FounderCredit />
+          <BuiltBy />
+        </div>
       </div>
     </div>
   );

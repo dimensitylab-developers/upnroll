@@ -36,15 +36,8 @@ export function FounderCredit({ className = "" }: { className?: string }) {
 
 export function BuiltBy({ className = "" }: { className?: string }) {
   return (
-    <p className={`inline-flex items-center gap-1.5 text-xs text-muted-foreground ${className}`}>
-      <img
-        src="/dimensity-mark.png"
-        alt=""
-        width={16}
-        height={16}
-        className="h-4 w-4 object-contain"
-      />
-      <span>Built by Dimensity Labs</span>
+    <p className={`text-[11px] leading-none text-muted-foreground ${className}`}>
+      © Built by Dimensity Labs
     </p>
   );
 }

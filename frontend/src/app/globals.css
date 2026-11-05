@@ -214,7 +214,16 @@
     50% { opacity: 0.45; }
   }
 
+  .upnroll-loader-bar {
+    animation: upnroll-loader 0.9s ease-in-out infinite;
+  }
+  @keyframes upnroll-loader {
+    0% { transform: translateX(-120%); }
+    100% { transform: translateX(280%); }
+  }
+
   @media (prefers-reduced-motion: reduce) {
     .live-pulse { animation: none; }
+    .upnroll-loader-bar { animation: none; width: 100%; }
   }
 }

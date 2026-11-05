@@ -11,7 +11,7 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
         </Link>
         <div className="manga-panel p-8">{children}</div>
         <FounderCredit className="justify-center mt-6 w-full" />
-        <BuiltBy className="justify-center mt-2 w-full" />
+        <BuiltBy className="text-center mt-2 w-full" />
       </div>
     </main>
   );

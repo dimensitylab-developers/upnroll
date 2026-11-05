@@ -2,42 +2,65 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { Button } from "@/components/ui/button";
+import { usePathname } from "next/navigation";
 import { Menu, X } from "lucide-react";
+import { comicCell, comicCellActive, comicCellIdle } from "./comic-cell";
 
 export function MobileNavToggle({
   links,
   dashboardHref,
+  event = null,
 }: {
   links: { href: string; label: string }[];
   dashboardHref: string | null;
+  event?: { href: string; label: string } | null;
 }) {
   const [open, setOpen] = useState(false);
+  const pathname = usePathname();
 
   return (
-    <div className="md:hidden">
-      <Button variant="ghost" size="icon" aria-label={open ? "Close menu" : "Open menu"} onClick={() => setOpen((v) => !v)}>
-        {open ? <X className="size-5" /> : <Menu className="size-5" />}
-      </Button>
+    <div className="md:hidden ml-auto">
+      <button
+        type="button"
+        aria-label={open ? "Close menu" : "Open menu"}
+        aria-expanded={open}
+        onClick={() => setOpen((v) => !v)}
+        className={`${comicCell} ${comicCellIdle}`}
+      >
+        {open ? <X className="size-4" /> : <Menu className="size-4" />}
+      </button>
       {open && (
-        <div className="absolute left-0 right-0 top-16 bg-background border-b border-black/10 px-4 pb-4">
-          <nav aria-label="Primary mobile" className="flex flex-col gap-1">
-            {links.map((link) => (
-              <Link key={link.href} href={link.href} className="px-2 py-2 rounded-md text-sm hover:bg-black/5" onClick={() => setOpen(false)}>
-                {link.label}
+        <div className="absolute left-0 right-0 top-full bg-background halftone-bg border-b-2 border-b-brand-red px-4 py-4">
+          <nav aria-label="Primary mobile" className="flex flex-col gap-2">
+            {event && (
+              <Link href={event.href} className={`${comicCell} ${comicCellActive}`} onClick={() => setOpen(false)}>
+                {event.label}
               </Link>
-            ))}
-            <div className="h-px bg-black/10 my-2" />
+            )}
+            {links.map((link) => {
+              const active = pathname === link.href || pathname.startsWith(`${link.href}/`);
+              return (
+                <Link
+                  key={link.href}
+                  href={link.href}
+                  aria-current={active ? "page" : undefined}
+                  className={`${comicCell} ${active ? comicCellActive : comicCellIdle}`}
+                  onClick={() => setOpen(false)}
+                >
+                  {link.label}
+                </Link>
+              );
+            })}
             {dashboardHref ? (
-              <Link href={dashboardHref} className="px-2 py-2 rounded-md text-sm font-medium hover:bg-black/5" onClick={() => setOpen(false)}>
+              <Link href={dashboardHref} className={`${comicCell} ${comicCellActive}`} onClick={() => setOpen(false)}>
                 Dashboard
               </Link>
             ) : (
               <>
-                <Link href="/login" className="px-2 py-2 rounded-md text-sm hover:bg-black/5" onClick={() => setOpen(false)}>
+                <Link href="/login" className={`${comicCell} ${comicCellIdle}`} onClick={() => setOpen(false)}>
                   Sign in
                 </Link>
-                <Link href="/register" className="px-2 py-2 rounded-md text-sm font-medium hover:bg-black/5" onClick={() => setOpen(false)}>
+                <Link href="/register" className={`${comicCell} ${comicCellActive}`} onClick={() => setOpen(false)}>
                   Register
                 </Link>
               </>
