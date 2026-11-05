@@ -4,9 +4,9 @@
  * production admin feature (event creation UI is Phase 4). Run with:
  *   npx tsx --env-file=.env.local scripts/seed-demo.ts
  */
-import { connectDB } from "../src/server/db/connect";
-import { Event } from "../src/server/models/Event";
-import { Division } from "../src/server/models/Division";
+import { connectDB } from "../backend/db/connect";
+import { Event } from "../backend/models/Event";
+import { Division } from "../backend/models/Division";
 
 async function main() {
   await connectDB();
