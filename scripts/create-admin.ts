@@ -4,9 +4,9 @@
  *   npx tsx --env-file=.env.local scripts/create-admin.ts --email you@example.com --password "..."
  * or pass --email/--password directly with MONGODB_URI/SESSION_SECRET already exported.
  */
-import { connectDB } from "../src/server/db/connect";
-import { User } from "../src/server/models/User";
-import { hashPassword } from "../src/server/auth/password";
+import { connectDB } from "../backend/db/connect";
+import { User } from "../backend/models/User";
+import { hashPassword } from "../backend/auth/password";
 
 function getArg(flag: string): string | undefined {
   const idx = process.argv.indexOf(flag);

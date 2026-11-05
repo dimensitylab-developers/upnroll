@@ -11,11 +11,11 @@ Phase 1 — design foundation. The only shipped route is the interactive design 
 ## Getting started
 
 ```bash
-npm install
+npm install --prefix frontend
 npm run dev
 ```
 
-Open [http://localhost:3000/ui-preview](http://localhost:3000/ui-preview).
+Open [http://localhost:3000](http://localhost:3000). The UI is in `frontend/`. The server code is in `backend/`. They are already connected.
 
 ## Documentation
 

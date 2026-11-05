@@ -8,7 +8,11 @@ import type { StorageAdapter } from "./types";
  * A real private-storage provider (and the route/service that serves
  * authorized reads from it) is Phase 3 work, pending OD-012.
  */
-const ROOT = path.join(process.cwd(), ".local-storage");
+// Next runs from frontend/, so keep files at the repository root where they already live.
+const ROOT = path.join(
+  process.cwd().endsWith(`${path.sep}frontend`) ? path.resolve(process.cwd(), "..") : process.cwd(),
+  ".local-storage"
+);
 
 const EXT_TO_CONTENT_TYPE: Record<string, string> = {
   ".png": "image/png",
