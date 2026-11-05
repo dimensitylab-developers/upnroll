@@ -7,8 +7,31 @@ const fighterProfileSchema = new Schema(
     slug: { type: String, required: true, unique: true, lowercase: true, trim: true },
     gym: { type: String, default: "", trim: true },
     discipline: { type: String, default: "", trim: true },
-    // Photo and public bio fields remain unbuilt — pending a real storage
-    // provider (OD-012) and no specific requirement for them yet.
+    dateOfBirth: { type: String, default: "", trim: true },
+    age: { type: Number, default: 0 },
+    gender: { type: String, default: "", trim: true },
+    mobile: { type: String, default: "", trim: true },
+    nationality: { type: String, default: "", trim: true },
+    // Aadhaar, medical answers, and the passport photo stay off public pages.
+    aadhaar: { type: String, default: "", trim: true },
+    cityState: { type: String, default: "", trim: true },
+    emergencyContactName: { type: String, default: "", trim: true },
+    emergencyRelationship: { type: String, default: "", trim: true },
+    bloodGroup: { type: String, default: "", trim: true },
+    photoKey: { type: String, default: "", trim: true },
+    academy: { type: String, default: "", trim: true },
+    headCoach: { type: String, default: "", trim: true },
+    beltRank: { type: String, default: "", trim: true },
+    yearsTraining: { type: Number, default: 0 },
+    weightDivision: { type: String, default: "", trim: true },
+    heardAbout: { type: String, default: "", trim: true },
+    hasMedicalCondition: { type: Boolean, default: false },
+    medicalConditionDetail: { type: String, default: "", trim: true },
+    hasAllergies: { type: Boolean, default: false },
+    allergiesDetail: { type: String, default: "", trim: true },
+    takingMedication: { type: Boolean, default: false },
+    medicallyFit: { type: Boolean, default: false },
+    waiverAcceptedAt: { type: Date },
   },
   { timestamps: true }
 );

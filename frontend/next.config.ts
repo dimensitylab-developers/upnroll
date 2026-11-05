@@ -4,6 +4,12 @@ import type { NextConfig } from "next";
 const repoRoot = path.join(__dirname, "..");
 
 const nextConfig: NextConfig = {
+  // Passport photographs travel with the registration server action.
+  experimental: {
+    serverActions: {
+      bodySizeLimit: "3mb",
+    },
+  },
   // Production traces files outside frontend/, including backend/.
   outputFileTracingRoot: repoRoot,
   // One mongoose instance. Bundling it per server chunk drops the connection.

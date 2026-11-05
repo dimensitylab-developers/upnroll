@@ -10,7 +10,9 @@ import { createSession, destroySession, getSession } from "@/server/auth/session
 import { writeAuditLog } from "@/server/audit/log";
 import { checkRateLimit } from "@/server/http/rateLimit";
 import { getClientIp } from "@/server/http/clientIp";
-import { registerSchema, loginSchema } from "./schemas";
+import { loginSchema } from "./schemas";
+import { grapplerFieldIssues, grapplerFromForm, registerSchema, toProfileFields } from "@/features/fighters/grappler-schema";
+import { readProfilePhoto, saveProfilePhoto } from "@/server/services/profilePhoto";
 
 export type AuthActionState = {
   error?: string;
@@ -37,13 +39,21 @@ export async function registerAction(
   }
 
   const parsed = registerSchema.safeParse({
-    displayName: formData.get("displayName"),
+    ...grapplerFromForm(formData),
     email: formData.get("email"),
     password: formData.get("password"),
+    agree: formData.get("agree") ?? "",
   });
   if (!parsed.success) {
     return { fieldErrors: parsed.error.flatten().fieldErrors };
   }
+  const issues = grapplerFieldIssues(parsed.data, { requireAgree: true });
+  if (Object.keys(issues).length > 0) return { fieldErrors: issues };
+
+  const photo = await readProfilePhoto(formData.get("photo"));
+  if ("empty" in photo) return { error: "Add a passport size photograph." };
+  if ("error" in photo) return { error: photo.error };
+
   const { displayName, email, password } = parsed.data;
 
   await connectDB();
@@ -57,6 +67,7 @@ export async function registerAction(
   // Public registration only ever creates FIGHTER accounts — see Part M:
   // admin accounts are created exclusively via scripts/create-admin.ts.
   const user = await User.create({ email, passwordHash, role: "FIGHTER" });
+  const photoKey = await saveProfilePhoto(String(user._id), photo.bytes, photo.ext);
 
   let slug = slugify(displayName);
   for (let attempt = 0; attempt < 5; attempt++) {
@@ -64,7 +75,14 @@ export async function registerAction(
     if (!taken) break;
     slug = slugify(displayName);
   }
-  await FighterProfile.create({ userId: user._id, displayName, slug });
+  await FighterProfile.create({
+    userId: user._id,
+    slug,
+    discipline: "No-Gi",
+    photoKey,
+    waiverAcceptedAt: new Date(),
+    ...toProfileFields(parsed.data),
+  });
 
   await createSession(String(user._id));
   await writeAuditLog({ actorId: String(user._id), action: "USER_REGISTERED", targetType: "User", targetId: String(user._id) });

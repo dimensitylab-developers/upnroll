@@ -5,6 +5,7 @@ import { listPublished } from "@/server/services/contentService";
 import { listPublishedMedia } from "@/server/services/mediaService";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { HomeGlimpse } from "@/components/home/home-glimpse";
 import { SectionBanner } from "@/components/home/section-banner";
 
 export const dynamic = "force-dynamic";
@@ -87,6 +88,36 @@ export default async function HomePage() {
         </p>
       </section>
 
+      <HomeGlimpse
+        eventSlug={featuredEvent?.slug}
+        fighting={
+          <>
+            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+              {GALLERY.map((shot) => (
+                <figure key={shot.src} className="bg-card border-2 border-black rounded-md overflow-hidden shadow-[6px_6px_0_0_#000]">
+                  <img src={shot.src} alt={shot.alt} className="w-full h-auto" />
+                </figure>
+              ))}
+            </div>
+            {media.length > 0 && (
+              <div className="grid sm:grid-cols-3 gap-4 mt-4">
+                {media.map((item) => (
+                  <figure key={String(item._id)} className="bg-card border-2 border-black rounded-md overflow-hidden shadow-[6px_6px_0_0_#000]">
+                    <img src={item.externalUrl} alt={item.caption} className="w-full h-auto" />
+                    <figcaption className="px-3 py-2 text-sm">{item.caption}</figcaption>
+                  </figure>
+                ))}
+              </div>
+            )}
+          </>
+        }
+        happy={
+          <figure className="bg-card border-2 border-black rounded-md overflow-hidden shadow-[6px_6px_0_0_#000]">
+            <img src="/gallery/happy-medal.jpg" alt="Fighter with a medal beside a friend at the event" className="w-full h-auto" />
+          </figure>
+        }
+      />
+
       {featuredEvent && (
         <section className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pb-14">
           <SectionBanner>Featured event</SectionBanner>
@@ -146,35 +177,6 @@ export default async function HomePage() {
         </section>
       )}
 
-      <section className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pb-14">
-        <SectionBanner>Fighting</SectionBanner>
-        <p className="text-sm text-muted-foreground mb-4">These photos will become the fighting carousel once that is decided.</p>
-        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
-          {GALLERY.map((shot) => (
-            <figure key={shot.src} className="bg-card border-2 border-black rounded-md overflow-hidden shadow-[6px_6px_0_0_#000]">
-              <img src={shot.src} alt={shot.alt} className="w-full h-auto" />
-            </figure>
-          ))}
-        </div>
-        {media.length > 0 && (
-          <div className="grid sm:grid-cols-3 gap-4 mt-4">
-            {media.map((item) => (
-              <figure key={String(item._id)} className="bg-card border-2 border-black rounded-md overflow-hidden shadow-[6px_6px_0_0_#000]">
-                <img src={item.externalUrl} alt={item.caption} className="w-full h-auto" />
-                <figcaption className="px-3 py-2 text-sm">{item.caption}</figcaption>
-              </figure>
-            ))}
-          </div>
-        )}
-      </section>
-
-      <section className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pb-14">
-        <SectionBanner>Happy moments</SectionBanner>
-        <figure className="bg-card border-2 border-black rounded-md overflow-hidden shadow-[6px_6px_0_0_#000]">
-          <img src="/gallery/happy-medal.jpg" alt="Fighter with a medal beside a friend at the event" className="w-full h-auto" />
-        </figure>
-      </section>
-
       {topRankings.length > 0 && (
         <section className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pb-14">
           <div className="flex items-end justify-between gap-4 mb-2">
@@ -204,10 +206,10 @@ export default async function HomePage() {
             <Link href="/faq" className="text-sm underline mb-6">View all</Link>
           </div>
           <div className="grid sm:grid-cols-2 gap-4">
-            {faqs.slice(0, 4).map((f) => (
+            {faqs.map((f) => (
               <div key={String(f._id)} className="manga-panel p-4">
                 <p className="font-semibold">{f.title}</p>
-                <p className="text-sm text-muted-foreground mt-1 line-clamp-2">{f.body}</p>
+                <p className="text-sm text-muted-foreground mt-1 whitespace-pre-wrap">{f.body}</p>
               </div>
             ))}
           </div>

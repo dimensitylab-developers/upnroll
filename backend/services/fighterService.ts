@@ -5,17 +5,68 @@ import { writeAuditLog } from "@/server/audit/log";
 import { listMatchesForFighter } from "./matchService";
 import { NotFoundError } from "@/server/http/errors";
 
-export async function updateFighterProfile(
-  userId: string,
-  input: { displayName: string; gym?: string; discipline?: string }
-) {
+export type FighterDetailsInput = {
+  displayName: string;
+  gym: string;
+  dateOfBirth: string;
+  age: number;
+  gender: string;
+  mobile: string;
+  nationality: string;
+  aadhaar: string;
+  cityState: string;
+  emergencyContactName: string;
+  emergencyRelationship: string;
+  bloodGroup: string;
+  academy: string;
+  headCoach: string;
+  beltRank: string;
+  yearsTraining: number;
+  weightDivision: string;
+  heardAbout: string;
+  hasMedicalCondition: boolean;
+  medicalConditionDetail: string;
+  hasAllergies: boolean;
+  allergiesDetail: string;
+  takingMedication: boolean;
+  medicallyFit: boolean;
+  photoKey?: string;
+  waiverAcceptedAt?: Date;
+  discipline?: string;
+};
+
+export async function updateFighterProfile(userId: string, input: FighterDetailsInput) {
   await connectDB();
   const profile = await FighterProfile.findOne({ userId });
   if (!profile) throw new NotFoundError("Fighter profile not found.");
 
   profile.displayName = input.displayName;
-  if (input.gym !== undefined) profile.gym = input.gym;
-  if (input.discipline !== undefined) profile.discipline = input.discipline;
+  profile.gym = input.gym;
+  profile.dateOfBirth = input.dateOfBirth;
+  profile.age = input.age;
+  profile.gender = input.gender;
+  profile.mobile = input.mobile;
+  profile.nationality = input.nationality;
+  profile.aadhaar = input.aadhaar;
+  profile.cityState = input.cityState;
+  profile.emergencyContactName = input.emergencyContactName;
+  profile.emergencyRelationship = input.emergencyRelationship;
+  profile.bloodGroup = input.bloodGroup;
+  profile.academy = input.academy;
+  profile.headCoach = input.headCoach;
+  profile.beltRank = input.beltRank;
+  profile.yearsTraining = input.yearsTraining;
+  profile.weightDivision = input.weightDivision;
+  profile.heardAbout = input.heardAbout;
+  profile.hasMedicalCondition = input.hasMedicalCondition;
+  profile.medicalConditionDetail = input.medicalConditionDetail;
+  profile.hasAllergies = input.hasAllergies;
+  profile.allergiesDetail = input.allergiesDetail;
+  profile.takingMedication = input.takingMedication;
+  profile.medicallyFit = input.medicallyFit;
+  if (input.photoKey) profile.photoKey = input.photoKey;
+  if (input.waiverAcceptedAt) profile.waiverAcceptedAt = input.waiverAcceptedAt;
+  if (input.discipline) profile.discipline = input.discipline;
   await profile.save();
 
   await writeAuditLog({ actorId: userId, action: "FIGHTER_PROFILE_UPDATED", targetType: "FighterProfile", targetId: String(profile._id) });
@@ -36,7 +87,7 @@ export async function countFighters() {
 
 export async function listPublicFighters() {
   await connectDB();
-  return FighterProfile.find().sort({ displayName: 1 }).lean();
+  return FighterProfile.find().sort({ displayName: 1 }).select("displayName slug gym discipline").lean();
 }
 
 export async function getPublicFighterBySlug(slug: string) {
@@ -54,7 +105,11 @@ export async function getPublicFighterBySlug(slug: string) {
   const losses = decided.length - wins;
 
   return {
-    profile,
+    profile: {
+      displayName: profile.displayName,
+      gym: profile.gym,
+      discipline: profile.discipline,
+    },
     record: { wins, losses },
     history: decided,
   };

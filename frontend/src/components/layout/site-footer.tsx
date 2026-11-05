@@ -24,6 +24,9 @@ export function SiteFooter() {
               {link.label}
             </Link>
           ))}
+          <span className="text-xs text-muted-foreground">up.n.roll</span>
+          <a href="mailto:info.upnroll@gmail.com" className="text-xs text-muted-foreground">info.upnroll@gmail.com</a>
+          <a href="tel:+917738719800" className="text-xs text-muted-foreground">+91 7738719800</a>
         </nav>
         <div className="flex flex-col items-end gap-1 sm:ml-auto">
           <FounderCredit />

@@ -11,8 +11,11 @@ export default async function PublicRankingsPage() {
     <main className="min-h-screen bg-background halftone-bg px-4 py-16">
       <div className="max-w-2xl mx-auto">
         <h1 className="text-display text-4xl font-semibold mb-2">Rankings</h1>
-        <p className="text-sm text-muted-foreground mb-8">
+        <p className="text-sm text-muted-foreground mb-3">
           Points formula is a placeholder (3 per win) pending an approved ranking methodology — not official.
+        </p>
+        <p className="text-sm mb-8">
+          <Link href="/rankings/demo" className="underline">See how seeding works</Link>
         </p>
         <Table>
           <TableHeader>

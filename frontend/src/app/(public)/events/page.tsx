@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { listPublicEvents } from "@/server/services/eventService";
 import { Badge } from "@/components/ui/badge";
+import { PastNogiCard } from "@/components/events/past-nogi-card";
 
 // Event listings are live data, not build-time content — never statically frozen.
 export const dynamic = "force-dynamic";
@@ -10,9 +11,9 @@ export default async function PublicEventsPage() {
 
   return (
     <main className="min-h-screen bg-background halftone-bg px-4 py-16">
-      <div className="max-w-3xl mx-auto">
+      <div className="max-w-6xl mx-auto">
         <h1 className="text-display text-4xl font-semibold mb-8">Events</h1>
-        <div className="grid sm:grid-cols-2 gap-4">
+        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
           {events.map((e) => (
             <Link key={String(e._id)} href={`/events/${e.slug}`} className="manga-panel p-5">
               <p className="font-semibold">{e.name}</p>
@@ -22,6 +23,7 @@ export default async function PublicEventsPage() {
           ))}
           {events.length === 0 && <p className="text-sm text-muted-foreground">No events published yet.</p>}
         </div>
+        <PastNogiCard />
       </div>
     </main>
   );
