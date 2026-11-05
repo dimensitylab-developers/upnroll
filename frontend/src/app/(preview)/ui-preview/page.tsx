@@ -23,7 +23,7 @@ import { MotionFeedback } from "@/components/preview/sections/motion-feedback";
 import { ResponsiveBehavior } from "@/components/preview/sections/responsive-behavior";
 
 export const metadata: Metadata = {
-  title: "Up 'n Roll — UI Preview Showroom",
+  title: { absolute: "Up 'n Roll — UI Preview Showroom" },
   robots: { index: false, follow: false },
 };
 

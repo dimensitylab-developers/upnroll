@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { getSession } from "@/server/auth/session";
 import { Button } from "@/components/ui/button";
+import { BrandMark } from "./brand";
 import { MobileNavToggle } from "./mobile-nav-toggle";
 
 const NAV_LINKS = [
@@ -18,8 +19,9 @@ export async function SiteHeader() {
     <header className="sticky top-0 z-40 bg-background/95 backdrop-blur-sm border-b border-black/10 relative">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
-          <Link href="/" className="text-display text-xl font-semibold shrink-0">
-            Up &apos;n Roll
+          <Link href="/" className="flex items-center gap-2 shrink-0">
+            <BrandMark />
+            <span className="text-display text-xl font-semibold">Up &apos;n Roll</span>
           </Link>
 
           <nav aria-label="Primary" className="hidden md:flex items-center gap-6">

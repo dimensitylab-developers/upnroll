@@ -24,8 +24,12 @@ export default async function HomePage() {
       <section className="speed-lines border-b border-black/10">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-20 sm:py-28">
           <p className="text-xs uppercase tracking-widest text-brand-red font-semibold mb-4">The Underground Arena</p>
-          <h1 className="text-display text-5xl sm:text-7xl font-semibold leading-[0.95] max-w-3xl">
-            Up &apos;n Roll
+          <h1 className="max-w-xl">
+            <img
+              src="/logo-wordmark.png"
+              alt="Up 'n Roll"
+              className="w-full h-auto"
+            />
           </h1>
           <p className="text-muted-foreground mt-6 max-w-xl text-lg">
             Combat sports tournaments, run properly. Register for a division, track your record,
