@@ -1,11 +1,13 @@
 import { connectDB } from "@/server/db/connect";
 import { Registration, type RegistrationDoc } from "@/server/models/Registration";
 import { Division } from "@/server/models/Division";
+import { Event } from "@/server/models/Event";
 import { RegistrationRequest } from "@/server/models/RegistrationRequest";
 import { User } from "@/server/models/User";
 import { getEmailAdapter } from "@/server/email/console";
 import { writeAuditLog } from "@/server/audit/log";
 import { isActiveRegistration, ACTIVE_REGISTRATION_STATUSES } from "./registrationStateMachine";
+import { refundPercentForCancellation } from "./tournamentRules";
 import { NotFoundError, ConflictError, ValidationError } from "@/server/http/errors";
 
 export async function createRequest(
@@ -73,8 +75,13 @@ export async function decideRequest(adminId: string, requestId: string, decision
     if (registration) {
       try {
         if (updated.type === "CANCELLATION") {
+          const event = await Event.findById(registration.eventId).lean();
+          const decidedAt = new Date();
+          const refundPercent = event ? refundPercentForCancellation(event.startDate, decidedAt) : 0;
+          updated.refundPercent = refundPercent;
+          await updated.save();
           registration.status = "CANCELLED";
-          registration.statusHistory.push({ status: "CANCELLED", at: new Date() });
+          registration.statusHistory.push({ status: "CANCELLED", at: decidedAt });
           await registration.save();
         } else if (updated.type === "TRANSFER" && updated.requestedDivisionId) {
           const targetDivision = await Division.findById(updated.requestedDivisionId);
@@ -124,7 +131,7 @@ export async function decideRequest(adminId: string, requestId: string, decision
       to: user.email,
       subject: `${updated.type === "CANCELLATION" ? "Cancellation" : "Transfer"} request ${decision === "APPROVED" ? "approved" : "rejected"}`,
       body: decision === "APPROVED"
-        ? `Your ${updated.type.toLowerCase()} request has been approved.${note ? ` Note: ${note}` : ""}`
+        ? `Your ${updated.type.toLowerCase()} request has been approved.${updated.type === "CANCELLATION" ? ` Refund: ${updated.refundPercent ?? 0}%.` : ""}${note ? ` Note: ${note}` : ""}`
         : `Your ${updated.type.toLowerCase()} request was rejected. Reason: ${note || "No reason provided."}`,
     });
   }

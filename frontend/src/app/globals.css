@@ -222,8 +222,25 @@
     100% { transform: translateX(280%); }
   }
 
+  .chatbot-pop {
+    transform-origin: 100% 50%;
+    animation: chatbot-pop 0.5s cubic-bezier(0.2, 0.9, 0.2, 1.15) both;
+  }
+  .chatbot-float {
+    animation: chatbot-float 2.6s ease-in-out 0.5s infinite;
+  }
+  @keyframes chatbot-pop {
+    0% { opacity: 0; transform: translateY(10px) scale(0.7); }
+    100% { opacity: 1; transform: translateY(0) scale(1); }
+  }
+  @keyframes chatbot-float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-5px); }
+  }
+
   @media (prefers-reduced-motion: reduce) {
     .live-pulse { animation: none; }
     .upnroll-loader-bar { animation: none; width: 100%; }
+    .chatbot-pop, .chatbot-float { animation: none; }
   }
 }

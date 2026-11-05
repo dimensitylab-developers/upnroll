@@ -15,6 +15,7 @@ const registrationRequestSchema = new Schema(
     reviewerId: { type: Schema.Types.ObjectId, ref: "User", default: null },
     reviewNote: { type: String, default: "" },
     reviewedAt: { type: Date, default: null },
+    refundPercent: { type: Number, default: null },
   },
   { timestamps: true }
 );

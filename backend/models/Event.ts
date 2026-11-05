@@ -13,6 +13,7 @@ const eventSchema = new Schema(
     registrationOpensAt: { type: Date, required: true },
     registrationClosesAt: { type: Date, required: true },
     status: { type: String, enum: EVENT_STATUSES, required: true, default: "DRAFT" },
+    matCount: { type: Number, required: true, default: 1, min: 1 },
     paymentInstructions: {
       feeMinorUnits: { type: Number, required: true, min: 0 },
       currency: { type: String, required: true, default: "INR" },

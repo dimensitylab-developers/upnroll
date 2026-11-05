@@ -44,7 +44,7 @@ export default async function FighterProfilePage() {
     <div className="manga-panel p-6 sm:p-8 max-w-4xl mx-auto">
       <h1 className="text-display text-2xl font-semibold mb-2">Your profile</h1>
       <p className="text-sm text-muted-foreground mb-6">
-        Belt, years training, academy, and coach are what the seeding board reads. Aadhaar and medical answers stay on this page.
+        Belt, years training, academy, and coach are what the seeding board reads. Aadhaar and medical answers stay off public pages. Organizers see the full form in the admin panel.
       </p>
       <ProfileForm
         defaults={defaults}

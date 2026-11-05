@@ -2,6 +2,11 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getEventForAdmin, listDivisionsForEvent } from "@/server/services/eventService";
 import { EventStatusForm } from "@/features/events/event-status-form";
+import { MatCountForm } from "@/features/events/mat-count-form";
+import { listRegistrationsForEvent } from "@/server/services/registrationService";
+import { isActiveRegistration } from "@/server/services/registrationStateMachine";
+import { WithdrawButton } from "@/features/registrations/withdraw-button";
+import { FighterRecord } from "@/features/admin/fighter-record";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 
@@ -13,10 +18,13 @@ export default async function AdminEventDetailPage({ params }: { params: Promise
   } catch {
     notFound();
   }
-  const divisions = await listDivisionsForEvent(id);
+  const [divisions, registrations] = await Promise.all([
+    listDivisionsForEvent(id),
+    listRegistrationsForEvent(id),
+  ]);
 
   return (
-    <div className="max-w-3xl mx-auto px-4 sm:px-6 space-y-8">
+    <div className="max-w-5xl mx-auto px-4 sm:px-6 space-y-8">
       <div className="manga-panel p-8">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-2">
           <h1 className="text-display text-2xl font-semibold">{event.name}</h1>
@@ -24,6 +32,9 @@ export default async function AdminEventDetailPage({ params }: { params: Promise
         </div>
         <p className="text-sm text-muted-foreground mb-4">{event.slug} · {event.venue || "No venue set"}</p>
         <EventStatusForm eventId={id} currentStatus={event.status} />
+        <div className="mt-6">
+          <MatCountForm eventId={id} matCount={event.matCount ?? 1} />
+        </div>
       </div>
 
       <div className="flex flex-wrap gap-3">
@@ -42,6 +53,32 @@ export default async function AdminEventDetailPage({ params }: { params: Promise
             </div>
           ))}
           {divisions.length === 0 && <p className="text-sm text-muted-foreground">No divisions yet.</p>}
+        </div>
+      </div>
+
+      <div>
+        <h2 className="text-display text-xl font-semibold mb-3">Registrations</h2>
+        <p className="text-sm text-muted-foreground mb-3">
+          The full form is listed with each entry. Withdraw an incomplete, abandoned, or unpaid registration so the bracket stays intact.
+        </p>
+        <div className="space-y-4">
+          {registrations.map((registration) => (
+            <article key={String(registration._id)} className="manga-panel p-4 sm:p-5 space-y-4">
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 text-sm">
+                <span className="font-medium">{registration.fighterName} — {registration.divisionName}</span>
+                <span className="flex items-center gap-3">
+                  <span className="text-muted-foreground">{registration.status.replaceAll("_", " ")}</span>
+                  {isActiveRegistration(registration.status) && <WithdrawButton registrationId={String(registration._id)} />}
+                </span>
+              </div>
+              {registration.fighter ? (
+                <FighterRecord fighter={registration.fighter} />
+              ) : (
+                <p className="text-sm text-muted-foreground">This registration has no fighter profile yet.</p>
+              )}
+            </article>
+          ))}
+          {registrations.length === 0 && <p className="text-sm text-muted-foreground">No registrations yet.</p>}
         </div>
       </div>
     </div>

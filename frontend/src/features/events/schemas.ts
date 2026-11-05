@@ -17,6 +17,7 @@ export const createEventSchema = z
     registrationClosesAt: dateString,
     feeAmount: z.string().trim().regex(/^\d+(\.\d{1,2})?$/, "Enter a valid amount (e.g. 1500 or 1500.00)."),
     currency: z.string().trim().length(3).default("INR"),
+    matCount: z.coerce.number().int().min(1, "Set at least one mat.").default(1),
   })
   .refine((v) => v.registrationOpensAt < v.registrationClosesAt, {
     message: "Registration must open before it closes.",

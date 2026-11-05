@@ -10,6 +10,7 @@ import { Division } from "@/server/models/Division";
 import { writeAuditLog } from "@/server/audit/log";
 import { nextSlot, canCorrectResult } from "./bracketEngine";
 import { NotFoundError, ConflictError, ValidationError } from "@/server/http/errors";
+import { notifyWhatsApp } from "@/server/notifications/whatsapp";
 
 export async function recordMatchResult(adminId: string, matchId: string, winnerRegistrationId: string, method: string) {
   await connectDB();
@@ -141,6 +142,15 @@ export async function updateMatchSchedule(adminId: string, matchId: string, inpu
   if (input.scheduledAt !== undefined) match.scheduledAt = input.scheduledAt;
   if (input.mat !== undefined) match.mat = input.mat;
   await match.save();
+
+  if (match.scheduledAt) {
+    const ids = [match.competitorARegistrationId, match.competitorBRegistrationId].filter(Boolean);
+    const registrations = await Registration.find({ _id: { $in: ids } }).lean();
+    const profiles = await FighterProfile.find({ userId: { $in: registrations.map((r) => r.userId) } }).lean();
+    const when = new Date(match.scheduledAt).toLocaleString("en-IN", { dateStyle: "medium", timeStyle: "short" });
+    const body = `Your match is on mat ${match.mat || "TBD"} at ${when}. Warm up 10 to 15 minutes before you are called.`;
+    await Promise.all(profiles.map((profile) => notifyWhatsApp({ to: profile.mobile ?? "", body })));
+  }
 
   await writeAuditLog({ actorId: adminId, action: "MATCH_SCHEDULE_UPDATED", targetType: "Match", targetId: matchId });
   return match;

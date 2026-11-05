@@ -46,6 +46,10 @@ export function CreateEventForm() {
         <Label htmlFor="currency" className="mb-1.5 block">Currency</Label>
         <Input id="currency" name="currency" defaultValue="INR" required />
       </div>
+      <div>
+        <Label htmlFor="matCount" className="mb-1.5 block">Mats</Label>
+        <Input id="matCount" name="matCount" type="number" min={1} defaultValue={2} required />
+      </div>
       <Button type="submit" className="sm:col-span-2" disabled={pending}>
         {pending ? "Creating…" : "Create event"}
       </Button>

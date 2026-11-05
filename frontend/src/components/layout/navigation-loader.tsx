@@ -3,11 +3,13 @@
 import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
 import { PageLoader } from "./page-loader";
+import { isPageLoaderSkipped } from "./page-loader-skip";
 
 const SHOW_DELAY_MS = 150;
 const HIDE_DELAY_MS = 280;
 
 function shouldTrack(headers: Headers) {
+  if (headers.has("next-action") && isPageLoaderSkipped()) return false;
   if (headers.get("next-hmr-refresh")) return false;
   if (headers.get("next-router-prefetch") === "1") return false;
   if (headers.get("next-router-segment-prefetch") === "1") return false;
