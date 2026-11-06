@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { requireRole } from "@/server/auth/session";
 import { connectDB } from "@/server/db/connect";
 import { FighterProfile } from "@/server/models/FighterProfile";
-import { getStorageAdapter } from "@/server/storage/local-disk";
+import { getStorageAdapter } from "@/server/storage/factory";
 import { fail } from "@/server/http/response";
 
 export async function GET(_request: Request, { params }: { params: Promise<{ userId: string }> }) {

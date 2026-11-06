@@ -1,5 +1,5 @@
 import "server-only";
-import { getStorageAdapter } from "@/server/storage/local-disk";
+import { getStorageAdapter } from "@/server/storage/factory";
 import { detectImageType, type ImageContentType } from "@/features/payments/file-validation";
 import { assertFighter, type Actor } from "@/server/auth/actor";
 

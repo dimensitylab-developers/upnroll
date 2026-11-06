@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { actorFromSession, getSession } from "@/server/auth/session";
 import { getFighterProfile } from "@/server/services/fighterService";
-import { getStorageAdapter } from "@/server/storage/local-disk";
+import { getStorageAdapter } from "@/server/storage/factory";
 
 export async function GET() {
   const session = await getSession();

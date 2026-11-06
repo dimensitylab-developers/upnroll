@@ -60,7 +60,7 @@ vi.mock("@/server/models/Bracket", () => ({ Bracket: { find: () => findChain([])
 vi.mock("@/server/models/AuditLog", () => ({ AuditLog: { find: () => findChain([]) } }));
 vi.mock("@/server/models/ContentEntry", () => ({ ContentEntry: { find: () => findChain([]) } }));
 vi.mock("@/server/models/MediaAsset", () => ({ MediaAsset: { find: () => findChain([]) } }));
-vi.mock("@/server/storage/local-disk", () => ({ getStorageAdapter: () => ({ get: vi.fn(), put: vi.fn() }) }));
+vi.mock("@/server/storage/factory", () => ({ getStorageAdapter: () => ({ get: vi.fn(), put: vi.fn(), open: vi.fn(), delete: vi.fn() }) }));
 vi.mock("@/server/email/console", () => ({ getEmailAdapter: () => ({ send: vi.fn() }) }));
 vi.mock("@/server/audit/log", () => ({
   writeAuditLog: vi.fn(),

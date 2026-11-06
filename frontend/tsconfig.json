@@ -22,7 +22,8 @@
     "paths": {
       "@/server/*": ["../backend/*"],
       "@/*": ["./src/*"],
-      "nodemailer": ["./node_modules/nodemailer"]
+      "nodemailer": ["./node_modules/nodemailer"],
+      "mongodb": ["./node_modules/mongodb"]
     }
   },
   "include": [

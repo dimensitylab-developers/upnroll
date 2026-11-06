@@ -7,7 +7,7 @@ import { Event } from "@/server/models/Event";
 import { Division } from "@/server/models/Division";
 import { PaymentSubmission, type PaymentSubmissionDoc } from "@/server/models/PaymentSubmission";
 import { User } from "@/server/models/User";
-import { getStorageAdapter } from "@/server/storage/local-disk";
+import { getStorageAdapter } from "@/server/storage/factory";
 import { getEmailAdapter } from "@/server/email/console";
 import { writeAuditLog } from "@/server/audit/log";
 import { validateScreenshotMeta } from "@/features/payments/file-validation";

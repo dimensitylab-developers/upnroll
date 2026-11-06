@@ -1,13 +1,14 @@
 import "server-only";
-import { mkdir, readFile, writeFile, unlink } from "node:fs/promises";
+import { createReadStream } from "node:fs";
+import { mkdir, readFile, writeFile, unlink, stat } from "node:fs/promises";
 import path from "node:path";
-import type { StorageAdapter } from "./types";
-import { ValidationError } from "@/server/http/errors";
+import type { StorageAdapter, StorageOpenResult, StoragePutOptions } from "./types";
+import { isGridFsKey } from "./keys";
+import { NotFoundError, ValidationError } from "@/server/http/errors";
 
 /**
  * Dev-only StorageAdapter: writes to a gitignored local folder.
  * Keys are resolved inside ROOT before any filesystem call.
- * A real private-storage provider is Phase 3 work, pending OD-012.
  */
 const ROOT = path.join(
   process.cwd().endsWith(`${path.sep}frontend`) ? path.resolve(process.cwd(), "..") : process.cwd(),
@@ -22,7 +23,7 @@ const EXT_TO_CONTENT_TYPE: Record<string, string> = {
 };
 
 export function resolveStoragePath(key: string): string {
-  if (!key || key.includes("\0") || path.isAbsolute(key)) {
+  if (!key || key.includes("\0") || path.isAbsolute(key) || isGridFsKey(key)) {
     throw new ValidationError("Invalid storage key.");
   }
   const resolved = path.resolve(ROOT, key);
@@ -34,7 +35,7 @@ export function resolveStoragePath(key: string): string {
 }
 
 export class LocalDiskStorageAdapter implements StorageAdapter {
-  async put(key: string, data: Buffer, _contentType?: string): Promise<string> {
+  async put(key: string, data: Buffer, _contentType?: string, _options?: StoragePutOptions): Promise<string> {
     const filePath = resolveStoragePath(key);
     await mkdir(path.dirname(filePath), { recursive: true });
     await writeFile(filePath, data);
@@ -43,9 +44,34 @@ export class LocalDiskStorageAdapter implements StorageAdapter {
 
   async get(key: string): Promise<{ data: Buffer; contentType: string }> {
     const filePath = resolveStoragePath(key);
-    const data = await readFile(filePath);
+    let data: Buffer;
+    try {
+      data = await readFile(filePath);
+    } catch (err) {
+      const code = err && typeof err === "object" && "code" in err ? (err as NodeJS.ErrnoException).code : undefined;
+      if (code === "ENOENT") throw new NotFoundError("Stored file not found.");
+      throw err;
+    }
     const ext = path.extname(key).toLowerCase();
     return { data, contentType: EXT_TO_CONTENT_TYPE[ext] ?? "application/octet-stream" };
+  }
+
+  async open(key: string): Promise<StorageOpenResult> {
+    const filePath = resolveStoragePath(key);
+    let length: number;
+    try {
+      length = (await stat(filePath)).size;
+    } catch (err) {
+      const code = err && typeof err === "object" && "code" in err ? (err as NodeJS.ErrnoException).code : undefined;
+      if (code === "ENOENT") throw new NotFoundError("Stored file not found.");
+      throw err;
+    }
+    const ext = path.extname(key).toLowerCase();
+    return {
+      stream: createReadStream(filePath),
+      contentType: EXT_TO_CONTENT_TYPE[ext] ?? "application/octet-stream",
+      length,
+    };
   }
 
   async getSignedUrl(key: string): Promise<string> {
@@ -57,8 +83,4 @@ export class LocalDiskStorageAdapter implements StorageAdapter {
     const filePath = resolveStoragePath(key);
     await unlink(filePath).catch(() => undefined);
   }
-}
-
-export function getStorageAdapter(): StorageAdapter {
-  return new LocalDiskStorageAdapter();
 }
