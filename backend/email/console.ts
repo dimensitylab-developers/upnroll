@@ -1,4 +1,7 @@
+import "server-only";
 import type { EmailAdapter } from "./types";
+import { isProductionRuntime, requireSmtpSettings } from "./smtp-config";
+import { createSmtpAdapter } from "./smtp";
 
 /** Dev-only EmailAdapter: logs instead of sending. No email is actually delivered. */
 export class ConsoleEmailAdapter implements EmailAdapter {
@@ -8,5 +11,6 @@ export class ConsoleEmailAdapter implements EmailAdapter {
 }
 
 export function getEmailAdapter(): EmailAdapter {
-  return new ConsoleEmailAdapter();
+  if (!isProductionRuntime()) return new ConsoleEmailAdapter();
+  return createSmtpAdapter(requireSmtpSettings());
 }

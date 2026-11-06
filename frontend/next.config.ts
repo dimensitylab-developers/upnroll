@@ -14,7 +14,7 @@ const nextConfig: NextConfig = {
   // Production traces files outside frontend/, including backend/.
   outputFileTracingRoot: repoRoot,
   // One mongoose instance. Bundling it per server chunk drops the connection.
-  serverExternalPackages: ["mongoose"],
+  serverExternalPackages: ["mongoose", "nodemailer"],
   async headers() {
     return [
       {

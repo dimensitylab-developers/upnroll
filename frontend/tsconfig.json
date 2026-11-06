@@ -21,7 +21,8 @@
     "baseUrl": ".",
     "paths": {
       "@/server/*": ["../backend/*"],
-      "@/*": ["./src/*"]
+      "@/*": ["./src/*"],
+      "nodemailer": ["./node_modules/nodemailer"]
     }
   },
   "include": [
