@@ -12,7 +12,7 @@ const NAV_LINKS = [
   { href: "/fighters", label: "Grapplers" },
   { href: "/rankings", label: "Rankings" },
   { href: "/faq", label: "FAQ" },
-  { href: "/about", label: "About" },
+  { href: "/about", label: "About Us" },
   { href: "/store", label: "Store" },
 ];
 
@@ -22,7 +22,7 @@ export async function SiteHeader() {
   const openEvent = events.find((event) => event.status === "REGISTRATION_OPEN") ?? events[0] ?? null;
 
   return (
-    <header className="sticky top-0 z-40 bg-background halftone-bg border-t-2 border-t-black border-b-2 border-b-brand-red relative">
+    <header className="sticky top-0 z-40 relative border-t-2 border-t-black border-b-2 border-b-brand-red bg-background halftone-bg">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center gap-3 min-h-16 py-3">
           <HeaderLockup />
@@ -42,8 +42,8 @@ export async function SiteHeader() {
               <Link href={dashboardHref} className={`${comicCell} ${comicCellActive}`}>Dashboard</Link>
             ) : (
               <>
-                <Link href="/login" className={`${comicCell} ${comicCellIdle}`}>Sign in</Link>
-                <Link href="/register" className={`${comicCell} ${comicCellActive}`}>Register</Link>
+                <Link href="/login" className={`${comicCell} ${comicCellIdle}`}>Login</Link>
+                <Link href="/register" className={`${comicCell} ${comicCellActive}`}>Sign up</Link>
               </>
             )}
           </div>
@@ -66,7 +66,7 @@ export async function SiteHeader() {
               {" · "}
               {new Date(openEvent.startDate).toLocaleDateString("en-IN", { day: "numeric", month: "long", year: "numeric" })}
             </p>
-            <Link href="/register" className="font-semibold text-brand-red">Register</Link>
+            <Link href="/register" className="font-semibold text-brand-red">Sign up</Link>
           </div>
         </div>
       )}

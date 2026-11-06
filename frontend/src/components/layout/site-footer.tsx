@@ -7,7 +7,7 @@ const FOOTER_LINKS = [
   { href: "/fighters", label: "Grapplers" },
   { href: "/rankings", label: "Rankings" },
   { href: "/faq", label: "FAQ" },
-  { href: "/about", label: "About" },
+  { href: "/about", label: "About Us" },
   { href: "/store", label: "Store" },
   { href: "/announcements", label: "Announcements" },
   { href: "/policies", label: "Policies" },
@@ -19,21 +19,21 @@ export function SiteFooter() {
       <div className="max-w-6xl mx-auto pl-4 pr-28 sm:pl-6 lg:pl-8 py-3 flex flex-wrap items-center gap-x-5 gap-y-2">
         <div className="flex items-center gap-2 mr-2">
           <BrandMark className="h-7 w-7" />
-          <span className="text-display text-sm font-semibold">Up &apos;n Roll</span>
+          <span className="bg-white px-1 text-display text-sm font-semibold">Up &apos;n Roll</span>
         </div>
         <nav aria-label="Footer" className="flex flex-wrap items-center gap-x-4 gap-y-1">
           {FOOTER_LINKS.map((link) => (
-            <Link key={link.href} href={link.href} className="text-xs text-muted-foreground">
+            <Link key={link.href} href={link.href} className="bg-white px-1 text-xs text-foreground">
               {link.label}
             </Link>
           ))}
-          <a href="https://www.instagram.com/up.n.roll/" className="text-xs text-muted-foreground">up.n.roll</a>
-          <a href="mailto:info.upnroll@gmail.com" className="text-xs text-muted-foreground">info.upnroll@gmail.com</a>
-          <a href="tel:+917738719800" className="text-xs text-muted-foreground">+91 7738719800</a>
+          <a href="https://www.instagram.com/up.n.roll/" className="bg-white px-1 text-xs text-foreground">up.n.roll</a>
+          <a href="mailto:info.upnroll@gmail.com" className="bg-white px-1 text-xs text-foreground">info.upnroll@gmail.com</a>
+          <a href="tel:+917738719800" className="bg-white px-1 text-xs text-foreground">+91 7738719800</a>
         </nav>
         <div className="flex flex-col items-end gap-1 sm:ml-auto">
-          <FounderCredit />
-          <BuiltBy />
+          <FounderCredit className="bg-white px-1" />
+          <BuiltBy className="bg-white px-1" />
         </div>
       </div>
     </footer>

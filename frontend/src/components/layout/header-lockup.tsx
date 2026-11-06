@@ -32,7 +32,7 @@ export function HeaderLockup() {
   if (!showName) return null;
 
   return (
-    <Link href="/" aria-label="Up 'n Roll" className="shrink-0">
+    <Link href="/" aria-label="Up 'n Roll" className="shrink-0 bg-white px-2 py-1">
       <img src="/logo-wordmark.png" alt="" className="h-11 w-auto" />
     </Link>
   );

@@ -189,10 +189,10 @@
     );
   }
 
-  /* Halftone dot texture — the TechBlitz background structure, carried over as-is */
+  /* Screentone, opened up so type stays readable on the page. */
   .halftone-bg {
-    background-image: radial-gradient(oklch(0 0 0 / 14%) 1px, transparent 1px);
-    background-size: 8px 8px;
+    background-image: radial-gradient(#000 1px, transparent 1.15px);
+    background-size: 12px 12px;
   }
 
   .checker-strip {

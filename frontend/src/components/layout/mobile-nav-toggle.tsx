@@ -30,7 +30,7 @@ export function MobileNavToggle({
         {open ? <X className="size-4" /> : <Menu className="size-4" />}
       </button>
       {open && (
-        <div className="absolute left-0 right-0 top-full bg-background halftone-bg border-b-2 border-b-brand-red px-4 py-4">
+        <div className="absolute left-0 right-0 top-full border-b-2 border-b-brand-red bg-background px-4 py-4 halftone-bg">
           <nav aria-label="Primary mobile" className="flex flex-col gap-2">
             {event && (
               <Link href={event.href} className={`${comicCell} ${comicCellActive}`} onClick={() => setOpen(false)}>
@@ -58,10 +58,10 @@ export function MobileNavToggle({
             ) : (
               <>
                 <Link href="/login" className={`${comicCell} ${comicCellIdle}`} onClick={() => setOpen(false)}>
-                  Sign in
+                  Login
                 </Link>
                 <Link href="/register" className={`${comicCell} ${comicCellActive}`} onClick={() => setOpen(false)}>
-                  Register
+                  Sign up
                 </Link>
               </>
             )}
