@@ -1,0 +1,27 @@
+name: ci
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: frontend
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+      - run: npm ci
+      - run: node ./scripts/ensure-root-modules.mjs
+      - run: npx tsc --noEmit --pretty false
+      - run: npm test
+      - run: npm run build
+        env:
+          MONGODB_URI: mongodb://127.0.0.1:27017/upnroll
+          SESSION_SECRET: ci-session-secret-must-be-32-characters

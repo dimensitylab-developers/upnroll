@@ -8,6 +8,7 @@ import { Bracket } from "@/server/models/Bracket";
 import { Registration } from "@/server/models/Registration";
 import { FighterProfile } from "@/server/models/FighterProfile";
 import { Event } from "@/server/models/Event";
+import { PUBLIC_EVENT_STATUSES } from "./eventService";
 import { Division } from "@/server/models/Division";
 import { writeAuditLog } from "@/server/audit/log";
 import { nextSlot, canCorrectResult } from "./bracketEngine";
@@ -256,7 +257,7 @@ export async function listPublicMatchHistory(userId: string): Promise<{
 
 export async function listPublicSchedule(eventSlug: string) {
   await connectDB();
-  const event = await Event.findOne({ slug: eventSlug }).lean();
+  const event = await Event.findOne({ slug: eventSlug, status: { $in: PUBLIC_EVENT_STATUSES } }).lean();
   if (!event) throw new NotFoundError("Event not found.");
 
   const publishedBracketIds = (await Bracket.find({ eventId: event._id, status: "PUBLISHED" }).lean()).map((b) => b._id);

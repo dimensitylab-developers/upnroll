@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "predev": "ln -sfn frontend/node_modules ../node_modules",
+    "predev": "node ./scripts/ensure-root-modules.mjs",
     "dev": "next dev --webpack",
     "build": "next build --webpack",
     "start": "next start",
