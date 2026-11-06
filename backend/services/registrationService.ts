@@ -168,7 +168,8 @@ export async function listRecentRegistrationsForAdmin(actor: Actor, limit = 5) {
   }));
 }
 
-export async function listOpenDivisionsForRegistration() {
+export async function listOpenDivisionsForRegistration(actor: Actor) {
+  assertFighter(actor);
   await connectDB();
   const now = new Date();
   const events = await Event.find({

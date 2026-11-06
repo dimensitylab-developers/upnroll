@@ -1,11 +1,14 @@
 import { connection } from "next/server";
+import { actorFromSession, getSession } from "@/server/auth/session";
 import { listOpenDivisionsForRegistration } from "@/server/services/registrationService";
 import { NewRegistrationForm } from "@/features/registrations/new-registration-form";
 
 export default async function NewRegistrationPage() {
   // Open divisions depend on the current time. Read the request first so prerender does not freeze that clock.
   await connection();
-  const divisions = await listOpenDivisionsForRegistration();
+  const session = await getSession();
+  if (!session) return null; // the fighter layout already redirects unauthenticated visitors to /login
+  const divisions = await listOpenDivisionsForRegistration(actorFromSession(session));
 
   return (
     <div className="manga-panel p-8 max-w-xl mx-auto">

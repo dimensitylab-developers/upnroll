@@ -87,6 +87,11 @@ describe("protected reads and mutations", () => {
     await expect(getFighterProfile(admin)).rejects.toBeInstanceOf(ForbiddenError);
   });
 
+  it("rejects an admin listing divisions open for registration", async () => {
+    const { listOpenDivisionsForRegistration } = await import("./registrationService");
+    await expect(listOpenDivisionsForRegistration(admin)).rejects.toBeInstanceOf(ForbiddenError);
+  });
+
   it("rejects a fighter opening another fighter's registration", async () => {
     const { getRegistrationForFighter } = await import("./registrationService");
     await expect(getRegistrationForFighter(other, "reg-1")).rejects.toBeInstanceOf(NotFoundError);
