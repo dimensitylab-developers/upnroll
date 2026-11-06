@@ -1,10 +1,10 @@
 # Up 'n Roll — Master Engineering Roadmap
 
-Status: Phases 0–5 implemented. Phase 1 was re-verified on the James merge. GridFS and the SMTP library remain deferred.
+Status: Phases 0–5 implemented. SMTP is implemented with Nodemailer 10.3.1. GridFS remains deferred. Phase 1 was re-verified on the James merge.
 
 This document replaces the chat plan from the master programme. It includes the approved architecture amendment: Atlas plus Mongoose only, own SMTP, GridFS evaluated and not yet implemented, and a server-first performance bar.
 
-Branch: `suraj`. Phases 0–5 are implemented. Phases 6 and 7 are not. Phase 1 was re-verified after the James merge (`8165cda`).
+Branch: `suraj`. Phases 0–5 are implemented. The SMTP half of Phase 6 is implemented. The import-boundary check from Phase 7 is implemented. GridFS is not. Phase 1 was re-verified after the James merge (`8165cda`).
 
 ## Approved decisions
 
@@ -31,8 +31,8 @@ These are not guessed.
 
 | Item | Why it is still open |
 | --- | --- |
-| SMTP library | Nothing in either `package.json` provides SMTP. Node has no SMTP client. Nodemailer is the candidate because it implements the port without a paid vendor. Adding it is a dependency approval inside Phase 6, not a silent install. |
-| SMTP settings | `SMTP_HOST`, `SMTP_PORT`, `SMTP_USER`, `SMTP_PASS`, and `SMTP_FROM` will be read from the environment. Values are not chosen here. |
+| SMTP library | Approved and installed. `frontend/package.json` depends on `nodemailer@^10.3.1`. The lockfile resolves `10.3.1` (MIT-0). The package ships its own types. `@types/nodemailer` is not installed. |
+| SMTP settings | `SMTP_HOST`, `SMTP_PORT`, `SMTP_USER`, `SMTP_PASS`, and `SMTP_FROM` are read from the environment. Values are not in the repo. |
 | Email copy | OD-009. The adapter sends the strings the services already build. |
 | GridFS implementation | Waiting on acceptance of the evaluation below. |
 | GridFS inside a transaction | Prefer the same rule as other binary side effects: upload outside the retryable callback, delete the file if the business transaction aborts. Putting chunk writes inside `withTransaction` can replay the upload. This stays a recommendation until GridFS itself is approved. |
@@ -54,11 +54,13 @@ These are not guessed.
 | 3 Rendering | Implemented. Homepage sections and division brackets stream in Suspense. React Query is removed. The support chat is on the public layout only. Measured in `docs/PHASE_3_COMPLETION_REPORT.md`. TTFB and LCP did not improve. Client JavaScript dropped by 23,826 bytes. |
 | 4 Public cache | Implemented. Published public reads use `use cache` with tags. `updateTag` runs in Server Actions after the mutation commits. Admin, fighter, session, payment, and private file routes are outside that cache. Drafts stay out because the cached reads call the public queries. |
 | 5 SEO, media, operations | Implemented. Public pages expose titles from public DTOs. `robots.ts` disallows portals and the demo. Login, register, admin, fighter, demo, and preview are `noindex`. The sitemap lists public paths without a host. Local brand files use `next/image`. The homepage video preloads metadata and has a poster. `GET /api/health` returns `{ ok: true }` or `{ ok: false }`. Responses send nosniff, a referrer policy, frame denial, and a report-only content security policy. Canonical URLs wait on a domain. |
-| 6–7 | Not started. |
+| 6 SMTP | Implemented. Nodemailer 10.3.1 sends through `EmailAdapter` when a production server is running. Development keeps `ConsoleEmailAdapter`. Missing production SMTP settings throw at startup and at `getEmailAdapter()`. The production build phase does not require those settings. Call sites are unchanged and stay after commit. |
+| 6 GridFS | Not started. Section H is still an evaluation. The storage adapter is still local disk. Production does not refuse local disk. |
+| 7 Boundaries | The import check is implemented. `matchService` must not import `registrationService`. No folders were moved. No circular import was present to remove. |
 
 Phase 0 evidence, run from `frontend/` on 6 Nov 2026: `npx tsc --noEmit` exit 0, `npm test` 139 passed, `npm run build` exit 0 (`next build --webpack`). The dev server was stopped so the build could write `.next`. CI itself has not been executed on GitHub.
 
-`getEmailAdapter()` always returns `ConsoleEmailAdapter`. `getStorageAdapter()` always returns `LocalDiskStorageAdapter` (`.local-storage`). Payment screenshots and fighter photos use `put` / `get`. `getSignedUrl` returns `local-storage://…` and is not a public URL. Route handlers authorize the read, then buffer the whole file. Screenshot bytes are written before the payment documents. `delete` swallows a missing file. There is no retention job.
+`getEmailAdapter()` returns `ConsoleEmailAdapter` in development, test, and during `next build`. A production server uses the SMTP adapter and throws if the five SMTP variables are missing. `getStorageAdapter()` always returns `LocalDiskStorageAdapter` (`.local-storage`). Payment screenshots and fighter photos use `put` / `get`. `getSignedUrl` returns `local-storage://…` and is not a public URL. Route handlers authorize the read, then buffer the whole file. Screenshot bytes are written before the payment documents. `delete` swallows a missing file. There is no retention job.
 
 The verification commands above are the current evidence. Do not treat an older completion report as a newer run.
 
@@ -158,18 +160,20 @@ Blocked: `metadataBase`, canonical URLs, absolute sitemap URLs, until a domain i
 
 Two different authorizations.
 
-SMTP is approved to implement:
+SMTP is implemented. See `docs/PHASE_6_COMPLETION_REPORT.md`.
 
-- New adapter on `EmailAdapter`. Development keeps the console adapter. Production selection of the console adapter throws at startup with a clear message.
-- Configuration from the environment names above. Missing production SMTP settings fail startup. The module is `server-only`.
-- Call sites stay after commit (Phase 2 places them there).
-- Library: none is installed. Implementation stops and asks before adding a package if nodemailer is rejected. It does not add Resend or another hosted API.
+- `backend/email/smtp.ts` implements `EmailAdapter` with Nodemailer. Development and test keep `ConsoleEmailAdapter`. `frontend/src/instrumentation.ts` calls `assertProductionEmailConfig()` when the Node.js server starts.
+- A production server throws when `SMTP_HOST`, `SMTP_PORT`, `SMTP_USER`, `SMTP_PASS`, or `SMTP_FROM` is missing, both at startup and again from `getEmailAdapter()` if a send is attempted. `NEXT_PHASE=phase-production-build` is not a running server, so `next build` does not need credentials.
+- Payment submit, payment decision, and registration-request decision still call `getEmailAdapter().send()` after the transaction commits. The strings they pass are unchanged.
+- Nodemailer `10.3.1` is the installed release. No Resend package was added. No SMTP values were committed.
 
-GridFS is not implemented in the first Phase 6 commit. The evaluation below is the proposal. A later commit adds it only after that proposal is approved. Until then, local disk remains the development store, and production must not silently keep using it once a production storage mode exists. Production boot should fail if `NODE_ENV=production` and the storage mode is still local disk, with the error stating that GridFS is not enabled yet. That guard does not invent a vendor.
+GridFS is not implemented. Section H remains the proposal. Local disk remains the only store. The production refusal of local disk stays off until a replacement store is approved. That guard would stop production from booting with no store, so it is not enabled in this stage.
 
 ### Phase 7 — Boundaries
 
-No folder migration. Keep domain engines free of Next and mongoose. Keep services out of client bundles. Remove a circular import only if one is real (`registrationService` calling `matchService` during withdrawal is the candidate). Enforce with a check, not a rewrite.
+No folder migration. `registrationService` imports `recordMatchResult` from `matchService` and passes the outer session, so withdraw does not open a nested transaction. `matchService` does not import `registrationService`. That direction was inspected and is not a cycle.
+
+`backend/services/import-boundary.test.ts` fails if `matchService.ts` gains a static or dynamic import of `registrationService`. No service files were moved.
 
 ## D. Decision register
 
@@ -290,12 +294,10 @@ Cluster load from chunk writes is acceptable at current volume and is not a reas
 
 ## I. SMTP evaluation
 
-Approved to build. Library not yet added.
+Implemented. The approved package is Nodemailer 10.3.1, license MIT-0, with its own TypeScript types. Node 20 or newer is required. CI uses Node 22.
 
-The port is `send({ to, subject, body })`. Call sites are payment submit, payment decision, and registration-request decision. Phase 2 moves those calls to after commit. WhatsApp notification in match scheduling is a separate console-style helper and is not SMTP.
+The port is still `send({ to, subject, body })`. Call sites are payment submit, payment decision, and registration-request decision, all after commit. WhatsApp notification in match scheduling is a separate console-style helper and is not SMTP.
 
-No SMTP package is installed. The candidate is nodemailer, MIT, speaking SMTP to a host we control. It is not Resend and not an email SaaS SDK. If that dependency is refused, Phase 6 stops rather than writing a raw socket client.
+The adapter module imports `server-only`. Production requires the five environment variables. Development uses the console adapter and does not require those variables. A production server throws instead of selecting the console adapter. The production build does not, because it is not serving mail.
 
-The adapter module imports `server-only`. Client components cannot import it. Production requires the five environment variables. Development uses the console adapter and must not require those variables. A production process that would have returned `ConsoleEmailAdapter` throws before it serves traffic.
-
-Copy, templates, and the real host are not decided here.
+Copy, templates, and the real host are not decided here. No credentials are stored in the repo.
