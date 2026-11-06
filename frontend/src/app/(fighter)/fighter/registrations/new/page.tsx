@@ -1,7 +1,10 @@
+import { connection } from "next/server";
 import { listOpenDivisionsForRegistration } from "@/server/services/registrationService";
 import { NewRegistrationForm } from "@/features/registrations/new-registration-form";
 
 export default async function NewRegistrationPage() {
+  // Open divisions depend on the current time. Read the request first so prerender does not freeze that clock.
+  await connection();
   const divisions = await listOpenDivisionsForRegistration();
 
   return (

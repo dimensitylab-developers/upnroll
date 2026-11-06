@@ -1,7 +1,10 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import { cachedPublicRankings } from "@/lib/public-reads";
 import { Table, TableHeader, TableRow, TableHead, TableBody, TableCell } from "@/components/ui/table";
 
+
+export const metadata: Metadata = { title: "Rankings" };
 
 export default async function PublicRankingsPage() {
   const rankings = await cachedPublicRankings();

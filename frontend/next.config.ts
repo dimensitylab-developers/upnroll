@@ -15,6 +15,33 @@ const nextConfig: NextConfig = {
   outputFileTracingRoot: repoRoot,
   // One mongoose instance. Bundling it per server chunk drops the connection.
   serverExternalPackages: ["mongoose"],
+  async headers() {
+    return [
+      {
+        source: "/:path*",
+        headers: [
+          { key: "X-Content-Type-Options", value: "nosniff" },
+          { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
+          { key: "X-Frame-Options", value: "DENY" },
+          {
+            key: "Content-Security-Policy-Report-Only",
+            value: [
+              "default-src 'self'",
+              "script-src 'self'",
+              "style-src 'self' 'unsafe-inline'",
+              "img-src 'self' data: blob: https:",
+              "media-src 'self'",
+              "font-src 'self'",
+              "connect-src 'self'",
+              "frame-ancestors 'none'",
+              "base-uri 'self'",
+              "form-action 'self'",
+            ].join("; "),
+          },
+        ],
+      },
+    ];
+  },
   webpack: (config, { isServer }) => {
     // Files in backend/ resolve packages from their own folder upward.
     // Dependencies are installed in frontend/node_modules.

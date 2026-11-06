@@ -1,7 +1,10 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import { cachedPublicEvents } from "@/lib/public-reads";
 import { Badge } from "@/components/ui/badge";
 import { PastNogiCard } from "@/components/events/past-nogi-card";
+
+export const metadata: Metadata = { title: "Events" };
 
 export default async function PublicEventsPage() {
   const events = await cachedPublicEvents();

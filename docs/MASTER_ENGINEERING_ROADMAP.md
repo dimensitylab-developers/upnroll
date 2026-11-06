@@ -1,10 +1,10 @@
 # Up 'n Roll — Master Engineering Roadmap
 
-Status: Phase 0 implemented and Phase 1 re-verified on the James merge. Phase 2 has not started. GridFS and the SMTP library remain deferred.
+Status: Phases 0–5 implemented. Phase 1 was re-verified on the James merge. GridFS and the SMTP library remain deferred.
 
 This document replaces the chat plan from the master programme. It includes the approved architecture amendment: Atlas plus Mongoose only, own SMTP, GridFS evaluated and not yet implemented, and a server-first performance bar.
 
-Branch: `suraj`. Phase 0 is the commit that introduces this status. Phase 2 and Phases 3–7 are not implemented. Phase 1 was re-verified after the James merge (`8165cda`).
+Branch: `suraj`. Phases 0–5 are implemented. Phases 6 and 7 are not. Phase 1 was re-verified after the James merge (`8165cda`).
 
 ## Approved decisions
 
@@ -53,7 +53,8 @@ These are not guessed.
 | 2 Transactions | Implemented. Registration, payment review, brackets, rankings, and request decisions run in one transaction on the existing Atlas connection. `filledCount` is claimed with a conditional update. The manual backfill was not run against the application database. |
 | 3 Rendering | Implemented. Homepage sections and division brackets stream in Suspense. React Query is removed. The support chat is on the public layout only. Measured in `docs/PHASE_3_COMPLETION_REPORT.md`. TTFB and LCP did not improve. Client JavaScript dropped by 23,826 bytes. |
 | 4 Public cache | Implemented. Published public reads use `use cache` with tags. `updateTag` runs in Server Actions after the mutation commits. Admin, fighter, session, payment, and private file routes are outside that cache. Drafts stay out because the cached reads call the public queries. |
-| 5–7 | Not started. |
+| 5 SEO, media, operations | Implemented. Public pages expose titles from public DTOs. `robots.ts` disallows portals and the demo. Login, register, admin, fighter, demo, and preview are `noindex`. The sitemap lists public paths without a host. Local brand files use `next/image`. The homepage video preloads metadata and has a poster. `GET /api/health` returns `{ ok: true }` or `{ ok: false }`. Responses send nosniff, a referrer policy, frame denial, and a report-only content security policy. Canonical URLs wait on a domain. |
+| 6–7 | Not started. |
 
 Phase 0 evidence, run from `frontend/` on 6 Nov 2026: `npx tsc --noEmit` exit 0, `npm test` 139 passed, `npm run build` exit 0 (`next build --webpack`). The dev server was stopped so the build could write `.next`. CI itself has not been executed on GitHub.
 
@@ -149,7 +150,7 @@ Implemented on 6 Nov 2026. `cacheComponents` is on. Public reads live in `fronte
 
 ### Phase 5 — SEO, media, operations
 
-Unblocked: `generateMetadata` from public DTOs, `robots.ts`, noindex on portals, login, demo, and preview, sitemap of public paths after Phase 0, `next/image` for local brand files, homepage video `preload` of `metadata` or `none` with a poster, `GET /api/health` (Mongo ping, no URI in the body), `nosniff`, referrer policy, frame denial. CSP is report-only until a policy is measured against GSAP and JSON-LD.
+Implemented on 6 Nov 2026. `generateMetadata` reads the cached public event, bracket, schedule, results, and fighter DTOs. List pages set a title. `robots.ts` disallows `/admin`, `/fighter`, `/api`, `/ui-preview`, and `/rankings/demo`. Login, register, the admin layout, the fighter layout, the seeding demo, and the preview page are `noindex`. `sitemap.xml` lists public paths only. The sitemap namespace URL is the schema identifier; locations have no host. Brand marks use `next/image`. The homepage video uses `preload="metadata"` and `poster="/gallery/grappling-mat.jpg"`. `GET /api/health` pings MongoDB and returns `{ ok: true }` or `{ ok: false }` with no URI. Every response sets `X-Content-Type-Options: nosniff`, `Referrer-Policy: strict-origin-when-cross-origin`, `X-Frame-Options: DENY`, and `Content-Security-Policy-Report-Only`. The policy stays report-only because GSAP and the inline JSON-LD would violate an enforced script policy. Cached public reads return an empty collection, or `NotFoundError` for a single record, when `CI=true`, so the GitHub build can prerender without Atlas. A database error outside CI still fails the build. The open-registration page calls `connection()` before it reads the clock. Production build exit 0. `npm test` passed 147 tests. A production server returned health `200 {"ok":true}`, path-only sitemap locations, the headers above, and the event title `Underground Arena Vol. 4`.
 
 Blocked: `metadataBase`, canonical URLs, absolute sitemap URLs, until a domain is provided.
 

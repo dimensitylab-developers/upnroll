@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname } from "next/navigation";
 const HEADER_HEIGHT = 72;
 
@@ -33,7 +34,7 @@ export function HeaderLockup() {
 
   return (
     <Link href="/" aria-label="Up 'n Roll" className="shrink-0">
-      <img src="/logo-wordmark.png" alt="" className="h-11 w-auto" />
+      <Image src="/logo-wordmark.png" alt="" width={220} height={44} className="h-11 w-auto" />
     </Link>
   );
 }

@@ -1,8 +1,19 @@
+import type { Metadata } from "next";
 import { Suspense } from "react";
 import { notFound } from "next/navigation";
 import { cachedPublicDivisions, cachedPublicEvent, cachedPublishedBracket } from "@/lib/public-reads";
 import { BracketView } from "@/features/brackets/bracket-view";
 
+
+export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
+  const { slug } = await params;
+  try {
+    const event = await cachedPublicEvent(slug);
+    return { title: `${event.name} brackets` };
+  } catch {
+    return { title: "Brackets" };
+  }
+}
 
 export default async function PublicBracketsPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;

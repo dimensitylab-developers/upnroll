@@ -1,5 +1,6 @@
 import { Suspense } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { SectionBanner } from "@/components/home/section-banner";
 import { HomeEventsSection, HomeFaqSection, HomeGlimpseSection, HomeRankingsSection } from "@/components/home/home-live";
@@ -24,7 +25,7 @@ export default function HomePage() {
           <div>
             <p className="text-xs uppercase tracking-widest text-brand-red font-semibold mb-4">The Underground Arena</p>
             <h1 id="home-wordmark" className="max-w-xl">
-              <img src="/logo-wordmark.png" alt="Up 'n Roll" className="w-full h-auto" />
+              <Image src="/logo-wordmark.png" alt="Up 'n Roll" width={800} height={200} priority className="w-full h-auto" />
             </h1>
             <p className="text-muted-foreground mt-6 max-w-xl text-lg">
               Combat sports tournaments, run properly. Register for a division, track your record,
@@ -41,7 +42,8 @@ export default function HomePage() {
               muted
               loop
               playsInline
-              preload="auto"
+              preload="metadata"
+              poster="/gallery/grappling-mat.jpg"
               width={1080}
               height={1920}
               className="aspect-[9/16] w-full h-auto object-contain bg-black"

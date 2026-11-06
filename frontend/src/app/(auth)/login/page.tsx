@@ -2,7 +2,10 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { LoginForm } from "@/features/auth/login-form";
 
-export const metadata: Metadata = { title: { absolute: "Sign in — Up 'n Roll" } };
+export const metadata: Metadata = {
+  title: { absolute: "Sign in — Up 'n Roll" },
+  robots: { index: false, follow: false },
+};
 
 export default function LoginPage() {
   return (

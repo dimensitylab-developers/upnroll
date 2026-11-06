@@ -1,9 +1,21 @@
+import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { cachedPublicFighter } from "@/lib/public-reads";
 import { Badge } from "@/components/ui/badge";
 import { Table, TableHeader, TableRow, TableHead, TableBody, TableCell } from "@/components/ui/table";
 import { NotFoundError } from "@/server/http/errors";
 
+
+export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
+  const { slug } = await params;
+  try {
+    const { profile } = await cachedPublicFighter(slug);
+    const place = [profile.gym || "Independent", profile.discipline].filter(Boolean).join(" · ");
+    return { title: profile.displayName, description: place };
+  } catch {
+    return { title: "Fighter" };
+  }
+}
 
 export default async function PublicFighterProfilePage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;

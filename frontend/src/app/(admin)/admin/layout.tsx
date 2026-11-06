@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 import { DynamicBoundary } from "@/components/dynamic-boundary";
 import { PageLoader } from "@/components/layout/page-loader";
@@ -6,6 +7,8 @@ import { logoutAction } from "@/features/auth/actions";
 import { Button } from "@/components/ui/button";
 import { AdminNav } from "@/features/admin/admin-nav";
 import { BrandMark, BuiltBy, FounderCredit } from "@/components/layout/brand";
+
+export const metadata: Metadata = { robots: { index: false, follow: false } };
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
   return (

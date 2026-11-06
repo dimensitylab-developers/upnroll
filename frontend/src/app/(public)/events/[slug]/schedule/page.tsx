@@ -1,9 +1,20 @@
+import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { cachedPublicSchedule } from "@/lib/public-reads";
+import { cachedPublicEvent, cachedPublicSchedule } from "@/lib/public-reads";
 import { Table, TableHeader, TableRow, TableHead, TableBody, TableCell } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { NotFoundError } from "@/server/http/errors";
 
+
+export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
+  const { slug } = await params;
+  try {
+    const event = await cachedPublicEvent(slug);
+    return { title: `${event.name} schedule` };
+  } catch {
+    return { title: "Schedule" };
+  }
+}
 
 export default async function PublicSchedulePage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;

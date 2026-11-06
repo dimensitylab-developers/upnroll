@@ -1,5 +1,8 @@
+import type { Metadata } from "next";
 import { cachedPublishedContent } from "@/lib/public-reads";
 
+
+export const metadata: Metadata = { title: "Announcements" };
 
 export default async function PublicAnnouncementsPage() {
   const announcements = await cachedPublishedContent("ANNOUNCEMENT");

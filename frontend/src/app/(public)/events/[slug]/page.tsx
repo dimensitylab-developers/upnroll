@@ -1,8 +1,19 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { cachedPublicDivisions, cachedPublicEvent } from "@/lib/public-reads";
 import { Badge } from "@/components/ui/badge";
 
+
+export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
+  const { slug } = await params;
+  try {
+    const event = await cachedPublicEvent(slug);
+    return { title: event.name, description: event.description || undefined };
+  } catch {
+    return { title: "Event" };
+  }
+}
 
 export default async function PublicEventDetailPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;

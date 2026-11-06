@@ -1,8 +1,19 @@
+import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { cachedPublicResults } from "@/lib/public-reads";
+import { cachedPublicEvent, cachedPublicResults } from "@/lib/public-reads";
 import { Table, TableHeader, TableRow, TableHead, TableBody, TableCell } from "@/components/ui/table";
 import { NotFoundError } from "@/server/http/errors";
 
+
+export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
+  const { slug } = await params;
+  try {
+    const event = await cachedPublicEvent(slug);
+    return { title: `${event.name} results` };
+  } catch {
+    return { title: "Results" };
+  }
+}
 
 export default async function PublicResultsPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;

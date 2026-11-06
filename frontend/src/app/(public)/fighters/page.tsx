@@ -1,6 +1,9 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import { cachedPublicFighters } from "@/lib/public-reads";
 
+
+export const metadata: Metadata = { title: "Fighters" };
 
 export default async function FighterDirectoryPage() {
   const fighters = await cachedPublicFighters();
