@@ -1,6 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import { invalidatePublicTags } from "@/lib/public-tags";
 import { requireActor } from "@/server/auth/session";
 import { recordMatchResult, correctMatchResult, updateMatchSchedule } from "@/server/services/matchService";
 import { toAppError } from "@/server/http/errors";
@@ -16,6 +17,7 @@ export async function recordResultAction(_prevState: MatchActionState, formData:
 
   try {
     await recordMatchResult(actor, matchId, winnerRegistrationId, method);
+    invalidatePublicTags(["schedule", "rankings", "fighters"]);
   } catch (err) {
     return { error: toAppError(err).message };
   }
@@ -34,6 +36,7 @@ export async function correctResultAction(_prevState: MatchActionState, formData
 
   try {
     await correctMatchResult(actor, matchId, winnerRegistrationId, method, reason);
+    invalidatePublicTags(["schedule", "rankings", "fighters"]);
   } catch (err) {
     return { error: toAppError(err).message };
   }
@@ -54,6 +57,7 @@ export async function updateScheduleAction(_prevState: MatchActionState, formDat
       mat,
       scheduledAt: scheduledAtRaw ? new Date(scheduledAtRaw) : null,
     });
+    invalidatePublicTags(["schedule"]);
   } catch (err) {
     return { error: toAppError(err).message };
   }

@@ -1,16 +1,15 @@
 import { notFound } from "next/navigation";
-import { getPublicFighterBySlug } from "@/server/services/fighterService";
+import { cachedPublicFighter } from "@/lib/public-reads";
 import { Badge } from "@/components/ui/badge";
 import { Table, TableHeader, TableRow, TableHead, TableBody, TableCell } from "@/components/ui/table";
 import { NotFoundError } from "@/server/http/errors";
 
-export const dynamic = "force-dynamic";
 
 export default async function PublicFighterProfilePage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
   let data;
   try {
-    data = await getPublicFighterBySlug(slug);
+    data = await cachedPublicFighter(slug);
   } catch (err) {
     if (err instanceof NotFoundError) notFound();
     throw err;

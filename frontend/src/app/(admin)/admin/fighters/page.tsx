@@ -2,7 +2,6 @@ import { requireActor } from "@/server/auth/session";
 import { listFightersForAdmin } from "@/server/services/fighterService";
 import { FighterRecord } from "@/features/admin/fighter-record";
 
-export const dynamic = "force-dynamic";
 
 export default async function AdminFightersPage() {
   const fighters = await listFightersForAdmin(await requireActor("ADMIN"));

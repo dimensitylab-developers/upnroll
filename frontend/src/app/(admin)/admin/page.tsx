@@ -3,7 +3,6 @@ import { actorFromSession, getSession } from "@/server/auth/session";
 import { getAdminDashboardData } from "@/server/services/dashboardService";
 import { Badge } from "@/components/ui/badge";
 
-export const dynamic = "force-dynamic";
 
 export default async function AdminOverviewPage() {
   const session = await getSession();

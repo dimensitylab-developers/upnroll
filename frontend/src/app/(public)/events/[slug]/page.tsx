@@ -1,19 +1,18 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { getEventBySlug, listDivisionsForEvent } from "@/server/services/eventService";
+import { cachedPublicDivisions, cachedPublicEvent } from "@/lib/public-reads";
 import { Badge } from "@/components/ui/badge";
 
-export const dynamic = "force-dynamic";
 
 export default async function PublicEventDetailPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
   let event;
   try {
-    event = await getEventBySlug(slug);
+    event = await cachedPublicEvent(slug);
   } catch {
     notFound();
   }
-  const divisions = await listDivisionsForEvent(String(event._id));
+  const divisions = await cachedPublicDivisions(event._id);
 
   return (
     <main className="min-h-screen bg-background halftone-bg px-4 py-16">

@@ -4,7 +4,6 @@ import { Button } from "@/components/ui/button";
 import { SectionBanner } from "@/components/home/section-banner";
 import { HomeEventsSection, HomeFaqSection, HomeGlimpseSection, HomeRankingsSection } from "@/components/home/home-live";
 
-export const dynamic = "force-dynamic";
 
 const PATH_STEPS = [
   { n: "01", title: "Create an account", body: "Register as a fighter and sign in." },

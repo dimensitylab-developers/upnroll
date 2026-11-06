@@ -1,11 +1,21 @@
 import { redirect } from "next/navigation";
+import { DynamicBoundary } from "@/components/dynamic-boundary";
+import { PageLoader } from "@/components/layout/page-loader";
 import { getSession } from "@/server/auth/session";
 import { logoutAction } from "@/features/auth/actions";
 import { Button } from "@/components/ui/button";
 import { AdminNav } from "@/features/admin/admin-nav";
 import { BrandMark, BuiltBy, FounderCredit } from "@/components/layout/brand";
 
-export default async function AdminLayout({ children }: { children: React.ReactNode }) {
+export default function AdminLayout({ children }: { children: React.ReactNode }) {
+  return (
+    <DynamicBoundary fallback={<PageLoader />}>
+      <AdminShell>{children}</AdminShell>
+    </DynamicBoundary>
+  );
+}
+
+async function AdminShell({ children }: { children: React.ReactNode }) {
   const session = await getSession();
   if (!session) redirect("/login");
   if (session.user.role !== "ADMIN") redirect("/login");

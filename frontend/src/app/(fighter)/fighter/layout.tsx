@@ -1,11 +1,21 @@
 import { redirect } from "next/navigation";
+import { DynamicBoundary } from "@/components/dynamic-boundary";
+import { PageLoader } from "@/components/layout/page-loader";
 import { getSession } from "@/server/auth/session";
 import { logoutAction } from "@/features/auth/actions";
 import { Button } from "@/components/ui/button";
 import { FighterNav } from "@/features/fighter/fighter-nav";
 import { BrandMark, BuiltBy, FounderCredit } from "@/components/layout/brand";
 
-export default async function FighterLayout({ children }: { children: React.ReactNode }) {
+export default function FighterLayout({ children }: { children: React.ReactNode }) {
+  return (
+    <DynamicBoundary fallback={<PageLoader />}>
+      <FighterShell>{children}</FighterShell>
+    </DynamicBoundary>
+  );
+}
+
+async function FighterShell({ children }: { children: React.ReactNode }) {
   const session = await getSession();
   if (!session) redirect("/login");
   if (session.user.role !== "FIGHTER") redirect("/login");

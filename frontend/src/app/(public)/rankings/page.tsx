@@ -1,11 +1,10 @@
 import Link from "next/link";
-import { listPublicRankings } from "@/server/services/rankingService";
+import { cachedPublicRankings } from "@/lib/public-reads";
 import { Table, TableHeader, TableRow, TableHead, TableBody, TableCell } from "@/components/ui/table";
 
-export const dynamic = "force-dynamic";
 
 export default async function PublicRankingsPage() {
-  const rankings = await listPublicRankings();
+  const rankings = await cachedPublicRankings();
 
   return (
     <main className="min-h-screen bg-background halftone-bg px-4 py-16">

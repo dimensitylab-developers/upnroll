@@ -3,7 +3,6 @@ import { actorFromSession, getSession } from "@/server/auth/session";
 import { getFighterDashboardData } from "@/server/services/dashboardService";
 import { Badge } from "@/components/ui/badge";
 
-export const dynamic = "force-dynamic";
 
 export default async function FighterDashboardPage() {
   const session = await getSession();

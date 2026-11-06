@@ -1,6 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import { invalidatePublicTags } from "@/lib/public-tags";
 import { requireActor } from "@/server/auth/session";
 import { generateBracket, publishBracket } from "@/server/services/bracketService";
 import { toAppError } from "@/server/http/errors";
@@ -30,6 +31,7 @@ export async function generateBracketAction(_prevState: BracketActionState, form
       orderedIds,
       mode === "random" ? { type: "random", seed } : { type: "manual" }
     );
+    invalidatePublicTags([`brackets:${divisionId}`, "schedule"]);
   } catch (err) {
     return { error: toAppError(err).message };
   }
@@ -44,7 +46,8 @@ export async function publishBracketAction(_prevState: BracketActionState, formD
   const eventId = String(formData.get("eventId") ?? "");
 
   try {
-    await publishBracket(actor, bracketId);
+    const published = await publishBracket(actor, bracketId);
+    invalidatePublicTags([`brackets:${String(published.divisionId)}`, "schedule"]);
   } catch (err) {
     return { error: toAppError(err).message };
   }

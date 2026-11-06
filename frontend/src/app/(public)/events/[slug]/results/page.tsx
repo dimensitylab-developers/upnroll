@@ -1,15 +1,14 @@
 import { notFound } from "next/navigation";
-import { listPublicResults } from "@/server/services/matchService";
+import { cachedPublicResults } from "@/lib/public-reads";
 import { Table, TableHeader, TableRow, TableHead, TableBody, TableCell } from "@/components/ui/table";
 import { NotFoundError } from "@/server/http/errors";
 
-export const dynamic = "force-dynamic";
 
 export default async function PublicResultsPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
   let matches;
   try {
-    matches = await listPublicResults(slug);
+    matches = await cachedPublicResults(slug);
   } catch (err) {
     if (err instanceof NotFoundError) notFound();
     throw err;

@@ -1,8 +1,5 @@
 import Link from "next/link";
-import { listDivisionsForEvent, listPublicEvents } from "@/server/services/eventService";
-import { listPublicRankings } from "@/server/services/rankingService";
-import { listPublished } from "@/server/services/contentService";
-import { listPublishedMedia } from "@/server/services/mediaService";
+import { cachedPublicDivisions, cachedPublicEvents, cachedPublishedContent, cachedPublishedMedia, cachedPublicRankings } from "@/lib/public-reads";
 import { Badge } from "@/components/ui/badge";
 import { HomeGlimpse } from "@/components/home/home-glimpse";
 import { SectionBanner } from "@/components/home/section-banner";
@@ -14,7 +11,7 @@ const GALLERY = [
 ];
 
 export async function HomeGlimpseSection() {
-  const [events, media] = await Promise.all([listPublicEvents(), listPublishedMedia()]);
+  const [events, media] = await Promise.all([cachedPublicEvents(), cachedPublishedMedia()]);
   const featuredEvent = events.find((event) => event.status === "REGISTRATION_OPEN") ?? events[0] ?? null;
 
   return (
@@ -51,10 +48,10 @@ export async function HomeGlimpseSection() {
 }
 
 export async function HomeEventsSection() {
-  const events = await listPublicEvents();
+  const events = await cachedPublicEvents();
   const featuredEvent = events.find((event) => event.status === "REGISTRATION_OPEN") ?? events[0] ?? null;
   const upcoming = events.filter((event) => event._id !== featuredEvent?._id).slice(0, 3);
-  const divisions = featuredEvent ? await listDivisionsForEvent(String(featuredEvent._id)) : [];
+  const divisions = featuredEvent ? await cachedPublicDivisions(featuredEvent._id) : [];
 
   return (
     <>
@@ -121,7 +118,7 @@ export async function HomeEventsSection() {
 }
 
 export async function HomeRankingsSection() {
-  const rankings = await listPublicRankings();
+  const rankings = await cachedPublicRankings();
   const topRankings = rankings.slice(0, 5);
   if (topRankings.length === 0) return null;
 
@@ -149,7 +146,7 @@ export async function HomeRankingsSection() {
 }
 
 export async function HomeFaqSection() {
-  const faqs = await listPublished("FAQ");
+  const faqs = await cachedPublishedContent("FAQ");
   if (faqs.length === 0) return null;
 
   return (

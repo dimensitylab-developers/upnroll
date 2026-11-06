@@ -1,10 +1,9 @@
 import Link from "next/link";
-import { listPublicFighters } from "@/server/services/fighterService";
+import { cachedPublicFighters } from "@/lib/public-reads";
 
-export const dynamic = "force-dynamic";
 
 export default async function FighterDirectoryPage() {
-  const fighters = await listPublicFighters();
+  const fighters = await cachedPublicFighters();
 
   return (
     <main className="min-h-screen bg-background halftone-bg px-4 py-16">

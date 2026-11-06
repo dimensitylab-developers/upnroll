@@ -2,6 +2,7 @@
 
 import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
+import { invalidatePublicTags } from "@/lib/public-tags";
 import { actorFromSession, requireActor, requireSession } from "@/server/auth/session";
 import { createRegistration, withdrawRegistration } from "@/server/services/registrationService";
 import { toAppError } from "@/server/http/errors";
@@ -49,6 +50,7 @@ export async function withdrawRegistrationAction(
   if (!registrationId) return { error: "Missing registration." };
   try {
     const registration = await withdrawRegistration(actor, registrationId);
+    invalidatePublicTags(["schedule", "rankings", "fighters"]);
     revalidatePath(`/admin/events/${String(registration.eventId)}`);
   } catch (err) {
     return { error: toAppError(err).message };

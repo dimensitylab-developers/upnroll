@@ -1,16 +1,15 @@
 import { notFound } from "next/navigation";
-import { listPublicSchedule } from "@/server/services/matchService";
+import { cachedPublicSchedule } from "@/lib/public-reads";
 import { Table, TableHeader, TableRow, TableHead, TableBody, TableCell } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { NotFoundError } from "@/server/http/errors";
 
-export const dynamic = "force-dynamic";
 
 export default async function PublicSchedulePage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
   let matches;
   try {
-    matches = await listPublicSchedule(slug);
+    matches = await cachedPublicSchedule(slug);
   } catch (err) {
     if (err instanceof NotFoundError) notFound();
     throw err;

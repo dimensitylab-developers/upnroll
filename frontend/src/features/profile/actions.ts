@@ -1,6 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import { invalidatePublicTags } from "@/lib/public-tags";
 import { actorFromSession, requireSession } from "@/server/auth/session";
 import { getFighterProfile, updateFighterProfile } from "@/server/services/fighterService";
 import { toAppError } from "@/server/http/errors";
@@ -31,7 +32,8 @@ export async function updateProfileAction(_prevState: ProfileActionState, formDa
     const photoKey = "bytes" in photo
       ? await saveProfilePhoto(actor, photo.bytes, photo.ext, existing?.photoKey ?? "")
       : undefined;
-    await updateFighterProfile(actor, { ...toProfileFields(parsed.data), photoKey });
+    const profile = await updateFighterProfile(actor, { ...toProfileFields(parsed.data), photoKey });
+    invalidatePublicTags(profile.slug ? ["fighters", `fighter:${profile.slug}`] : ["fighters"]);
   } catch (err) {
     return { error: toAppError(err).message };
   }

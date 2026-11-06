@@ -52,7 +52,8 @@ These are not guessed.
 | 1 Security | Re-verified on the James merge. Typecheck passed, Vitest passed (23 files, 139 tests), production webpack build passed. The request-decision tests needed an Event mock and `save` on the request stub because cancellation now reads the event. No service behavior was changed for that fix. |
 | 2 Transactions | Implemented. Registration, payment review, brackets, rankings, and request decisions run in one transaction on the existing Atlas connection. `filledCount` is claimed with a conditional update. The manual backfill was not run against the application database. |
 | 3 Rendering | Implemented. Homepage sections and division brackets stream in Suspense. React Query is removed. The support chat is on the public layout only. Measured in `docs/PHASE_3_COMPLETION_REPORT.md`. TTFB and LCP did not improve. Client JavaScript dropped by 23,826 bytes. |
-| 4–7 | Not started. |
+| 4 Public cache | Implemented. Published public reads use `use cache` with tags. `updateTag` runs in Server Actions after the mutation commits. Admin, fighter, session, payment, and private file routes are outside that cache. Drafts stay out because the cached reads call the public queries. |
+| 5–7 | Not started. |
 
 Phase 0 evidence, run from `frontend/` on 6 Nov 2026: `npx tsc --noEmit` exit 0, `npm test` 139 passed, `npm run build` exit 0 (`next build --webpack`). The dev server was stopped so the build could write `.next`. CI itself has not been executed on GitHub.
 
@@ -143,6 +144,8 @@ Cached only after publication checks: public events, published brackets, public 
 Never cached: sessions, fighter dashboards, admin pages, payments, private files, Aadhaar, medical data.
 
 `updateTag` runs after the transaction commits, not inside the callback.
+
+Implemented on 6 Nov 2026. `cacheComponents` is on. Public reads live in `frontend/src/lib/public-reads.ts` and are tagged `events`, `event:{slug}`, `divisions:{eventId}`, `brackets:{divisionId}`, `schedule`, `schedule:{slug}`, `rankings`, `fighters`, `fighter:{slug}`, `content:{type}`, and `media`. The cached division list exposes name, discipline, and capacity. It does not include occupancy, Aadhaar, or medical fields. Server Actions call `invalidatePublicTags` after a successful commit. The production build lists public routes as partial prerender with a 1 minute revalidate. Private photo routes stay dynamic. `npm test` passed 147 tests and `npm run build` exited 0.
 
 ### Phase 5 — SEO, media, operations
 

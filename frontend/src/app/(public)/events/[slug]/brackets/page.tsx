@@ -1,16 +1,14 @@
 import { Suspense } from "react";
 import { notFound } from "next/navigation";
-import { getEventBySlug, listDivisionsForEvent } from "@/server/services/eventService";
-import { getPublishedBracketForDivision } from "@/server/services/bracketService";
+import { cachedPublicDivisions, cachedPublicEvent, cachedPublishedBracket } from "@/lib/public-reads";
 import { BracketView } from "@/features/brackets/bracket-view";
 
-export const dynamic = "force-dynamic";
 
 export default async function PublicBracketsPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
   let event;
   try {
-    event = await getEventBySlug(slug);
+    event = await cachedPublicEvent(slug);
   } catch {
     notFound();
   }
@@ -28,11 +26,11 @@ export default async function PublicBracketsPage({ params }: { params: Promise<{
 }
 
 async function DivisionBrackets({ eventId }: { eventId: string }) {
-  const divisions = await listDivisionsForEvent(eventId);
+  const divisions = await cachedPublicDivisions(eventId);
   const brackets = await Promise.all(
     divisions.map(async (division) => {
       try {
-        const result = await getPublishedBracketForDivision(String(division._id));
+        const result = await cachedPublishedBracket(division._id);
         return { division, ...result };
       } catch {
         return null;

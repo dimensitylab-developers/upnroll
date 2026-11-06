@@ -1,13 +1,10 @@
 import Link from "next/link";
-import { listPublicEvents } from "@/server/services/eventService";
+import { cachedPublicEvents } from "@/lib/public-reads";
 import { Badge } from "@/components/ui/badge";
 import { PastNogiCard } from "@/components/events/past-nogi-card";
 
-// Event listings are live data, not build-time content — never statically frozen.
-export const dynamic = "force-dynamic";
-
 export default async function PublicEventsPage() {
-  const events = await listPublicEvents();
+  const events = await cachedPublicEvents();
 
   return (
     <main className="min-h-screen bg-background halftone-bg px-4 py-16">

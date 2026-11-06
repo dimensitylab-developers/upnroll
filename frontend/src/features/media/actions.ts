@@ -1,6 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import { invalidatePublicTags } from "@/lib/public-tags";
 import { requireActor } from "@/server/auth/session";
 import { createMediaAsset } from "@/server/services/mediaService";
 import { toAppError } from "@/server/http/errors";
@@ -21,6 +22,7 @@ export async function createMediaAction(_prevState: MediaActionState, formData: 
 
   try {
     await createMediaAsset(actor, parsed.data);
+    invalidatePublicTags(["media"]);
   } catch (err) {
     return { error: toAppError(err).message };
   }

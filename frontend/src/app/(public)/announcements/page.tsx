@@ -1,9 +1,8 @@
-import { listPublished } from "@/server/services/contentService";
+import { cachedPublishedContent } from "@/lib/public-reads";
 
-export const dynamic = "force-dynamic";
 
 export default async function PublicAnnouncementsPage() {
-  const announcements = await listPublished("ANNOUNCEMENT");
+  const announcements = await cachedPublishedContent("ANNOUNCEMENT");
 
   return (
     <main className="min-h-screen bg-background halftone-bg px-4 py-16">
