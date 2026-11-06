@@ -51,7 +51,8 @@ These are not guessed.
 | 0 Reliability | Implemented. `getSession` and `listPublicEvents` use React `cache()`. Schedule and results query `PUBLIC_EVENT_STATUSES`. `predev` is `node ./scripts/ensure-root-modules.mjs`. CI is `.github/workflows/ci.yml`. |
 | 1 Security | Re-verified on the James merge. Typecheck passed, Vitest passed (23 files, 139 tests), production webpack build passed. The request-decision tests needed an Event mock and `save` on the request stub because cancellation now reads the event. No service behavior was changed for that fix. |
 | 2 Transactions | Implemented. Registration, payment review, brackets, rankings, and request decisions run in one transaction on the existing Atlas connection. `filledCount` is claimed with a conditional update. The manual backfill was not run against the application database. |
-| 3–7 | Not started. |
+| 3 Rendering | Implemented. Homepage sections and division brackets stream in Suspense. React Query is removed. The support chat is on the public layout only. Measured in `docs/PHASE_3_COMPLETION_REPORT.md`. TTFB and LCP did not improve. Client JavaScript dropped by 23,826 bytes. |
+| 4–7 | Not started. |
 
 Phase 0 evidence, run from `frontend/` on 6 Nov 2026: `npx tsc --noEmit` exit 0, `npm test` 139 passed, `npm run build` exit 0 (`next build --webpack`). The dev server was stopped so the build could write `.next`. CI itself has not been executed on GitHub.
 
@@ -130,6 +131,8 @@ Measure before and after, and write the numbers in the phase report:
 - server time spent in the homepage service reads
 
 No improvement is claimed without those numbers.
+
+Implemented on 6 Nov 2026. The numbers are in `docs/PHASE_3_COMPLETION_REPORT.md`. TTFB and LCP did not improve. Client JavaScript fell from 1,441,780 bytes to 1,417,954 bytes.
 
 ### Phase 4 — Public cache
 

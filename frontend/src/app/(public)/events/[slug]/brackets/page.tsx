@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import { notFound } from "next/navigation";
 import { getEventBySlug, listDivisionsForEvent } from "@/server/services/eventService";
 import { getPublishedBracketForDivision } from "@/server/services/bracketService";
@@ -13,34 +14,44 @@ export default async function PublicBracketsPage({ params }: { params: Promise<{
   } catch {
     notFound();
   }
-  const divisions = await listDivisionsForEvent(String(event._id));
-
-  const brackets = await Promise.all(
-    divisions.map(async (d) => {
-      try {
-        const result = await getPublishedBracketForDivision(String(d._id));
-        return { division: d, ...result };
-      } catch {
-        return null;
-      }
-    })
-  );
-  const published = brackets.filter((b): b is NonNullable<typeof b> => b !== null);
 
   return (
     <main className="min-h-screen bg-background halftone-bg px-4 py-16">
       <div className="max-w-4xl mx-auto">
         <h1 className="text-display text-4xl font-semibold mb-8">{event.name} — Brackets</h1>
-        {published.length === 0 && <p className="text-sm text-muted-foreground">No brackets published yet.</p>}
-        <div className="space-y-10">
-          {published.map((b) => (
-            <div key={String(b.bracket._id)}>
-              <h2 className="text-display text-xl font-semibold mb-4">{b.division.name}</h2>
-              <BracketView matches={b.matches} roundsCount={b.bracket.roundsCount} />
-            </div>
-          ))}
-        </div>
+        <Suspense fallback={<p className="text-sm text-muted-foreground">Loading brackets…</p>}>
+          <DivisionBrackets eventId={String(event._id)} />
+        </Suspense>
       </div>
     </main>
+  );
+}
+
+async function DivisionBrackets({ eventId }: { eventId: string }) {
+  const divisions = await listDivisionsForEvent(eventId);
+  const brackets = await Promise.all(
+    divisions.map(async (division) => {
+      try {
+        const result = await getPublishedBracketForDivision(String(division._id));
+        return { division, ...result };
+      } catch {
+        return null;
+      }
+    })
+  );
+  const published = brackets.filter((bracket): bracket is NonNullable<typeof bracket> => bracket !== null);
+
+  return (
+    <>
+      {published.length === 0 && <p className="text-sm text-muted-foreground">No brackets published yet.</p>}
+      <div className="space-y-10">
+        {published.map((bracket) => (
+          <div key={String(bracket.bracket._id)}>
+            <h2 className="text-display text-xl font-semibold mb-4">{bracket.division.name}</h2>
+            <BracketView matches={bracket.matches} roundsCount={bracket.bracket.roundsCount} />
+          </div>
+        ))}
+      </div>
+    </>
   );
 }

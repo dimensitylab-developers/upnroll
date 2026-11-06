@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import { Inter, Oswald } from "next/font/google";
 import Providers from "@/components/Providers";
 import { NavigationLoader } from "@/components/layout/navigation-loader";
-import { ChatbotWidget } from "@/features/chatbot/chatbot-widget";
 import "./globals.css";
 
 const inter = Inter({
@@ -67,7 +66,6 @@ export default function RootLayout({
         />
         <Providers>{children}</Providers>
         <NavigationLoader />
-        <ChatbotWidget />
       </body>
     </html>
   );
