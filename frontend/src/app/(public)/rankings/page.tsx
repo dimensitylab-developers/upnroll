@@ -4,6 +4,8 @@ import { Table, TableHeader, TableRow, TableHead, TableBody, TableCell } from "@
 
 export const dynamic = "force-dynamic";
 
+const MEDALS = ["Gold", "Silver", "Bronze"];
+
 export default async function PublicRankingsPage() {
   const rankings = await listPublicRankings();
 
@@ -12,7 +14,7 @@ export default async function PublicRankingsPage() {
       <div className="max-w-2xl mx-auto">
         <h1 className="text-display text-4xl font-semibold mb-2">Rankings</h1>
         <p className="text-sm text-muted-foreground mb-3">
-          Points formula is a placeholder (3 per win) pending an approved ranking methodology — not official.
+          3 points per win. Medal places are gold, silver, and bronze. Super fights are placed by the judges.
         </p>
         <p className="text-sm mb-8">
           <Link href="/rankings/demo" className="underline">See how seeding works</Link>
@@ -20,8 +22,8 @@ export default async function PublicRankingsPage() {
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead>Rank</TableHead>
-              <TableHead>Fighter</TableHead>
+              <TableHead>Place</TableHead>
+              <TableHead>Grappler</TableHead>
               <TableHead>Record</TableHead>
               <TableHead>Points</TableHead>
             </TableRow>
@@ -29,7 +31,7 @@ export default async function PublicRankingsPage() {
           <TableBody>
             {rankings.map((r) => (
               <TableRow key={r.slug ?? r.rank}>
-                <TableCell>#{r.rank}</TableCell>
+                <TableCell>{MEDALS[r.rank - 1] ?? `#${r.rank}`}</TableCell>
                 <TableCell>
                   {r.slug ? <Link href={`/fighters/${r.slug}`} className="underline">{r.displayName}</Link> : r.displayName}
                 </TableCell>

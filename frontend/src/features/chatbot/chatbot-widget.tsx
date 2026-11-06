@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { askChatbotAction } from "./ask-chatbot-action";
 import { setSkipPageLoader } from "@/components/layout/page-loader-skip";
+import { CHAT_PROMPTS } from "@/server/content/starterFaqs";
 
 type Message = { role: "user" | "assistant"; text: string };
 
@@ -75,10 +76,9 @@ export function ChatbotWidget() {
     inputRef.current?.focus();
   }, [open, messages, loading]);
 
-  async function handleAsk(e: React.FormEvent) {
-    e.preventDefault();
-    const q = question.trim();
-    if (!q) return;
+  async function ask(text: string) {
+    const q = text.trim();
+    if (!q || loading) return;
     setMessages((prev) => [...prev, { role: "user", text: q }]);
     setQuestion("");
     setLoading(true);
@@ -90,6 +90,11 @@ export function ChatbotWidget() {
       setSkipPageLoader(false);
       setLoading(false);
     }
+  }
+
+  function handleAsk(e: React.FormEvent) {
+    e.preventDefault();
+    void ask(question);
   }
 
   return (
@@ -126,6 +131,20 @@ export function ChatbotWidget() {
                   {m.text}
                 </p>
               ),
+            )}
+            {messages.length === 1 && !loading && (
+              <div className="flex flex-wrap gap-2 pl-11">
+                {CHAT_PROMPTS.map((prompt) => (
+                  <button
+                    key={prompt}
+                    type="button"
+                    onClick={() => void ask(prompt)}
+                    className="rounded-full bg-white px-3 py-1.5 text-left text-xs leading-snug shadow-sm hover:bg-black/[0.03]"
+                  >
+                    {prompt}
+                  </button>
+                ))}
+              </div>
             )}
             {loading && <TypingDots />}
           </div>

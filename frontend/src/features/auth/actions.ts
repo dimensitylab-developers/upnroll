@@ -13,6 +13,7 @@ import { getClientIp } from "@/server/http/clientIp";
 import { loginSchema } from "./schemas";
 import { grapplerFieldIssues, grapplerFromForm, registerSchema, toProfileFields } from "@/features/fighters/grappler-schema";
 import { readProfilePhoto, saveProfilePhoto } from "@/server/services/profilePhoto";
+import { sendVerificationCode, confirmVerificationCode } from "@/server/services/verificationMail";
 
 export type AuthActionState = {
   error?: string;
@@ -66,7 +67,7 @@ export async function registerAction(
   const passwordHash = await hashPassword(password);
   // Public registration only ever creates FIGHTER accounts — see Part M:
   // admin accounts are created exclusively via scripts/create-admin.ts.
-  const user = await User.create({ email, passwordHash, role: "FIGHTER" });
+  const user = await User.create({ email, passwordHash, role: "FIGHTER", emailVerified: false });
   const photoKey = await saveProfilePhoto(String(user._id), photo.bytes, photo.ext);
 
   let slug = slugify(displayName);
@@ -84,10 +85,10 @@ export async function registerAction(
     ...toProfileFields(parsed.data),
   });
 
-  await createSession(String(user._id));
   await writeAuditLog({ actorId: String(user._id), action: "USER_REGISTERED", targetType: "User", targetId: String(user._id) });
+  await sendVerificationCode(String(user._id), email);
 
-  redirect("/fighter/dashboard");
+  redirect(`/verify?email=${encodeURIComponent(email)}`);
 }
 
 export async function loginAction(
@@ -115,6 +116,9 @@ export async function loginAction(
   const genericError = { error: "Incorrect email or password." };
 
   if (!user || user.status !== "ACTIVE") return genericError;
+  if (user.emailVerified === false) {
+    return { error: "Confirm the code we sent to your email before you sign in." };
+  }
 
   const valid = await verifyPassword(password, user.passwordHash);
   if (!valid) return genericError;
@@ -123,6 +127,34 @@ export async function loginAction(
   await writeAuditLog({ actorId: String(user._id), action: "USER_LOGIN", targetType: "User", targetId: String(user._id) });
 
   redirect(user.role === "ADMIN" ? "/admin" : "/fighter/dashboard");
+}
+
+export async function verifyEmailAction(
+  _prevState: AuthActionState,
+  formData: FormData
+): Promise<AuthActionState> {
+  const email = String(formData.get("email") ?? "");
+  const code = String(formData.get("code") ?? "");
+  if (!email || !code.trim()) return { error: "Enter the code from your email." };
+
+  const confirmed = await confirmVerificationCode(email, code);
+  if (!confirmed) return { error: "That code does not match, or it has expired." };
+
+  await createSession(confirmed.userId);
+  redirect("/fighter/dashboard");
+}
+
+export async function resendCodeAction(
+  _prevState: AuthActionState,
+  formData: FormData
+): Promise<AuthActionState> {
+  const email = String(formData.get("email") ?? "").toLowerCase().trim();
+  await connectDB();
+  const user = await User.findOne({ email }).lean();
+  if (user && user.emailVerified === false) {
+    await sendVerificationCode(String(user._id), email);
+  }
+  return { error: "If this account is waiting on a code, a new one is on its way." };
 }
 
 export async function logoutAction(): Promise<void> {

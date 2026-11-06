@@ -3,7 +3,6 @@ import { getSession } from "@/server/auth/session";
 import { getRegistrationForFighter } from "@/server/services/registrationService";
 import { canSubmitPayment } from "@/server/services/registrationStateMachine";
 import { PaymentForm } from "@/features/payments/payment-form";
-import { Badge } from "@/components/ui/badge";
 import { QrCode } from "lucide-react";
 
 export default async function RegistrationPaymentPage({ params }: { params: Promise<{ id: string }> }) {
@@ -19,16 +18,11 @@ export default async function RegistrationPaymentPage({ params }: { params: Prom
   }
 
   const { registration, event, division, latestSubmission } = data;
-  const amount = latestSubmission?.expectedAmountMinorUnits ?? event?.paymentInstructions?.feeMinorUnits ?? 0;
-  const currency = event?.paymentInstructions?.currency ?? "INR";
 
   return (
     <div className="manga-panel p-8 max-w-xl mx-auto">
       <div className="flex items-center justify-between mb-4">
         <p className="font-semibold">{event?.name} — {division?.name}</p>
-        <Badge variant="outline">
-          {(amount / 100).toLocaleString(undefined, { style: "currency", currency })}
-        </Badge>
       </div>
 
       <p className="text-sm text-muted-foreground mb-4">

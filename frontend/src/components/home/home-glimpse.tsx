@@ -35,8 +35,11 @@ export function HomeGlimpse({
   const spots = [
     { href: "/events", title: "Events", body: "The card, the date, and the venue for what is coming up." },
     { href: eventSlug ? `/events/${eventSlug}/brackets` : "/events", title: "Brackets", body: "Every round, from the first fight to the final." },
-    { href: "/fighters", title: "Fighters", body: "A public profile for everyone who steps on the mat." },
+    { href: "/fighters", title: "Grapplers", body: "A public profile for everyone who steps on the mat." },
+    { href: "/seminars", title: "Seminars", body: "Classes and camps, listed when a date is set." },
     { href: "/rankings", title: "Rankings", body: "The board, built from published results." },
+    { href: "/about", title: "About", body: "Built for grapplers in India and Brazil." },
+    { href: "/store", title: "Store", body: "Manga grappling shirts. Opening soon." },
     { href: eventSlug ? `/events/${eventSlug}/results` : "/events", title: "Results", body: "Who won, once the match is over." },
     { href: "/faq", title: "FAQ assistant", body: "Questions answered from the published FAQ." },
   ];

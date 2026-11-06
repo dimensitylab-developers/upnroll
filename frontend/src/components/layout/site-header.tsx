@@ -8,9 +8,12 @@ import { MobileNavToggle } from "./mobile-nav-toggle";
 
 const NAV_LINKS = [
   { href: "/events", label: "Events" },
-  { href: "/fighters", label: "Fighters" },
+  { href: "/seminars", label: "Seminars" },
+  { href: "/fighters", label: "Grapplers" },
   { href: "/rankings", label: "Rankings" },
   { href: "/faq", label: "FAQ" },
+  { href: "/about", label: "About" },
+  { href: "/store", label: "Store" },
 ];
 
 export async function SiteHeader() {
@@ -52,6 +55,21 @@ export async function SiteHeader() {
           />
         </div>
       </div>
+      {openEvent && (
+        <div className="border-t-2 border-black bg-black text-white">
+          <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-2 flex flex-wrap items-center justify-between gap-x-4 gap-y-1 text-sm">
+            <p>
+              <span className="font-semibold text-brand-red">Next card</span>
+              {" "}
+              {openEvent.name}
+              {openEvent.slug === "up-n-roll-superfight-series" ? " · Road to Super Fight" : ""}
+              {" · "}
+              {new Date(openEvent.startDate).toLocaleDateString("en-IN", { day: "numeric", month: "long", year: "numeric" })}
+            </p>
+            <Link href="/register" className="font-semibold text-brand-red">Register</Link>
+          </div>
+        </div>
+      )}
     </header>
   );
 }

@@ -1,7 +1,33 @@
 import { connectDB } from "@/server/db/connect";
 import { ContentEntry, type ContentType } from "@/server/models/ContentEntry";
+import { User } from "@/server/models/User";
+import { STARTER_FAQS } from "@/server/content/starterFaqs";
 import { writeAuditLog } from "@/server/audit/log";
 import { NotFoundError } from "@/server/http/errors";
+
+/** Publish the starter FAQ once, so the page and the chatbot have something to answer. */
+async function ensureStarterFaqs() {
+  const published = await ContentEntry.countDocuments({ type: "FAQ", publicationState: "PUBLISHED" });
+  if (published > 0) return;
+
+  const admin = await User.findOne({ role: "ADMIN" }).select("_id").lean();
+  if (!admin) return;
+
+  const now = Date.now();
+  for (const [index, faq] of STARTER_FAQS.entries()) {
+    const exists = await ContentEntry.findOne({ type: "FAQ", title: faq.question }).select("_id").lean();
+    if (exists) continue;
+    await ContentEntry.create({
+      type: "FAQ",
+      title: faq.question,
+      body: faq.answer,
+      publicationState: "PUBLISHED",
+      createdBy: admin._id,
+      createdAt: new Date(now - index * 1000),
+      updatedAt: new Date(now - index * 1000),
+    });
+  }
+}
 
 export async function createContentEntry(
   adminId: string,
@@ -36,5 +62,6 @@ export async function listAllContent(type?: ContentType) {
 
 export async function listPublished(type: ContentType) {
   await connectDB();
+  if (type === "FAQ") await ensureStarterFaqs();
   return ContentEntry.find({ type, publicationState: "PUBLISHED" }).sort({ createdAt: -1 }).lean();
 }

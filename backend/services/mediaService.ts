@@ -24,3 +24,8 @@ export async function listPublishedMedia() {
   await connectDB();
   return MediaAsset.find({ publicationState: "PUBLISHED" }).sort({ createdAt: -1 }).lean();
 }
+
+export async function listPublishedMediaForEvent(eventId: string) {
+  await connectDB();
+  return MediaAsset.find({ publicationState: "PUBLISHED", eventId }).sort({ createdAt: 1 }).lean();
+}

@@ -1,51 +1,62 @@
 /**
- * Local dev fixture only — creates one demo Event + two Divisions so the
- * Phase 3 registration/payment flow can be exercised locally. NOT a
- * production admin feature (event creation UI is Phase 4). Run with:
- *   npx tsx --env-file=.env.local scripts/seed-demo.ts
+ * Local fixture. Publishes the 23 January 2027 Superfight Series and
+ * takes the fictional Underground Arena demo off the public list.
+ * Run with: npm run seed-demo
  */
 import { connectDB } from "../backend/db/connect";
 import { Event } from "../backend/models/Event";
 import { Division } from "../backend/models/Division";
 
+const SERIES_SLUG = "up-n-roll-superfight-series";
+
+const DIVISIONS = [
+  "Men Beginner −55 kg",
+  "Men Beginner −65 kg",
+  "Men Beginner −75 kg",
+  "Men Beginner −85 kg",
+  "Men Intermediate −55 kg",
+  "Men Intermediate −65 kg",
+  "Men Intermediate −75 kg",
+  "Men Intermediate −85 kg",
+  "Women Beginner −55 kg",
+  "Women Beginner −60 kg",
+  "Women Beginner +60 kg",
+  "Women Intermediate −55 kg",
+  "Women Intermediate −60 kg",
+  "Women Intermediate +60 kg",
+];
+
 async function main() {
   await connectDB();
 
-  const now = new Date();
-  const registrationOpensAt = new Date(now.getTime() - 24 * 60 * 60 * 1000);
-  const registrationClosesAt = new Date(now.getTime() + 30 * 24 * 60 * 60 * 1000);
-  const startDate = new Date(now.getTime() + 45 * 24 * 60 * 60 * 1000);
+  await Event.updateOne({ slug: "underground-arena-vol-4" }, { $set: { status: "DRAFT" } });
 
   const event = await Event.findOneAndUpdate(
-    { slug: "underground-arena-vol-4" },
+    { slug: SERIES_SLUG },
     {
-      name: "Underground Arena Vol. 4",
-      slug: "underground-arena-vol-4",
-      description: "Fictional demo event for local Phase 3 testing.",
-      venue: "Demo Venue",
-      startDate,
-      registrationOpensAt,
-      registrationClosesAt,
+      name: "Up 'n Roll Superfight Series",
+      slug: SERIES_SLUG,
+      description: "Road to Super Fight.",
+      venue: "",
+      startDate: new Date("2027-01-23T10:00:00+05:30"),
+      registrationOpensAt: new Date("2026-11-07T00:00:00+05:30"),
+      registrationClosesAt: new Date("2027-01-22T23:59:00+05:30"),
       status: "REGISTRATION_OPEN",
-      paymentInstructions: { feeMinorUnits: 150000, currency: "INR", qrImageKey: "" },
+      matCount: 1,
+      paymentInstructions: { feeMinorUnits: 0, currency: "INR", qrImageKey: "" },
     },
     { upsert: true, returnDocument: "after" }
   );
 
-  const divisions = [
-    { name: "Lightweight", discipline: "Grappling", capacity: 16 },
-    { name: "Welterweight", discipline: "MMA", capacity: 16 },
-  ];
-
-  for (const d of divisions) {
+  for (const name of DIVISIONS) {
     await Division.findOneAndUpdate(
-      { eventId: event._id, name: d.name },
-      { eventId: event._id, name: d.name, discipline: d.discipline, capacity: d.capacity, feeMinorUnitsOverride: null },
+      { eventId: event._id, name },
+      { eventId: event._id, name, discipline: "No-Gi", capacity: 16, feeMinorUnitsOverride: null },
       { upsert: true, returnDocument: "after" }
     );
   }
 
-  console.log(`Seeded event "${event.name}" (${event._id}) with ${divisions.length} divisions.`);
+  console.log(`Seeded "${event.name}" (${event._id}) with ${DIVISIONS.length} divisions. Demo event is not public.`);
   process.exit(0);
 }
 

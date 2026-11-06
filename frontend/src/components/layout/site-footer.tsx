@@ -3,9 +3,12 @@ import { BrandMark, BuiltBy, FounderCredit } from "./brand";
 
 const FOOTER_LINKS = [
   { href: "/events", label: "Events" },
-  { href: "/fighters", label: "Fighters" },
+  { href: "/seminars", label: "Seminars" },
+  { href: "/fighters", label: "Grapplers" },
   { href: "/rankings", label: "Rankings" },
   { href: "/faq", label: "FAQ" },
+  { href: "/about", label: "About" },
+  { href: "/store", label: "Store" },
   { href: "/announcements", label: "Announcements" },
   { href: "/policies", label: "Policies" },
 ];
@@ -24,7 +27,7 @@ export function SiteFooter() {
               {link.label}
             </Link>
           ))}
-          <span className="text-xs text-muted-foreground">up.n.roll</span>
+          <a href="https://www.instagram.com/up.n.roll/" className="text-xs text-muted-foreground">up.n.roll</a>
           <a href="mailto:info.upnroll@gmail.com" className="text-xs text-muted-foreground">info.upnroll@gmail.com</a>
           <a href="tel:+917738719800" className="text-xs text-muted-foreground">+91 7738719800</a>
         </nav>
