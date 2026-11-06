@@ -10,7 +10,8 @@
     "lint": "eslint",
     "test": "vitest run",
     "create-admin": "tsx --env-file=.env.local ../scripts/create-admin.ts",
-    "seed-demo": "tsx --env-file=.env.local ../scripts/seed-demo.ts"
+    "seed-demo": "tsx --env-file=.env.local ../scripts/seed-demo.ts",
+    "backfill-occupancy": "tsx --env-file=.env.local ../scripts/backfill-division-occupancy.ts"
   },
   "dependencies": {
     "@gsap/react": "^2.1.2",

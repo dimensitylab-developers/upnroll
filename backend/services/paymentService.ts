@@ -14,9 +14,12 @@ import { validateScreenshotMeta } from "@/features/payments/file-validation";
 import {
   canSubmitPayment,
   canDecidePayment,
+  isActiveRegistration,
   registrationStatusForPaymentDecision,
   registrationStatusForNewSubmission,
 } from "./registrationStateMachine";
+import { claimSeat, releaseSeat } from "./divisionOccupancy";
+import { bindSession, sessionOpts, withTransaction } from "@/server/db/transaction";
 import { flagDuplicateUtrs } from "./paymentQueue";
 import { NotFoundError, ConflictError, ValidationError } from "@/server/http/errors";
 
@@ -59,34 +62,56 @@ export async function submitPayment(
   const key = `payment-screenshots/${registrationId}/${Date.now()}-${randomBytes(4).toString("hex")}${ext}`;
   await getStorageAdapter().put(key, file.buffer, file.type);
 
-  const submission = await PaymentSubmission.create({
-    registrationId: registration._id,
-    userId: actor.userId,
-    eventId: event._id,
-    expectedAmountMinorUnits,
-    submittedUtr: utr,
-    screenshotStorageKey: key,
-    submittedAt: new Date(),
-    status: "PENDING_REVIEW",
-  });
-
-  const newRegStatus = registrationStatusForNewSubmission();
-  registration.status = newRegStatus;
-  registration.statusHistory.push({ status: newRegStatus, at: new Date() });
-  await registration.save();
+  let submission;
+  try {
+    submission = await withTransaction(async (session) => {
+      const current = await bindSession(Registration.findById(registrationId), session);
+      if (!current || String(current.userId) !== actor.userId) throw new NotFoundError("Registration not found.");
+      if (!canSubmitPayment(current.status as RegistrationDoc["status"])) {
+        throw new ConflictError("A payment cannot be submitted for this registration in its current state.");
+      }
+      const wasActive = isActiveRegistration(current.status as RegistrationDoc["status"]);
+      const [created] = await PaymentSubmission.create(
+        [
+          {
+            registrationId: current._id,
+            userId: actor.userId,
+            eventId: event._id,
+            expectedAmountMinorUnits,
+            submittedUtr: utr,
+            screenshotStorageKey: key,
+            submittedAt: new Date(),
+            status: "PENDING_REVIEW",
+          },
+        ],
+        { session }
+      );
+      const newRegStatus = registrationStatusForNewSubmission();
+      if (!wasActive) await claimSeat(current.divisionId, session);
+      current.status = newRegStatus;
+      current.statusHistory.push({ status: newRegStatus, at: new Date() });
+      await current.save(sessionOpts(session));
+      await writeAuditLog(
+        {
+          actorId: actor.userId,
+          action: "PAYMENT_SUBMITTED",
+          targetType: "PaymentSubmission",
+          targetId: String(created._id),
+          after: { status: created.status, utr },
+        },
+        session
+      );
+      return created;
+    });
+  } catch (err) {
+    await getStorageAdapter().delete(key);
+    throw err;
+  }
 
   await getEmailAdapter().send({
     to: user.email,
     subject: "Payment submission received",
     body: `We received your payment submission (reference ${utr}) for ${event.name}. An organizer will review it manually — this is not yet confirmation of payment.`,
-  });
-
-  await writeAuditLog({
-    actorId: actor.userId,
-    action: "PAYMENT_SUBMITTED",
-    targetType: "PaymentSubmission",
-    targetId: String(submission._id),
-    after: { status: submission.status, utr },
   });
 
   return submission;
@@ -108,24 +133,40 @@ async function decidePayment(
   }
 
   const beforeStatus = submission.status;
+  const updated = await withTransaction(async (session) => {
+    const decided = await PaymentSubmission.findOneAndUpdate(
+      { _id: paymentId, status: "PENDING_REVIEW" },
+      { status: decision, reviewerId: actor.userId, reviewedAt: new Date(), reviewNote: note },
+      { returnDocument: "after", session }
+    );
+    if (!decided) throw new ConflictError("This payment submission has already been reviewed.");
 
-  // Atomic conditional update: if another admin decided it between the read
-  // above and here, this update matches zero documents and we report a
-  // conflict instead of silently double-applying the decision.
-  const updated = await PaymentSubmission.findOneAndUpdate(
-    { _id: paymentId, status: "PENDING_REVIEW" },
-    { status: decision, reviewerId: actor.userId, reviewedAt: new Date(), reviewNote: note },
-    { returnDocument: "after" }
-  );
-  if (!updated) throw new ConflictError("This payment submission has already been reviewed.");
+    const registration = await bindSession(Registration.findById(decided.registrationId), session);
+    if (registration) {
+      const previous = registration.status as RegistrationDoc["status"];
+      const newStatus = registrationStatusForPaymentDecision(decision);
+      const wasActive = isActiveRegistration(previous);
+      const nowActive = isActiveRegistration(newStatus);
+      if (wasActive && !nowActive) await releaseSeat(registration.divisionId, session);
+      if (!wasActive && nowActive) await claimSeat(registration.divisionId, session);
+      registration.status = newStatus;
+      registration.statusHistory.push({ status: newStatus, at: new Date() });
+      await registration.save(sessionOpts(session));
+    }
 
-  const registration = await Registration.findById(updated.registrationId);
-  if (registration) {
-    const newStatus = registrationStatusForPaymentDecision(decision);
-    registration.status = newStatus;
-    registration.statusHistory.push({ status: newStatus, at: new Date() });
-    await registration.save();
-  }
+    await writeAuditLog(
+      {
+        actorId: actor.userId,
+        action: decision === "APPROVED" ? "PAYMENT_APPROVED" : "PAYMENT_REJECTED",
+        targetType: "PaymentSubmission",
+        targetId: String(decided._id),
+        before: { status: beforeStatus },
+        after: { status: decided.status, note },
+      },
+      session
+    );
+    return decided;
+  });
 
   const user = await User.findById(updated.userId);
   if (user) {
@@ -138,15 +179,6 @@ async function decidePayment(
           : `Your payment submission was rejected. Reason: ${note || "No reason provided."} You may resubmit from your dashboard.`,
     });
   }
-
-  await writeAuditLog({
-    actorId: actor.userId,
-    action: decision === "APPROVED" ? "PAYMENT_APPROVED" : "PAYMENT_REJECTED",
-    targetType: "PaymentSubmission",
-    targetId: String(updated._id),
-    before: { status: beforeStatus },
-    after: { status: updated.status, note },
-  });
 
   return updated;
 }

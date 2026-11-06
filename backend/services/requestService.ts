@@ -8,7 +8,9 @@ import { RegistrationRequest } from "@/server/models/RegistrationRequest";
 import { User } from "@/server/models/User";
 import { getEmailAdapter } from "@/server/email/console";
 import { writeAuditLog } from "@/server/audit/log";
-import { isActiveRegistration, ACTIVE_REGISTRATION_STATUSES } from "./registrationStateMachine";
+import { isActiveRegistration } from "./registrationStateMachine";
+import { claimSeat, releaseSeat } from "./divisionOccupancy";
+import { bindSession, sessionOpts, withTransaction } from "@/server/db/transaction";
 import { refundPercentForCancellation } from "./tournamentRules";
 import { NotFoundError, ConflictError, ValidationError } from "@/server/http/errors";
 
@@ -43,11 +45,10 @@ export async function createRequest(
     if (String(targetDivision._id) === String(registration.divisionId)) {
       throw new ValidationError("You're already registered in this division.");
     }
-    const activeCount = await Registration.countDocuments({
-      divisionId: targetDivision._id,
-      status: { $in: ACTIVE_REGISTRATION_STATUSES },
-    });
-    if (activeCount >= targetDivision.capacity) throw new ConflictError("The target division is at capacity.");
+    if (typeof targetDivision.filledCount !== "number") {
+      throw new ValidationError("This division has no occupancy counter. Run the division occupancy backfill before changing registrations.");
+    }
+    if (targetDivision.filledCount >= targetDivision.capacity) throw new ConflictError("The target division is at capacity.");
     requestedDivisionId = String(targetDivision._id);
   }
 
@@ -69,66 +70,66 @@ export async function decideRequest(actor: Actor, requestId: string, decision: "
   await connectDB();
   const adminId = actor.userId;
 
-  const updated = await RegistrationRequest.findOneAndUpdate(
-    { _id: requestId, status: "PENDING" },
-    { status: decision, reviewerId: adminId, reviewNote: note, reviewedAt: new Date() },
-    { returnDocument: "after" }
-  );
-  if (!updated) throw new ConflictError("This request has already been reviewed.");
+  let updated;
+  try {
+    updated = await withTransaction(async (session) => {
+      const decided = await RegistrationRequest.findOneAndUpdate(
+        { _id: requestId, status: "PENDING" },
+        { status: decision, reviewerId: adminId, reviewNote: note, reviewedAt: new Date() },
+        { returnDocument: "after", ...sessionOpts(session) }
+      );
+      if (!decided) throw new ConflictError("This request has already been reviewed.");
 
-  if (decision === "APPROVED") {
-    const registration = await Registration.findById(updated.registrationId);
-    if (registration) {
-      try {
-        if (updated.type === "CANCELLATION") {
-          const event = await Event.findById(registration.eventId).lean();
-          const decidedAt = new Date();
-          const refundPercent = event ? refundPercentForCancellation(event.startDate, decidedAt) : 0;
-          updated.refundPercent = refundPercent;
-          await updated.save();
-          registration.status = "CANCELLED";
-          registration.statusHistory.push({ status: "CANCELLED", at: decidedAt });
-          await registration.save();
-        } else if (updated.type === "TRANSFER" && updated.requestedDivisionId) {
-          const targetDivision = await Division.findById(updated.requestedDivisionId);
-          if (!targetDivision) throw new NotFoundError("The target division no longer exists.");
-
-          // Re-validate capacity immediately before applying the transfer — the
-          // createRequest check above is only an early UX signal; this is the
-          // authoritative check and closes the TOCTOU window between request
-          // creation and admin approval (M-4). The window left after this check
-          // is a single DB round-trip, and a concurrent approval that fills the
-          // division first is caught here because the count reflects its change.
-          const activeCount = await Registration.countDocuments({
-            divisionId: updated.requestedDivisionId,
-            status: { $in: ACTIVE_REGISTRATION_STATUSES },
-            _id: { $ne: registration._id },
-          });
-          if (activeCount >= targetDivision.capacity) {
-            throw new ConflictError("The target division filled up before this transfer could be approved.");
+      if (decision === "APPROVED") {
+        const registration = await bindSession(Registration.findById(decided.registrationId), session);
+        if (registration) {
+          if (decided.type === "CANCELLATION") {
+            if (isActiveRegistration(registration.status as RegistrationDoc["status"])) {
+              await releaseSeat(registration.divisionId, session);
+            }
+            const event = await bindSession(Event.findById(registration.eventId), session).lean();
+            const decidedAt = new Date();
+            decided.refundPercent = event ? refundPercentForCancellation(event.startDate, decidedAt) : 0;
+            await decided.save(sessionOpts(session));
+            registration.status = "CANCELLED";
+            registration.statusHistory.push({ status: "CANCELLED", at: decidedAt });
+            await registration.save(sessionOpts(session));
+          } else if (decided.type === "TRANSFER" && decided.requestedDivisionId) {
+            const targetDivision = await bindSession(Division.findById(decided.requestedDivisionId), session);
+            if (!targetDivision) throw new NotFoundError("The target division no longer exists.");
+            await claimSeat(targetDivision._id, session);
+            if (isActiveRegistration(registration.status as RegistrationDoc["status"])) {
+              await releaseSeat(registration.divisionId, session);
+            }
+            registration.divisionId = decided.requestedDivisionId;
+            await registration.save(sessionOpts(session));
           }
-
-          registration.divisionId = updated.requestedDivisionId;
-          await registration.save();
         }
-      } catch (err) {
-        // Leave no inconsistent state: don't let the request sit as "APPROVED"
-        // when its effect couldn't actually be applied. Revert to PENDING so
-        // the admin can retry (if capacity frees up) or reject it instead.
-        await RegistrationRequest.updateOne(
-          { _id: updated._id },
-          { status: "PENDING", reviewerId: null, reviewNote: "", reviewedAt: null }
-        );
-        await writeAuditLog({
+      }
+
+      await writeAuditLog(
+        {
           actorId: adminId,
-          action: "REGISTRATION_REQUEST_APPROVAL_FAILED",
+          action: "REGISTRATION_REQUEST_DECIDED",
           targetType: "RegistrationRequest",
           targetId: requestId,
-          after: { reason: err instanceof Error ? err.message : "Unknown error" },
-        });
-        throw err;
-      }
+          after: { status: decision, note },
+        },
+        session
+      );
+      return decided;
+    });
+  } catch (err) {
+    if (!(err instanceof ConflictError && err.message === "This request has already been reviewed.")) {
+      await writeAuditLog({
+        actorId: adminId,
+        action: "REGISTRATION_REQUEST_APPROVAL_FAILED",
+        targetType: "RegistrationRequest",
+        targetId: requestId,
+        after: { reason: err instanceof Error ? err.message : "Unknown error" },
+      });
     }
+    throw err;
   }
 
   const user = await User.findById(updated.userId);
@@ -141,14 +142,6 @@ export async function decideRequest(actor: Actor, requestId: string, decision: "
         : `Your ${updated.type.toLowerCase()} request was rejected. Reason: ${note || "No reason provided."}`,
     });
   }
-
-  await writeAuditLog({
-    actorId: adminId,
-    action: "REGISTRATION_REQUEST_DECIDED",
-    targetType: "RegistrationRequest",
-    targetId: requestId,
-    after: { status: decision, note },
-  });
 
   return updated;
 }

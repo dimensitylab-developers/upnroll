@@ -9,7 +9,7 @@ export const REGISTRATION_STATUSES = [
 ] as const;
 export type RegistrationStatus = (typeof REGISTRATION_STATUSES)[number];
 
-const ACTIVE_STATUSES: RegistrationStatus[] = ["AWAITING_PAYMENT", "PENDING_VERIFICATION", "CONFIRMED"];
+export const ACTIVE_REGISTRATION_STATUSES: RegistrationStatus[] = ["AWAITING_PAYMENT", "PENDING_VERIFICATION", "CONFIRMED"];
 
 const registrationSchema = new Schema(
   {
@@ -37,7 +37,7 @@ const registrationSchema = new Schema(
 // check in registrationService.createRegistration.
 registrationSchema.index(
   { userId: 1, divisionId: 1 },
-  { unique: true, partialFilterExpression: { status: { $in: ACTIVE_STATUSES } } }
+  { unique: true, partialFilterExpression: { status: { $in: ACTIVE_REGISTRATION_STATUSES } } }
 );
 
 export type RegistrationDoc = InferSchemaType<typeof registrationSchema>;

@@ -50,7 +50,7 @@ These are not guessed.
 | --- | --- |
 | 0 Reliability | Implemented. `getSession` and `listPublicEvents` use React `cache()`. Schedule and results query `PUBLIC_EVENT_STATUSES`. `predev` is `node ./scripts/ensure-root-modules.mjs`. CI is `.github/workflows/ci.yml`. |
 | 1 Security | Re-verified on the James merge. Typecheck passed, Vitest passed (23 files, 139 tests), production webpack build passed. The request-decision tests needed an Event mock and `save` on the request stub because cancellation now reads the event. No service behavior was changed for that fix. |
-| 2 Transactions | Not started. No `filledCount`, no `withTransaction`, no `mongodb-memory-server`. The Phase 2 design remains approved, including the capacity counter and disposable replica-set tests. Atlas was previously a 3-host replica set with sessions. This revision did not reconnect. |
+| 2 Transactions | Implemented. Registration, payment review, brackets, rankings, and request decisions run in one transaction on the existing Atlas connection. `filledCount` is claimed with a conditional update. The manual backfill was not run against the application database. |
 | 3–7 | Not started. |
 
 Phase 0 evidence, run from `frontend/` on 6 Nov 2026: `npx tsc --noEmit` exit 0, `npm test` 139 passed, `npm run build` exit 0 (`next build --webpack`). The dev server was stopped so the build could write `.next`. CI itself has not been executed on GitHub.
@@ -108,7 +108,9 @@ Unchanged approval: one helper on the existing mongoose connection, sequential o
 
 Ranking math stays `winLossPointsStrategy`. Persistence writes only when `calculationVersion` is still the version read inside the transaction.
 
-Tests use `mongodb-memory-server` as a replica set. They fail if the replica set does not start. They never use Atlas.
+Transaction tests use the existing Atlas cluster on a separate database, `upnrol_txn_test`, and drop that database when they finish. They do not write to the application database and they do not download a local MongoDB binary.
+
+Implemented on 6 Nov 2026. Evidence, from `frontend/`: `npx tsc --noEmit` exit 0, `npm test` 24 files / 147 tests passed, `npm run build` exit 0 (compiled in 21.5s). The dev server was stopped so the build could write `.next`. The occupancy backfill script was not executed. Existing divisions that have no `filledCount` will refuse registration changes until an operator runs `npm run backfill-occupancy` from `frontend/`. Run that before relying on registration in production. Details are in `docs/PHASE_2_COMPLETION_REPORT.md`.
 
 ### Phase 3 — Server-first rendering and client performance
 

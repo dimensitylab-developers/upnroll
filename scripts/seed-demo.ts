@@ -40,8 +40,11 @@ async function main() {
   for (const d of divisions) {
     await Division.findOneAndUpdate(
       { eventId: event._id, name: d.name },
-      { eventId: event._id, name: d.name, discipline: d.discipline, capacity: d.capacity, feeMinorUnitsOverride: null },
-      { upsert: true, returnDocument: "after" }
+      {
+        $set: { eventId: event._id, name: d.name, discipline: d.discipline, capacity: d.capacity, feeMinorUnitsOverride: null },
+        $setOnInsert: { filledCount: 0 },
+      },
+      { upsert: true, returnDocument: "after", setDefaultsOnInsert: true }
     );
   }
 

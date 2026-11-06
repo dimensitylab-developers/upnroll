@@ -1,4 +1,5 @@
 import { connectDB } from "@/server/db/connect";
+import { sessionOpts, type DbSession } from "@/server/db/transaction";
 import { AuditLog } from "@/server/models/AuditLog";
 import { User } from "@/server/models/User";
 import { assertAdmin, type Actor } from "@/server/auth/actor";
@@ -11,9 +12,9 @@ export async function writeAuditLog(entry: {
   before?: unknown;
   after?: unknown;
   correlationId?: string;
-}): Promise<void> {
+}, session?: DbSession): Promise<void> {
   await connectDB();
-  await AuditLog.create(entry);
+  await AuditLog.create([entry], sessionOpts(session));
 }
 
 /** Admin-dashboard feed: most recent audit events, enriched with the actor's email. */
