@@ -23,6 +23,14 @@ vi.mock("@/server/models/Division", () => ({
   Division: { findById: (...args: unknown[]) => mockDivisionFindById(...args) },
 }));
 
+vi.mock("@/server/models/Event", () => ({
+  Event: {
+    findById: () => ({
+      lean: () => Promise.resolve({ startDate: new Date("2026-12-31T00:00:00.000Z") }),
+    }),
+  },
+}));
+
 const mockRequestFindOneAndUpdate = vi.fn();
 const mockRequestUpdateOne = vi.fn().mockResolvedValue(undefined);
 vi.mock("@/server/models/RegistrationRequest", () => ({
@@ -170,6 +178,7 @@ describe("decideRequest — TRANSFER capacity re-check (M-4 regression)", () => 
       type: "CANCELLATION",
       registrationId: "reg1",
       userId: "u1",
+      save: vi.fn().mockResolvedValue(undefined),
     });
     const reg = registrationDoc();
     mockRegistrationFindById.mockResolvedValue(reg);
