@@ -3,7 +3,7 @@ import { connectDB } from "@/server/db/connect";
 import { Event, type EventStatus } from "@/server/models/Event";
 import { Division } from "@/server/models/Division";
 import { writeAuditLog } from "@/server/audit/log";
-import { NotFoundError, ConflictError } from "@/server/http/errors";
+import { NotFoundError, ConflictError, ValidationError } from "@/server/http/errors";
 import { assertAdmin, type Actor } from "@/server/auth/actor";
 
 export type CreateEventInput = {
@@ -16,6 +16,7 @@ export type CreateEventInput = {
   registrationClosesAt: Date;
   feeMinorUnits: number;
   currency?: string;
+  matCount?: number;
 };
 
 const PUBLIC_EVENT_STATUSES: EventStatus[] = ["REGISTRATION_OPEN", "REGISTRATION_CLOSED", "COMPLETED"];
@@ -36,6 +37,7 @@ export async function createEvent(actor: Actor, input: CreateEventInput) {
     registrationOpensAt: input.registrationOpensAt,
     registrationClosesAt: input.registrationClosesAt,
     status: "DRAFT",
+    matCount: input.matCount && input.matCount >= 1 ? Math.floor(input.matCount) : 1,
     paymentInstructions: {
       feeMinorUnits: input.feeMinorUnits,
       currency: input.currency ?? "INR",
@@ -64,6 +66,39 @@ export async function updateEventStatus(actor: Actor, eventId: string, status: E
     targetId: eventId,
     before: { status: before },
     after: { status },
+  });
+  return event;
+}
+
+export async function updateEventMatCount(actor: Actor, eventId: string, matCount: number) {
+  assertAdmin(actor);
+  await connectDB();
+  if (!Number.isInteger(matCount) || matCount < 1) {
+    throw new ValidationError("Set at least one mat.");
+  }
+  const event = await Event.findById(eventId);
+  if (!event) throw new NotFoundError("Event not found.");
+  const before = event.matCount;
+  event.matCount = matCount;
+  await event.save();
+
+  const { Match } = await import("@/server/models/Match");
+  const { matNumberForOrder } = await import("./tournamentRules");
+  const openMatches = await Match.find({ eventId, status: { $in: ["PENDING", "SCHEDULED"] } }).sort({ round: 1, order: 1 });
+  await Promise.all(
+    openMatches.map((match, index) => {
+      match.mat = String(matNumberForOrder(index, matCount));
+      return match.save();
+    })
+  );
+
+  await writeAuditLog({
+    actorId: actor.userId,
+    action: "EVENT_MATS_UPDATED",
+    targetType: "Event",
+    targetId: eventId,
+    before: { matCount: before },
+    after: { matCount },
   });
   return event;
 }

@@ -73,7 +73,7 @@ export default async function AdminOverviewPage() {
         <section>
           <div className="flex items-center justify-between mb-3">
             <h2 className="text-display text-lg font-semibold">Recent registrations</h2>
-            <Link href="/admin/events" className="text-sm underline">View events</Link>
+            <Link href="/admin/fighters" className="text-sm underline">Full details</Link>
           </div>
           <div className="space-y-2">
             {data.recentRegistrations.map((r) => (

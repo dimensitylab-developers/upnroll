@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, type ComponentProps } from "react";
+import { useEffect, useState, type ChangeEvent, type ComponentProps } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -132,8 +132,23 @@ export function GrapplerForm({
   waiverAcceptedAt,
 }: GrapplerFormProps) {
   const [agreed, setAgreed] = useState(mode === "profile");
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const values = defaults;
   const errors = state.fieldErrors;
+
+  useEffect(() => {
+    return () => {
+      if (previewUrl) URL.revokeObjectURL(previewUrl);
+    };
+  }, [previewUrl]);
+
+  function onPhotoChange(event: ChangeEvent<HTMLInputElement>) {
+    const file = event.target.files?.[0];
+    setPreviewUrl((current) => {
+      if (current) URL.revokeObjectURL(current);
+      return file ? URL.createObjectURL(file) : null;
+    });
+  }
 
   return (
     <form action={formAction} className="space-y-8">
@@ -170,7 +185,7 @@ export function GrapplerForm({
               maxLength={12}
               errors={errors}
               defaultValue={values?.aadhaar}
-              hint="Shown only on your profile, never on public pages."
+              hint="Kept off public pages. Organizers see it in the admin panel."
             />
             <TextField label="City / State" name="cityState" errors={errors} defaultValue={values?.cityState} />
             <TextField label="Emergency contact name" name="emergencyContactName" errors={errors} defaultValue={values?.emergencyContactName} />
@@ -180,15 +195,19 @@ export function GrapplerForm({
           <div>
             <Label htmlFor="photo" className="mb-1.5 block">Passport size photograph</Label>
             <div className="border-2 border-black bg-white w-full aspect-[3/4] mb-2 overflow-hidden flex items-center justify-center">
-              {hasPhoto ? (
-                // The route only serves the signed-in fighter's own photograph.
+              {previewUrl || hasPhoto ? (
+                // Chosen file shows immediately. Saved photos stay on the signed-in fighter's route.
                 // eslint-disable-next-line @next/next/no-img-element
-                <img src={`/api/v1/fighter/photo?v=${photoVersion}`} alt="Passport size photograph" className="w-full h-full object-cover" />
+                <img
+                  src={previewUrl ?? `/api/v1/fighter/photo?v=${photoVersion}`}
+                  alt="Passport size photograph"
+                  className="w-full h-full object-contain"
+                />
               ) : (
                 <span className="text-[10px] uppercase tracking-wider text-center px-2 text-muted-foreground">Passport size photograph</span>
               )}
             </div>
-            <Input id="photo" name="photo" type="file" accept="image/jpeg,image/png,image/webp" required={mode === "register"} />
+            <Input id="photo" name="photo" type="file" accept="image/jpeg,image/png,image/webp" required={mode === "register"} onChange={onPhotoChange} />
             <p className="text-xs text-muted-foreground mt-1">JPG, PNG, or WebP, under 1.5 MB.</p>
           </div>
         </div>

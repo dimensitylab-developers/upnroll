@@ -17,6 +17,8 @@ const registrationSchema = new Schema(
     eventId: { type: Schema.Types.ObjectId, ref: "Event", required: true, index: true },
     divisionId: { type: Schema.Types.ObjectId, ref: "Division", required: true, index: true },
     status: { type: String, enum: REGISTRATION_STATUSES, required: true, default: "AWAITING_PAYMENT" },
+    consentAcceptedAt: { type: Date, default: null },
+    agreementAcceptedAt: { type: Date, default: null },
     statusHistory: {
       type: [
         {

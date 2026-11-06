@@ -59,7 +59,7 @@ export function CreateRequestDialog({
           <Textarea name="reason" placeholder="Reason for this request" required />
 
           <p className="text-xs text-muted-foreground">
-            Policy specifics (windows, fees) are still pending client approval. Refunds, if any, are handled manually off-platform.
+            Cancel one month or more before the event and the refund is 50%. Inside that month there is no refund. A teammate transfer is free and keeps the same bracket spot.
           </p>
 
           <DialogFooter>

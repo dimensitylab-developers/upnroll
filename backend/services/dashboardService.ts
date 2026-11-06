@@ -8,6 +8,7 @@ import { listRecentRegistrationsForAdmin, listMyRegistrations } from "./registra
 import { countFighters, getFighterProfile } from "./fighterService";
 import { listRecentAuditLogs } from "@/server/audit/log";
 import { listMatchesForFighter } from "./matchService";
+import { warmUpMinutes } from "./tournamentRules";
 
 /** Composes existing services into the data the admin overview page needs — no new queries beyond what each service already runs. */
 export async function getAdminDashboardData(actor: Actor) {
@@ -54,6 +55,14 @@ export async function getFighterDashboardData(actor: Actor) {
         : null,
     }));
   const pendingRequests = requests.filter((r) => r.status === "PENDING");
+  const now = new Date();
+  const alerts = upcomingMatches.flatMap((match) => {
+    if (!match.scheduledAt) return [];
+    const minutes = warmUpMinutes(new Date(match.scheduledAt as Date), now);
+    if (minutes === null) return [];
+    const mat = match.mat ? `mat ${match.mat}` : "your mat";
+    return [`Warm up. You are on ${mat} in about ${minutes} minutes.`];
+  });
 
-  return { profile, registrations, upcomingMatches, recentResults, pendingRequests };
+  return { profile, registrations, upcomingMatches, recentResults, pendingRequests, alerts };
 }

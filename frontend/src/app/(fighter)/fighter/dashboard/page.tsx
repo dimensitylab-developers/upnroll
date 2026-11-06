@@ -26,6 +26,17 @@ export default async function FighterDashboardPage() {
         )}
       </div>
 
+      {data.alerts.length > 0 && (
+        <section className="space-y-2">
+          {data.alerts.map((alert) => (
+            <p key={alert} className="border-2 border-black bg-brand-red text-white px-4 py-3 text-sm">{alert}</p>
+          ))}
+        </section>
+      )}
+      <p className="text-xs text-muted-foreground">
+        Match times show here and are sent on WhatsApp. Text messages are not sent in this phase.
+      </p>
+
       <div className="grid sm:grid-cols-2 gap-6">
         <section>
           <div className="flex items-center justify-between mb-3">
@@ -62,7 +73,9 @@ export default async function FighterDashboardPage() {
               <div key={String(m._id)} className="manga-panel p-3">
                 <p className="font-medium">{m.competitorAName ?? "TBD"} vs {m.competitorBName ?? "TBD"}</p>
                 <p className="text-xs text-muted-foreground">
-                  {m.event?.name ?? "Unknown event"} ·{" "}
+                  {m.event?.name ?? "Unknown event"}
+                  {m.mat ? ` · Mat ${m.mat}` : ""}
+                  {" · "}
                   {m.scheduledAt ? new Date(m.scheduledAt).toLocaleString() : "Not yet scheduled"}
                 </p>
               </div>

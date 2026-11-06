@@ -2,7 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { requireActor } from "@/server/auth/session";
-import { createEvent, createDivision, updateEventStatus } from "@/server/services/eventService";
+import { createEvent, createDivision, updateEventStatus, updateEventMatCount } from "@/server/services/eventService";
 import { EVENT_STATUSES, type EventStatus } from "@/server/models/Event";
 import { toAppError } from "@/server/http/errors";
 import { createEventSchema, createDivisionSchema } from "./schemas";
@@ -21,6 +21,7 @@ export async function createEventAction(_prevState: EventActionState, formData: 
     registrationClosesAt: formData.get("registrationClosesAt"),
     feeAmount: formData.get("feeAmount"),
     currency: formData.get("currency"),
+    matCount: formData.get("matCount") || "1",
   });
   if (!parsed.success) {
     return { error: parsed.error.issues[0]?.message ?? "Check the event details and try again." };
@@ -36,6 +37,7 @@ export async function createEventAction(_prevState: EventActionState, formData: 
       registrationClosesAt: parsed.data.registrationClosesAt,
       feeMinorUnits: Math.round(parseFloat(parsed.data.feeAmount) * 100),
       currency: parsed.data.currency,
+      matCount: parsed.data.matCount,
     });
   } catch (err) {
     return { error: toAppError(err).message };
@@ -84,5 +86,22 @@ export async function updateEventStatusAction(_prevState: EventActionState, form
   }
 
   revalidatePath(`/admin/events/${eventId}`);
+  return {};
+}
+
+export async function updateEventMatCountAction(_prevState: EventActionState, formData: FormData): Promise<EventActionState> {
+  const actor = await requireActor("ADMIN");
+  const eventId = String(formData.get("eventId") ?? "");
+  const matCount = Number(formData.get("matCount"));
+  if (!eventId || !Number.isInteger(matCount) || matCount < 1) {
+    return { error: "Set at least one mat." };
+  }
+  try {
+    await updateEventMatCount(actor, eventId, matCount);
+  } catch (err) {
+    return { error: toAppError(err).message };
+  }
+  revalidatePath(`/admin/events/${eventId}`);
+  revalidatePath(`/admin/events/${eventId}/matches`);
   return {};
 }

@@ -1,10 +1,103 @@
 import "server-only";
 import { connectDB } from "@/server/db/connect";
 import { FighterProfile } from "@/server/models/FighterProfile";
+import { User } from "@/server/models/User";
 import { writeAuditLog } from "@/server/audit/log";
 import { listPublicMatchHistory } from "./matchService";
 import { NotFoundError } from "@/server/http/errors";
 import { assertAdmin, assertFighter, type Actor } from "@/server/auth/actor";
+
+export type AdminFighterView = {
+  userId: string;
+  displayName: string;
+  email: string;
+  dateOfBirth: string;
+  age: number;
+  gender: string;
+  mobile: string;
+  nationality: string;
+  aadhaar: string;
+  cityState: string;
+  emergencyContactName: string;
+  emergencyRelationship: string;
+  bloodGroup: string;
+  academy: string;
+  headCoach: string;
+  beltRank: string;
+  yearsTraining: number;
+  weightDivision: string;
+  heardAbout: string;
+  hasMedicalCondition: boolean;
+  medicalConditionDetail: string;
+  hasAllergies: boolean;
+  allergiesDetail: string;
+  takingMedication: boolean;
+  medicallyFit: boolean;
+  hasPhoto: boolean;
+  waiverAcceptedAt: string | null;
+};
+
+type ProfileForAdmin = {
+  userId: unknown;
+  displayName?: string;
+  dateOfBirth?: string;
+  age?: number;
+  gender?: string;
+  mobile?: string;
+  nationality?: string;
+  aadhaar?: string;
+  cityState?: string;
+  emergencyContactName?: string;
+  emergencyRelationship?: string;
+  bloodGroup?: string;
+  academy?: string;
+  gym?: string;
+  headCoach?: string;
+  beltRank?: string;
+  yearsTraining?: number;
+  weightDivision?: string;
+  heardAbout?: string;
+  hasMedicalCondition?: boolean;
+  medicalConditionDetail?: string;
+  hasAllergies?: boolean;
+  allergiesDetail?: string;
+  takingMedication?: boolean;
+  medicallyFit?: boolean;
+  photoKey?: string;
+  waiverAcceptedAt?: Date | null;
+};
+
+export function toAdminFighterView(profile: ProfileForAdmin, email: string): AdminFighterView {
+  return {
+    userId: String(profile.userId),
+    displayName: profile.displayName ?? "",
+    email,
+    dateOfBirth: profile.dateOfBirth ?? "",
+    age: profile.age ?? 0,
+    gender: profile.gender ?? "",
+    mobile: profile.mobile ?? "",
+    nationality: profile.nationality ?? "",
+    aadhaar: profile.aadhaar ?? "",
+    cityState: profile.cityState ?? "",
+    emergencyContactName: profile.emergencyContactName ?? "",
+    emergencyRelationship: profile.emergencyRelationship ?? "",
+    bloodGroup: profile.bloodGroup ?? "",
+    academy: profile.academy || profile.gym || "",
+    headCoach: profile.headCoach ?? "",
+    beltRank: profile.beltRank ?? "",
+    yearsTraining: profile.yearsTraining ?? 0,
+    weightDivision: profile.weightDivision ?? "",
+    heardAbout: profile.heardAbout ?? "",
+    hasMedicalCondition: Boolean(profile.hasMedicalCondition),
+    medicalConditionDetail: profile.medicalConditionDetail ?? "",
+    hasAllergies: Boolean(profile.hasAllergies),
+    allergiesDetail: profile.allergiesDetail ?? "",
+    takingMedication: Boolean(profile.takingMedication),
+    medicallyFit: Boolean(profile.medicallyFit),
+    hasPhoto: Boolean(profile.photoKey),
+    waiverAcceptedAt: profile.waiverAcceptedAt ? new Date(profile.waiverAcceptedAt).toISOString() : null,
+  };
+}
 
 export type FighterDetailsInput = {
   displayName: string;
@@ -90,6 +183,18 @@ export async function countFighters(actor: Actor) {
 }
 
 const PUBLIC_FIGHTER_FIELDS = "displayName slug gym discipline userId";
+
+/** Full grappler form for organizers. Aadhaar and medical answers stay off public pages. */
+export async function listFightersForAdmin(actor: Actor) {
+  assertAdmin(actor);
+  await connectDB();
+  const profiles = await FighterProfile.find().sort({ createdAt: -1 }).lean();
+  const users = await User.find({ _id: { $in: profiles.map((profile) => profile.userId) } })
+    .select("email")
+    .lean();
+  const emailById = new Map(users.map((user) => [String(user._id), user.email]));
+  return profiles.map((profile) => toAdminFighterView(profile, emailById.get(String(profile.userId)) ?? ""));
+}
 
 export async function listPublicFighters() {
   await connectDB();

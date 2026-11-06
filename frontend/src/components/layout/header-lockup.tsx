@@ -3,9 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { BrandMark } from "./brand";
-
-const HEADER_HEIGHT = 64;
+const HEADER_HEIGHT = 72;
 
 export function HeaderLockup() {
   const pathname = usePathname();
@@ -31,12 +29,11 @@ export function HeaderLockup() {
     };
   }, [isHome]);
 
+  if (!showName) return null;
+
   return (
-    <Link href="/" aria-label="Up 'n Roll" className="flex items-center gap-2 shrink-0">
-      <BrandMark className="h-8 w-8" />
-      <span className={`inline-flex overflow-hidden transition-[max-width,opacity] duration-300 ease-out ${showName ? "max-w-56 opacity-100" : "max-w-0 opacity-0"}`}>
-        <img src="/logo-wordmark.png" alt="" className="h-8 w-auto max-w-none" />
-      </span>
+    <Link href="/" aria-label="Up 'n Roll" className="shrink-0">
+      <img src="/logo-wordmark.png" alt="" className="h-11 w-auto" />
     </Link>
   );
 }

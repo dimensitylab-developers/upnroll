@@ -7,7 +7,9 @@ import { FighterProfile } from "@/server/models/FighterProfile";
 import { Bracket } from "@/server/models/Bracket";
 import { Match, type MatchDoc } from "@/server/models/Match";
 import { writeAuditLog } from "@/server/audit/log";
+import { Event } from "@/server/models/Event";
 import { buildBracket, shuffleDeterministic } from "./bracketEngine";
+import { matNumberForOrder } from "./tournamentRules";
 import { NotFoundError, ConflictError, ValidationError } from "@/server/http/errors";
 
 type LeanMatch = MatchDoc & { _id: unknown };
@@ -83,6 +85,8 @@ export async function generateBracket(
     mode.type === "random" ? shuffleDeterministic(orderedRegistrationIds, seed) : orderedRegistrationIds;
 
   const { roundsCount, matches: skeleton } = buildBracket(orderedIds);
+  const event = await Event.findById(division.eventId).lean();
+  const matCount = event?.matCount ?? 1;
 
   let bracket;
   if (existing) {
@@ -119,6 +123,7 @@ export async function generateBracket(
       winnerRegistrationId: m.winner,
       resultMethod: m.status === "BYE" ? "BYE" : "",
       resultRecordedAt: m.status === "BYE" ? new Date() : null,
+      mat: String(matNumberForOrder(m.order, matCount)),
     }))
   );
 

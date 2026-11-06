@@ -4,6 +4,7 @@ import { listDivisionsForEvent } from "@/server/services/eventService";
 import { listRequestsForFighter } from "@/server/services/requestService";
 import { isActiveRegistration } from "@/server/services/registrationStateMachine";
 import { CreateRequestDialog } from "@/features/requests/create-request-dialog";
+import { TeammateTransferButton } from "@/features/requests/teammate-transfer-button";
 import { Badge } from "@/components/ui/badge";
 
 export default async function FighterRequestsPage() {
@@ -32,7 +33,10 @@ export default async function FighterRequestsPage() {
                     <p className="font-medium">{r.event?.name} — {r.division?.name}</p>
                     <Badge variant="outline">{r.status.replaceAll("_", " ")}</Badge>
                   </div>
-                  <CreateRequestDialog registrationId={String(r._id)} otherDivisions={otherDivisions} />
+                  <div className="flex flex-col items-end gap-2">
+                    <CreateRequestDialog registrationId={String(r._id)} otherDivisions={otherDivisions} />
+                    <TeammateTransferButton registrationId={String(r._id)} />
+                  </div>
                 </div>
               );
             })
@@ -52,6 +56,9 @@ export default async function FighterRequestsPage() {
               </div>
               <p className="text-sm text-muted-foreground mt-1">{r.reason}</p>
               {r.reviewNote && <p className="text-sm text-muted-foreground mt-1">Admin note: {r.reviewNote}</p>}
+              {r.type === "CANCELLATION" && r.status === "APPROVED" && (
+                <p className="text-sm mt-1">Refund: {r.refundPercent ?? 0}%.</p>
+              )}
             </div>
           ))}
           {requests.length === 0 && <p className="text-sm text-muted-foreground">No requests submitted yet.</p>}
