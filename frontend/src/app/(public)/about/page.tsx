@@ -10,10 +10,8 @@ export default async function AboutPage() {
   const featured = events.find((event) => event.status === "REGISTRATION_OPEN") ?? events[0] ?? null;
 
   return (
-    <main className="px-4 py-16">
-      <div className="mx-auto max-w-6xl">
-        <AboutStory eventSlug={featured?.slug} page />
-      </div>
+    <main className="min-h-screen">
+      <AboutStory eventSlug={featured?.slug} page />
     </main>
   );
 }

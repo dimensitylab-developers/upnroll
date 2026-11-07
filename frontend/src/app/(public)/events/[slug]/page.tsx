@@ -4,11 +4,14 @@ import { getEventBySlug, listDivisionsForEvent } from "@/server/services/eventSe
 import { listPublicResults } from "@/server/services/matchService";
 import { listPublishedMediaForEvent } from "@/server/services/mediaService";
 import { HeldRecord, type HeldRecordData } from "@/components/events/held-record";
+import { SuperfightLanding } from "@/components/events/superfight-landing";
 import { Badge } from "@/components/ui/badge";
 
 function isVideo(url: string) {
   return /\.(mp4|webm|mov)(\?|$)/i.test(url);
 }
+
+const SUPERFIGHT_SLUG = "up-n-roll-superfight-series";
 
 export const dynamic = "force-dynamic";
 
@@ -64,7 +67,9 @@ export default async function PublicEventDetailPage({ params }: { params: Promis
     return (
       <main className="min-h-screen bg-background halftone-bg px-4 py-16">
         <div className="mx-auto max-w-6xl">
-          <Link href="/events" className="text-sm font-semibold text-brand-red">All events</Link>
+          <Link href="/events" className="text-sm font-semibold text-brand-red">
+            All events
+          </Link>
           <div className="mt-6">
             <HeldRecord record={record} />
           </div>
@@ -73,26 +78,69 @@ export default async function PublicEventDetailPage({ params }: { params: Promis
     );
   }
 
+  if (slug === SUPERFIGHT_SLUG) {
+    const start = new Date(event.startDate);
+    return (
+      <SuperfightLanding
+        slug={slug}
+        name={event.name}
+        dateLabel={start.toLocaleDateString("en-IN", { day: "numeric", month: "long", year: "numeric" })}
+        weekdayLabel={start.toLocaleDateString("en-IN", { weekday: "long" })}
+        venue={event.venue || "Mumbai"}
+        status={event.status}
+        canRegister={event.status === "REGISTRATION_OPEN"}
+        registerUntil={
+          event.status === "REGISTRATION_OPEN"
+            ? new Date(event.registrationClosesAt).toLocaleDateString("en-IN", {
+                day: "numeric",
+                month: "long",
+                year: "numeric",
+              })
+            : null
+        }
+        matCount={event.matCount ?? 1}
+        divisions={divisions.map((division) => ({
+          id: String(division._id),
+          name: division.name,
+          discipline: division.discipline,
+          capacity: division.capacity,
+        }))}
+      />
+    );
+  }
+
   return (
     <main className="min-h-screen bg-background halftone-bg px-4 py-16">
-      <div className="max-w-2xl mx-auto">
-        <Badge variant="outline" className="mb-3">{event.status.replaceAll("_", " ")}</Badge>
-        <h1 className="text-display text-4xl font-semibold mb-2">{event.name}</h1>
+      <div className="mx-auto max-w-2xl">
+        <Badge variant="outline" className="mb-3">
+          {event.status.replaceAll("_", " ")}
+        </Badge>
+        <h1 className="text-display mb-2 text-4xl font-semibold">{event.name}</h1>
         {event.description === "Road to Super Fight." && <p className="mb-2">Road to Super Fight</p>}
-        <p className="text-muted-foreground mb-6">
+        <p className="mb-6 text-muted-foreground">
           {new Date(event.startDate).toLocaleDateString("en-IN", { day: "numeric", month: "long", year: "numeric" })}
           {` · ${event.venue || "Venue to be announced"}`}
         </p>
 
-        <div className="flex gap-3 mb-8">
-          {event.status === "REGISTRATION_OPEN" && <Link href="/register" className="text-sm font-semibold text-brand-red">Register</Link>}
-          <Link href={`/events/${slug}/brackets`} className="text-sm underline">Brackets</Link>
-          <Link href={`/events/${slug}/schedule`} className="text-sm underline">Schedule</Link>
-          <Link href={`/events/${slug}/results`} className="text-sm underline">Results</Link>
+        <div className="mb-8 flex gap-3">
+          {event.status === "REGISTRATION_OPEN" && (
+            <Link href="/register" className="text-sm font-semibold text-brand-red">
+              Register
+            </Link>
+          )}
+          <Link href={`/events/${slug}/brackets`} className="text-sm underline">
+            Brackets
+          </Link>
+          <Link href={`/events/${slug}/schedule`} className="text-sm underline">
+            Schedule
+          </Link>
+          <Link href={`/events/${slug}/results`} className="text-sm underline">
+            Results
+          </Link>
         </div>
 
-        <h2 className="text-display text-xl font-semibold mb-3">Divisions</h2>
-        <div className="grid sm:grid-cols-2 gap-3">
+        <h2 className="text-display mb-3 text-xl font-semibold">Divisions</h2>
+        <div className="grid gap-3 sm:grid-cols-2">
           {divisions.map((d) => (
             <div key={String(d._id)} className="manga-panel p-4">
               <p className="font-medium">{d.name}</p>

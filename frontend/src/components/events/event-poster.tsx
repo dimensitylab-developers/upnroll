@@ -76,11 +76,22 @@ export function EventPoster({
           />
           <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/25 to-transparent" />
           <div className="absolute inset-x-0 bottom-0 px-6 py-6 text-white sm:px-10 sm:py-8">
-            <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-brand-red">Next card</p>
+            {slug === "up-n-roll-superfight-series" ? (
+              <div className="flex flex-wrap items-end gap-3">
+                <span className="-rotate-2 border-2 border-black bg-brand-red px-2.5 py-1 text-display text-xl font-semibold shadow-[3px_3px_0_0_#000]">
+                  #2
+                </span>
+                <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-brand-red">Next card · Match</p>
+              </div>
+            ) : (
+              <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-brand-red">Next card</p>
+            )}
             <p className="text-display mt-2 text-xl font-semibold sm:text-2xl">{date}</p>
             <h2 className="text-display mt-1 max-w-3xl text-3xl font-semibold leading-[0.95] sm:text-5xl">{name}</h2>
             {line && <p className="mt-3 text-sm text-white/85">{line}</p>}
-            {venue && <p className="mt-2 text-sm text-white/80">{venue}</p>}
+            <p className="mt-2 text-sm text-white/80">
+              {venue || (slug === "up-n-roll-superfight-series" ? "Mumbai" : "")}
+            </p>
           </div>
         </div>
       ) : (
