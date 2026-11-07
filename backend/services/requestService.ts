@@ -1,4 +1,6 @@
+import "server-only";
 import { connectDB } from "@/server/db/connect";
+import { assertAdmin, assertFighter, type Actor } from "@/server/auth/actor";
 import { Registration, type RegistrationDoc } from "@/server/models/Registration";
 import { Division } from "@/server/models/Division";
 import { Event } from "@/server/models/Event";
@@ -11,12 +13,14 @@ import { refundPercentForCancellation } from "./tournamentRules";
 import { NotFoundError, ConflictError, ValidationError } from "@/server/http/errors";
 
 export async function createRequest(
-  userId: string,
+  actor: Actor,
   registrationId: string,
   type: "CANCELLATION" | "TRANSFER",
   input: { requestedDivisionId?: string; reason: string }
 ) {
+  assertFighter(actor);
   await connectDB();
+  const userId = actor.userId;
 
   if (!input.reason.trim()) throw new ValidationError("A reason is required.");
 
@@ -60,8 +64,10 @@ export async function createRequest(
   return request;
 }
 
-export async function decideRequest(adminId: string, requestId: string, decision: "APPROVED" | "REJECTED", note: string) {
+export async function decideRequest(actor: Actor, requestId: string, decision: "APPROVED" | "REJECTED", note: string) {
+  assertAdmin(actor);
   await connectDB();
+  const adminId = actor.userId;
 
   const updated = await RegistrationRequest.findOneAndUpdate(
     { _id: requestId, status: "PENDING" },
@@ -147,16 +153,18 @@ export async function decideRequest(adminId: string, requestId: string, decision
   return updated;
 }
 
-export async function listRequestsForFighter(userId: string) {
+export async function listRequestsForFighter(actor: Actor) {
+  assertFighter(actor);
   await connectDB();
-  return RegistrationRequest.find({ userId }).sort({ createdAt: -1 }).lean();
+  return RegistrationRequest.find({ userId: actor.userId }).sort({ createdAt: -1 }).lean();
 }
 
-export async function listRequestsForAdmin() {
+export async function listRequestsForAdmin(actor: Actor) {
+  assertAdmin(actor);
   await connectDB();
   const requests = await RegistrationRequest.find().sort({ createdAt: -1 }).lean();
   const userIds = [...new Set(requests.map((r) => String(r.userId)))];
-  const users = await User.find({ _id: { $in: userIds } }).lean();
+  const users = await User.find({ _id: { $in: userIds } }).select("email").lean();
   const emailByUserId = new Map(users.map((u) => [String(u._id), u.email]));
   return requests.map((r) => ({ ...r, userEmail: emailByUserId.get(String(r.userId)) ?? "Unknown" }));
 }

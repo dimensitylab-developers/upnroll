@@ -1,10 +1,10 @@
-import { getSession } from "@/server/auth/session";
+import { actorFromSession, getSession } from "@/server/auth/session";
 import { listMatchesForFighter } from "@/server/services/matchService";
 import { Badge } from "@/components/ui/badge";
 
 export default async function FighterMatchesPage() {
   const session = await getSession();
-  const matches = session ? await listMatchesForFighter(String(session.user._id)) : [];
+  const matches = session ? await listMatchesForFighter(actorFromSession(session)) : [];
 
   return (
     <div className="max-w-2xl mx-auto">

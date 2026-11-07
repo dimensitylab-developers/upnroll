@@ -1,6 +1,5 @@
-import { getSession } from "@/server/auth/session";
-import { connectDB } from "@/server/db/connect";
-import { FighterProfile } from "@/server/models/FighterProfile";
+import { actorFromSession, getSession } from "@/server/auth/session";
+import { getFighterProfile } from "@/server/services/fighterService";
 import { ProfileForm } from "@/features/profile/profile-form";
 import type { GrapplerDefaults } from "@/features/fighters/grappler-form";
 
@@ -11,8 +10,7 @@ function yesNo(value: boolean | undefined, ready: boolean): string {
 
 export default async function FighterProfilePage() {
   const session = await getSession();
-  await connectDB();
-  const profile = session ? await FighterProfile.findOne({ userId: session.user._id }).lean() : null;
+  const profile = session ? await getFighterProfile(actorFromSession(session)) : null;
   const ready = Boolean(profile?.dateOfBirth);
   const defaults: GrapplerDefaults = {
     displayName: profile?.displayName ?? "",

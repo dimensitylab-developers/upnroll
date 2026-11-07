@@ -1,7 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { requireRole } from "@/server/auth/session";
+import { requireActor } from "@/server/auth/session";
 import { createEvent, createDivision, updateEventStatus, updateEventMatCount } from "@/server/services/eventService";
 import { EVENT_STATUSES, type EventStatus } from "@/server/models/Event";
 import { toAppError } from "@/server/http/errors";
@@ -10,7 +10,7 @@ import { createEventSchema, createDivisionSchema } from "./schemas";
 export type EventActionState = { error?: string };
 
 export async function createEventAction(_prevState: EventActionState, formData: FormData): Promise<EventActionState> {
-  const { user } = await requireRole("ADMIN");
+  const actor = await requireActor("ADMIN");
 
   const parsed = createEventSchema.safeParse({
     name: formData.get("name"),
@@ -28,7 +28,7 @@ export async function createEventAction(_prevState: EventActionState, formData: 
   }
 
   try {
-    await createEvent(String(user._id), {
+    await createEvent(actor, {
       name: parsed.data.name,
       slug: parsed.data.slug,
       venue: parsed.data.venue,
@@ -48,7 +48,7 @@ export async function createEventAction(_prevState: EventActionState, formData: 
 }
 
 export async function createDivisionAction(_prevState: EventActionState, formData: FormData): Promise<EventActionState> {
-  const { user } = await requireRole("ADMIN");
+  const actor = await requireActor("ADMIN");
 
   const parsed = createDivisionSchema.safeParse({
     eventId: formData.get("eventId"),
@@ -61,7 +61,7 @@ export async function createDivisionAction(_prevState: EventActionState, formDat
   }
 
   try {
-    await createDivision(String(user._id), parsed.data);
+    await createDivision(actor, parsed.data);
   } catch (err) {
     return { error: toAppError(err).message };
   }
@@ -71,7 +71,7 @@ export async function createDivisionAction(_prevState: EventActionState, formDat
 }
 
 export async function updateEventStatusAction(_prevState: EventActionState, formData: FormData): Promise<EventActionState> {
-  const { user } = await requireRole("ADMIN");
+  const actor = await requireActor("ADMIN");
   const eventId = String(formData.get("eventId") ?? "");
   const status = String(formData.get("status") ?? "");
 
@@ -80,7 +80,7 @@ export async function updateEventStatusAction(_prevState: EventActionState, form
   }
 
   try {
-    await updateEventStatus(String(user._id), eventId, status as EventStatus);
+    await updateEventStatus(actor, eventId, status as EventStatus);
   } catch (err) {
     return { error: toAppError(err).message };
   }
@@ -90,14 +90,14 @@ export async function updateEventStatusAction(_prevState: EventActionState, form
 }
 
 export async function updateEventMatCountAction(_prevState: EventActionState, formData: FormData): Promise<EventActionState> {
-  const { user } = await requireRole("ADMIN");
+  const actor = await requireActor("ADMIN");
   const eventId = String(formData.get("eventId") ?? "");
   const matCount = Number(formData.get("matCount"));
   if (!eventId || !Number.isInteger(matCount) || matCount < 1) {
     return { error: "Set at least one mat." };
   }
   try {
-    await updateEventMatCount(String(user._id), eventId, matCount);
+    await updateEventMatCount(actor, eventId, matCount);
   } catch (err) {
     return { error: toAppError(err).message };
   }

@@ -8,8 +8,12 @@ import { describe, it, expect, vi, beforeAll, beforeEach } from "vitest";
 vi.mock("@/server/db/connect", () => ({ connectDB: vi.fn().mockResolvedValue(undefined) }));
 
 const mockSessionFindOne = vi.fn();
+const mockSessionCreate = vi.fn().mockResolvedValue(undefined);
 vi.mock("@/server/models/Session", () => ({
-  Session: { findOne: (...args: unknown[]) => mockSessionFindOne(...args) },
+  Session: {
+    findOne: (...args: unknown[]) => mockSessionFindOne(...args),
+    create: (...args: unknown[]) => mockSessionCreate(...args),
+  },
 }));
 
 const mockUserFindById = vi.fn();
@@ -17,7 +21,7 @@ vi.mock("@/server/models/User", () => ({
   User: { findById: (...args: unknown[]) => mockUserFindById(...args) },
 }));
 
-const mockCookieStore = { get: vi.fn() };
+const mockCookieStore = { get: vi.fn(), set: vi.fn() };
 vi.mock("next/headers", () => ({
   cookies: vi.fn().mockResolvedValue(mockCookieStore),
 }));
@@ -61,7 +65,7 @@ describe("getSession / requireSession / requireRole", () => {
     mockSessionFindOne.mockReturnValue({
       lean: () => Promise.resolve({ userId: "u1", expiresAt: new Date(Date.now() + 100000) }),
     });
-    mockUserFindById.mockReturnValue({ lean: () => Promise.resolve({ _id: "u1", role: "FIGHTER", status: "DISABLED" }) });
+    mockUserFindById.mockReturnValue({ select: () => ({ lean: () => Promise.resolve({ _id: "u1", role: "FIGHTER", status: "DISABLED", passwordHash: "secret" }) }) });
     const { getSession } = await import("./session");
     expect(await getSession()).toBeNull();
   });
@@ -72,10 +76,16 @@ describe("getSession / requireSession / requireRole", () => {
     mockSessionFindOne.mockReturnValue({
       lean: () => Promise.resolve({ userId: "u1", expiresAt: new Date(Date.now() + 100000) }),
     });
-    mockUserFindById.mockReturnValue({ lean: () => Promise.resolve({ _id: "u1", role: "FIGHTER", status: "ACTIVE" }) });
+    mockUserFindById.mockReturnValue({
+      select: () => ({
+        lean: () => Promise.resolve({ _id: "u1", email: "a@example.com", role: "FIGHTER", status: "ACTIVE", passwordHash: "secret" }),
+      }),
+    });
     const { getSession } = await import("./session");
     const result = await getSession();
-    expect(result?.user.role).toBe("FIGHTER");
+    expect(result?.user).toEqual({ _id: "u1", email: "a@example.com", role: "FIGHTER", status: "ACTIVE" });
+    expect(result).not.toHaveProperty("session");
+    expect(result?.user).not.toHaveProperty("passwordHash");
   });
 
   it("requireSession throws UnauthorizedError when there's no session", async () => {
@@ -91,10 +101,39 @@ describe("getSession / requireSession / requireRole", () => {
     mockSessionFindOne.mockReturnValue({
       lean: () => Promise.resolve({ userId: "u1", expiresAt: new Date(Date.now() + 100000) }),
     });
-    mockUserFindById.mockReturnValue({ lean: () => Promise.resolve({ _id: "u1", role: "FIGHTER", status: "ACTIVE" }) });
+    mockUserFindById.mockReturnValue({ select: () => ({ lean: () => Promise.resolve({ _id: "u1", role: "FIGHTER", status: "ACTIVE" }) }) });
     const { requireRole } = await import("./session");
     const { ForbiddenError } = await import("@/server/http/errors");
     await expect(requireRole("ADMIN")).rejects.toBeInstanceOf(ForbiddenError);
+  });
+
+  it("reads the session cookie createSession just wrote on the same store", async () => {
+    const jar = new Map<string, string>();
+    mockCookieStore.set.mockImplementation((name: string, value: string) => {
+      jar.set(name, value);
+    });
+    mockCookieStore.get.mockImplementation((name: string) => {
+      const value = jar.get(name);
+      return value ? { value } : undefined;
+    });
+    mockSessionFindOne.mockReturnValue({
+      lean: () => Promise.resolve({ userId: "new-user", expiresAt: new Date(Date.now() + 100000) }),
+    });
+    mockUserFindById.mockReturnValue({
+      select: () => ({
+        lean: () => Promise.resolve({ _id: "new-user", email: "new@example.com", role: "FIGHTER", status: "ACTIVE" }),
+      }),
+    });
+
+    const { createSession, getSession } = await import("./session");
+    await createSession("new-user");
+    const session = await getSession();
+    expect(session?.user).toEqual({
+      _id: "new-user",
+      email: "new@example.com",
+      role: "FIGHTER",
+      status: "ACTIVE",
+    });
   });
 
   it("requireRole passes through when the role matches", async () => {
@@ -103,7 +142,7 @@ describe("getSession / requireSession / requireRole", () => {
     mockSessionFindOne.mockReturnValue({
       lean: () => Promise.resolve({ userId: "u1", expiresAt: new Date(Date.now() + 100000) }),
     });
-    mockUserFindById.mockReturnValue({ lean: () => Promise.resolve({ _id: "u1", role: "ADMIN", status: "ACTIVE" }) });
+    mockUserFindById.mockReturnValue({ select: () => ({ lean: () => Promise.resolve({ _id: "u1", email: "admin@example.com", role: "ADMIN", status: "ACTIVE" }) }) });
     const { requireRole } = await import("./session");
     const result = await requireRole("ADMIN");
     expect(result.user.role).toBe("ADMIN");

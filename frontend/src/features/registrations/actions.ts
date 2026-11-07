@@ -1,11 +1,11 @@
 "use server";
 
 import { redirect } from "next/navigation";
-import { requireRole, requireSession } from "@/server/auth/session";
+import { revalidatePath } from "next/cache";
+import { actorFromSession, requireActor, requireSession } from "@/server/auth/session";
 import { createRegistration, withdrawRegistration } from "@/server/services/registrationService";
 import { updateFighterProfile } from "@/server/services/fighterService";
 import { FighterProfile } from "@/server/models/FighterProfile";
-import { revalidatePath } from "next/cache";
 import { toAppError } from "@/server/http/errors";
 import { createRegistrationSchema } from "./schemas";
 import { grapplerDetailsSchema, grapplerFieldIssues, grapplerFromForm, toProfileFields } from "@/features/fighters/grappler-schema";
@@ -20,7 +20,7 @@ export async function createRegistrationAction(
   _prevState: RegistrationActionState,
   formData: FormData
 ): Promise<RegistrationActionState> {
-  const { user } = await requireSession();
+  const actor = actorFromSession(await requireSession());
 
   const registrationParsed = createRegistrationSchema.safeParse({
     divisionId: formData.get("divisionId"),
@@ -43,21 +43,21 @@ export async function createRegistrationAction(
 
   let registrationId: string;
   try {
-    const existing = await FighterProfile.findOne({ userId: user._id }).select("photoKey").lean();
+    const existing = await FighterProfile.findOne({ userId: actor.userId }).select("photoKey").lean();
     if ("empty" in photo && !existing?.photoKey) {
       return { error: "Add a passport size photograph." };
     }
     const photoKey = "bytes" in photo
-      ? await saveProfilePhoto(String(user._id), photo.bytes, photo.ext, existing?.photoKey ?? "")
+      ? await saveProfilePhoto(actor, photo.bytes, photo.ext, existing?.photoKey ?? "")
       : undefined;
 
-    await updateFighterProfile(String(user._id), {
+    await updateFighterProfile(actor, {
       ...toProfileFields(grapplerParsed.data),
       photoKey,
       waiverAcceptedAt: new Date(),
     });
 
-    const { registration } = await createRegistration(String(user._id), registrationParsed.data.divisionId, {
+    const { registration } = await createRegistration(actor, registrationParsed.data.divisionId, {
       consent: true,
       agreement: true,
     });
@@ -74,11 +74,11 @@ export async function withdrawRegistrationAction(
   _prevState: RegistrationActionState,
   formData: FormData
 ): Promise<RegistrationActionState> {
-  const { user } = await requireRole("ADMIN");
+  const actor = await requireActor("ADMIN");
   const registrationId = String(formData.get("registrationId") ?? "");
   if (!registrationId) return { error: "Missing registration." };
   try {
-    const registration = await withdrawRegistration(String(user._id), registrationId);
+    const registration = await withdrawRegistration(actor, registrationId);
     revalidatePath(`/admin/events/${String(registration.eventId)}`);
   } catch (err) {
     return { error: toAppError(err).message };

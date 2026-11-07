@@ -1,3 +1,6 @@
+import "server-only";
+import type { Actor } from "@/server/auth/actor";
+import { assertAdmin, assertFighter } from "@/server/auth/actor";
 import { listUpcomingEventsForAdmin } from "./eventService";
 import { listPaymentQueue } from "./paymentService";
 import { listRequestsForAdmin, listRequestsForFighter } from "./requestService";
@@ -8,14 +11,15 @@ import { listMatchesForFighter } from "./matchService";
 import { warmUpMinutes } from "./tournamentRules";
 
 /** Composes existing services into the data the admin overview page needs — no new queries beyond what each service already runs. */
-export async function getAdminDashboardData() {
+export async function getAdminDashboardData(actor: Actor) {
+  assertAdmin(actor);
   const [fighterCount, upcomingEvents, pendingPayments, allRequests, recentRegistrations, recentActivity] = await Promise.all([
-    countFighters(),
-    listUpcomingEventsForAdmin(5),
-    listPaymentQueue("PENDING_REVIEW"),
-    listRequestsForAdmin(),
-    listRecentRegistrationsForAdmin(5),
-    listRecentAuditLogs(8),
+    countFighters(actor),
+    listUpcomingEventsForAdmin(actor, 5),
+    listPaymentQueue(actor, "PENDING_REVIEW"),
+    listRequestsForAdmin(actor),
+    listRecentRegistrationsForAdmin(actor, 5),
+    listRecentAuditLogs(actor, 8),
   ]);
 
   return {
@@ -29,12 +33,13 @@ export async function getAdminDashboardData() {
 }
 
 /** Composes existing services into the data the fighter dashboard needs — every call is already scoped to `userId`. */
-export async function getFighterDashboardData(userId: string) {
+export async function getFighterDashboardData(actor: Actor) {
+  assertFighter(actor);
   const [profile, registrations, matches, requests] = await Promise.all([
-    getFighterProfile(userId),
-    listMyRegistrations(userId),
-    listMatchesForFighter(userId),
-    listRequestsForFighter(userId),
+    getFighterProfile(actor),
+    listMyRegistrations(actor),
+    listMatchesForFighter(actor),
+    listRequestsForFighter(actor),
   ]);
 
   const ownRegistrationIds = new Set(registrations.map((r) => String(r._id)));

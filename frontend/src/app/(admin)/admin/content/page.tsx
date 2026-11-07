@@ -1,10 +1,11 @@
+import { requireActor } from "@/server/auth/session";
 import { listAllContent } from "@/server/services/contentService";
 import { CreateContentForm } from "@/features/content/create-content-form";
 import { PublishToggleButton } from "@/features/content/publish-toggle-button";
 import { Badge } from "@/components/ui/badge";
 
 export default async function AdminContentPage() {
-  const entries = await listAllContent();
+  const entries = await listAllContent(await requireActor("ADMIN"));
 
   return (
     <div className="max-w-3xl mx-auto px-4 sm:px-6 space-y-10">

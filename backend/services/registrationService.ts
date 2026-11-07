@@ -1,4 +1,6 @@
+import "server-only";
 import { connectDB } from "@/server/db/connect";
+import { assertAdmin, assertFighter, type Actor } from "@/server/auth/actor";
 import { Event } from "@/server/models/Event";
 import { Division } from "@/server/models/Division";
 import { Registration, type RegistrationDoc } from "@/server/models/Registration";
@@ -20,11 +22,13 @@ function resolveFeeMinorUnits(
 }
 
 export async function createRegistration(
-  userId: string,
+  actor: Actor,
   divisionId: string,
   consents: { consent: boolean; agreement: boolean }
 ) {
+  assertFighter(actor);
   await connectDB();
+  const userId = actor.userId;
 
   const division = await Division.findById(divisionId);
   if (!division) throw new NotFoundError("Division not found.");
@@ -83,18 +87,20 @@ export async function createRegistration(
   return { registration, paymentSubmission };
 }
 
-export async function listMyRegistrations(userId: string) {
+export async function listMyRegistrations(actor: Actor) {
+  assertFighter(actor);
   await connectDB();
+  const userId = actor.userId;
   const registrations = await Registration.find({ userId }).sort({ createdAt: -1 }).lean();
 
   const eventIds = [...new Set(registrations.map((r) => String(r.eventId)))];
   const divisionIds = [...new Set(registrations.map((r) => String(r.divisionId)))];
   const [events, divisions] = await Promise.all([
-    Event.find({ _id: { $in: eventIds } }).lean(),
-    Division.find({ _id: { $in: divisionIds } }).lean(),
+    Event.find({ _id: { $in: eventIds } }).select("name").lean(),
+    Division.find({ _id: { $in: divisionIds } }).select("name").lean(),
   ]);
-  const eventById = new Map(events.map((e) => [String(e._id), e]));
-  const divisionById = new Map(divisions.map((d) => [String(d._id), d]));
+  const eventById = new Map(events.map((e) => [String(e._id), { _id: e._id, name: e.name }]));
+  const divisionById = new Map(divisions.map((d) => [String(d._id), { _id: d._id, name: d.name }]));
 
   return registrations.map((r) => ({
     ...r,
@@ -103,13 +109,15 @@ export async function listMyRegistrations(userId: string) {
   }));
 }
 
-export async function getRegistrationForFighter(userId: string, registrationId: string) {
+export async function getRegistrationForFighter(actor: Actor, registrationId: string) {
+  assertFighter(actor);
   await connectDB();
+  const userId = actor.userId;
   const registration = await Registration.findOne({ _id: registrationId, userId }).lean();
   if (!registration) throw new NotFoundError("Registration not found.");
 
   const [event, division, submissions] = await Promise.all([
-    Event.findById(registration.eventId).lean(),
+    Event.findById(registration.eventId).select("name paymentInstructions").lean(),
     Division.findById(registration.divisionId).lean(),
     PaymentSubmission.find({ registrationId }).sort({ createdAt: -1 }).lean(),
   ]);
@@ -118,7 +126,8 @@ export async function getRegistrationForFighter(userId: string, registrationId: 
 }
 
 /** Admin-dashboard feed: most recent registrations across every event, enriched for display. */
-export async function listRecentRegistrationsForAdmin(limit = 5) {
+export async function listRecentRegistrationsForAdmin(actor: Actor, limit = 5) {
+  assertAdmin(actor);
   await connectDB();
   const registrations = await Registration.find().sort({ createdAt: -1 }).limit(limit).lean();
 
@@ -126,19 +135,19 @@ export async function listRecentRegistrationsForAdmin(limit = 5) {
   const divisionIds = [...new Set(registrations.map((r) => String(r.divisionId)))];
   const userIds = [...new Set(registrations.map((r) => String(r.userId)))];
   const [events, divisions, profiles] = await Promise.all([
-    Event.find({ _id: { $in: eventIds } }).lean(),
-    Division.find({ _id: { $in: divisionIds } }).lean(),
-    FighterProfile.find({ userId: { $in: userIds } }).lean(),
+    Event.find({ _id: { $in: eventIds } }).select("name").lean(),
+    Division.find({ _id: { $in: divisionIds } }).select("name").lean(),
+    FighterProfile.find({ userId: { $in: userIds } }).select("displayName userId").lean(),
   ]);
-  const eventById = new Map(events.map((e) => [String(e._id), e]));
-  const divisionById = new Map(divisions.map((d) => [String(d._id), d]));
-  const profileByUserId = new Map(profiles.map((p) => [String(p.userId), p]));
+  const eventById = new Map(events.map((e) => [String(e._id), { name: e.name }]));
+  const divisionById = new Map(divisions.map((d) => [String(d._id), { name: d.name }]));
+  const profileByUserId = new Map(profiles.map((p) => [String(p.userId), p.displayName]));
 
   return registrations.map((r) => ({
-    ...r,
+    _id: r._id,
+    fighterName: profileByUserId.get(String(r.userId)) ?? "Unknown fighter",
     event: eventById.get(String(r.eventId)) ?? null,
     division: divisionById.get(String(r.divisionId)) ?? null,
-    fighterName: profileByUserId.get(String(r.userId))?.displayName ?? "Unknown fighter",
   }));
 }
 
@@ -157,7 +166,8 @@ export async function listOpenDivisionsForRegistration() {
   return divisions.map((d) => ({ ...d, event: eventById.get(String(d.eventId)) ?? null }));
 }
 
-export async function listRegistrationsForEvent(eventId: string) {
+export async function listRegistrationsForEvent(actor: Actor, eventId: string) {
+  assertAdmin(actor);
   await connectDB();
   const registrations = await Registration.find({ eventId }).sort({ createdAt: -1 }).lean();
   const userIds = [...new Set(registrations.map((r) => String(r.userId)))];
@@ -182,7 +192,8 @@ export async function listRegistrationsForEvent(eventId: string) {
 }
 
 /** Pull an incomplete, abandoned, or unpaid registration so the bracket can move on. */
-export async function withdrawRegistration(adminId: string, registrationId: string) {
+export async function withdrawRegistration(actor: Actor, registrationId: string) {
+  assertAdmin(actor);
   await connectDB();
   const registration = await Registration.findById(registrationId);
   if (!registration) throw new NotFoundError("Registration not found.");
@@ -203,7 +214,7 @@ export async function withdrawRegistration(adminId: string, registrationId: stri
     const isA = String(match.competitorARegistrationId) === String(registration._id);
     const other = isA ? match.competitorBRegistrationId : match.competitorARegistrationId;
     if (other && match.status === "SCHEDULED") {
-      await recordMatchResult(adminId, String(match._id), String(other), "WITHDRAWAL");
+      await recordMatchResult(actor, String(match._id), String(other), "WITHDRAWAL");
     } else if (isA) {
       match.competitorARegistrationId = null;
       await match.save();
@@ -214,7 +225,7 @@ export async function withdrawRegistration(adminId: string, registrationId: stri
   }
 
   await writeAuditLog({
-    actorId: adminId,
+    actorId: actor.userId,
     action: "REGISTRATION_WITHDRAWN",
     targetType: "Registration",
     targetId: registrationId,

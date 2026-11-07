@@ -1,7 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { requireRole, requireSession } from "@/server/auth/session";
+import { actorFromSession, requireActor, requireSession } from "@/server/auth/session";
 import { createRequest, decideRequest } from "@/server/services/requestService";
 import { claimTeammateTransfer, createTeammateTransfer } from "@/server/services/teammateTransfer";
 import { toAppError } from "@/server/http/errors";
@@ -10,7 +10,7 @@ import { createRequestSchema } from "./schemas";
 export type RequestActionState = { error?: string; success?: boolean; link?: string };
 
 export async function createRequestAction(_prevState: RequestActionState, formData: FormData): Promise<RequestActionState> {
-  const { user } = await requireSession();
+  const actor = actorFromSession(await requireSession());
 
   const parsed = createRequestSchema.safeParse({
     registrationId: formData.get("registrationId"),
@@ -23,7 +23,7 @@ export async function createRequestAction(_prevState: RequestActionState, formDa
   }
 
   try {
-    await createRequest(String(user._id), parsed.data.registrationId, parsed.data.type, {
+    await createRequest(actor, parsed.data.registrationId, parsed.data.type, {
       requestedDivisionId: parsed.data.requestedDivisionId,
       reason: parsed.data.reason,
     });
@@ -36,13 +36,13 @@ export async function createRequestAction(_prevState: RequestActionState, formDa
 }
 
 export async function decideRequestAction(_prevState: RequestActionState, formData: FormData): Promise<RequestActionState> {
-  const { user } = await requireRole("ADMIN");
+  const actor = await requireActor("ADMIN");
   const requestId = String(formData.get("requestId") ?? "");
   const decision = String(formData.get("decision") ?? "") as "APPROVED" | "REJECTED";
   const note = String(formData.get("note") ?? "");
 
   try {
-    await decideRequest(String(user._id), requestId, decision, note);
+    await decideRequest(actor, requestId, decision, note);
   } catch (err) {
     return { error: toAppError(err).message };
   }
@@ -55,10 +55,10 @@ export async function createTeammateTransferAction(
   _prevState: RequestActionState,
   formData: FormData
 ): Promise<RequestActionState> {
-  const { user } = await requireSession();
+  const actor = actorFromSession(await requireSession());
   const registrationId = String(formData.get("registrationId") ?? "");
   try {
-    const invite = await createTeammateTransfer(String(user._id), registrationId);
+    const invite = await createTeammateTransfer(actor.userId, registrationId);
     return { link: `/fighter/transfer/${invite.token}` };
   } catch (err) {
     return { error: toAppError(err).message };
@@ -69,10 +69,10 @@ export async function claimTeammateTransferAction(
   _prevState: RequestActionState,
   formData: FormData
 ): Promise<RequestActionState> {
-  const { user } = await requireSession();
+  const actor = actorFromSession(await requireSession());
   const token = String(formData.get("token") ?? "");
   try {
-    await claimTeammateTransfer(String(user._id), token);
+    await claimTeammateTransfer(actor.userId, token);
   } catch (err) {
     return { error: toAppError(err).message };
   }

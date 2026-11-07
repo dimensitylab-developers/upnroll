@@ -1,14 +1,14 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { requireRole } from "@/server/auth/session";
+import { requireActor } from "@/server/auth/session";
 import { generateBracket, publishBracket } from "@/server/services/bracketService";
 import { toAppError } from "@/server/http/errors";
 
 export type BracketActionState = { error?: string };
 
 export async function generateBracketAction(_prevState: BracketActionState, formData: FormData): Promise<BracketActionState> {
-  const { user } = await requireRole("ADMIN");
+  const actor = await requireActor("ADMIN");
 
   const divisionId = String(formData.get("divisionId") ?? "");
   const eventId = String(formData.get("eventId") ?? "");
@@ -25,7 +25,7 @@ export async function generateBracketAction(_prevState: BracketActionState, form
 
   try {
     await generateBracket(
-      String(user._id),
+      actor,
       divisionId,
       orderedIds,
       mode === "random" ? { type: "random", seed } : { type: "manual" }
@@ -39,12 +39,12 @@ export async function generateBracketAction(_prevState: BracketActionState, form
 }
 
 export async function publishBracketAction(_prevState: BracketActionState, formData: FormData): Promise<BracketActionState> {
-  const { user } = await requireRole("ADMIN");
+  const actor = await requireActor("ADMIN");
   const bracketId = String(formData.get("bracketId") ?? "");
   const eventId = String(formData.get("eventId") ?? "");
 
   try {
-    await publishBracket(String(user._id), bracketId);
+    await publishBracket(actor, bracketId);
   } catch (err) {
     return { error: toAppError(err).message };
   }

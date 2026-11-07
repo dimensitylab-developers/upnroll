@@ -1,10 +1,9 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { requireSession } from "@/server/auth/session";
-import { updateFighterProfile } from "@/server/services/fighterService";
+import { actorFromSession, requireSession } from "@/server/auth/session";
+import { getFighterProfile, updateFighterProfile } from "@/server/services/fighterService";
 import { toAppError } from "@/server/http/errors";
-import { FighterProfile } from "@/server/models/FighterProfile";
 import { grapplerDetailsSchema, grapplerFieldIssues, grapplerFromForm, toProfileFields } from "@/features/fighters/grappler-schema";
 import { readProfilePhoto, saveProfilePhoto } from "@/server/services/profilePhoto";
 
@@ -15,7 +14,7 @@ export type ProfileActionState = {
 };
 
 export async function updateProfileAction(_prevState: ProfileActionState, formData: FormData): Promise<ProfileActionState> {
-  const { user } = await requireSession();
+  const actor = actorFromSession(await requireSession());
 
   const parsed = grapplerDetailsSchema.safeParse(grapplerFromForm(formData));
   if (!parsed.success) {
@@ -28,11 +27,11 @@ export async function updateProfileAction(_prevState: ProfileActionState, formDa
   if ("error" in photo) return { error: photo.error };
 
   try {
-    const existing = await FighterProfile.findOne({ userId: user._id }).select("photoKey").lean();
+    const existing = await getFighterProfile(actor);
     const photoKey = "bytes" in photo
-      ? await saveProfilePhoto(String(user._id), photo.bytes, photo.ext, existing?.photoKey ?? "")
+      ? await saveProfilePhoto(actor, photo.bytes, photo.ext, existing?.photoKey ?? "")
       : undefined;
-    await updateFighterProfile(String(user._id), { ...toProfileFields(parsed.data), photoKey });
+    await updateFighterProfile(actor, { ...toProfileFields(parsed.data), photoKey });
   } catch (err) {
     return { error: toAppError(err).message };
   }

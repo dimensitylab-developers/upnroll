@@ -1,4 +1,4 @@
-import { requireSession } from "@/server/auth/session";
+import { actorFromSession, requireSession } from "@/server/auth/session";
 import { listOpenDivisionsForRegistration } from "@/server/services/registrationService";
 import { getFighterProfile } from "@/server/services/fighterService";
 import { NewRegistrationForm } from "@/features/registrations/new-registration-form";
@@ -9,10 +9,10 @@ function yesNo(value: boolean | undefined) {
 }
 
 export default async function NewRegistrationPage() {
-  const { user } = await requireSession();
+  const actor = actorFromSession(await requireSession());
   const [divisions, profile] = await Promise.all([
     listOpenDivisionsForRegistration(),
-    getFighterProfile(String(user._id)),
+    getFighterProfile(actor),
   ]);
 
   const defaults: GrapplerDefaults = {

@@ -1,5 +1,6 @@
 import { notFound } from "next/navigation";
-import { getSession } from "@/server/auth/session";
+import { actorFromSession, getSession } from "@/server/auth/session";
+import { NotFoundError } from "@/server/http/errors";
 import { getRegistrationForFighter } from "@/server/services/registrationService";
 import { canSubmitPayment } from "@/server/services/registrationStateMachine";
 import { PaymentForm } from "@/features/payments/payment-form";
@@ -12,9 +13,10 @@ export default async function RegistrationPaymentPage({ params }: { params: Prom
 
   let data: Awaited<ReturnType<typeof getRegistrationForFighter>>;
   try {
-    data = await getRegistrationForFighter(String(session.user._id), id);
-  } catch {
-    notFound();
+    data = await getRegistrationForFighter(actorFromSession(session), id);
+  } catch (err) {
+    if (err instanceof NotFoundError) notFound();
+    throw err;
   }
 
   const { registration, event, division, latestSubmission } = data;

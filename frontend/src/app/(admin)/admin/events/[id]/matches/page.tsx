@@ -1,4 +1,6 @@
 import { notFound } from "next/navigation";
+import { requireActor } from "@/server/auth/session";
+import { NotFoundError } from "@/server/http/errors";
 import { getEventForAdmin } from "@/server/services/eventService";
 import { listMatchesForEvent } from "@/server/services/matchService";
 import { Table, TableHeader, TableRow, TableHead, TableBody, TableCell } from "@/components/ui/table";
@@ -128,13 +130,15 @@ function MatchTable({ eventId, matches }: { eventId: string; matches: EnrichedMa
 
 export default async function AdminMatchesPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
+  const actor = await requireActor("ADMIN");
   let event;
   try {
-    event = await getEventForAdmin(id);
-  } catch {
-    notFound();
+    event = await getEventForAdmin(actor, id);
+  } catch (err) {
+    if (err instanceof NotFoundError) notFound();
+    throw err;
   }
-  const matches = await listMatchesForEvent(id);
+  const matches = await listMatchesForEvent(actor, id);
   const upcoming = matches.filter((m) => UPCOMING_STATUSES.has(m.status));
   const completed = matches.filter((m) => COMPLETED_STATUSES.has(m.status));
 

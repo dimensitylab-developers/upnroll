@@ -1,12 +1,12 @@
 import Link from "next/link";
-import { getSession } from "@/server/auth/session";
+import { actorFromSession, getSession } from "@/server/auth/session";
 import { listMyRegistrations } from "@/server/services/registrationService";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 
 export default async function MyRegistrationsPage() {
   const session = await getSession();
-  const registrations = session ? await listMyRegistrations(String(session.user._id)) : [];
+  const registrations = session ? await listMyRegistrations(actorFromSession(session)) : [];
 
   return (
     <div className="max-w-2xl mx-auto">

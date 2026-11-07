@@ -1,3 +1,5 @@
+import "server-only";
+
 /**
  * Pure helper for the admin payment queue — no DB. Flags a submission's
  * UTR as a duplicate if any OTHER submission in the provided set shares

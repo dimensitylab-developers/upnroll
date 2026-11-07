@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { getSession } from "@/server/auth/session";
+import { actorFromSession, getSession } from "@/server/auth/session";
 import { getFighterDashboardData } from "@/server/services/dashboardService";
 import { Badge } from "@/components/ui/badge";
 
@@ -9,7 +9,7 @@ export default async function FighterDashboardPage() {
   const session = await getSession();
   if (!session) return null; // the fighter layout already redirects unauthenticated visitors to /login
 
-  const data = await getFighterDashboardData(String(session.user._id));
+  const data = await getFighterDashboardData(actorFromSession(session));
 
   return (
     <div className="max-w-3xl mx-auto space-y-10">

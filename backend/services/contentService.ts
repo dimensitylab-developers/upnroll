@@ -1,4 +1,6 @@
+import "server-only";
 import { connectDB } from "@/server/db/connect";
+import { assertAdmin, type Actor } from "@/server/auth/actor";
 import { ContentEntry, type ContentType } from "@/server/models/ContentEntry";
 import { User } from "@/server/models/User";
 import { STARTER_FAQS } from "@/server/content/starterFaqs";
@@ -30,32 +32,35 @@ async function ensureStarterFaqs() {
 }
 
 export async function createContentEntry(
-  adminId: string,
+  actor: Actor,
   input: { type: ContentType; title: string; body: string; publicationState?: "DRAFT" | "PUBLISHED" }
 ) {
+  assertAdmin(actor);
   await connectDB();
   const entry = await ContentEntry.create({
     type: input.type,
     title: input.title,
     body: input.body,
     publicationState: input.publicationState ?? "DRAFT",
-    createdBy: adminId,
+    createdBy: actor.userId,
   });
-  await writeAuditLog({ actorId: adminId, action: "CONTENT_CREATED", targetType: "ContentEntry", targetId: String(entry._id) });
+  await writeAuditLog({ actorId: actor.userId, action: "CONTENT_CREATED", targetType: "ContentEntry", targetId: String(entry._id) });
   return entry;
 }
 
-export async function setContentPublicationState(adminId: string, entryId: string, state: "DRAFT" | "PUBLISHED") {
+export async function setContentPublicationState(actor: Actor, entryId: string, state: "DRAFT" | "PUBLISHED") {
+  assertAdmin(actor);
   await connectDB();
   const entry = await ContentEntry.findById(entryId);
   if (!entry) throw new NotFoundError("Content entry not found.");
   entry.publicationState = state;
   await entry.save();
-  await writeAuditLog({ actorId: adminId, action: "CONTENT_PUBLICATION_CHANGED", targetType: "ContentEntry", targetId: entryId, after: { state } });
+  await writeAuditLog({ actorId: actor.userId, action: "CONTENT_PUBLICATION_CHANGED", targetType: "ContentEntry", targetId: entryId, after: { state } });
   return entry;
 }
 
-export async function listAllContent(type?: ContentType) {
+export async function listAllContent(actor: Actor, type?: ContentType) {
+  assertAdmin(actor);
   await connectDB();
   return ContentEntry.find(type ? { type } : {}).sort({ createdAt: -1 }).lean();
 }

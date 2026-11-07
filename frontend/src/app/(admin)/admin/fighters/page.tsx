@@ -1,10 +1,11 @@
+import { requireActor } from "@/server/auth/session";
 import { listFightersForAdmin } from "@/server/services/fighterService";
 import { FighterRecord } from "@/features/admin/fighter-record";
 
 export const dynamic = "force-dynamic";
 
 export default async function AdminFightersPage() {
-  const fighters = await listFightersForAdmin();
+  const fighters = await listFightersForAdmin(await requireActor("ADMIN"));
 
   return (
     <div className="max-w-5xl mx-auto px-4 sm:px-6 space-y-6">

@@ -1,3 +1,4 @@
+import { requireActor } from "@/server/auth/session";
 import { listPaymentQueue } from "@/server/services/paymentService";
 import { Table, TableHeader, TableRow, TableHead, TableBody, TableCell } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
@@ -12,7 +13,7 @@ const statusVariant: Record<string, "default" | "secondary" | "destructive" | "o
 };
 
 export default async function AdminPaymentsPage() {
-  const queue = await listPaymentQueue();
+  const queue = await listPaymentQueue(await requireActor("ADMIN"));
 
   return (
     <div className="max-w-4xl mx-auto px-4 sm:px-6">

@@ -14,13 +14,26 @@ const nextConfig: NextConfig = {
   outputFileTracingRoot: repoRoot,
   // One mongoose instance. Bundling it per server chunk drops the connection.
   serverExternalPackages: ["mongoose"],
-  webpack: (config) => {
+  webpack: (config, { isServer }) => {
     // Files in backend/ resolve packages from their own folder upward.
     // Dependencies are installed in frontend/node_modules.
     config.resolve.modules = [
       path.join(__dirname, "node_modules"),
       ...(Array.isArray(config.resolve.modules) ? config.resolve.modules : ["node_modules"]),
     ];
+    // The server compilation shares chunks with client references. Those chunks
+    // otherwise load server-only's throwing build and fail page-data collection.
+    // The browser compilation keeps the real package so a client import still fails.
+    if (isServer) {
+      config.resolve.alias = {
+        ...(config.resolve.alias ?? {}),
+        "server-only": path.join(__dirname, "node_modules/server-only/empty.js"),
+        // backend/ walks up to the repo root, frontend/ has its own copy.
+        // Next only externalizes mongoose when both resolutions are the same file.
+        // Pin one path so every server layer shares Node's single module instance.
+        mongoose: path.join(repoRoot, "node_modules/mongoose"),
+      };
+    }
     return config;
   },
 };
