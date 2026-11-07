@@ -3,6 +3,7 @@ import { AboutStory } from "@/components/home/about-story";
 import { FightingGallery } from "@/components/home/photo-crossfade";
 import { HappyStack } from "@/components/home/happy-stack";
 import { HomeHero } from "@/components/home/home-hero";
+import { EmojiStrip } from "@/components/home/mat-emojis";
 import { FIGHTING_PHOTOS, HAPPY_PHOTOS } from "@/components/home/site-photos";
 import { MangaCards } from "@/components/home/manga-cards";
 import { SectionBanner } from "@/components/home/section-banner";
@@ -19,16 +20,25 @@ export default async function HomePage() {
 
       <section className="mx-auto max-w-6xl px-4 py-14 sm:px-6 lg:px-8">
         <SectionBanner>On the mat</SectionBanner>
+        <div className="mb-4">
+          <EmojiStrip items={["🥋", "🤼", "💪", "🔥", "🏆"]} />
+        </div>
         <MangaCards />
       </section>
 
       <section className="mx-auto max-w-6xl px-4 pb-14 sm:px-6 lg:px-8">
         <SectionBanner>Fighting</SectionBanner>
+        <div className="mb-4">
+          <EmojiStrip items={["🥊", "⚡", "🎯", "🤼"]} />
+        </div>
         <FightingGallery photos={FIGHTING_PHOTOS} />
       </section>
 
       <section className="mx-auto max-w-6xl px-4 pb-14 sm:px-6 lg:px-8">
         <SectionBanner>Happy moments</SectionBanner>
+        <div className="mb-4">
+          <EmojiStrip items={["🙌", "⭐", "🏆", "💪", "🥋"]} />
+        </div>
         <HappyStack photos={HAPPY_PHOTOS} />
       </section>
 

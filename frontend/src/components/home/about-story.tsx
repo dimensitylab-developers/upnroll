@@ -76,7 +76,8 @@ export function AboutStory({
       </div>
 
       <p className="mt-4 rounded-md bg-white px-3 py-2 text-sm">
-        The live board is on <Link href="/rankings" className="underline">rankings</Link>.
+        The live board is on <Link href="/brackets" className="underline">brackets</Link>.
+        Profiles and points sit on <Link href="/rankings" className="underline">rankings</Link>.
         Questions sit on the <Link href="/faq" className="underline">FAQ</Link>.
         Divisions for the open card are on <Link href="/events" className="underline">events</Link>.
       </p>

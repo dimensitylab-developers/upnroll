@@ -1,17 +1,19 @@
 import Link from "next/link";
+import { MatEmojis } from "./mat-emojis";
 
 export function HomeHero() {
   return (
     <section className="relative overflow-hidden border-b-2 border-black">
       <div className="pointer-events-none absolute inset-y-0 right-0 hidden w-1/3 bg-black lg:block" aria-hidden="true" />
       <div className="pointer-events-none absolute inset-y-8 right-[28%] hidden w-3 -skew-x-12 bg-brand-red lg:block" aria-hidden="true" />
+      <MatEmojis className="absolute inset-0 z-[1] opacity-80" />
 
       <div className="relative mx-auto grid max-w-6xl items-end gap-10 px-4 py-12 sm:px-6 lg:grid-cols-[1.05fr_0.95fr] lg:gap-6 lg:px-8 lg:py-16">
         <div className="relative z-10">
           <div className="hero-stamp mb-6 inline-flex -skew-x-12 items-stretch shadow-[5px_5px_0_0_#000]">
             <span className="w-3 bg-black" aria-hidden="true" />
             <span className="bg-brand-red px-4 py-2 text-display text-xs font-semibold uppercase tracking-[0.22em] text-white sm:text-sm">
-              <span className="inline-block skew-x-12">Earn your role</span>
+              <span className="inline-block skew-x-12">Earn your role 🥋</span>
             </span>
             <span className="w-6 bg-black" aria-hidden="true" />
           </div>

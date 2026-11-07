@@ -9,7 +9,7 @@ import { MobileNavToggle } from "./mobile-nav-toggle";
 const NAV_LINKS = [
   { href: "/events", label: "Events" },
   { href: "/seminars", label: "Seminars" },
-  { href: "/fighters", label: "Grapplers" },
+  { href: "/brackets", label: "Brackets" },
   { href: "/rankings", label: "Rankings" },
   { href: "/faq", label: "FAQ" },
   { href: "/about", label: "About Us" },
