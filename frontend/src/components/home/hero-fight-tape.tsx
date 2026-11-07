@@ -21,7 +21,7 @@ export function HeroFightTape() {
             Fight tape
           </div>
 
-          <div className="relative aspect-[9/16] overflow-hidden border-2 border-black bg-neutral-100">
+          <div className="relative aspect-[9/16] overflow-hidden border-2 border-black bg-black">
             <video
               ref={videoRef}
               autoPlay
@@ -31,7 +31,7 @@ export function HeroFightTape() {
               preload="auto"
               width={1080}
               height={1920}
-              className="hero-video-zoom absolute inset-0 h-full w-full scale-[1.18] object-cover object-center"
+              className="hero-video-zoom absolute inset-0 h-full w-full object-contain object-center"
               src={MAIN_VIDEO}
             >
               Up &apos;n Roll fight footage
