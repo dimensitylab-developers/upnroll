@@ -45,7 +45,7 @@ export default async function LiveBracketsPage() {
       <div className="relative mx-auto max-w-5xl">
         <div className="mb-4 flex flex-wrap items-center gap-3">
           <LiveRefresh seconds={8} />
-          <EmojiStrip items={["🥋", "🤼", "🏆", "🔥"]} />
+          <EmojiStrip emojis={["double-leg-takedown", "armbar", "hip-throw", "triangle-choke"]} />
         </div>
         <h1 className="text-display text-4xl font-semibold">Brackets</h1>
         <p className="mt-2 max-w-2xl bg-white px-2 py-1 text-sm">

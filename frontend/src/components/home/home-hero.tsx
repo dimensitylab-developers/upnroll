@@ -1,4 +1,6 @@
 import Link from "next/link";
+import { FunkyHeadline } from "./funky-headline";
+import { HeroFightTape } from "./hero-fight-tape";
 import { MatEmojis } from "./mat-emojis";
 
 export function HomeHero() {
@@ -13,7 +15,7 @@ export function HomeHero() {
           <div className="hero-stamp mb-6 inline-flex -skew-x-12 items-stretch shadow-[5px_5px_0_0_#000]">
             <span className="w-3 bg-black" aria-hidden="true" />
             <span className="bg-brand-red px-4 py-2 text-display text-xs font-semibold uppercase tracking-[0.22em] text-white sm:text-sm">
-              <span className="inline-block skew-x-12">Earn your role 🥋</span>
+              <span className="inline-block skew-x-12">Earn your role</span>
             </span>
             <span className="w-6 bg-black" aria-hidden="true" />
           </div>
@@ -28,19 +30,19 @@ export function HomeHero() {
           </div>
 
           <ul className="mt-6 space-y-3">
-            <li className="hero-line-1 max-w-md">
-              <p className="hero-chip -rotate-1 border-2 border-black bg-white px-4 py-3 text-base font-semibold shadow-[4px_4px_0_0_#000] sm:text-lg">
-                Built For Grapplers 🇮🇳
+            <li className="hero-line-1 max-w-lg">
+              <p className="hero-chip -rotate-1 border-2 border-black bg-white px-3 py-2.5 shadow-[4px_4px_0_0_#000] sm:px-4 sm:py-3">
+                <FunkyHeadline id="built-for-grapplers" trailing={<span className="text-lg sm:text-xl">🇮🇳</span>} />
               </p>
             </li>
-            <li className="hero-line-2 max-w-sm">
-              <p className="hero-chip hero-chip-dark rotate-1 border-2 border-black bg-black px-4 py-3 text-base font-semibold text-white shadow-[4px_4px_0_0_#c8102e] sm:text-lg">
-                Brazilian Jiu Jitsu Platform
+            <li className="hero-line-2 max-w-md">
+              <p className="hero-chip hero-chip-dark rotate-1 border-2 border-black bg-black px-3 py-2.5 shadow-[4px_4px_0_0_#c8102e] sm:px-4 sm:py-3">
+                <FunkyHeadline id="brazilian-jiu-jitsu-platform" tone="white" />
               </p>
             </li>
-            <li className="hero-line-3 max-w-md">
-              <p className="hero-speech manga-speech-bubble text-base font-semibold sm:text-lg">
-                Real Fights. Real Pay. Real Rankings
+            <li className="hero-line-3 max-w-lg">
+              <p className="hero-speech manga-speech-bubble px-3 py-2.5 sm:px-4 sm:py-3">
+                <FunkyHeadline id="real-fights-real-pay-real-rankings" />
               </p>
             </li>
           </ul>
@@ -58,34 +60,7 @@ export function HomeHero() {
           </div>
         </div>
 
-        <div className="relative z-20 mx-auto w-full max-w-[300px] lg:mr-2 lg:justify-self-end">
-          <div className="hero-video-float">
-            <div className="hero-video-frame relative border-2 border-black bg-black p-2 shadow-[12px_12px_0_0_#c8102e]">
-              <div className="hero-sticker hero-sticker-left absolute -left-4 top-8 z-30 -rotate-12 border-2 border-black bg-white px-2 py-1 text-[10px] font-semibold uppercase tracking-[0.2em] shadow-[3px_3px_0_0_#000]">
-                On the mat
-              </div>
-              <div className="hero-sticker hero-sticker-right absolute -right-3 bottom-10 z-30 rotate-6 border-2 border-black bg-brand-red px-2 py-1 text-[10px] font-semibold uppercase tracking-[0.2em] text-white shadow-[3px_3px_0_0_#000]">
-                Fight tape
-              </div>
-              <div className="overflow-hidden border-2 border-white/30 bg-black">
-                <video
-                  autoPlay
-                  muted
-                  loop
-                  playsInline
-                  preload="auto"
-                  width={1080}
-                  height={1920}
-                  className="hero-video-zoom aspect-[9/16] h-auto w-full bg-black object-contain"
-                  src="/Videos/IMG_7263.MP4_2.mp4"
-                >
-                  Up &apos;n Roll fight footage
-                </video>
-              </div>
-            </div>
-          </div>
-          <div className="mt-4 h-3 w-full checker-strip border-2 border-black" aria-hidden="true" />
-        </div>
+        <HeroFightTape />
       </div>
     </section>
   );

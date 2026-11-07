@@ -1,36 +1,47 @@
 const STOPS = [
   {
-    title: "You enter",
-    body: "Create a fighter account, choose an open division, and agree to the rules. Payment is the organizer’s QR instructions. An admin confirms your place before your name is on the card.",
+    n: "01",
+    title: "Enter",
+    body: "Sign up, pick an open division, pay by the organizer’s QR, and wait for admin confirmation.",
   },
   {
-    title: "You get a division",
-    body: "A division is the group you fight in: a name, a discipline such as grappling or MMA, and a set number of spots. You meet the athletes in that group. Organizers may merge a small division.",
+    n: "02",
+    title: "Division",
+    body: "You fight inside one group — name, discipline, and a set number of spots. Small groups may merge.",
   },
   {
-    title: "You get a mat",
-    body: "The floor is split into mats. Two, four, or more. Each open match is given one mat, and you follow the mat you are assigned to.",
+    n: "03",
+    title: "Mat",
+    body: "The floor is split into mats. Your bout gets one. Follow the mat you are assigned.",
   },
   {
-    title: "You are called",
-    body: "When your bout is up, you step on. Warm up when it is inside 15 minutes. The referee runs the match, and safety comes before the score.",
+    n: "04",
+    title: "Call",
+    body: "When your name is up, you step on. The referee runs the match. Safety comes before the score.",
   },
   {
-    title: "The result stays up",
-    body: "Brackets keep every round. The schedule keeps the call times. Results keep who won. A past card keeps its date.",
+    n: "05",
+    title: "Result",
+    body: "Brackets, call times, and winners stay published. A past card keeps its date on the record.",
   },
 ];
 
 export function EventStory() {
   return (
-    <ol className="border-l-2 border-black">
-      {STOPS.map((stop) => (
-        <li key={stop.title} className="relative pb-10 pl-8 last:pb-0">
-          <span className="absolute top-1.5 -left-[7px] size-3 border-2 border-black bg-brand-red" aria-hidden="true" />
-          <h3 className="text-display text-2xl font-semibold">{stop.title}</h3>
-          <p className="mt-2 max-w-2xl text-sm leading-relaxed">{stop.body}</p>
-        </li>
-      ))}
-    </ol>
+    <div>
+      <p className="mb-6 max-w-xl text-sm leading-relaxed">
+        From the form to the mat to the board — five steps.
+      </p>
+
+      <ol className="grid gap-3 sm:grid-cols-2 lg:grid-cols-5">
+        {STOPS.map((stop) => (
+          <li key={stop.n} className="flex flex-col border-2 border-black bg-white p-5 shadow-[4px_4px_0_0_#000]">
+            <p className="text-display text-3xl font-semibold leading-none text-brand-red">{stop.n}</p>
+            <h3 className="mt-4 text-display text-xl font-semibold">{stop.title}</h3>
+            <p className="mt-2 text-sm leading-relaxed">{stop.body}</p>
+          </li>
+        ))}
+      </ol>
+    </div>
   );
 }

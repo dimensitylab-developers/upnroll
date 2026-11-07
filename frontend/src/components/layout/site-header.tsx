@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { getSession } from "@/server/auth/session";
 import { listPublicEvents } from "@/server/services/eventService";
+import { HeaderStickers } from "@/components/home/mat-emojis";
 import { HeaderLockup } from "./header-lockup";
 import { ComicNav } from "./comic-nav";
 import { comicCell, comicCellActive, comicCellIdle } from "./comic-cell";
@@ -23,7 +24,8 @@ export async function SiteHeader() {
 
   return (
     <header className="sticky top-0 z-40 relative border-t-2 border-t-black border-b-2 border-b-brand-red bg-background halftone-bg">
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+      <HeaderStickers />
+      <div className="relative z-10 max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center gap-3 min-h-16 py-3">
           <HeaderLockup />
           <ComicNav links={NAV_LINKS} />

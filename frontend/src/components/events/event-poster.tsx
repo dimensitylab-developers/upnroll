@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 
 export type PosterDivision = {
@@ -5,6 +6,10 @@ export type PosterDivision = {
   name: string;
   discipline: string;
   capacity: number;
+};
+
+const EVENT_BANNERS: Record<string, string> = {
+  "up-n-roll-superfight-series": "/banners/up-n-roll-no-gi-2.jpg",
 };
 
 const DOORS = [
@@ -55,16 +60,38 @@ export function EventPoster({
   canRegister: boolean;
 }) {
   const mats = matCount === 1 ? "1 mat" : `${matCount} mats`;
+  const banner = EVENT_BANNERS[slug] ?? null;
 
   return (
     <article className="border-2 border-black bg-white shadow-[8px_8px_0_0_#000]">
-      <div className="bg-black px-6 py-8 text-white sm:px-10 sm:py-10">
-        <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-brand-red">Next card</p>
-        <p className="text-display mt-4 text-2xl font-semibold sm:text-3xl">{date}</p>
-        <h2 className="text-display mt-2 max-w-3xl text-4xl font-semibold leading-[0.95] sm:text-6xl">{name}</h2>
-        {line && <p className="mt-4 text-sm text-white/80">{line}</p>}
-        {venue && <p className="mt-4 text-sm text-white/80">{venue}</p>}
-      </div>
+      {banner ? (
+        <div className="relative aspect-[16/10] w-full overflow-hidden border-b-2 border-black bg-black sm:aspect-[21/9]">
+          <Image
+            src={banner}
+            alt={`${name} event banner`}
+            fill
+            priority
+            sizes="(max-width: 1024px) 100vw, 72rem"
+            className="object-cover object-top"
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/25 to-transparent" />
+          <div className="absolute inset-x-0 bottom-0 px-6 py-6 text-white sm:px-10 sm:py-8">
+            <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-brand-red">Next card</p>
+            <p className="text-display mt-2 text-xl font-semibold sm:text-2xl">{date}</p>
+            <h2 className="text-display mt-1 max-w-3xl text-3xl font-semibold leading-[0.95] sm:text-5xl">{name}</h2>
+            {line && <p className="mt-3 text-sm text-white/85">{line}</p>}
+            {venue && <p className="mt-2 text-sm text-white/80">{venue}</p>}
+          </div>
+        </div>
+      ) : (
+        <div className="bg-black px-6 py-8 text-white sm:px-10 sm:py-10">
+          <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-brand-red">Next card</p>
+          <p className="text-display mt-4 text-2xl font-semibold sm:text-3xl">{date}</p>
+          <h2 className="text-display mt-2 max-w-3xl text-4xl font-semibold leading-[0.95] sm:text-6xl">{name}</h2>
+          {line && <p className="mt-4 text-sm text-white/80">{line}</p>}
+          {venue && <p className="mt-4 text-sm text-white/80">{venue}</p>}
+        </div>
+      )}
 
       <div className="grid lg:grid-cols-[minmax(0,1.05fr)_minmax(0,0.95fr)]">
         <div className="px-6 py-8 sm:px-10 sm:py-10">

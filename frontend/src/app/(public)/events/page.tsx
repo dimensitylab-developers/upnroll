@@ -47,7 +47,7 @@ export default async function PublicEventsPage() {
           <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-brand-red">Events</p>
           <h1 className="text-display mt-2 text-5xl font-semibold leading-[0.95]">The next card</h1>
           <p className="mt-4 text-base leading-relaxed">
-            The date, the divisions, and where to follow the brackets. Further down is how a night runs, then the cards already held.
+            The date, the divisions, and where to follow the brackets. Further down is how a fight runs, then the cards already held.
           </p>
         </header>
 
@@ -92,7 +92,7 @@ export default async function PublicEventsPage() {
         </section>
 
         <section>
-          <SectionBanner>How a night runs</SectionBanner>
+          <SectionBanner>How a fight runs</SectionBanner>
           <EventStory />
         </section>
 

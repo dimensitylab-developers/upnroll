@@ -1,0 +1,1631 @@
+[
+  {
+    "slug": "suketu",
+    "displayName": "Suketu",
+    "age": 27,
+    "gender": "Male",
+    "instagram": "up.n.roll",
+    "gym": "Ultimate Fitness and MMA",
+    "coach": "Chaitanya Gavali",
+    "city": "Mumbai",
+    "state": "Maharashtra",
+    "weights": [
+      "-55 kgs (Open)"
+    ],
+    "divisions": [
+      "Beginners (White Belts)"
+    ],
+    "event": "12 July 2026 No-Gi",
+    "eventSlug": "no-gi-12-july-2026",
+    "featured": true
+  },
+  {
+    "slug": "adarsh-sahu",
+    "displayName": "Adarsh Sahu",
+    "age": 24,
+    "gender": "Male",
+    "instagram": "adarshsahu27",
+    "gym": "Reign MMA",
+    "coach": "Vighnesh Nathan",
+    "city": "Bengaluru",
+    "state": "Karnataka",
+    "weights": [
+      "+85 kgs (Open)",
+      "65 -75 kgs"
+    ],
+    "divisions": [
+      "Beginners (White Belts)"
+    ],
+    "event": "12 July 2026 No-Gi",
+    "eventSlug": "no-gi-12-july-2026",
+    "featured": false
+  },
+  {
+    "slug": "ajinkya-katare",
+    "displayName": "Ajinkya Katare",
+    "age": 21,
+    "gender": "Male",
+    "instagram": "ajinkyakatare10d",
+    "gym": "MMA WARRIORS",
+    "coach": "Michael Pereira",
+    "city": "Thane",
+    "state": "Maharashtra",
+    "weights": [
+      "55 - 65 kgs"
+    ],
+    "divisions": [
+      "Beginners (White Belts)"
+    ],
+    "event": "12 July 2026 No-Gi",
+    "eventSlug": "no-gi-12-july-2026",
+    "featured": false
+  },
+  {
+    "slug": "akhilesh-shetty",
+    "displayName": "Akhilesh Shetty",
+    "age": 26,
+    "gender": "Male",
+    "instagram": "akhileshsharetea",
+    "gym": "House of MMA",
+    "coach": "Aman Gusain",
+    "city": "Mumbai",
+    "state": "Maharashtra",
+    "weights": [
+      "65-75 kgs"
+    ],
+    "divisions": [
+      "Beginners (White Belts)"
+    ],
+    "event": "12 July 2026 No-Gi",
+    "eventSlug": "no-gi-12-july-2026",
+    "featured": false
+  },
+  {
+    "slug": "akilesh-nair",
+    "displayName": "Akilesh Nair",
+    "age": 24,
+    "gender": "Male",
+    "instagram": "akiii_625",
+    "gym": "MMA warriors",
+    "coach": "Michael pereira",
+    "city": "Thane",
+    "state": "Maharashtra",
+    "weights": [
+      "55 - 65 kgs"
+    ],
+    "divisions": [
+      "Beginners (White Belts)"
+    ],
+    "event": "12 July 2026 No-Gi",
+    "eventSlug": "no-gi-12-july-2026",
+    "featured": false
+  },
+  {
+    "slug": "amarja-pote",
+    "displayName": "Amarja Pote",
+    "age": 22,
+    "gender": "Female",
+    "instagram": "amarja__2814",
+    "gym": "Ptown west",
+    "coach": "Gaurav",
+    "city": "Pune",
+    "state": "Maharashtra",
+    "weights": [
+      "-55 kgs"
+    ],
+    "divisions": [
+      "Beginners (White Belts)"
+    ],
+    "event": "12 July 2026 No-Gi",
+    "eventSlug": "no-gi-12-july-2026",
+    "featured": false
+  },
+  {
+    "slug": "ansh-shetty",
+    "displayName": "Ansh Shetty",
+    "age": 21,
+    "gender": "Male",
+    "instagram": "datguy.ansh",
+    "gym": "Ultimate Fitness and MMA",
+    "coach": "Chaitanya Gavali",
+    "city": "Mumbai",
+    "state": "Maharashtra",
+    "weights": [
+      "75 -85 kgs"
+    ],
+    "divisions": [
+      "Beginners (White Belts)"
+    ],
+    "event": "12 July 2026 No-Gi",
+    "eventSlug": "no-gi-12-july-2026",
+    "featured": false
+  },
+  {
+    "slug": "anshuman-sapru",
+    "displayName": "Anshuman Sapru",
+    "age": 17,
+    "gender": "Male",
+    "instagram": "anshuman_sapru",
+    "gym": "P-Town West MMA",
+    "coach": "Gaurav Kamble",
+    "city": "Pune",
+    "state": "Maharashtra",
+    "weights": [
+      "65 -75 kgs"
+    ],
+    "divisions": [
+      "Intermediate (Blue & Purple Belts)"
+    ],
+    "event": "12 July 2026 No-Gi",
+    "eventSlug": "no-gi-12-july-2026",
+    "featured": false
+  },
+  {
+    "slug": "arhaan-chakravarthy",
+    "displayName": "Arhaan Chakravarthy",
+    "age": 21,
+    "gender": "Male",
+    "instagram": "arhaan.022",
+    "gym": "Grapplers.Inc",
+    "coach": "Ankit Tendulkar",
+    "city": "Mumbai",
+    "state": "Maharashtra",
+    "weights": [
+      "75 -85 kgs"
+    ],
+    "divisions": [
+      "Beginners (White Belts)"
+    ],
+    "event": "12 July 2026 No-Gi",
+    "eventSlug": "no-gi-12-july-2026",
+    "featured": false
+  },
+  {
+    "slug": "aryan-singh",
+    "displayName": "Aryan Singh",
+    "age": 24,
+    "gender": "Male",
+    "instagram": "aryan__rajawat_",
+    "gym": "Grapplers.Inc",
+    "coach": "Ankit Tendulkar",
+    "city": "Mumbai",
+    "state": "Maharashtra",
+    "weights": [
+      "65 -75 kgs"
+    ],
+    "divisions": [
+      "Beginners (White Belts)"
+    ],
+    "event": "12 July 2026 No-Gi",
+    "eventSlug": "no-gi-12-july-2026",
+    "featured": false
+  },
+  {
+    "slug": "ashok-mingeri",
+    "displayName": "Ashok mingeri",
+    "age": 22,
+    "gender": "Male",
+    "instagram": "_ashokm__",
+    "gym": "Dassault mix martial arts",
+    "coach": "Rudransh azad",
+    "city": "Mumbai",
+    "state": "Maharashtra",
+    "weights": [
+      "55 - 65 kgs"
+    ],
+    "divisions": [
+      "Beginners (White Belts)"
+    ],
+    "event": "12 July 2026 No-Gi",
+    "eventSlug": "no-gi-12-july-2026",
+    "featured": false
+  },
+  {
+    "slug": "asmar-shaikh",
+    "displayName": "Asmar Shaikh",
+    "age": 15,
+    "gender": "Male",
+    "instagram": "asmarshaikhhh",
+    "gym": "Grapplers.Inc Bjj",
+    "coach": "Ankit Tendulkar",
+    "city": "Mumbai",
+    "state": "Maharashtra",
+    "weights": [
+      "-55 kgs (Open)"
+    ],
+    "divisions": [
+      "Beginners (White Belts)"
+    ],
+    "event": "12 July 2026 No-Gi",
+    "eventSlug": "no-gi-12-july-2026",
+    "featured": false
+  },
+  {
+    "slug": "atharva-deshmukh",
+    "displayName": "Atharva Deshmukh",
+    "age": 29,
+    "gender": "Male",
+    "instagram": "ironside.bjj",
+    "gym": "Ptown West MMA; Ironside BJJ Academy",
+    "coach": "Richard Mearns",
+    "city": "Pune",
+    "state": "Maharashtra",
+    "weights": [
+      "65 -75 kgs"
+    ],
+    "divisions": [
+      "Intermediate (Blue & Purple Belts)"
+    ],
+    "event": "12 July 2026 No-Gi",
+    "eventSlug": "no-gi-12-july-2026",
+    "featured": false
+  },
+  {
+    "slug": "atharva-shedge",
+    "displayName": "Atharva shedge",
+    "age": 18,
+    "gender": "Male",
+    "instagram": "atharva_shedge15",
+    "gym": "Mma warriors",
+    "coach": "Michael pareira",
+    "city": "Thane",
+    "state": "Maharashtra",
+    "weights": [
+      "65 -75 kgs"
+    ],
+    "divisions": [
+      "Beginners (White Belts)"
+    ],
+    "event": "12 July 2026 No-Gi",
+    "eventSlug": "no-gi-12-july-2026",
+    "featured": false
+  },
+  {
+    "slug": "atiya-srivastava",
+    "displayName": "Atiya Srivastava",
+    "age": 20,
+    "gender": "Female",
+    "instagram": "atiya_shankar_1306",
+    "gym": "Total Combat Fitness",
+    "coach": "BalKrishna Shetty",
+    "city": "Mumbai",
+    "state": "Maharashtra",
+    "weights": [
+      "-55 kgs"
+    ],
+    "divisions": [
+      "Beginners (White Belts)"
+    ],
+    "event": "12 July 2026 No-Gi",
+    "eventSlug": "no-gi-12-july-2026",
+    "featured": false
+  },
+  {
+    "slug": "axit-rajeshbhai-soni",
+    "displayName": "Axit Rajeshbhai Soni",
+    "age": 24,
+    "gender": "Male",
+    "instagram": "akkii_.07",
+    "gym": "Vispi kasad school of martial arts",
+    "coach": "Vispi B Kasad",
+    "city": "Navsari",
+    "state": "Gujarat",
+    "weights": [
+      "65 -75 kgs"
+    ],
+    "divisions": [
+      "Beginners (White Belts)"
+    ],
+    "event": "12 July 2026 No-Gi",
+    "eventSlug": "no-gi-12-july-2026",
+    "featured": false
+  },
+  {
+    "slug": "ayaan-shaikh",
+    "displayName": "Ayaan Shaikh",
+    "age": 18,
+    "gender": "Male",
+    "instagram": "ayaan_s7777",
+    "gym": "MMA WARRIORS",
+    "coach": "Michael Pereira",
+    "city": "Thane",
+    "state": "Maharashtra",
+    "weights": [
+      "55 - 65 kgs"
+    ],
+    "divisions": [
+      "Beginners (White Belts)"
+    ],
+    "event": "12 July 2026 No-Gi",
+    "eventSlug": "no-gi-12-july-2026",
+    "featured": false
+  },
+  {
+    "slug": "beginners",
+    "displayName": "Beginners",
+    "age": null,
+    "gender": "55-65 kgs",
+    "instagram": "75-85 kgs",
+    "gym": null,
+    "coach": null,
+    "city": null,
+    "state": null,
+    "weights": [],
+    "divisions": [],
+    "event": "12 July 2026 No-Gi",
+    "eventSlug": "no-gi-12-july-2026",
+    "featured": false
+  },
+  {
+    "slug": "bhakti-jayesh-katudia",
+    "displayName": "Bhakti Jayesh Katudia",
+    "age": 22,
+    "gender": "Female",
+    "instagram": "bhaktikatu",
+    "gym": "Ultimate fitness",
+    "coach": "Chaitanya Gavali",
+    "city": "Mumbai",
+    "state": "Maharashtra",
+    "weights": [
+      "-55 kgs"
+    ],
+    "divisions": [
+      "Beginners (White Belts)"
+    ],
+    "event": "12 July 2026 No-Gi",
+    "eventSlug": "no-gi-12-july-2026",
+    "featured": false
+  },
+  {
+    "slug": "bhakti-santosh-gawade",
+    "displayName": "Bhakti Santosh Gawade",
+    "age": 17,
+    "gender": "Female",
+    "instagram": "bhaktii_73175",
+    "gym": "Ignition MMA",
+    "coach": "Darshan palav",
+    "city": "Nerul",
+    "state": "Maharashtra",
+    "weights": [
+      "-55 kgs"
+    ],
+    "divisions": [
+      "Beginners (White Belts)"
+    ],
+    "event": "12 July 2026 No-Gi",
+    "eventSlug": "no-gi-12-july-2026",
+    "featured": false
+  },
+  {
+    "slug": "daniel",
+    "displayName": "Daniel",
+    "age": 23,
+    "gender": "Male",
+    "instagram": "Danielspinoza",
+    "gym": "Dassault MMa",
+    "coach": "Rudransh Azad",
+    "city": "Mumbai",
+    "state": "Maharashtra",
+    "weights": [
+      "55 - 65 kgs"
+    ],
+    "divisions": [
+      "Beginners (White Belts)"
+    ],
+    "event": "12 July 2026 No-Gi",
+    "eventSlug": "no-gi-12-july-2026",
+    "featured": false
+  },
+  {
+    "slug": "danish-khan",
+    "displayName": "Danish Khan",
+    "age": 21,
+    "gender": "Male",
+    "instagram": "superiors_kingdom",
+    "gym": "Team Relentless",
+    "coach": "Jitendra Khare",
+    "city": "Mumbai",
+    "state": "Maharashtra",
+    "weights": [
+      "55 - 65 kgs"
+    ],
+    "divisions": [
+      "Beginners (White Belts)"
+    ],
+    "event": "12 July 2026 No-Gi",
+    "eventSlug": "no-gi-12-july-2026",
+    "featured": false
+  },
+  {
+    "slug": "dev",
+    "displayName": "Dev",
+    "age": 28,
+    "gender": "Male",
+    "instagram": "Nil",
+    "gym": "Dassault MMA",
+    "coach": "Rudransh Azad",
+    "city": "Mumbai",
+    "state": "Maharashtra",
+    "weights": [
+      "55 - 65 kgs"
+    ],
+    "divisions": [
+      "Beginners (White Belts)"
+    ],
+    "event": "12 July 2026 No-Gi",
+    "eventSlug": "no-gi-12-july-2026",
+    "featured": false
+  },
+  {
+    "slug": "fateh-chahal",
+    "displayName": "Fateh Chahal",
+    "age": 16,
+    "gender": "Male",
+    "instagram": "f4teh_chahal",
+    "gym": "Grapplers Inc.",
+    "coach": "Ankit Tendulkar",
+    "city": "Mumbai",
+    "state": "Maharashtra",
+    "weights": [
+      "75 -85 kgs"
+    ],
+    "divisions": [
+      "Beginners (White Belts)"
+    ],
+    "event": "12 July 2026 No-Gi",
+    "eventSlug": "no-gi-12-july-2026",
+    "featured": false
+  },
+  {
+    "slug": "female",
+    "displayName": "Female",
+    "age": null,
+    "gender": "-60kgs",
+    "instagram": null,
+    "gym": null,
+    "coach": null,
+    "city": null,
+    "state": null,
+    "weights": [],
+    "divisions": [],
+    "event": "12 July 2026 No-Gi",
+    "eventSlug": "no-gi-12-july-2026",
+    "featured": false
+  },
+  {
+    "slug": "gigi-pandole",
+    "displayName": "Gigi Pandole",
+    "age": 22,
+    "gender": "Female",
+    "instagram": "junglygigi",
+    "gym": "Grapplers Inc.",
+    "coach": "Ankit Tendulkar",
+    "city": "Mumbai",
+    "state": "Maharashtra",
+    "weights": [
+      "-70 kgs"
+    ],
+    "divisions": [
+      "Beginners (White Belts)"
+    ],
+    "event": "12 July 2026 No-Gi",
+    "eventSlug": "no-gi-12-july-2026",
+    "featured": false
+  },
+  {
+    "slug": "groel-dsouza",
+    "displayName": "Groel Dsouza",
+    "age": 20,
+    "gender": "Male",
+    "instagram": "Groelrayyudsoyza",
+    "gym": "DASSAULT Mixed Martial Arts",
+    "coach": "Rudransh Azad",
+    "city": "Mumbai",
+    "state": "Maharashtra",
+    "weights": [
+      "+85 kgs (Open)"
+    ],
+    "divisions": [
+      "Beginners (White Belts)"
+    ],
+    "event": "12 July 2026 No-Gi",
+    "eventSlug": "no-gi-12-july-2026",
+    "featured": false
+  },
+  {
+    "slug": "harsh-choudhary",
+    "displayName": "Harsh choudhary",
+    "age": 24,
+    "gender": "Male",
+    "instagram": "Choudhary_harsh555",
+    "gym": "Total combat fitness",
+    "coach": "Bala krishna shetty",
+    "city": "Mumbai",
+    "state": "Maharashtra",
+    "weights": [
+      "65 -75 kgs"
+    ],
+    "divisions": [
+      "Beginners (White Belts)"
+    ],
+    "event": "12 July 2026 No-Gi",
+    "eventSlug": "no-gi-12-july-2026",
+    "featured": false
+  },
+  {
+    "slug": "hurmat-alizai",
+    "displayName": "Hurmat alizai",
+    "age": 29,
+    "gender": "Male",
+    "instagram": "alizai___1",
+    "gym": "P town west MMA/House of MMA MUMBAI",
+    "coach": "Gaurav Sir/ aman gusen",
+    "city": "Pune/mumbai",
+    "state": "Maharashtra",
+    "weights": [
+      "65 -75 kgs"
+    ],
+    "divisions": [
+      "Beginners (White Belts)"
+    ],
+    "event": "12 July 2026 No-Gi",
+    "eventSlug": "no-gi-12-july-2026",
+    "featured": false
+  },
+  {
+    "slug": "intermediate",
+    "displayName": "Intermediate",
+    "age": null,
+    "gender": null,
+    "instagram": null,
+    "gym": null,
+    "coach": null,
+    "city": null,
+    "state": null,
+    "weights": [],
+    "divisions": [],
+    "event": "12 July 2026 No-Gi",
+    "eventSlug": "no-gi-12-july-2026",
+    "featured": false
+  },
+  {
+    "slug": "isshaan-ghodke",
+    "displayName": "Isshaan Ghodke",
+    "age": 24,
+    "gender": "Male",
+    "instagram": "isshaanghodke_",
+    "gym": "MMA Warriors",
+    "coach": "Michael Pereira",
+    "city": "Thane",
+    "state": "Maharashtra",
+    "weights": [
+      "55 - 65 kgs"
+    ],
+    "divisions": [
+      "Beginners (White Belts)"
+    ],
+    "event": "12 July 2026 No-Gi",
+    "eventSlug": "no-gi-12-july-2026",
+    "featured": false
+  },
+  {
+    "slug": "izaan-dholakia",
+    "displayName": "Izaan dholakia",
+    "age": 14,
+    "gender": "Male",
+    "instagram": "Izaandholakia",
+    "gym": "Dassault mma",
+    "coach": "Rudransh  Azad",
+    "city": "Mumbai",
+    "state": "Maharashtra",
+    "weights": [
+      "55 - 65 kgs"
+    ],
+    "divisions": [
+      "Beginners (White Belts)"
+    ],
+    "event": "12 July 2026 No-Gi",
+    "eventSlug": "no-gi-12-july-2026",
+    "featured": false
+  },
+  {
+    "slug": "jaisinh-jadhav",
+    "displayName": "Jaisinh Jadhav",
+    "age": 20,
+    "gender": "Male",
+    "instagram": "Jaisinh_05",
+    "gym": "P-town west mma",
+    "coach": "Gaurav diaz",
+    "city": "Pune",
+    "state": "Maharashtra",
+    "weights": [
+      "55 - 65 kgs"
+    ],
+    "divisions": [
+      "Beginners (White Belts)"
+    ],
+    "event": "12 July 2026 No-Gi",
+    "eventSlug": "no-gi-12-july-2026",
+    "featured": false
+  },
+  {
+    "slug": "janhavi",
+    "displayName": "Janhavi",
+    "age": 21,
+    "gender": "Female",
+    "instagram": "Janhavinate17",
+    "gym": "Ultimate Fitness & MMA",
+    "coach": "Chaitanya Gawali",
+    "city": "Mumbai",
+    "state": "Maharashtra",
+    "weights": [
+      "-60 kgs"
+    ],
+    "divisions": [
+      "Beginners (White Belts)"
+    ],
+    "event": "12 July 2026 No-Gi",
+    "eventSlug": "no-gi-12-july-2026",
+    "featured": false
+  },
+  {
+    "slug": "jay-kadam",
+    "displayName": "Jay Kadam",
+    "age": 24,
+    "gender": "Male",
+    "instagram": "jaykadam__",
+    "gym": "Total Combat Fitness",
+    "coach": "Balkrishna Shetty",
+    "city": "Mumbai",
+    "state": "Maharashtra",
+    "weights": [
+      "65 -75 kgs"
+    ],
+    "divisions": [
+      "Intermediate (Blue & Purple Belts)"
+    ],
+    "event": "12 July 2026 No-Gi",
+    "eventSlug": "no-gi-12-july-2026",
+    "featured": false
+  },
+  {
+    "slug": "jay-saindane",
+    "displayName": "Jay saindane",
+    "age": 18,
+    "gender": "Male",
+    "instagram": "jayyyyyy_.11",
+    "gym": "Dassault mma",
+    "coach": "Rudransh azad sir",
+    "city": "Mumbai",
+    "state": "Maharashtra",
+    "weights": [
+      "55 - 65 kgs"
+    ],
+    "divisions": [
+      "Beginners (White Belts)"
+    ],
+    "event": "12 July 2026 No-Gi",
+    "eventSlug": "no-gi-12-july-2026",
+    "featured": false
+  },
+  {
+    "slug": "karan-desai",
+    "displayName": "Karan Desai",
+    "age": 28,
+    "gender": "Male",
+    "instagram": "karandesai_98",
+    "gym": "The Athletes Lab",
+    "coach": "Akash Rathod",
+    "city": "Valsad",
+    "state": "Gujarat",
+    "weights": [
+      "75 -85 kgs"
+    ],
+    "divisions": [
+      "Beginners (White Belts)"
+    ],
+    "event": "12 July 2026 No-Gi",
+    "eventSlug": "no-gi-12-july-2026",
+    "featured": false
+  },
+  {
+    "slug": "krishna",
+    "displayName": "Krishna",
+    "age": 21,
+    "gender": "Male",
+    "instagram": null,
+    "gym": "Fit and fight club",
+    "coach": "Sanjivan padwal",
+    "city": "Mumbai",
+    "state": "Maharashtra",
+    "weights": [
+      "-55 kgs (Open)"
+    ],
+    "divisions": [
+      "Beginners (White Belts)"
+    ],
+    "event": "12 July 2026 No-Gi",
+    "eventSlug": "no-gi-12-july-2026",
+    "featured": false
+  },
+  {
+    "slug": "megh-patel",
+    "displayName": "Megh Patel",
+    "age": 21,
+    "gender": "Male",
+    "instagram": "meghpatel.14",
+    "gym": "Vispi Kasad School of Martial Arts",
+    "coach": "Vispi Kasad",
+    "city": "Navsari",
+    "state": "Gujarat",
+    "weights": [
+      "55 - 65 kgs"
+    ],
+    "divisions": [
+      "Beginners (White Belts)"
+    ],
+    "event": "12 July 2026 No-Gi",
+    "eventSlug": "no-gi-12-july-2026",
+    "featured": false
+  },
+  {
+    "slug": "mehul-kaura",
+    "displayName": "Mehul Kaura",
+    "age": 20,
+    "gender": "Male",
+    "instagram": "mehul_kaura",
+    "gym": "Ignition MMA",
+    "coach": "Mr. Sudarshan Palav",
+    "city": "Belapur CBD",
+    "state": "Maharashtra",
+    "weights": [
+      "65 -75 kgs"
+    ],
+    "divisions": [
+      "Beginners (White Belts)"
+    ],
+    "event": "12 July 2026 No-Gi",
+    "eventSlug": "no-gi-12-july-2026",
+    "featured": false
+  },
+  {
+    "slug": "modi-kesha",
+    "displayName": "Modi Kesha",
+    "age": 23,
+    "gender": "Female",
+    "instagram": "Modi_kesha https://www.instagram.com/p/DZ9KyNTDCaT",
+    "gym": "Infinity martial art",
+    "coach": "Mayur Patel",
+    "city": "Valsad",
+    "state": "Gujarat",
+    "weights": [
+      "-55 kgs"
+    ],
+    "divisions": [
+      "Beginners (White Belts)"
+    ],
+    "event": "12 July 2026 No-Gi",
+    "eventSlug": "no-gi-12-july-2026",
+    "featured": false
+  },
+  {
+    "slug": "mohammad-imaad-khan",
+    "displayName": "mohammad imaad khan",
+    "age": 17,
+    "gender": "Male",
+    "instagram": "mohammad_imaad_khan4",
+    "gym": "dassult mma",
+    "coach": "coach rudrash azad",
+    "city": "mumbai",
+    "state": "Maharashtra",
+    "weights": [
+      "55 - 65 kgs"
+    ],
+    "divisions": [
+      "Beginners (White Belts)"
+    ],
+    "event": "12 July 2026 No-Gi",
+    "eventSlug": "no-gi-12-july-2026",
+    "featured": false
+  },
+  {
+    "slug": "moksh-chaurasia",
+    "displayName": "Moksh chaurasia",
+    "age": 17,
+    "gender": "Male",
+    "instagram": "anvenor_7",
+    "gym": "Ignition",
+    "coach": "Darshan pallav",
+    "city": "Nerul",
+    "state": "Maharashtra",
+    "weights": [
+      "-55 kgs (Open)"
+    ],
+    "divisions": [
+      "Beginners (White Belts)"
+    ],
+    "event": "12 July 2026 No-Gi",
+    "eventSlug": "no-gi-12-july-2026",
+    "featured": false
+  },
+  {
+    "slug": "mrunmayi",
+    "displayName": "Mrunmayi",
+    "age": 32,
+    "gender": "Female",
+    "instagram": "n/a",
+    "gym": "Ultimate fitness & MMA",
+    "coach": "Chaitanya Gavali",
+    "city": "Mumbai",
+    "state": "Maharashtra",
+    "weights": [
+      "-55 kgs"
+    ],
+    "divisions": [
+      "Beginners (White Belts)"
+    ],
+    "event": "12 July 2026 No-Gi",
+    "eventSlug": "no-gi-12-july-2026",
+    "featured": false
+  },
+  {
+    "slug": "nayan-dinesh-mandlik",
+    "displayName": "Nayan Dinesh Mandlik",
+    "age": 22,
+    "gender": "Female",
+    "instagram": "mandliknayan7@gmail.com",
+    "gym": "Fit and fight club",
+    "coach": "Sanjivan padwal",
+    "city": "Navi Mumbai",
+    "state": "Maharashtra",
+    "weights": [
+      "-55 kgs"
+    ],
+    "divisions": [
+      "Beginners (White Belts)"
+    ],
+    "event": "12 July 2026 No-Gi",
+    "eventSlug": "no-gi-12-july-2026",
+    "featured": false
+  },
+  {
+    "slug": "nikhil-dmello",
+    "displayName": "Nikhil Dmello",
+    "age": 27,
+    "gender": "Male",
+    "instagram": "Mynamejeff_1998",
+    "gym": "Dassault MMA",
+    "coach": "Rudransh Azad",
+    "city": "Mumbai",
+    "state": "Maharashtra",
+    "weights": [
+      "75 -85 kgs"
+    ],
+    "divisions": [
+      "Beginners (White Belts)"
+    ],
+    "event": "12 July 2026 No-Gi",
+    "eventSlug": "no-gi-12-july-2026",
+    "featured": false
+  },
+  {
+    "slug": "nishant-karkera",
+    "displayName": "Nishant Karkera",
+    "age": 23,
+    "gender": "Male",
+    "instagram": "nishant_karkera",
+    "gym": "MMA WARRIORS",
+    "coach": "Michael pereira",
+    "city": "Thane",
+    "state": "Maharashtra",
+    "weights": [
+      "65 -75 kgs"
+    ],
+    "divisions": [
+      "Beginners (White Belts)"
+    ],
+    "event": "12 July 2026 No-Gi",
+    "eventSlug": "no-gi-12-july-2026",
+    "featured": false
+  },
+  {
+    "slug": "om-nikam",
+    "displayName": "Om Nikam",
+    "age": 22,
+    "gender": "Male",
+    "instagram": "om14_nikam",
+    "gym": "MMA warriors",
+    "coach": "Michael Pereira",
+    "city": "Mumbai",
+    "state": "Maharashtra",
+    "weights": [
+      "55 - 65 kgs"
+    ],
+    "divisions": [
+      "Beginners (White Belts)"
+    ],
+    "event": "12 July 2026 No-Gi",
+    "eventSlug": "no-gi-12-july-2026",
+    "featured": false
+  },
+  {
+    "slug": "parth-landge",
+    "displayName": "Parth landge",
+    "age": 22,
+    "gender": "Male",
+    "instagram": "parth__landge18",
+    "gym": "Team relentless",
+    "coach": "Jitendra khare",
+    "city": "Mumbai",
+    "state": "Maharashtra",
+    "weights": [
+      "65 -75 kgs"
+    ],
+    "divisions": [
+      "Intermediate (Blue & Purple Belts)"
+    ],
+    "event": "12 July 2026 No-Gi",
+    "eventSlug": "no-gi-12-july-2026",
+    "featured": false
+  },
+  {
+    "slug": "pawan-pawar",
+    "displayName": "Pawan Pawar",
+    "age": 24,
+    "gender": "Male",
+    "instagram": "NA",
+    "gym": "MMA WARRIORS",
+    "coach": null,
+    "city": "Thane",
+    "state": "Maharashtra",
+    "weights": [
+      "+85 kgs (Open)"
+    ],
+    "divisions": [
+      "Beginners (White Belts)"
+    ],
+    "event": "12 July 2026 No-Gi",
+    "eventSlug": "no-gi-12-july-2026",
+    "featured": false
+  },
+  {
+    "slug": "prajyot-ambarkar",
+    "displayName": "Prajyot Ambarkar",
+    "age": 22,
+    "gender": "Male",
+    "instagram": "Prajyotmma1",
+    "gym": "House of mma",
+    "coach": "Aman gusein",
+    "city": "Mumbai",
+    "state": "Maharashtra",
+    "weights": [
+      "65 -75 kgs"
+    ],
+    "divisions": [
+      "Beginners (White Belts)"
+    ],
+    "event": "12 July 2026 No-Gi",
+    "eventSlug": "no-gi-12-july-2026",
+    "featured": false
+  },
+  {
+    "slug": "pranav-athavale",
+    "displayName": "Pranav Athavale",
+    "age": 27,
+    "gender": "Male",
+    "instagram": "pranav_athavale_",
+    "gym": "House Of MMA",
+    "coach": "Aman Gusain",
+    "city": "Mumbai",
+    "state": "Maharashtra",
+    "weights": [
+      "65 -75 kgs"
+    ],
+    "divisions": [
+      "Intermediate (Blue & Purple Belts)"
+    ],
+    "event": "12 July 2026 No-Gi",
+    "eventSlug": "no-gi-12-july-2026",
+    "featured": false
+  },
+  {
+    "slug": "pravin-praveshkumar-gupta",
+    "displayName": "Pravin Praveshkumar Gupta",
+    "age": 23,
+    "gender": "Male",
+    "instagram": "Warrior_pravin",
+    "gym": "MMA Warriors",
+    "coach": "Michael Pereira",
+    "city": "Thane",
+    "state": "Maharashtra",
+    "weights": [
+      "55 - 65 kgs"
+    ],
+    "divisions": [
+      "Beginners (White Belts)"
+    ],
+    "event": "12 July 2026 No-Gi",
+    "eventSlug": "no-gi-12-july-2026",
+    "featured": false
+  },
+  {
+    "slug": "pruthvi-gulla",
+    "displayName": "Pruthvi gulla",
+    "age": 25,
+    "gender": "Male",
+    "instagram": "Danny_the_silverback_gorilla",
+    "gym": "FFC (FIT AND FIGHT CLUB)",
+    "coach": "Sanjivan padwal",
+    "city": "Navi mumbai",
+    "state": "Maharashtra",
+    "weights": [
+      "65 -75 kgs"
+    ],
+    "divisions": [
+      "Beginners (White Belts)"
+    ],
+    "event": "12 July 2026 No-Gi",
+    "eventSlug": "no-gi-12-july-2026",
+    "featured": false
+  },
+  {
+    "slug": "rajat-anil-sharma",
+    "displayName": "Rajat Anil Sharma",
+    "age": 20,
+    "gender": "Male",
+    "instagram": "_rajat_sharma_7",
+    "gym": "P-Town West MMA",
+    "coach": "Gaurav Kamble",
+    "city": "Pune",
+    "state": "Maharashtra",
+    "weights": [
+      "75 -85 kgs"
+    ],
+    "divisions": [
+      "Beginners (White Belts)"
+    ],
+    "event": "12 July 2026 No-Gi",
+    "eventSlug": "no-gi-12-july-2026",
+    "featured": false
+  },
+  {
+    "slug": "ratan",
+    "displayName": "Ratan",
+    "age": 23,
+    "gender": "Male",
+    "instagram": "ratanx11",
+    "gym": "Reign MMA",
+    "coach": "Vighnesh Nathan",
+    "city": "Bangalore",
+    "state": "Karnataka",
+    "weights": [
+      "75 -85 kgs"
+    ],
+    "divisions": [
+      "Beginners (White Belts)"
+    ],
+    "event": "12 July 2026 No-Gi",
+    "eventSlug": "no-gi-12-july-2026",
+    "featured": false
+  },
+  {
+    "slug": "raviraj-gohil",
+    "displayName": "Raviraj Gohil",
+    "age": 20,
+    "gender": "Male",
+    "instagram": "_ravigohil_",
+    "gym": "Ultimate fitness",
+    "coach": "Chaitanya gavali",
+    "city": "Mumbai",
+    "state": "Maharashtra",
+    "weights": [
+      "-55 kgs (Open)"
+    ],
+    "divisions": [
+      "Beginners (White Belts)"
+    ],
+    "event": "12 July 2026 No-Gi",
+    "eventSlug": "no-gi-12-july-2026",
+    "featured": false
+  },
+  {
+    "slug": "rayyan-shetty",
+    "displayName": "Rayyan Shetty",
+    "age": 16,
+    "gender": "Male",
+    "instagram": "rayyaan.shetty",
+    "gym": "Team Relentless",
+    "coach": "Jitendra Khare",
+    "city": "Mumbai",
+    "state": "Maharashtra",
+    "weights": [
+      "+85 kgs (Open)"
+    ],
+    "divisions": [
+      "Beginners (White Belts)"
+    ],
+    "event": "12 July 2026 No-Gi",
+    "eventSlug": "no-gi-12-july-2026",
+    "featured": false
+  },
+  {
+    "slug": "reena-vaidya",
+    "displayName": "reena vaidya",
+    "age": 24,
+    "gender": "Female",
+    "instagram": "reenarvaidya",
+    "gym": "Ultimate fitness and Mma",
+    "coach": "Chaitanya Gavali sir",
+    "city": "Mumbai",
+    "state": "Maharashtra",
+    "weights": [
+      "-70 kgs"
+    ],
+    "divisions": [
+      "Beginners (White Belts)"
+    ],
+    "event": "12 July 2026 No-Gi",
+    "eventSlug": "no-gi-12-july-2026",
+    "featured": false
+  },
+  {
+    "slug": "rohan-prakash-bandekar",
+    "displayName": "Rohan Prakash Bandekar",
+    "age": 30,
+    "gender": "Male",
+    "instagram": "rhnbandekar",
+    "gym": "Tashi's pro MMA",
+    "coach": "Carlos Almeida",
+    "city": "Ponda",
+    "state": "Goa",
+    "weights": [
+      "55 - 65 kgs"
+    ],
+    "divisions": [
+      "Beginners (White Belts)"
+    ],
+    "event": "12 July 2026 No-Gi",
+    "eventSlug": "no-gi-12-july-2026",
+    "featured": false
+  },
+  {
+    "slug": "rohit-chandrkant-more",
+    "displayName": "Rohit chandrkant more",
+    "age": 23,
+    "gender": "Male",
+    "instagram": "Rohittt__1222",
+    "gym": "Dassaultmma",
+    "coach": "Rudransh Azad",
+    "city": "Mumbai",
+    "state": "Maharashtra",
+    "weights": [
+      "75 -85 kgs"
+    ],
+    "divisions": [
+      "Beginners (White Belts)"
+    ],
+    "event": "12 July 2026 No-Gi",
+    "eventSlug": "no-gi-12-july-2026",
+    "featured": false
+  },
+  {
+    "slug": "rudrapriye-khare",
+    "displayName": "Rudrapriye Khare",
+    "age": 15,
+    "gender": "Male",
+    "instagram": "mmawithrudraaaaaa",
+    "gym": "P-Town West MMA",
+    "coach": "Gaurav Kamble",
+    "city": "Pune",
+    "state": "Maharashtra",
+    "weights": [
+      "55 - 65 kgs"
+    ],
+    "divisions": [
+      "Beginners (White Belts)"
+    ],
+    "event": "12 July 2026 No-Gi",
+    "eventSlug": "no-gi-12-july-2026",
+    "featured": false
+  },
+  {
+    "slug": "ryan-menezes",
+    "displayName": "Ryan Menezes",
+    "age": 24,
+    "gender": "Male",
+    "instagram": "ryanmenezes27",
+    "gym": "Tashi’s Pro Fitness MMA Gym",
+    "coach": "Carlos Almeida",
+    "city": "Saligao",
+    "state": "Goa",
+    "weights": [
+      "55 - 65 kgs"
+    ],
+    "divisions": [
+      "Beginners (White Belts)"
+    ],
+    "event": "12 July 2026 No-Gi",
+    "eventSlug": "no-gi-12-july-2026",
+    "featured": false
+  },
+  {
+    "slug": "sahil-khan",
+    "displayName": "Sahil Khan",
+    "age": 22,
+    "gender": "Male",
+    "instagram": "_mahoraga_.__",
+    "gym": "P-town west mma",
+    "coach": "Gaurav",
+    "city": "Pune",
+    "state": "Maharashtra",
+    "weights": [
+      "75 -85 kgs"
+    ],
+    "divisions": [
+      "Beginners (White Belts)"
+    ],
+    "event": "12 July 2026 No-Gi",
+    "eventSlug": "no-gi-12-july-2026",
+    "featured": false
+  },
+  {
+    "slug": "sarvesh",
+    "displayName": "Sarvesh",
+    "age": 22,
+    "gender": "Male",
+    "instagram": "Sarvesh Chavan",
+    "gym": "Dassault MMA",
+    "coach": "Rudransh Azad",
+    "city": "Mumbai",
+    "state": "Maharashtra",
+    "weights": [
+      "-55 kgs (Open)"
+    ],
+    "divisions": [
+      "Beginners (White Belts)"
+    ],
+    "event": "12 July 2026 No-Gi",
+    "eventSlug": "no-gi-12-july-2026",
+    "featured": false
+  },
+  {
+    "slug": "sayan-bhattacharya",
+    "displayName": "Sayan Bhattacharya",
+    "age": 19,
+    "gender": "Male",
+    "instagram": "no social media",
+    "gym": "house of mma",
+    "coach": "aman gussain",
+    "city": "mumbai",
+    "state": "Maharashtra",
+    "weights": [
+      "55 - 65 kgs"
+    ],
+    "divisions": [
+      "Beginners (White Belts)"
+    ],
+    "event": "12 July 2026 No-Gi",
+    "eventSlug": "no-gi-12-july-2026",
+    "featured": false
+  },
+  {
+    "slug": "shai-divan",
+    "displayName": "Shai Divan",
+    "age": 23,
+    "gender": "Female",
+    "instagram": "shai.divan",
+    "gym": "Vishvanath’s MMA",
+    "coach": "Vishvanath Rajak",
+    "city": "Mumbai",
+    "state": "Maharashtra",
+    "weights": [
+      "-60 kgs"
+    ],
+    "divisions": [
+      "Beginners (White Belts"
+    ],
+    "event": "12 July 2026 No-Gi",
+    "eventSlug": "no-gi-12-july-2026",
+    "featured": false
+  },
+  {
+    "slug": "shamak-singal",
+    "displayName": "Shamak singal",
+    "age": 20,
+    "gender": "Male",
+    "instagram": "Shamakkk",
+    "gym": "Ultimate fitness and mma",
+    "coach": "Chaitanya gavali",
+    "city": "Mumbai",
+    "state": "Maharashtra",
+    "weights": [
+      "-55 kgs (Open)"
+    ],
+    "divisions": [
+      "Beginners (White Belts)"
+    ],
+    "event": "12 July 2026 No-Gi",
+    "eventSlug": "no-gi-12-july-2026",
+    "featured": false
+  },
+  {
+    "slug": "shaurya-parihar",
+    "displayName": "Shaurya Parihar",
+    "age": 16,
+    "gender": "Male",
+    "instagram": "shaurihar",
+    "gym": "Ptown West MMA",
+    "coach": "Gaurav",
+    "city": "Pune",
+    "state": "Maharashtra",
+    "weights": [
+      "75 -85 kgs"
+    ],
+    "divisions": [
+      "Beginners (White Belts)"
+    ],
+    "event": "12 July 2026 No-Gi",
+    "eventSlug": "no-gi-12-july-2026",
+    "featured": false
+  },
+  {
+    "slug": "shresht-acharya",
+    "displayName": "Shresht Acharya",
+    "age": 20,
+    "gender": "Male",
+    "instagram": "shre_00728",
+    "gym": "Ultimate fitness and mma",
+    "coach": "Chaitanya gavali",
+    "city": "Mumbai",
+    "state": "Maharashtra",
+    "weights": [
+      "55 - 65 kgs"
+    ],
+    "divisions": [
+      "Beginners (White Belts)"
+    ],
+    "event": "12 July 2026 No-Gi",
+    "eventSlug": "no-gi-12-july-2026",
+    "featured": false
+  },
+  {
+    "slug": "shubham-manwatkar",
+    "displayName": "Shubham Manwatkar",
+    "age": 22,
+    "gender": "Male",
+    "instagram": null,
+    "gym": "Ultimate Fitness",
+    "coach": "Chaitanya Gavli",
+    "city": "Mumbai",
+    "state": "Maharashtra",
+    "weights": [
+      "55 - 65 kgs"
+    ],
+    "divisions": [
+      "Beginners (White Belts)"
+    ],
+    "event": "12 July 2026 No-Gi",
+    "eventSlug": "no-gi-12-july-2026",
+    "featured": false
+  },
+  {
+    "slug": "sudipto-moitra",
+    "displayName": "Sudipto Moitra",
+    "age": 31,
+    "gender": "Male",
+    "instagram": "sudipto.moitra.15",
+    "gym": "MMA WARRIORS",
+    "coach": "Michael Pereira",
+    "city": "Thane",
+    "state": "Maharashtra",
+    "weights": [
+      "55 - 65 kgs"
+    ],
+    "divisions": [
+      "Beginners (White Belts)"
+    ],
+    "event": "12 July 2026 No-Gi",
+    "eventSlug": "no-gi-12-july-2026",
+    "featured": false
+  },
+  {
+    "slug": "sukhjeet-singh-panesar",
+    "displayName": "Sukhjeet Singh Panesar",
+    "age": 22,
+    "gender": "Male",
+    "instagram": "singh_sukhjeet10",
+    "gym": "Ultimate Fitness of Mixed Martial Arts",
+    "coach": "Chaitanya Gavali",
+    "city": "Mumbai",
+    "state": "Maharashtra",
+    "weights": [
+      "55 - 65 kgs"
+    ],
+    "divisions": [
+      "Beginners (White Belts)"
+    ],
+    "event": "12 July 2026 No-Gi",
+    "eventSlug": "no-gi-12-july-2026",
+    "featured": false
+  },
+  {
+    "slug": "suman-saurabh",
+    "displayName": "Suman Saurabh",
+    "age": 22,
+    "gender": "Male",
+    "instagram": "the_leo_suman",
+    "gym": "MMA WARRIORS",
+    "coach": "Michael Pereira",
+    "city": "thane",
+    "state": "Maharashtra",
+    "weights": [
+      "55 - 65 kgs"
+    ],
+    "divisions": [
+      "Beginners (White Belts)"
+    ],
+    "event": "12 July 2026 No-Gi",
+    "eventSlug": "no-gi-12-july-2026",
+    "featured": false
+  },
+  {
+    "slug": "sunil-chavan",
+    "displayName": "Sunil Chavan",
+    "age": 26,
+    "gender": "Male",
+    "instagram": null,
+    "gym": "Ultimate Fitness",
+    "coach": "Chaitanya Gavli",
+    "city": "Mumbai",
+    "state": "Maharashtra",
+    "weights": [
+      "-55 kgs (Open)"
+    ],
+    "divisions": [
+      "Beginners (White Belts)"
+    ],
+    "event": "12 July 2026 No-Gi",
+    "eventSlug": "no-gi-12-july-2026",
+    "featured": false
+  },
+  {
+    "slug": "suraj-sarkar",
+    "displayName": "Suraj sarkar",
+    "age": 18,
+    "gender": "Male",
+    "instagram": "_heresuraj_",
+    "gym": "MMA WARRIORS",
+    "coach": "Michael pereira",
+    "city": "Thane",
+    "state": "Maharashtra",
+    "weights": [
+      "55 - 65 kgs"
+    ],
+    "divisions": [
+      "Beginners (White Belts)"
+    ],
+    "event": "12 July 2026 No-Gi",
+    "eventSlug": "no-gi-12-july-2026",
+    "featured": false
+  },
+  {
+    "slug": "surwat-alizai",
+    "displayName": "Surwat alizai",
+    "age": 23,
+    "gender": "Male",
+    "instagram": "Surwat.1",
+    "gym": "P-Town West MMA",
+    "coach": "Gaurav Diaz",
+    "city": "Pune",
+    "state": null,
+    "weights": [
+      "65 -75 kgs"
+    ],
+    "divisions": [
+      "Intermediate (Blue & Purple Belts)"
+    ],
+    "event": "12 July 2026 No-Gi",
+    "eventSlug": "no-gi-12-july-2026",
+    "featured": false
+  },
+  {
+    "slug": "tanoosh-shetty",
+    "displayName": "Tanoosh Shetty",
+    "age": 18,
+    "gender": "Male",
+    "instagram": "Source: Instagram https://share.google/QOfUScRWZNY85U1Yf",
+    "gym": "Total combat fitness",
+    "coach": "Balkrishna Shetty",
+    "city": "Mumbai",
+    "state": "Maharashtra",
+    "weights": [
+      "75 -85 kgs"
+    ],
+    "divisions": [
+      "Beginners (White Belts)"
+    ],
+    "event": "12 July 2026 No-Gi",
+    "eventSlug": "no-gi-12-july-2026",
+    "featured": false
+  },
+  {
+    "slug": "thulsi-prasad-battu",
+    "displayName": "Thulsi Prasad Battu",
+    "age": 35,
+    "gender": "Male",
+    "instagram": "ThulsiP",
+    "gym": "Reign MMA",
+    "coach": "Vighnesh Nathan",
+    "city": "Bangalore",
+    "state": "Karnataka",
+    "weights": [
+      "75 -85 kgs"
+    ],
+    "divisions": [
+      "Beginners (White Belts)"
+    ],
+    "event": "12 July 2026 No-Gi",
+    "eventSlug": "no-gi-12-july-2026",
+    "featured": false
+  },
+  {
+    "slug": "veer-chabbra",
+    "displayName": "Veer Chabbra",
+    "age": 19,
+    "gender": "Male",
+    "instagram": "veerchabbra",
+    "gym": "House of MMA",
+    "coach": "Aman Gusain",
+    "city": "Mumbai",
+    "state": "Maharashtra",
+    "weights": [
+      "75 -85 kgs"
+    ],
+    "divisions": [
+      "Beginners (White Belts)"
+    ],
+    "event": "12 July 2026 No-Gi",
+    "eventSlug": "no-gi-12-july-2026",
+    "featured": false
+  },
+  {
+    "slug": "viraj-nemlekar",
+    "displayName": "Viraj nemlekar",
+    "age": 19,
+    "gender": "Male",
+    "instagram": "viirraaajjj",
+    "gym": "Ultimate fitness and mixed martial arts",
+    "coach": "Chaitanya gavali",
+    "city": "Mumbai",
+    "state": "Maharashtra",
+    "weights": [
+      "-55 kgs (Open)"
+    ],
+    "divisions": [
+      "Beginners (White Belts)"
+    ],
+    "event": "12 July 2026 No-Gi",
+    "eventSlug": "no-gi-12-july-2026",
+    "featured": false
+  },
+  {
+    "slug": "virendra-saud",
+    "displayName": "Virendra Saud",
+    "age": 16,
+    "gender": "Male",
+    "instagram": "Lempard561",
+    "gym": "Dassault mma",
+    "coach": "Rudransh azad",
+    "city": "Mumbai",
+    "state": "Maharashtra",
+    "weights": [
+      "55 - 65 kgs"
+    ],
+    "divisions": [
+      "Beginners (White Belts)"
+    ],
+    "event": "12 July 2026 No-Gi",
+    "eventSlug": "no-gi-12-july-2026",
+    "featured": false
+  }
+]

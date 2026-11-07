@@ -1,0 +1,60 @@
+{
+  "total": 11,
+  "emojis": [
+    {
+      "id": "clinch-collar-tie",
+      "title": "Clinch Collar Tie",
+      "file": "/emojis/clinch-collar-tie.png"
+    },
+    {
+      "id": "double-leg-takedown",
+      "title": "Double Leg Takedown",
+      "file": "/emojis/double-leg-takedown.png"
+    },
+    {
+      "id": "hip-throw",
+      "title": "Hip Throw Seoi Nage",
+      "file": "/emojis/hip-throw.png"
+    },
+    {
+      "id": "armbar",
+      "title": "Armbar Juji Gatame",
+      "file": "/emojis/armbar.png"
+    },
+    {
+      "id": "rear-naked-choke",
+      "title": "Rear Naked Choke",
+      "file": "/emojis/rear-naked-choke.png"
+    },
+    {
+      "id": "triangle-choke",
+      "title": "Triangle Choke",
+      "file": "/emojis/triangle-choke.png"
+    },
+    {
+      "id": "mount",
+      "title": "Mount",
+      "file": "/emojis/mount.png"
+    },
+    {
+      "id": "knee-slice",
+      "title": "Knee Slice Pass",
+      "file": "/emojis/knee-slice.png"
+    },
+    {
+      "id": "belt-white",
+      "title": "White Belt",
+      "file": "/emojis/belt-white.svg"
+    },
+    {
+      "id": "belt-red",
+      "title": "Red Belt",
+      "file": "/emojis/belt-red.svg"
+    },
+    {
+      "id": "belt-black",
+      "title": "Black Belt",
+      "file": "/emojis/belt-black.svg"
+    }
+  ]
+}
