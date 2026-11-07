@@ -25,9 +25,11 @@ export function AboutStory({
         <div className="border-2 border-black bg-white p-6 shadow-[6px_6px_0_0_#000] sm:p-8">
           <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-brand-red">About Us</p>
           <Heading className="text-display mt-2 text-5xl font-semibold leading-[0.95]">Earn your role.</Heading>
-          <p className="mt-6 max-w-2xl text-lg leading-relaxed">
-            Built for grapplers in India and Brazil. Real fights. Real pay. Real rankings.
-          </p>
+          <div className="mt-6 max-w-2xl space-y-1 text-lg leading-relaxed">
+            <p className="font-semibold">Built For Grapplers 🇮🇳</p>
+            <p>Brazilian Jiu Jitsu Platform</p>
+            <p className="font-semibold">Real Fights. Real Pay. Real Rankings</p>
+          </div>
           <div className="mt-6">
             <FounderCredit />
           </div>

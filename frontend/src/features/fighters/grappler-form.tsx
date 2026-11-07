@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, type ChangeEvent, type ComponentProps } from "react";
+import { useEffect, useState, type ChangeEvent, type ComponentProps, type ReactNode } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -41,7 +41,7 @@ export type GrapplerDefaults = {
 };
 
 type GrapplerFormProps = {
-  mode: "register" | "profile";
+  mode: "profile" | "event";
   state: GrapplerFormState;
   formAction: (payload: FormData) => void;
   pending: boolean;
@@ -49,6 +49,10 @@ type GrapplerFormProps = {
   hasPhoto?: boolean;
   photoVersion?: string;
   waiverAcceptedAt?: string | null;
+  top?: ReactNode;
+  bottom?: ReactNode;
+  submitLabel?: string;
+  submitDisabled?: boolean;
 };
 
 function FieldError({ name, errors }: { name: string; errors?: GrapplerFormState["fieldErrors"] }) {
@@ -130,11 +134,15 @@ export function GrapplerForm({
   hasPhoto = false,
   photoVersion = "",
   waiverAcceptedAt,
+  top,
+  bottom,
+  submitLabel,
+  submitDisabled = false,
 }: GrapplerFormProps) {
-  const [agreed, setAgreed] = useState(mode === "profile");
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const values = defaults;
   const errors = state.fieldErrors;
+  const photoRequired = mode === "event" && !hasPhoto;
 
   useEffect(() => {
     return () => {
@@ -154,11 +162,12 @@ export function GrapplerForm({
     <form action={formAction} className="space-y-8">
       {state.error && <p className="text-sm text-primary">{state.error}</p>}
       {state.success && <p className="text-sm text-brand-cyan">Profile updated.</p>}
+      {top}
 
       <section className="space-y-4">
         <SectionBanner>1. Personal information</SectionBanner>
-        <div className="grid lg:grid-cols-[1fr_9rem] gap-4 items-start">
-          <div className="grid sm:grid-cols-2 gap-4">
+        <div className="grid items-start gap-4 lg:grid-cols-[1fr_9rem]">
+          <div className="grid gap-4 sm:grid-cols-2">
             <TextField label="Full name (as per ID)" name="displayName" errors={errors} defaultValue={values?.displayName} autoComplete="name" />
             <TextField label="Date of birth" name="dateOfBirth" type="date" errors={errors} defaultValue={values?.dateOfBirth} autoComplete="bday" />
             <TextField label="Age" name="age" type="number" min={5} max={80} errors={errors} defaultValue={values?.age} />
@@ -174,9 +183,6 @@ export function GrapplerForm({
               ]}
             />
             <TextField label="Mobile number" name="mobile" type="tel" errors={errors} defaultValue={values?.mobile} autoComplete="tel" />
-            {mode === "register" && (
-              <TextField label="Email address" name="email" type="email" errors={errors} autoComplete="email" />
-            )}
             <TextField label="Nationality" name="nationality" errors={errors} defaultValue={values?.nationality} autoComplete="country-name" />
             <TextField
               label="Aadhaar card number (12 digit)"
@@ -207,8 +213,8 @@ export function GrapplerForm({
                 <span className="text-[10px] uppercase tracking-wider text-center px-2 text-muted-foreground">Passport size photograph</span>
               )}
             </div>
-            <Input id="photo" name="photo" type="file" accept="image/jpeg,image/png,image/webp" required={mode === "register"} onChange={onPhotoChange} />
-            <p className="text-xs text-muted-foreground mt-1">JPG, PNG, or WebP, under 1.5 MB.</p>
+            <Input id="photo" name="photo" type="file" accept="image/jpeg,image/png,image/webp" required={photoRequired} onChange={onPhotoChange} />
+            <p className="mt-1 text-xs text-muted-foreground">JPG, PNG, or WebP, under 1.5 MB.</p>
           </div>
         </div>
       </section>
@@ -254,40 +260,20 @@ export function GrapplerForm({
         </ol>
         <p className="border-2 border-black bg-amber-50 px-4 py-3 text-sm">{WAIVER_IMPORTANT}</p>
         <p className="text-display uppercase tracking-wider text-brand-red text-sm">Thank you and see you on the mats!</p>
-        {mode === "register" ? (
-          <label className="flex items-start gap-2 text-sm font-medium">
-            <input
-              type="checkbox"
-              name="agree"
-              value="yes"
-              checked={agreed}
-              onChange={(event) => setAgreed(event.target.checked)}
-              className="mt-1"
-            />
-            I agree to all the above terms and conditions.
-          </label>
-        ) : (
-          <p className="text-sm text-muted-foreground">
-            {waiverAcceptedAt
-              ? `You agreed to these terms on ${new Date(waiverAcceptedAt).toLocaleDateString("en-IN")}.`
+        <p className="text-sm text-muted-foreground">
+          {waiverAcceptedAt
+            ? `You agreed to these terms on ${new Date(waiverAcceptedAt).toLocaleDateString("en-IN")}.`
+            : mode === "event"
+              ? "Read these terms, then tick Consent and Agreement below before you continue."
               : "These are the terms that come with a fighter account."}
-          </p>
-        )}
-        <FieldError name="agree" errors={errors} />
+        </p>
       </section>
 
-      {mode === "register" && (
-        <section className="space-y-4">
-          <SectionBanner>Account</SectionBanner>
-          <div className="max-w-sm">
-            <TextField label="Password" name="password" type="password" errors={errors} autoComplete="new-password" hint="At least 10 characters, with a letter and a number." />
-          </div>
-        </section>
-      )}
+      {bottom}
 
       <p className="text-xs text-muted-foreground">Incomplete forms are not accepted. Please fill in all required details.</p>
-      <Button type="submit" disabled={pending || !agreed}>
-        {pending ? "Saving…" : mode === "register" ? "Create account" : "Save profile"}
+      <Button type="submit" disabled={pending || submitDisabled}>
+        {pending ? "Saving…" : submitLabel ?? (mode === "event" ? "Continue to payment" : "Save profile")}
       </Button>
     </form>
   );

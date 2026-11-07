@@ -3,6 +3,7 @@ import { listPublicEvents } from "@/server/services/eventService";
 import { Button } from "@/components/ui/button";
 import { AboutStory } from "@/components/home/about-story";
 import { FightingGallery } from "@/components/home/photo-crossfade";
+import { HappyStack } from "@/components/home/happy-stack";
 import { FIGHTING_PHOTOS, HAPPY_PHOTOS } from "@/components/home/site-photos";
 import { MangaCards } from "@/components/home/manga-cards";
 import { SectionBanner } from "@/components/home/section-banner";
@@ -22,9 +23,11 @@ export default async function HomePage() {
             <h1 id="home-wordmark" className="max-w-xl">
               <img src="/logo-wordmark.png" alt="Up 'n Roll" className="h-auto w-full" />
             </h1>
-            <p className="mt-6 max-w-xl text-lg">
-              Built for grapplers in India and Brazil. Real fights. Real pay. Real rankings.
-            </p>
+            <div className="mt-6 max-w-xl space-y-1">
+              <p className="text-lg font-semibold">Built For Grapplers 🇮🇳</p>
+              <p className="text-lg">Brazilian Jiu Jitsu Platform</p>
+              <p className="text-lg font-semibold">Real Fights. Real Pay. Real Rankings</p>
+            </div>
             <div className="mt-8">
               <Button asChild size="lg">
                 <Link href="/register">Sign up</Link>
@@ -61,16 +64,7 @@ export default async function HomePage() {
 
       <section className="mx-auto max-w-6xl px-4 pb-14 sm:px-6 lg:px-8">
         <SectionBanner>Happy moments</SectionBanner>
-        <ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {HAPPY_PHOTOS.map((photo) => (
-            <li key={photo.src} className="border-2 border-black bg-white shadow-[6px_6px_0_0_#000]">
-              <div className="flex aspect-[4/3] items-center justify-center bg-white">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src={photo.src} alt={photo.alt} className="max-h-full max-w-full object-contain" />
-              </div>
-            </li>
-          ))}
-        </ul>
+        <HappyStack photos={HAPPY_PHOTOS} />
       </section>
 
       <section id="about-us" className="mx-auto max-w-6xl px-4 pb-16 sm:px-6 lg:px-8">

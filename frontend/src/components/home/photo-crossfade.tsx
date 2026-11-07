@@ -1,12 +1,20 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 export function FightingGallery({ photos }: { photos: { src: string; alt: string }[] }) {
   const [index, setIndex] = useState(0);
   const count = photos.length;
-  const photo = photos[index];
-  if (!photo) return null;
+
+  useEffect(() => {
+    if (count < 2) return;
+    const timer = window.setInterval(() => {
+      setIndex((current) => (current + 1) % count);
+    }, 4200);
+    return () => window.clearInterval(timer);
+  }, [count]);
+
+  if (count === 0) return null;
 
   function step(direction: number) {
     setIndex((current) => (current + direction + count) % count);
@@ -15,9 +23,18 @@ export function FightingGallery({ photos }: { photos: { src: string; alt: string
   return (
     <div>
       <div className="border-2 border-black bg-white shadow-[6px_6px_0_0_#000]">
-        <div className="flex aspect-[4/3] items-center justify-center bg-white">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src={photo.src} alt={photo.alt} className="max-h-full max-w-full object-contain" />
+        <div className="relative flex aspect-[4/3] items-center justify-center overflow-hidden bg-white">
+          {photos.map((shot, shotIndex) => (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img
+              key={shot.src}
+              src={shot.src}
+              alt={shot.alt}
+              className={`absolute max-h-full max-w-full object-contain transition-opacity duration-700 ${
+                shotIndex === index ? "opacity-100" : "opacity-0"
+              }`}
+            />
+          ))}
         </div>
       </div>
       <div className="mt-3 flex items-center justify-between gap-3">
