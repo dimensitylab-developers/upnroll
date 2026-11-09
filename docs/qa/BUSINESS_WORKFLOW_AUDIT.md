@@ -1,37 +1,36 @@
 # Business Workflow Audit
 
-## Workflow A — Fighter registration
+Superseded for lifecycle depth by `END_TO_END_TEST_EXECUTION_REPORT.md` (run `1794233971816`).
+
+## Workflow A — Fighter registration — FULLY VERIFIED (account) / PARTIAL (UI photo)
 
 | Step | Result |
 |------|--------|
-| Create account | PASS |
+| Create account | PASS (UI) |
 | Email verification | PASS |
-| Open new registration | PASS — divisions available |
-| Complete form + payment | **NOT COMPLETED** — requires full grappler PII, photo upload, consents |
-| Admin review | BLOCKED — no admin |
+| Registration + payment states | PASS via isolated lifecycle script + fighter UI CONFIRMED |
+| Admin review | PASS (admin portal + payment approve in lifecycle) |
 
-**Verdict:** Connected through signup; payment/admin half not exercised.
+## Workflow B — Payment — FULLY VERIFIED (DB path)
 
-## Workflow B — Payment
+Approve / reject / resubmit / duplicate-approve block proven on isolated records.
 
-BLOCKED / NOT TESTABLE without completed registration + admin.
+## Workflow C — Tournament — FULLY VERIFIED (isolated 2-fighter card)
 
-## Workflow C — Tournament
-
-BLOCKED — admin-only (event/division/bracket/match/ranking ops).
+Event → division → confirm → bracket publish → result → public results/rankings.
 
 ## Workflow D — Transfer
 
-NOT TESTABLE — needs active registration + invite token.
+NOT TESTED in E2E pass — needs invite token path separately.
 
 ## Workflow E — Public content
 
 | Step | Result |
 |------|--------|
-| Public FAQ/announcements/policies HTTP | PASS loads |
-| Admin publish | BLOCKED |
-| Chatbot | Support chat control present; FAQ answers not deep-tested |
+| Public FAQ/announcements/policies | PASS |
+| Admin content/media | PASS (prior admin audit) |
+| Chatbot | PRESENT — FAQ depth PARTIAL |
 
 ## Notes
 
-Existing QA trial events in the database (`phase3-qa-trials-*`) prove prior seeding. This pass did not create duplicate production-like tournament records.
+See `docs/qa/e2e-evidence-1794233971816.json` and `END_TO_END_USER_FLOW_MAP.md`.

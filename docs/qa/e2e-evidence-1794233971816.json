@@ -1,0 +1,20 @@
+{
+  "runId": "1794233971816",
+  "slug": "e2e-flow-arena-1794233971816",
+  "adminUserId": "6ae86d5223358177616a6cd2",
+  "fighterA": { "email": "e2e.a.1794233342848@test.local", "userId": "6af1d4f572863a73ce6ba33d" },
+  "fighterB": { "email": "e2e.b.1794233971816@test.local", "userId": "6af1d67408b79ed0c9b9bd2a" },
+  "eventId": "6af1d67408b79ed0c9b9bd2c",
+  "divisionId": "6af1d67408b79ed0c9b9bd2d",
+  "registrationA": "6af1d67408b79ed0c9b9bd2e",
+  "registrationBRetry": "6af1d67508b79ed0c9b9bd39",
+  "paymentA": "6af1d67508b79ed0c9b9bd31",
+  "paymentBRetry": "6af1d67508b79ed0c9b9bd3c",
+  "bracketId": "6af1d67508b79ed0c9b9bd4a",
+  "finalMatchId": "6af1d67508b79ed0c9b9bd4b",
+  "winnerRegistrationId": "6af1d67408b79ed0c9b9bd2e",
+  "duplicateApproveBlocked": "PASS",
+  "bracketMinParticipants": "PASS — rejected <2",
+  "publicVisibility": { "eventVisible": true, "bracketPublished": true, "completedMatches": 1 },
+  "fingerprint": "1c4320148157"
+}

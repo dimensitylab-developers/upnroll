@@ -23,8 +23,8 @@
 
 | Check | Result |
 |-------|--------|
-| Admin login | **BLOCKED** — no admin seed credentials in `.env.local` |
-| Admin pages / actions | **NOT TESTABLE** |
+| Admin login | PASS — `admin@upnroll.in` (prior portal audit) |
+| Admin pages / actions | PASS — see `ADMIN_PORTAL_AUDIT.md` + E2E lifecycle |
 
 ## Session
 

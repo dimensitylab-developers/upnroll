@@ -1,8 +1,8 @@
 # Manual Verification Summary — Runtime Audit
 
-**Final classification: PARTIALLY VERIFIED** (admin portal now included)
+**Final classification: PARTIALLY VERIFIED** (E2E lifecycle included)
 
-The app was started and exercised in a real browser. Critical startup failures were fixed and retested. Admin shell + core admin actions were exercised as `admin@upnroll.in`. Payment Approve/Reject and request Decide still need pending seeded data.
+See `END_TO_END_TEST_EXECUTION_REPORT.md`. Visitor→auth→isolated tournament→public results is proven. Remaining: OAuth/SMTP, GridFS key fix, full UI file-upload automation, password reset (not implemented), formal responsive matrix.
 
 ## Numbers (honest)
 
