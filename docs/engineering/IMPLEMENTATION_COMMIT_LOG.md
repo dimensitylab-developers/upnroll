@@ -32,7 +32,7 @@ Rule: one focused Conventional Commit per implementation point; phase milestone 
 | QA Runtime | Role portal redirects + admin race guard | `f951b63` | Completed |
 | QA Runtime | QA report suite under docs/qa | `f772ff8` | Completed |
 | QA Runtime | Admin/Fighter nav hydrate defer | `29c62e2` | Completed |
-| E2E Flow | Flow map + execution report + lifecycle script + evidence | _(pending this commit)_ | In progress |
+| E2E Flow | Flow map + execution report + lifecycle script + evidence | `96bc0d7` | Completed |
 
 Note: `06e50b8` (`docs(architecture): …`) appeared on the branch during this window from a separate documentation commit and is not part of the hardening implementation stream.
 
