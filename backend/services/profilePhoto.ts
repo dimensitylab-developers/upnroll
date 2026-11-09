@@ -29,6 +29,8 @@ export async function saveProfilePhoto(actor: Actor, bytes: Buffer, ext: string,
   const storage = getStorageAdapter();
   if (previousKey && previousKey !== key) await storage.delete(previousKey);
   const contentType = ext === ".png" ? "image/png" : ext === ".webp" ? "image/webp" : "image/jpeg";
-  await storage.put(key, bytes, contentType);
+  await storage.put(key, bytes, contentType, {
+    metadata: { purpose: "profile-photo", ownerUserId: actor.userId },
+  });
   return key;
 }

@@ -63,7 +63,13 @@ export async function submitPayment(
 
   const ext = EXT_BY_TYPE[contentType] ?? "";
   const key = `payment-screenshots/${registrationId}/${Date.now()}-${randomBytes(4).toString("hex")}${ext}`;
-  await getStorageAdapter().put(key, file.buffer, contentType);
+  await getStorageAdapter().put(key, file.buffer, contentType, {
+    metadata: {
+      purpose: "payment-screenshot",
+      ownerUserId: actor.userId,
+      registrationId,
+    },
+  });
 
   let submission;
   try {
@@ -237,5 +243,18 @@ export async function getPaymentScreenshot(actor: Actor, paymentId: string) {
   if (!submission || !submission.screenshotStorageKey) {
     throw new NotFoundError("No screenshot available for this payment submission.");
   }
+  // Prefer streaming for route delivery; keep get() for callers that need a capped buffer.
   return getStorageAdapter().get(submission.screenshotStorageKey);
+}
+
+/** Authorized stream open for admin screenshot route handlers (no full-file buffer). */
+export async function openPaymentScreenshot(actor: Actor, paymentId: string) {
+  assertAdmin(actor);
+  requireObjectId(paymentId, "payment");
+  await connectDB();
+  const submission = await PaymentSubmission.findById(paymentId).lean();
+  if (!submission || !submission.screenshotStorageKey) {
+    throw new NotFoundError("No screenshot available for this payment submission.");
+  }
+  return getStorageAdapter().open(submission.screenshotStorageKey);
 }
