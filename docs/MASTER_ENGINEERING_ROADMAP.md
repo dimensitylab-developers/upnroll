@@ -1,8 +1,8 @@
 # Up 'n Roll — Master Engineering Roadmap
 
-Status: Phases 0–5 implemented. SMTP is implemented with Nodemailer 10.3.1. GridFS remains deferred. Phase 1 was re-verified on the James merge.
+Status: Phases 0–5 implemented. SMTP is implemented with Nodemailer 10.3.1. GridFS is the preferred private-file architecture. Its implementation design is not approved, and no GridFS code exists. Hosting is not selected. Phase 1 was re-verified on the James merge.
 
-This document replaces the chat plan from the master programme. It includes the approved architecture amendment: Atlas plus Mongoose only, own SMTP, GridFS evaluated and not yet implemented, and a server-first performance bar.
+This document replaces the chat plan from the master programme. It includes the approved architecture amendment: Atlas plus Mongoose only, own SMTP, GridFS as the preferred private store once an implementation design is approved, and a server-first performance bar. The platform is not production-ready.
 
 Branch: `suraj`. Phases 0–5 are implemented. The SMTP half of Phase 6 is implemented. The import-boundary check from Phase 7 is implemented. GridFS is not. Phase 1 was re-verified after the James merge (`8165cda`).
 
@@ -14,12 +14,15 @@ These are approved. Implementation still follows the phase order below.
 | --- | --- |
 | AD-DB-1 | MongoDB Atlas is the system of record. Mongoose on the existing connection is the only application database. No Firebase, Supabase, PostgreSQL, or second database. |
 | AD-DB-2 | Transactions use that same connection. No external persistence service for business data. |
+| AD-DB-3 | MongoDB Atlas remains the only system of record. The existing Mongoose connection remains the shared connection. Transactions stay on that connection. No Firebase, Supabase, PostgreSQL, or second database. |
 | AD-MAIL-1 | Email is our own SMTP. Resend is not approved. No paid email vendor. |
 | AD-MAIL-2 | An SMTP adapter implements the existing `EmailAdapter` port. Console email is development only. Production must fail on startup if the console adapter is selected. |
 | AD-MAIL-3 | SMTP credentials come from server environment variables. They are never sent to a client bundle. No credentials are invented in the repo. |
 | AD-MAIL-4 | `send()` runs only after the related MongoDB transaction commits. It is never called inside a `withTransaction` callback. |
-| AD-FILE-1 | Private uploads should stay in MongoDB if GridFS is suitable. An object-storage vendor is not the default. |
-| AD-FILE-2 | GridFS is not approved for implementation until the evaluation in this document is accepted. |
+| AD-FILE-1 | GridFS on the existing Atlas database is the preferred production store for private payment screenshots and fighter profile photos. No object-storage vendor. No second database. Public brand assets, gallery images, and the homepage video stay in the Next.js public directory. |
+| AD-FILE-2 | Section H is `Preferred architecture — implementation design and approval pending.` GridFS is not implemented and is not production-ready. Code waits for a separate implementation design. |
+| AD-FILE-3 | Local disk remains the development store. Existing `.local-storage` files stay where they are. No automatic copy is authorized. Production must select storage explicitly. A production boot refusal of local disk stays off until a replacement adapter is implemented and configured. |
+| AD-HOST-1 | No hosting provider or deployment topology is selected. A multi-instance or serverless production deployment must not proceed while private files depend on local disk. GridFS must be implemented and verified first. |
 | AD-APP-1 | Server Components load initial data by calling backend services directly. No internal HTTP hop. No `useEffect` fetch for first paint. React Query is unused and is removed in Phase 3. |
 | AD-APP-2 | Mutations stay Server Actions. Authorization stays in backend services. Interactive leaves stay small Client Components. |
 | AD-CACHE-1 | Cross-request cache is only for public, non-personalized, published data, and only after Phase 0 and Phase 2. Sessions, fighter and admin areas, payments, private files, Aadhaar, and medical data are never cached. Invalidation runs after a successful commit. |
@@ -32,15 +35,16 @@ These are not guessed.
 | Item | Why it is still open |
 | --- | --- |
 | SMTP library | Approved and installed. `frontend/package.json` depends on `nodemailer@^10.3.1`. The lockfile resolves `10.3.1` (MIT-0). The package ships its own types. `@types/nodemailer` is not installed. |
-| SMTP settings | `SMTP_HOST`, `SMTP_PORT`, `SMTP_USER`, `SMTP_PASS`, and `SMTP_FROM` are read from the environment. Values are not in the repo. |
+| SMTP settings | `SMTP_HOST`, `SMTP_PORT`, `SMTP_USER`, `SMTP_PASS`, and `SMTP_FROM` are read from the environment. Values are not in the repo. SMTP2GO is the preferred provider candidate. Credentials, DNS verification, and a real delivery test are still pending. Delivery has not been verified. |
+| Hosting | Not selected. Provider, single-instance versus multi-instance, persistent disk, deployment platform, runtime and resource limits, backup responsibility, a shared rate-limit store, and a monitoring provider are all unresolved. Do not assume a vendor. |
 | Email copy | OD-009. The adapter sends the strings the services already build. |
-| GridFS implementation | Waiting on acceptance of the evaluation below. |
-| GridFS inside a transaction | Prefer the same rule as other binary side effects: upload outside the retryable callback, delete the file if the business transaction aborts. Putting chunk writes inside `withTransaction` can replay the upload. This stays a recommendation until GridFS itself is approved. |
+| GridFS implementation | Preferred architecture. Implementation has not started. A separate design must be written and approved before code. The design must cover bucket configuration, file metadata, streaming upload and download, file size and MIME validation, protected delivery, cleanup and orphans, backup and restore, failure recovery, and integration tests. |
+| GridFS inside a transaction | Uploads stay outside the retryable callback. If the business transaction fails after the upload, delete that file. Chunk writes inside `withTransaction` can replay the upload. That option stays closed unless a later design accepts idempotent keys. |
 | `StorageAdapter.get` shape | Today it returns a full `Buffer`. GridFS can stream. Changing the port is part of the GridFS implementation approval, not this revision. |
 | Retention and deletion | OD-011. Compensation deletes (failed payment or registration) are allowed. A retention sweeper is not. |
 | Canonical production domain | Not configured. Canonical URLs and absolute sitemap URLs wait. |
 | Product decisions OD-001–OD-010, OD-014 | Unchanged. Do not invent disciplines, classes, bracket formats, ranking formula, fees, UTR format, QR artwork, cancellation policy, refunds, or brand photography. |
-| OD-012 | Narrowed, not closed. Email is own SMTP. File storage prefers GridFS over a vendor. Hosting provider is still open. |
+| OD-012 | Narrowed, not closed. Email is own SMTP, with SMTP2GO as the preferred provider candidate. Private files prefer GridFS over a vendor. Hosting provider, topology, and the rest of the deploy shape are still open. |
 | OD-013 | `proxy.ts` already exists. The decision log can be marked implemented when docs are next edited. It does not block engineering. |
 | Aadhaar and medical encryption | Blocked until a schema, key holder, rotation, and migration plan exist. |
 
@@ -55,7 +59,7 @@ These are not guessed.
 | 4 Public cache | Implemented. Published public reads use `use cache` with tags. `updateTag` runs in Server Actions after the mutation commits. Admin, fighter, session, payment, and private file routes are outside that cache. Drafts stay out because the cached reads call the public queries. |
 | 5 SEO, media, operations | Implemented. Public pages expose titles from public DTOs. `robots.ts` disallows portals and the demo. Login, register, admin, fighter, demo, and preview are `noindex`. The sitemap lists public paths without a host. Local brand files use `next/image`. The homepage video preloads metadata and has a poster. `GET /api/health` returns `{ ok: true }` or `{ ok: false }`. Responses send nosniff, a referrer policy, frame denial, and a report-only content security policy. Canonical URLs wait on a domain. |
 | 6 SMTP | Implemented. Nodemailer 10.3.1 sends through `EmailAdapter` when a production server is running. Development keeps `ConsoleEmailAdapter`. Missing production SMTP settings throw at startup and at `getEmailAdapter()`. The production build phase does not require those settings. Call sites are unchanged and stay after commit. |
-| 6 GridFS | Not started. Section H is still an evaluation. The storage adapter is still local disk. Production does not refuse local disk. |
+| 6 GridFS | Preferred architecture. Implementation has not started. Section H is `Preferred architecture — implementation design and approval pending.` The running adapter is still local disk, for development. Production does not refuse local disk, because no replacement adapter exists. |
 | 7 Boundaries | The import check is implemented. `matchService` must not import `registrationService`. No folders were moved. No circular import was present to remove. |
 
 Phase 0 evidence, run from `frontend/` on 6 Nov 2026: `npx tsc --noEmit` exit 0, `npm test` 139 passed, `npm run build` exit 0 (`next build --webpack`). The dev server was stopped so the build could write `.next`. CI itself has not been executed on GitHub.
@@ -82,8 +86,8 @@ Phase 1 (present, re-verify)
     ├─ Phase 5  SEO, media, health, headers
     │      canonicals wait on a domain
     │
-    ├─ Phase 6  SMTP adapter (approved to build)
-    │             GridFS evaluation (this document; implementation waits)
+    ├─ Phase 6  SMTP adapter (implemented; delivery not verified)
+    │             GridFS preferred; implementation design still required
     │             production refuses the console adapter
     │
     └─ Phase 7  import boundaries, no folder move
@@ -91,7 +95,7 @@ Phase 1 (present, re-verify)
 Encryption stays off this sequence.
 ```
 
-Phase 6 SMTP work does not wait on GridFS. GridFS implementation does not start inside Phase 6 until this evaluation is approved as a build authorization. Phase 4 does not start before Phase 0 and Phase 2.
+Phase 6 SMTP work does not wait on GridFS. GridFS code does not start until the implementation design in section H is approved. A multi-instance or serverless production deploy does not start while private files still use local disk. Phase 4 does not start before Phase 0 and Phase 2.
 
 ## C. Implementation matrix
 
@@ -167,7 +171,7 @@ SMTP is implemented. See `docs/PHASE_6_COMPLETION_REPORT.md`.
 - Payment submit, payment decision, and registration-request decision still call `getEmailAdapter().send()` after the transaction commits. The strings they pass are unchanged.
 - Nodemailer `10.3.1` is the installed release. No Resend package was added. No SMTP values were committed.
 
-GridFS is not implemented. Section H remains the proposal. Local disk remains the only store. The production refusal of local disk stays off until a replacement store is approved. That guard would stop production from booting with no store, so it is not enabled in this stage.
+GridFS is the preferred production architecture for private screenshots and fighter photos. Implementation has not started. Section H is `Preferred architecture — implementation design and approval pending.` Local disk remains the development store. Existing `.local-storage` files are not copied or deleted. Production must not silently use local disk on ephemeral or multi-instance infrastructure. The boot refusal of local disk stays off until a replacement adapter is implemented and configured. SMTP2GO is the preferred mail provider candidate. Real delivery has not been verified. Production must not fall back to the console adapter.
 
 ### Phase 7 — Boundaries
 
@@ -179,11 +183,11 @@ No folder migration. `registrationService` imports `recordMatchResult` from `mat
 
 ### Approved engineering
 
-Phase 0 scope, Phase 2 transactions and `filledCount`, actor authorization, webpack build, server-first data loading, removal of unused React Query, cache rules, SMTP-on-the-existing-port, production refusal of console email, Atlas as the only database.
+Phase 0 scope, Phase 2 transactions and `filledCount`, actor authorization, webpack build, server-first data loading, removal of unused React Query, cache rules, SMTP on the existing port, production refusal of console email, Atlas as the only database, and the existing Mongoose connection for transactions.
 
 ### Approved direction, implementation still gated
 
-GridFS for private uploads. The evaluation is in section H. Code waits for an explicit acceptance of that section.
+GridFS for private payment screenshots and fighter profile photos, on the existing Atlas database. Status: `Preferred architecture — implementation design and approval pending.` Public brand files stay on Next.js. Local disk stays for development. No automatic migration. No production boot refusal until a replacement adapter is implemented and configured. SMTP2GO is the preferred mail provider candidate. Delivery is not verified.
 
 ### Product, still blocked
 
@@ -191,7 +195,7 @@ OD-001 disciplines, OD-002 classes, OD-003 extra formats, OD-004 ranking formula
 
 ### Infrastructure, still blocked
 
-Hosting provider (OD-012 remainder). Production domain. SMTP credential values.
+Hosting provider, single-instance versus multi-instance, persistent disk, deployment platform, runtime and resource limits, backup responsibility, shared rate limiting, and monitoring provider. Production domain. SMTP2GO credentials and DNS verification. A multi-instance or serverless production deployment is gated until GridFS is implemented and verified.
 
 ### Security, still blocked
 
@@ -206,7 +210,7 @@ OD-011 retention. Field encryption, key management, rotation, and recovery.
 5. Phase 5 unblocked items, one commit. No invented domain.
 6. Phase 4, one commit, after 0 and 2.
 7. Phase 6 SMTP adapter and production email guard, one commit. GridFS code stays out.
-8. GridFS only if section H is approved, as its own commit, with a migration note and no production run.
+8. GridFS only after the section H implementation design is approved, as its own commit, with a migration note and no automatic copy of `.local-storage`.
 9. Phase 7 only if an import violation is real.
 
 Each phase runs typecheck, the existing Vitest suite, its new tests, and a production build. Phase 2 also runs the replica-set suite. Failed integration tests are not replaced with mocks.
@@ -222,13 +226,14 @@ Each phase runs typecheck, the existing Vitest suite, its new tests, and a produ
 | Draft content cached or listed | Phase 0 filter before Phase 4 and before the sitemap. |
 | SMTP secrets in the client | Adapter is `server-only`. Env is read on the server. CI does not print env. |
 | Production console email | Startup throws if that adapter is selected when `NODE_ENV=production`. |
-| GridFS built too early | No GridFS code until section H is approved. |
+| GridFS built before its design | No GridFS code until the section H implementation design is approved. Preference is recorded. Implementation has not started. |
 | GridFS upload replay | Do not upload inside the retryable callback unless a later approval says otherwise. |
 | Large private files buffered | Current `get()` loads the whole file. Streaming is part of the GridFS port change, not a silent rewrite. |
 | Public media forced into GridFS | Brand files and the homepage video stay on the Next server. GridFS is for private screenshots and profile photos only. |
 | Retention invented | Compensation delete only. No sweeper until OD-011. |
 | Performance claims | Phase 3 report must contain the measurements. Otherwise the claim is omitted. |
-| Second database | Reject any Firebase, Supabase, Postgres, or object-store client in review. |
+| Second database | Reject any Firebase, Supabase, Postgres, or object-store client in review. Atlas and the existing Mongoose connection stay the only store. |
+| Multi-instance on local disk | Do not deploy serverless or more than one instance while private files use `.local-storage`. |
 | Windows dev | Phase 0 removes `ln`. |
 | CSP lockout | Report-only first. |
 | James merge regressions | Step 1 re-runs the suite before feature work. |
@@ -242,14 +247,29 @@ Each phase runs typecheck, the existing Vitest suite, its new tests, and a produ
 5. Phase 5 SEO, media, health.
 6. Phase 4 public cache.
 7. Phase 6 SMTP adapter and production email guard.
-8. GridFS, only after section H is approved.
+8. GridFS, only after the section H implementation design is approved. Not started.
 9. Phase 7 boundary check, only if needed.
 
 `docs/ARCHITECTURE_DECISION_RECORDS.md`, `docs/ENGINEERING_RISK_REGISTER.md`, and `docs/IMPLEMENTATION_STATUS.md` are written with the phase that first needs them, after implementation starts. They are not split out in this revision.
 
-## H. GridFS evaluation
+## H. GridFS
 
-Not approved for code. This is the suitability and migration approach.
+Status: `Preferred architecture — implementation design and approval pending.`
+
+GridFS is not implemented. It is not production-ready. No bucket, adapter, or migration has been written.
+
+The preferred design, once an implementation design is approved:
+
+- The bucket uses the existing MongoDB Atlas database and the existing Mongoose connection, with the MongoDB driver already available through that connection.
+- Private payment screenshots and fighter profile photos go in GridFS.
+- Authorization stays in backend services and the protected file routes. A GridFS id or metadata field is not an access check.
+- Public brand assets, gallery images, and the homepage video stay in the Next.js public directory.
+- Uploads stay outside retryable transaction callbacks. If the business transaction fails after the upload, delete that file.
+- Do not copy or delete existing `.local-storage` files automatically.
+- Do not add a second database or an object-storage vendor.
+- Do not enable a production boot refusal of local disk until that adapter exists and is configured.
+
+Code does not start until a separate design is written and approved. That design must cover bucket configuration, file metadata, streaming upload and download, file size and MIME validation, protected delivery, cleanup and orphan handling, backup and restore, failure recovery, and integration tests.
 
 ### What the code does today
 
@@ -284,7 +304,7 @@ No production object store has been used. There is no production file set to cop
 3. Do not run a copy from disk to GridFS automatically.
 4. New uploads use GridFS only where the driver is selected.
 5. Existing local keys keep working in development until someone deletes `.local-storage`.
-6. Production with `STORAGE_DRIVER=local` fails startup. Production with the driver unset fails startup and says GridFS is not selected. It does not fall through to disk.
+6. Production storage selection must be explicit. Do not enable a boot refusal of local disk until the GridFS adapter is implemented and configured. Until then, production must not be placed on ephemeral or multi-instance infrastructure that would silently depend on local disk.
 
 Rollback: set development back to `local`. Drop the GridFS bucket only with an explicit operational step, never from application boot.
 
@@ -300,4 +320,4 @@ The port is still `send({ to, subject, body })`. Call sites are payment submit, 
 
 The adapter module imports `server-only`. Production requires the five environment variables. Development uses the console adapter and does not require those variables. A production server throws instead of selecting the console adapter. The production build does not, because it is not serving mail.
 
-Copy, templates, and the real host are not decided here. No credentials are stored in the repo.
+SMTP2GO is the preferred provider candidate. Its credentials and DNS verification are not done. No message from this application has been accepted by a provider. No credentials are stored in the repo. Production must not fall back to console email. Copy and templates are not decided here.

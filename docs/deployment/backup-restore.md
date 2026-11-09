@@ -1,6 +1,6 @@
 # Backup and Restore
 
-Phase 6. MongoDB holds every piece of real state in this app (no other durable store). Retention policy specifics are OD-011 (pending client decision) — this document covers the mechanism, not the schedule.
+MongoDB Atlas is the system of record. The running app still stores private files on local disk, so a database dump is not a complete copy of those files. Retention policy specifics are OD-011 (pending). This document covers the mechanism, not a backup owner or a schedule. Who operates backups is unresolved.
 
 ## Backup
 
@@ -10,12 +10,13 @@ Standard `mongodump` against the production `MONGODB_URI`:
 mongodump --uri="$MONGODB_URI" --out=./backups/$(date +%Y%m%d-%H%M%S)
 ```
 
-If hosting on MongoDB Atlas, prefer Atlas's built-in automated continuous backups over a cron'd `mongodump` — point-in-time restore and off-host storage come for free, and it doesn't compete with the live database for I/O during a backup window. This doc doesn't pick Atlas vs. self-hosted (OD-012), just notes the better default *if* Atlas is the eventual choice.
+Atlas is already the only database. Its continuous backup is the preferred database mechanism when the project owner turns it on. This document does not turn it on, and it does not assign who is responsible for checking snapshots. A `mongodump` is the manual alternative. Neither one was taken for this update.
 
 ## What's actually sensitive in a backup
 
 - `users.passwordHash` — scrypt-hashed, not reversible, but still treat backup files as sensitive (standard practice).
-- `payment_submissions.screenshotStorageKey` points at files in `.local-storage/` (dev) or a real object store (production, once OD-012 resolves) — **not included in a `mongodump`**, since it's filesystem/object-storage content, not MongoDB data. A complete backup plan needs both: `mongodump` for the database, and a separate backup mechanism for wherever payment screenshots actually live. This is explicitly not solved yet because the storage provider itself isn't chosen (OD-012) — noted here so it isn't silently forgotten once that's resolved.
+- `payment_submissions.screenshotStorageKey` and fighter photo keys point at files in `.local-storage/` today. Those bytes are not in a `mongodump`. Back up that directory separately if a development machine must keep them. Do not copy or delete those files as part of a backup drill.
+- GridFS is the preferred future store for those private files. It is not active. When an implementation exists and has been verified, the screenshot and photo bytes would live in the same Atlas database as the business documents, and a database backup would include them. Until that code exists, do not assume a database snapshot contains the files. Public brand assets, gallery images, and the homepage video stay in the Next.js public directory either way. They are not private uploads and they are not in GridFS.
 - `audit_logs` — the actual record of who did what; worth the same retention consideration as the rest, not accidentally excluded from a backup scope.
 
 ## Restore
