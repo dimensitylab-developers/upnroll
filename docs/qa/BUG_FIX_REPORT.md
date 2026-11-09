@@ -42,4 +42,19 @@
 |----|-------|----------|---------------|
 | BUG-QA-004 | Home Shuffle click intercepted by overlapping element | Medium | Needs design/CSS pointer-events investigation beyond smallest safe change in this pass |
 | BUG-QA-005 | Intermittent Next hydration issue badge during automated form fills | Low/Medium | Not reproduced on clean register load; may be automation artifact |
-| BUG-QA-006 | Admin / payment / tournament workflows untested | High (coverage gap) | Missing admin credentials — blocked |
+| BUG-QA-008 | Soft-click on `/admin/events` cards sometimes does not navigate | Low | Hard nav works; Link/overlay intercept still open |
+
+## BUG-QA-007 — AdminNav hydration mismatch
+
+- **Affected routes:** `/admin/*`
+- **Description:** Next Dev Tools reported hydration attribute mismatch rooted at `admin-nav.tsx` (and bubbled as media-page issue 2/2)
+- **Reproduction:** Browse admin after prior soft navigations / HMR; Issues badge shows react-hydration-error
+- **Root cause:** Pathname-driven `className` on server HTML vs client after Cache Components / soft nav
+- **Severity:** Medium (dev noise; possible flash of wrong active link)
+- **Fix:** Defer active styles until after hydrate via `useSyncExternalStore`; set `aria-current="page"`. Same pattern on `FighterNav`
+- **Files:** `frontend/src/features/admin/admin-nav.tsx`, `frontend/src/features/fighter/fighter-nav.tsx`
+- **Retest:** Clean `/admin` and `/admin/media` load — no Issues badge — PASS
+
+## Coverage note
+
+- BUG-QA-006 (admin untested) **closed** by admin portal pass — see `ADMIN_PORTAL_AUDIT.md`. Approve/Reject payment and request Decide still need seeded pending rows.

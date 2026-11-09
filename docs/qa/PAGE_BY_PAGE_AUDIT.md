@@ -31,7 +31,7 @@ Statuses: PASS | FAIL | REDIRECT | BLOCKED | PARTIAL
 | `/fighter/matches` | Not browser-walked | — | Nav | — | — | NOT FULLY TESTED |
 | `/fighter/requests` | Not browser-walked | — | Nav | — | — | NOT FULLY TESTED |
 | `/fighter/transfer/[token]` | Not tested | Needs invite token | — | — | — | NOT TESTABLE |
-| `/admin` (+ all admin children) | Unauth → login; Fighter → fighter dashboard (after fix) | Admin UI | — | — | — | BLOCKED (no admin creds) |
+| `/admin` (+ all admin children) | Yes (admin session) | Full admin shell | Nav + soft-nav quirk on event cards | Rankings recalc, media create, bracket validation | Spot-checked | PASS — see `ADMIN_PORTAL_AUDIT.md` |
 | `/ui-preview` | HTTP 200 local | Preview | — | Spot HTTP | — | PASS (dev) |
 | `/api/health` | 200 | `{ok:true}` expected | — | — | — | PASS |
 | `/api/auth/google` | 307 unavailable | Soft-fail | — | — | — | BLOCKED (config) |
@@ -41,4 +41,4 @@ Statuses: PASS | FAIL | REDIRECT | BLOCKED | PARTIAL
 - Discovered app `page.tsx` routes: **42**
 - HTTP/browser loaded successfully in this pass: **public + auth + fighter core ~30**
 - With errors before fixes: home/public `force-dynamic` 500s
-- Admin product pages: **not functionally exercised** (blocked)
+- Admin product pages: **exercised** as admin — see `ADMIN_PORTAL_AUDIT.md`
