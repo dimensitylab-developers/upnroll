@@ -124,6 +124,12 @@ export async function verifyEmailAction(
   _prevState: AuthActionState,
   formData: FormData
 ): Promise<AuthActionState> {
+  const ip = await getClientIp();
+  const rate = checkRateLimit(`verify:${ip}`);
+  if (!rate.allowed) {
+    return { error: `Too many attempts. Try again in about ${rate.retryAfterSeconds}s.` };
+  }
+
   const email = String(formData.get("email") ?? "");
   const code = String(formData.get("code") ?? "");
   if (!email || !code.trim()) return { error: "Enter the code from your email." };
@@ -139,6 +145,12 @@ export async function resendCodeAction(
   _prevState: AuthActionState,
   formData: FormData
 ): Promise<AuthActionState> {
+  const ip = await getClientIp();
+  const rate = checkRateLimit(`resend:${ip}`);
+  if (!rate.allowed) {
+    return { error: `Too many attempts. Try again in about ${rate.retryAfterSeconds}s.` };
+  }
+
   const email = String(formData.get("email") ?? "").toLowerCase().trim();
   await connectDB();
   const user = await User.findOne({ email }).lean();
