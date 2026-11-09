@@ -18,6 +18,7 @@ import { NotFoundError, ConflictError, ValidationError } from "@/server/http/err
 import { notifyWhatsApp } from "@/server/notifications/whatsapp";
 import type { ClientSession } from "mongoose";
 import { bindSession, sessionOpts, withTransaction, type DbSession } from "@/server/db/transaction";
+import { requireObjectId } from "@/server/validation/objectId";
 
 export async function recordMatchResult(
   actor: Actor,
@@ -27,6 +28,8 @@ export async function recordMatchResult(
   existingSession?: ClientSession | null
 ) {
   assertAdmin(actor);
+  requireObjectId(matchId, "match");
+  requireObjectId(winnerRegistrationId, "registration");
   await connectDB();
   if (existingSession) return writeMatchResult(actor, matchId, winnerRegistrationId, method, existingSession);
   return withTransaction((session) => writeMatchResult(actor, matchId, winnerRegistrationId, method, session));
