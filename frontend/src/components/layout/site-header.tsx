@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { connection } from "next/server";
 import { getSession } from "@/server/auth/session";
 import { listPublicEvents } from "@/server/services/eventService";
 import { HeaderStickers } from "@/components/home/mat-emojis";
@@ -17,7 +18,15 @@ const NAV_LINKS = [
   { href: "/store", label: "Store" },
 ];
 
+function formatCardDate(value: Date | string) {
+  const date = value instanceof Date ? value : new Date(value);
+  // Only call after `connection()` so cacheComponents allows request-time formatting.
+  return date.toLocaleDateString("en-IN", { day: "numeric", month: "long", year: "numeric" });
+}
+
 export async function SiteHeader() {
+  // cacheComponents: opt this header into request time before session/date work.
+  await connection();
   const [session, events] = await Promise.all([getSession(), listPublicEvents()]);
   const dashboardHref = session ? (session.user.role === "ADMIN" ? "/admin" : "/fighter/dashboard") : null;
   const openEvent = events.find((event) => event.status === "REGISTRATION_OPEN") ?? events[0] ?? null;
@@ -66,7 +75,7 @@ export async function SiteHeader() {
               {openEvent.name}
               {openEvent.slug === "up-n-roll-superfight-series" ? " · Road to Super Fight" : ""}
               {" · "}
-              {new Date(openEvent.startDate).toLocaleDateString("en-IN", { day: "numeric", month: "long", year: "numeric" })}
+              {formatCardDate(openEvent.startDate)}
             </p>
             <Link href="/register" className="font-semibold text-brand-red">Sign up</Link>
           </div>
