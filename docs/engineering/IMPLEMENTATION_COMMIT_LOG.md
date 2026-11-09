@@ -26,7 +26,7 @@ Rule: one focused Conventional Commit per implementation point; phase milestone 
 | Phase 5 | Fighter registration page actor | `85cb144` | Completed |
 | Phase 6 | SMTP timeouts + Google env example | `047f3b0` | Completed |
 | Phase 7 | Logger + CastError mapping | `3242cdc` | Completed |
-| Phase 8 / Final | Hardening docs + checklist closeout | _this commit_ | In progress |
+| Phase 8 / Final | Hardening docs + checklist closeout | `297045d` | Completed |
 
 Note: `06e50b8` (`docs(architecture): …`) appeared on the branch during this window from a separate documentation commit and is not part of the hardening implementation stream.
 
