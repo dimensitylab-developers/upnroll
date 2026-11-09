@@ -1,5 +1,7 @@
 # Up 'n Roll — production readiness audit
 
+> **Status note (2026-11-09):** Sections below that claim GridFS is unimplemented are **stale**. GridFS is implemented (`backend/storage/gridfs.ts`, factory driver selection). Prefer [SYSTEM_INTEGRATION_AUDIT.md](./architecture/SYSTEM_INTEGRATION_AUDIT.md) and the 2026-11-09 hardening reports under `docs/security/` / `docs/engineering/` for current storage status. Other hosting/ops blockers in this audit may still apply.
+
 Date: 7 November 2026. Branch `suraj` at `180a3d0`. This pass read the source and the local environment names. It did not change application code, install packages, connect to Atlas, run the backfill, change DNS, create credentials, implement GridFS, or push.
 
 The reported local verification (27 files, 156 tests, typecheck exit 0, production build exit 0) is the implementation session's result. This audit did not re-run those commands. A green local build is not a staging or production deployment.

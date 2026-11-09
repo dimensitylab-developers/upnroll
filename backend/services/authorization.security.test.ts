@@ -5,9 +5,11 @@ vi.mock("@/server/db/connect", () => ({ connectDB: vi.fn().mockResolvedValue(und
 
 const findChain = (rows: unknown[]) => ({
   sort: () => ({
+    limit: () => ({ lean: () => Promise.resolve(rows) }),
     select: () => ({ lean: () => Promise.resolve(rows) }),
     lean: () => Promise.resolve(rows),
   }),
+  limit: () => ({ lean: () => Promise.resolve(rows) }),
   select: () => ({ lean: () => Promise.resolve(rows) }),
   lean: () => Promise.resolve(rows),
 });

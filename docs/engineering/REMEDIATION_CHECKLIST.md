@@ -48,38 +48,38 @@ Pre-existing untracked architecture docs under `docs/architecture/` were left un
 
 | ID | Item | Priority | Status |
 |----|------|----------|--------|
-| P4-01 | Migrate teammate transfer to Actor + assertFighter | Medium | Pending |
-| P4-02 | Centralize ObjectId parse helper used by services | Medium | Pending |
-| P4-03 | Soft-fail / isolate WhatsApp mock behind clearer interface comments | Low | Pending |
+| P4-01 | Migrate teammate transfer to Actor + assertFighter | Medium | Completed (`914e6d5`) |
+| P4-02 | Centralize ObjectId parse helper used by services | Medium | Completed (`c82f83e` + match usage `dbe0216`) |
+| P4-03 | Soft-fail / isolate WhatsApp mock behind clearer interface comments | Low | Completed (`dbe0216`) |
 
 ## Phase 5 — Next.js
 
 | ID | Item | Priority | Status |
 |----|------|----------|--------|
-| P5-01 | Ensure fighter/admin actions consistently use `requireActor` | Medium | Pending |
-| P5-02 | Avoid leaking internal error detail through Server Action returns (audit) | Medium | Pending |
+| P5-01 | Ensure fighter/admin actions consistently use `requireActor` | Medium | Completed (`914e6d5` + `85cb144`) |
+| P5-02 | Avoid leaking internal error detail through Server Action returns (audit) | Medium | Completed (existing `toAppError`; CastError `3242cdc`) |
 
 ## Phase 6 — External integrations
 
 | ID | Item | Priority | Status |
 |----|------|----------|--------|
-| P6-01 | SMTP transport timeouts (connection / greeting / socket) | High | Pending |
-| P6-02 | Document Google OAuth env vars in `.env.example` | Medium | Pending |
-| P6-03 | Keep WhatsApp mocked; document non-production status clearly | Medium | Pending |
+| P6-01 | SMTP transport timeouts (connection / greeting / socket) | High | Completed (`047f3b0`) |
+| P6-02 | Document Google OAuth env vars in `.env.example` | Medium | Completed (`047f3b0`) |
+| P6-03 | Keep WhatsApp mocked; document non-production status clearly | Medium | Completed (`dbe0216`) |
 
 ## Phase 7 — Errors & logging
 
 | ID | Item | Priority | Status |
 |----|------|----------|--------|
-| P7-01 | Structured server logger (no secrets / passwords / session tokens / full UTR dumps) | Medium | Pending |
-| P7-02 | Map Mongoose CastError → ValidationError at the boundary | Medium | Pending |
+| P7-01 | Structured server logger (no secrets / passwords / session tokens / full UTR dumps) | Medium | Completed (`3242cdc`) |
+| P7-02 | Map Mongoose CastError → ValidationError at the boundary | Medium | Completed (`3242cdc`) |
 
 ## Phase 8 — Cleanup
 
 | ID | Item | Priority | Status |
 |----|------|----------|--------|
-| P8-01 | Remove dead imports / obvious safe dead code only after path verification | Low | Pending |
-| P8-02 | Align stale production-readiness wording where GridFS is already implemented | Low | Pending |
+| P8-01 | Remove dead imports / obvious safe dead code only after path verification | Low | Deferred (no unsafe deletions) |
+| P8-02 | Align stale production-readiness wording where GridFS is already implemented | Low | Completed (status note) |
 
 ## Explicitly out of scope (per task)
 
