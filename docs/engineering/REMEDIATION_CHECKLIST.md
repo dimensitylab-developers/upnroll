@@ -17,21 +17,21 @@ Pre-existing untracked architecture docs under `docs/architecture/` were left un
 
 | ID | Item | Priority | Status |
 |----|------|----------|--------|
-| P1-01 | Fix `listRegistrationsForEvent` signature/auth (caller passes Actor; service ignores it → empty/wrong query + no `assertAdmin`) | Critical | Pending |
-| P1-02 | Destroy prior session cookie/DB row before issuing a new session (login / verify / OAuth) | High | Pending |
-| P1-03 | Rate-limit email verify + resend code actions | High | Pending |
-| P1-04 | Bind Google OAuth `state` to an HttpOnly cookie; reject `DISABLED` users on callback | High | Pending |
-| P1-05 | Add strict MongoDB ObjectId validation; apply to ID fields in action schemas | High | Pending |
-| P1-06 | Enforce FIGHTER actor on fighter-only Server Actions that currently use bare `requireSession` | High | Pending |
-| P1-07 | Add HSTS + Permissions-Policy; keep CSP Report-Only until Next nonce strategy exists | Medium | Pending |
-| P1-08 | Hash transfer-invite tokens at rest; return raw token only once to the creator | High | Pending |
+| P1-01 | Fix `listRegistrationsForEvent` signature/auth (caller passes Actor; service ignores it → empty/wrong query + no `assertAdmin`) | Critical | Completed (`d8168be`) |
+| P1-02 | Destroy prior session cookie/DB row before issuing a new session (login / verify / OAuth) | High | Completed (`9edbc4f`) |
+| P1-03 | Rate-limit email verify + resend code actions | High | Completed (`df903cb`) |
+| P1-04 | Bind Google OAuth `state` to an HttpOnly cookie; reject `DISABLED` users on callback | High | Completed (`e655999`) |
+| P1-05 | Add strict MongoDB ObjectId validation; apply to ID fields in action schemas | High | Completed (`c82f83e`) |
+| P1-06 | Enforce FIGHTER actor on fighter-only Server Actions that currently use bare `requireSession` | High | Completed (`914e6d5`) |
+| P1-07 | Add HSTS + Permissions-Policy; keep CSP Report-Only until Next nonce strategy exists | Medium | Completed (`2dc10d1`) |
+| P1-08 | Hash transfer-invite tokens at rest; return raw token only once to the creator | High | Completed (`914e6d5`) |
 
 ## Phase 2 — Database & data integrity
 
 | ID | Item | Priority | Status |
 |----|------|----------|--------|
 | P2-01 | Bound / filter `listPaymentQueue` query (status + limit) | Medium | Pending |
-| P2-02 | Make teammate transfer claim transactional + occupancy-safe | High | Pending |
+| P2-02 | Make teammate transfer claim transactional + occupancy-safe | High | Partially done in `914e6d5` (txn + atomic claim; PaymentSubmission.userId rewrite still open) |
 | P2-03 | Harden bracket generation against concurrent duplicate creates (unique index awareness) | Medium | Pending |
 | P2-04 | Review indexes on Registration / PaymentSubmission / Session / TransferInvite | Medium | Pending |
 | P2-05 | Use detected image content-type (not client MIME) when storing payment screenshots | Medium | Pending |

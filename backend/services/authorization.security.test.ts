@@ -99,7 +99,7 @@ describe("protected reads and mutations", () => {
 
   it("rejects a fighter opening another fighter's registration", async () => {
     const { getRegistrationForFighter } = await import("./registrationService");
-    await expect(getRegistrationForFighter(other, "reg-1")).rejects.toBeInstanceOf(NotFoundError);
+    await expect(getRegistrationForFighter(other, "507f1f77bcf86cd799439011")).rejects.toBeInstanceOf(NotFoundError);
   });
 
   it("lets an admin open the payment queue", async () => {
