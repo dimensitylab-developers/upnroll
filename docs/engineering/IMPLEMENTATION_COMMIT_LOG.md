@@ -14,7 +14,12 @@ Rule: one focused Conventional Commit per implementation point; phase milestone 
 | Phase 1 | Google OAuth state cookie | `e655999` | Completed |
 | Phase 1 | Fighter actor + hashed transfer tokens | `914e6d5` | Completed |
 | Phase 1 | HSTS + Permissions-Policy | `2dc10d1` | Completed |
-| Phase 1 | Phase completion checkpoint | _pending_ | In progress |
+| Phase 1 | Phase completion checkpoint | `8189bd2` | Completed |
+| Phase 2 | Payment queue bound + detected MIME | `1c69684` | Completed |
+| Phase 2 | Transfer payment ownership rewrite | `40e2a58` | Completed |
+| Phase 2 | Bracket concurrent generation | `8523785` | Completed |
+| Phase 2 | Compound indexes | `793f6e1` | Completed |
+| Phase 2 | Phase completion checkpoint | _pending_ | In progress |
 
 ---
 

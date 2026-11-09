@@ -30,11 +30,11 @@ Pre-existing untracked architecture docs under `docs/architecture/` were left un
 
 | ID | Item | Priority | Status |
 |----|------|----------|--------|
-| P2-01 | Bound / filter `listPaymentQueue` query (status + limit) | Medium | Pending |
-| P2-02 | Make teammate transfer claim transactional + occupancy-safe | High | Partially done in `914e6d5` (txn + atomic claim; PaymentSubmission.userId rewrite still open) |
-| P2-03 | Harden bracket generation against concurrent duplicate creates (unique index awareness) | Medium | Pending |
-| P2-04 | Review indexes on Registration / PaymentSubmission / Session / TransferInvite | Medium | Pending |
-| P2-05 | Use detected image content-type (not client MIME) when storing payment screenshots | Medium | Pending |
+| P2-01 | Bound / filter `listPaymentQueue` query (status + limit) | Medium | Completed (`1c69684`) |
+| P2-02 | Make teammate transfer claim transactional + occupancy-safe | High | Completed (`914e6d5` + `40e2a58`) |
+| P2-03 | Harden bracket generation against concurrent duplicate creates (unique index awareness) | Medium | Completed (`8523785`) |
+| P2-04 | Review indexes on Registration / PaymentSubmission / Session / TransferInvite | Medium | Completed (`793f6e1`) |
+| P2-05 | Use detected image content-type (not client MIME) when storing payment screenshots | Medium | Completed (`1c69684`) |
 
 ## Phase 3 — GridFS & file security
 
