@@ -1,6 +1,6 @@
 <div align="center">
 
-# ⚡ Up 'n Roll
+# ⚡ Up 'n Roll.
 
 **Combat sports tournament management — built for the mat, not the spreadsheet.**
 
