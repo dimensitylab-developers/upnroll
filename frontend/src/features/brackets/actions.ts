@@ -37,6 +37,7 @@ export async function generateBracketAction(_prevState: BracketActionState, form
   }
 
   revalidatePath(`/admin/events/${eventId}/brackets`);
+  revalidatePath("/brackets");
   return {};
 }
 
@@ -53,5 +54,6 @@ export async function publishBracketAction(_prevState: BracketActionState, formD
   }
 
   revalidatePath(`/admin/events/${eventId}/brackets`);
+  revalidatePath("/brackets");
   return {};
 }

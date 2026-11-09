@@ -1,25 +1,31 @@
-import type { Metadata } from "next";
-import { cachedPublishedContent } from "@/lib/public-reads";
+import { listPublished } from "@/server/services/contentService";
+import { FaqBoard } from "@/features/content/faq-board";
 
-
-export const metadata: Metadata = { title: "FAQ" };
+export const dynamic = "force-dynamic";
 
 export default async function PublicFaqPage() {
-  const faqs = await cachedPublishedContent("FAQ");
+  const faqs = await listPublished("FAQ");
+  const items = faqs.map((f) => ({
+    id: String(f._id),
+    question: f.title,
+    answer: f.body,
+  }));
 
   return (
     <main className="min-h-screen bg-background halftone-bg px-4 py-16">
-      <div className="max-w-2xl mx-auto">
-        <h1 className="text-display text-4xl font-semibold mb-8">FAQ</h1>
-        <div className="space-y-4">
-          {faqs.map((f) => (
-            <div key={String(f._id)} className="manga-panel p-4">
-              <p className="font-semibold">{f.title}</p>
-              <p className="text-sm text-muted-foreground mt-1">{f.body}</p>
-            </div>
-          ))}
-          {faqs.length === 0 && <p className="text-sm text-muted-foreground">No FAQs published yet.</p>}
+      <div className="max-w-5xl mx-auto">
+        <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-brand-red">The card</p>
+        <div className="mt-2 mb-8 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+          <h1 className="text-display text-5xl font-semibold">FAQ</h1>
+          <p className="max-w-sm text-sm">
+            Pick a question. The chat on this site answers from the same list.
+          </p>
         </div>
+        {items.length > 0 ? (
+          <FaqBoard items={items} />
+        ) : (
+          <p className="text-sm text-muted-foreground">No FAQs published yet.</p>
+        )}
       </div>
     </main>
   );

@@ -30,7 +30,10 @@ export const grapplerDetailsSchema = z.object({
 
 export type GrapplerDetails = z.infer<typeof grapplerDetailsSchema>;
 
-export const registerSchema = grapplerDetailsSchema.extend({
+/** Account sign-up stays light. Full grappler details are collected on event registration. */
+export const registerSchema = z.object({
+  displayName: z.string().trim().min(2, "Enter your full name.").max(80),
+  mobile: z.string().trim().min(8, "Enter a mobile number.").max(20),
   email: z.string().trim().toLowerCase().email("Enter a valid email address."),
   password: z
     .string()
@@ -38,7 +41,6 @@ export const registerSchema = grapplerDetailsSchema.extend({
     .max(200)
     .regex(/[A-Za-z]/, "Password must include a letter.")
     .regex(/[0-9]/, "Password must include a number."),
-  agree: z.string().optional().default(""),
 });
 
 export type RegisterInput = z.infer<typeof registerSchema>;

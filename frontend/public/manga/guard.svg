@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 420">
+  <defs>
+    <pattern id="tone" width="5" height="5" patternUnits="userSpaceOnUse">
+      <circle cx="1" cy="1" r="0.9" fill="#111"/>
+    </pattern>
+  </defs>
+  <rect width="300" height="420" fill="#fff"/>
+  <rect y="180" width="300" height="240" fill="url(#tone)"/>
+  <path d="M28 312h244" fill="none" stroke="#111" stroke-width="3"/>
+  <g fill="#111">
+    <path d="M78 168c16-2 30 10 32 26 10 8 14 22 8 34-12 4-24 0-32-8-6 18 2 36 16 48 8 22-2 46-24 54-28 10-58 6-74-14-12-16-14-38-6-56 6-22 18-36 36-48 8-10 16-22 16-36 8-2 16-2 28 0z"/>
+    <path d="M168 132c20 0 36 16 34 34-6 2-14 0-18-6-4 14 2 28 14 36 8 20 4 42-12 56-20 8-44 4-56-12 4-10 4-22-2-32-14 2-26-8-28-22 10-16 28-24 46-22 6-12 16-22 22-32z"/>
+  </g>
+  <g fill="#fff" stroke="#111" stroke-width="4" stroke-linejoin="round">
+    <circle cx="96" cy="150" r="24"/>
+    <circle cx="196" cy="118" r="24"/>
+    <path d="M118 172c18 10 30 28 28 50"/>
+    <path d="M176 140c-4 24 8 44 28 56"/>
+    <path d="M150 210c22-16 52-14 68 6"/>
+    <path d="M112 236c20 16 36 14 54-4"/>
+    <path d="M132 268c18 8 40 4 52-10"/>
+  </g>
+  <g fill="#111">
+    <circle cx="90" cy="148" r="3"/>
+    <circle cx="188" cy="116" r="3"/>
+  </g>
+</svg>

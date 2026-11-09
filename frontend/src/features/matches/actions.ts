@@ -23,6 +23,8 @@ export async function recordResultAction(_prevState: MatchActionState, formData:
   }
 
   revalidatePath(`/admin/events/${eventId}/matches`);
+  revalidatePath("/brackets");
+  revalidatePath("/rankings");
   return {};
 }
 
@@ -42,6 +44,8 @@ export async function correctResultAction(_prevState: MatchActionState, formData
   }
 
   revalidatePath(`/admin/events/${eventId}/matches`);
+  revalidatePath("/brackets");
+  revalidatePath("/rankings");
   return {};
 }
 
@@ -63,5 +67,6 @@ export async function updateScheduleAction(_prevState: MatchActionState, formDat
   }
 
   revalidatePath(`/admin/events/${eventId}/matches`);
+  revalidatePath("/brackets");
   return {};
 }

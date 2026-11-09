@@ -2,9 +2,10 @@
 
 import { useActionState, useState } from "react";
 import { createRegistrationAction, type RegistrationActionState } from "./actions";
-import { Button } from "@/components/ui/button";
-import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/select";
+import { GrapplerForm, type GrapplerDefaults } from "@/features/fighters/grappler-form";
 import { Label } from "@/components/ui/label";
+import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/select";
+import { SectionBanner } from "@/components/home/section-banner";
 
 type DivisionOption = {
   id: string;
@@ -15,10 +16,20 @@ type DivisionOption = {
 
 const initialState: RegistrationActionState = {};
 
-export function NewRegistrationForm({ divisions }: { divisions: DivisionOption[] }) {
+export function NewRegistrationForm({
+  divisions,
+  defaults,
+  hasPhoto,
+  photoVersion,
+  waiverAcceptedAt,
+}: {
+  divisions: DivisionOption[];
+  defaults: GrapplerDefaults;
+  hasPhoto: boolean;
+  photoVersion: string;
+  waiverAcceptedAt: string | null;
+}) {
   const [state, formAction, pending] = useActionState(createRegistrationAction, initialState);
-  // Radix Select doesn't bubble to native FormData by itself — mirror the
-  // selection into a hidden input the Server Action can actually read.
   const [divisionId, setDivisionId] = useState("");
   const [consent, setConsent] = useState(false);
   const [agreement, setAgreement] = useState(false);
@@ -28,35 +39,53 @@ export function NewRegistrationForm({ divisions }: { divisions: DivisionOption[]
   }
 
   return (
-    <form action={formAction} className="space-y-4 max-w-sm">
-      {state.error && <p className="text-sm text-primary">{state.error}</p>}
-      <div>
-        <Label htmlFor="divisionId" className="mb-1.5 block">Division</Label>
-        <input type="hidden" name="divisionId" value={divisionId} />
-        <Select value={divisionId} onValueChange={setDivisionId}>
-          <SelectTrigger id="divisionId" aria-label="Division"><SelectValue placeholder="Select a division" /></SelectTrigger>
-          <SelectContent>
-            {divisions.map((d) => (
-              <SelectItem key={d.id} value={d.id}>
-                {d.eventName} — {d.name} ({d.discipline})
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-      </div>
-      <input type="hidden" name="consent" value={consent ? "yes" : ""} />
-      <input type="hidden" name="agreement" value={agreement ? "yes" : ""} />
-      <label className="flex items-start gap-2 text-sm">
-        <input type="checkbox" className="mt-1" checked={consent} onChange={(e) => setConsent(e.target.checked)} />
-        <span>Consent. I agree to compete under the published rules and I accept the risks of combat sports.</span>
-      </label>
-      <label className="flex items-start gap-2 text-sm">
-        <input type="checkbox" className="mt-1" checked={agreement} onChange={(e) => setAgreement(e.target.checked)} />
-        <span>Agreement. I agree to the cancellation rule: a cancellation one month before the event is a 50% refund. Inside that month there is no refund.</span>
-      </label>
-      <Button type="submit" disabled={pending || !divisionId || !consent || !agreement}>
-        {pending ? "Registering…" : "Continue to payment"}
-      </Button>
-    </form>
+    <GrapplerForm
+      mode="event"
+      state={state}
+      formAction={formAction}
+      pending={pending}
+      submitDisabled={!divisionId || !consent || !agreement}
+      defaults={defaults}
+      hasPhoto={hasPhoto}
+      photoVersion={photoVersion}
+      waiverAcceptedAt={waiverAcceptedAt}
+      submitLabel="Continue to payment"
+      top={
+        <section className="space-y-4">
+          <SectionBanner>The card</SectionBanner>
+          <div className="max-w-md">
+            <Label htmlFor="divisionId" className="mb-1.5 block">Division</Label>
+            <input type="hidden" name="divisionId" value={divisionId} />
+            <Select value={divisionId} onValueChange={setDivisionId}>
+              <SelectTrigger id="divisionId" aria-label="Division">
+                <SelectValue placeholder="Select a division" />
+              </SelectTrigger>
+              <SelectContent>
+                {divisions.map((division) => (
+                  <SelectItem key={division.id} value={division.id}>
+                    {division.eventName} — {division.name} ({division.discipline})
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+        </section>
+      }
+      bottom={
+        <section className="space-y-4">
+          <SectionBanner>Consent</SectionBanner>
+          <input type="hidden" name="consent" value={consent ? "yes" : ""} />
+          <input type="hidden" name="agreement" value={agreement ? "yes" : ""} />
+          <label className="flex items-start gap-2 text-sm">
+            <input type="checkbox" className="mt-1" checked={consent} onChange={(event) => setConsent(event.target.checked)} />
+            <span>Consent. I agree to compete under the published rules and I accept the risks of combat sports.</span>
+          </label>
+          <label className="flex items-start gap-2 text-sm">
+            <input type="checkbox" className="mt-1" checked={agreement} onChange={(event) => setAgreement(event.target.checked)} />
+            <span>Agreement. I agree to the cancellation rule: a cancellation one month before the event is a 50% refund. Inside that month there is no refund.</span>
+          </label>
+        </section>
+      }
+    />
   );
 }

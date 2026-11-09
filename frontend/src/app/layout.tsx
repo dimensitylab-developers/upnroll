@@ -1,6 +1,6 @@
 import { Suspense } from "react";
 import type { Metadata } from "next";
-import { Inter, Oswald } from "next/font/google";
+import { Inter, Oswald, Permanent_Marker } from "next/font/google";
 import Providers from "@/components/Providers";
 import { NavigationLoader } from "@/components/layout/navigation-loader";
 import "./globals.css";
@@ -15,6 +15,13 @@ const oswald = Oswald({
   variable: "--font-display",
   subsets: ["latin"],
   weight: ["400", "500", "600", "700"],
+});
+
+/** Fallback marker face for CSS text when lettered headline art is not used. */
+const funky = Permanent_Marker({
+  variable: "--font-funky-face",
+  subsets: ["latin"],
+  weight: "400",
 });
 
 const description =
@@ -60,7 +67,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${inter.variable} ${oswald.variable} antialiased`}>
+      <body className={`${inter.variable} ${oswald.variable} ${funky.variable} antialiased`}>
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationJsonLd) }}

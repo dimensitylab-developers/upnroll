@@ -9,6 +9,10 @@ const userSchema = new Schema(
     passwordHash: { type: String, required: true },
     role: { type: String, enum: USER_ROLES, required: true, default: "FIGHTER" },
     status: { type: String, enum: ["ACTIVE", "DISABLED"], required: true, default: "ACTIVE" },
+    // False means a new account is waiting on the email code. Missing means an
+    // account from before verification, which can still sign in.
+    emailVerified: { type: Boolean },
+    emailVerifiedAt: { type: Date },
   },
   { timestamps: true }
 );

@@ -7,6 +7,8 @@ type LeanMatch = MatchDoc & { _id: unknown };
 import { Bracket } from "@/server/models/Bracket";
 import { Registration } from "@/server/models/Registration";
 import { FighterProfile } from "@/server/models/FighterProfile";
+import { User } from "@/server/models/User";
+import { getEmailAdapter } from "@/server/email/console";
 import { Event } from "@/server/models/Event";
 import { PUBLIC_EVENT_STATUSES } from "./eventService";
 import { Division } from "@/server/models/Division";
@@ -195,7 +197,15 @@ export async function updateMatchSchedule(actor: Actor, matchId: string, input: 
     const profiles = await FighterProfile.find({ userId: { $in: registrations.map((r) => r.userId) } }).lean();
     const when = new Date(match.scheduledAt).toLocaleString("en-IN", { dateStyle: "medium", timeStyle: "short" });
     const body = `Your match is on mat ${match.mat || "TBD"} at ${when}. Warm up 10 to 15 minutes before you are called.`;
-    await Promise.all(profiles.map((profile) => notifyWhatsApp({ to: profile.mobile ?? "", body })));
+    const users = registrations.length
+      ? await User.find({ _id: { $in: registrations.map((registration) => registration.userId) } }).select("email").lean()
+      : [];
+    await Promise.all([
+      ...profiles.map((profile) => notifyWhatsApp({ to: profile.mobile ?? "", body })),
+      ...users
+        .filter((user) => user.email)
+        .map((user) => getEmailAdapter().send({ to: user.email, subject: "Your bout is scheduled", body })),
+    ]);
   }
 
   await writeAuditLog({ actorId: actor.userId, action: "MATCH_SCHEDULE_UPDATED", targetType: "Match", targetId: matchId });

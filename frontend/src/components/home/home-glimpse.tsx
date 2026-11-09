@@ -28,23 +28,24 @@ export function HomeGlimpse({
   happy,
   eventSlug,
 }: {
-  fighting: ReactNode;
-  happy: ReactNode;
+  fighting?: ReactNode;
+  happy?: ReactNode;
   eventSlug?: string | null;
 }) {
   const spots = [
     { href: "/events", title: "Events", body: "The card, the date, and the venue for what is coming up." },
-    { href: eventSlug ? `/events/${eventSlug}/brackets` : "/events", title: "Brackets", body: "Every round, from the first fight to the final." },
-    { href: "/fighters", title: "Fighters", body: "A public profile for everyone who steps on the mat." },
-    { href: "/rankings", title: "Rankings", body: "The board, built from published results." },
+    { href: "/brackets", title: "Brackets", body: "Live board: who is on the mat, who won, and every published bracket." },
+    { href: "/rankings", title: "Rankings", body: "The points board and every public grappler profile." },
+    { href: "/seminars", title: "Seminars", body: "Classes and camps, listed when a date is set." },
+    { href: "/store", title: "Store", body: "Manga grappling shirts. Opening soon." },
     { href: eventSlug ? `/events/${eventSlug}/results` : "/events", title: "Results", body: "Who won, once the match is over." },
     { href: "/faq", title: "FAQ assistant", body: "Questions answered from the published FAQ." },
   ];
   return (
     <>
-      <section className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pb-14">
+      <section className="pb-14">
         <SectionBanner>Every card</SectionBanner>
-        <p className="text-display text-2xl sm:text-3xl font-semibold max-w-2xl mb-4">
+        <p className="mb-4 inline-block max-w-2xl bg-white px-2 text-display text-2xl font-semibold sm:text-3xl">
           Up &apos;n Roll runs the card. You bring the fight.
         </p>
         <ol className="grid sm:grid-cols-3 gap-3">
@@ -58,7 +59,7 @@ export function HomeGlimpse({
         </ol>
       </section>
 
-      <section className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pb-14">
+      <section className="pb-14">
         <SectionBanner>On every mat</SectionBanner>
         <ul className="grid sm:grid-cols-2 lg:grid-cols-5 gap-3">
           {HOUSE_RULES.map((rule) => (
@@ -68,16 +69,16 @@ export function HomeGlimpse({
             </li>
           ))}
         </ul>
-        <p className="mt-4 text-sm max-w-3xl">
+        <p className="mt-4 inline-block max-w-3xl bg-white px-2 py-1 text-sm">
           Registering means you have read the rules, you agree to them, and you accept the risks of combat sports.
         </p>
-        <p className="mt-3 text-sm">
+        <p className="mt-3 inline-block bg-white px-2 py-1 text-sm">
           Each event publishes its own format, divisions, and scoring on the{" "}
           <Link href="/events" className="underline">events page</Link>.
         </p>
       </section>
 
-      <section className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pb-14">
+      <section className="pb-14">
         <SectionBanner>Around the card</SectionBanner>
         <ul className="grid sm:grid-cols-2 lg:grid-cols-3 gap-3">
           {spots.map((spot) => (
@@ -91,12 +92,14 @@ export function HomeGlimpse({
         </ul>
       </section>
 
-      <section className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pb-14">
-        <SectionBanner>Fighting</SectionBanner>
-        {fighting}
-      </section>
+      {fighting && (
+        <section className="max-w-6xl mx-auto px-4 pb-14 sm:px-6 lg:px-8">
+          <SectionBanner>Fighting</SectionBanner>
+          {fighting}
+        </section>
+      )}
 
-      <section className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pb-14">
+      <section className="pb-14">
         <SectionBanner>A match night</SectionBanner>
         <ol className="grid sm:grid-cols-2 lg:grid-cols-4 gap-3">
           {NIGHT.map((beat) => (
@@ -109,10 +112,12 @@ export function HomeGlimpse({
         </ol>
       </section>
 
-      <section className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pb-14">
-        <SectionBanner>Happy moments</SectionBanner>
-        {happy}
-      </section>
+      {happy && (
+        <section className="pb-14">
+          <SectionBanner>Happy moments</SectionBanner>
+          {happy}
+        </section>
+      )}
     </>
   );
 }

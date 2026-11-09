@@ -8,7 +8,7 @@ export function ComicNav({ links }: { links: { href: string; label: string }[] }
   const pathname = usePathname();
 
   return (
-    <nav aria-label="Primary" className="hidden md:flex items-center gap-2">
+    <nav aria-label="Primary" className="hidden md:flex flex-wrap items-center gap-2">
       {links.map((link) => {
         const active = pathname === link.href || pathname.startsWith(`${link.href}/`);
         return (

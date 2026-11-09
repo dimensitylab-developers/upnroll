@@ -55,10 +55,10 @@ export async function createTeammateTransferAction(
   _prevState: RequestActionState,
   formData: FormData
 ): Promise<RequestActionState> {
-  const { user } = await requireSession();
+  const actor = actorFromSession(await requireSession());
   const registrationId = String(formData.get("registrationId") ?? "");
   try {
-    const invite = await createTeammateTransfer(String(user._id), registrationId);
+    const invite = await createTeammateTransfer(actor.userId, registrationId);
     return { link: `/fighter/transfer/${invite.token}` };
   } catch (err) {
     return { error: toAppError(err).message };
@@ -69,10 +69,10 @@ export async function claimTeammateTransferAction(
   _prevState: RequestActionState,
   formData: FormData
 ): Promise<RequestActionState> {
-  const { user } = await requireSession();
+  const actor = actorFromSession(await requireSession());
   const token = String(formData.get("token") ?? "");
   try {
-    await claimTeammateTransfer(String(user._id), token);
+    await claimTeammateTransfer(actor.userId, token);
   } catch (err) {
     return { error: toAppError(err).message };
   }

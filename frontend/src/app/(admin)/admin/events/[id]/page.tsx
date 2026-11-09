@@ -24,7 +24,7 @@ export default async function AdminEventDetailPage({ params }: { params: Promise
   }
   const [divisions, registrations] = await Promise.all([
     listDivisionsForEvent(id),
-    listRegistrationsForEvent(id),
+    listRegistrationsForEvent(actor, id),
   ]);
 
   return (
