@@ -23,6 +23,14 @@ const nextConfig: NextConfig = {
           { key: "X-Content-Type-Options", value: "nosniff" },
           { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
           { key: "X-Frame-Options", value: "DENY" },
+          // HSTS is ignored on plain HTTP; browsers only arm it after a trusted HTTPS response.
+          { key: "Strict-Transport-Security", value: "max-age=63072000; includeSubDomains; preload" },
+          {
+            key: "Permissions-Policy",
+            value: "camera=(), microphone=(), geolocation=(), payment=(), usb=()",
+          },
+          // Report-Only until a nonce/hash strategy for Next.js inline bootstraps is in place.
+          // Enforcing script-src 'self' alone would break the App Router runtime.
           {
             key: "Content-Security-Policy-Report-Only",
             value: [
