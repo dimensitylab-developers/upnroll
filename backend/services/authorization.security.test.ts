@@ -72,6 +72,11 @@ const fighter = Object.freeze({ userId: "fighter-1", role: "FIGHTER" as const })
 const other = Object.freeze({ userId: "fighter-2", role: "FIGHTER" as const });
 
 describe("protected reads and mutations", () => {
+  it("rejects a fighter listing registrations for an event", async () => {
+    const { listRegistrationsForEvent } = await import("./registrationService");
+    await expect(listRegistrationsForEvent(fighter, "event-1")).rejects.toBeInstanceOf(ForbiddenError);
+  });
+
   it("rejects a fighter reading the payment queue", async () => {
     const { listPaymentQueue } = await import("./paymentService");
     await expect(listPaymentQueue(fighter)).rejects.toBeInstanceOf(ForbiddenError);

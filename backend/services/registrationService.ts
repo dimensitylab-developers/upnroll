@@ -184,7 +184,8 @@ export async function listOpenDivisionsForRegistration(actor: Actor) {
   return divisions.map((d) => ({ ...d, event: eventById.get(String(d.eventId)) ?? null }));
 }
 
-export async function listRegistrationsForEvent(eventId: string) {
+export async function listRegistrationsForEvent(actor: Actor, eventId: string) {
+  assertAdmin(actor);
   await connectDB();
   const registrations = await Registration.find({ eventId }).sort({ createdAt: -1 }).lean();
   const userIds = [...new Set(registrations.map((r) => String(r.userId)))];
