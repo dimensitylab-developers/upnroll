@@ -1,3 +1,4 @@
+import { connection } from "next/server";
 import { listPublicEvents } from "@/server/services/eventService";
 import { AboutStory } from "@/components/home/about-story";
 import { FightingGallery } from "@/components/home/photo-crossfade";
@@ -10,6 +11,8 @@ import { MangaBackdrop, MangaCards } from "@/components/home/manga-cards";
 import { SectionBanner } from "@/components/home/section-banner";
 
 export default async function HomePage() {
+  // cacheComponents: DB/mongoose touches current time; opt into request time first.
+  await connection();
   const events = await listPublicEvents();
   const featured = events.find((event) => event.status === "REGISTRATION_OPEN") ?? events[0] ?? null;
 

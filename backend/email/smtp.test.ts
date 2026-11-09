@@ -44,13 +44,33 @@ describe("smtp adapter", () => {
 });
 
 describe("getEmailAdapter", () => {
-  it("stays on the console adapter in development", () => {
-    const previous = process.env.NODE_ENV;
+  it("stays on the console adapter in development when SMTP is unset", () => {
+    const previous = { ...process.env };
     process.env.NODE_ENV = "development";
+    delete process.env.SMTP_HOST;
+    delete process.env.SMTP_PORT;
+    delete process.env.SMTP_USER;
+    delete process.env.SMTP_PASS;
+    delete process.env.SMTP_FROM;
     try {
       expect(getEmailAdapter()).toBeInstanceOf(ConsoleEmailAdapter);
     } finally {
-      process.env.NODE_ENV = previous;
+      process.env = previous;
+    }
+  });
+
+  it("uses SMTP in development when all SMTP_* vars are set", () => {
+    const previous = { ...process.env };
+    process.env.NODE_ENV = "development";
+    process.env.SMTP_HOST = settings.host;
+    process.env.SMTP_PORT = String(settings.port);
+    process.env.SMTP_USER = settings.user;
+    process.env.SMTP_PASS = settings.pass;
+    process.env.SMTP_FROM = settings.from;
+    try {
+      expect(getEmailAdapter()).not.toBeInstanceOf(ConsoleEmailAdapter);
+    } finally {
+      process.env = previous;
     }
   });
 

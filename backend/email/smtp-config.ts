@@ -17,7 +17,8 @@ export function readSmtpSettings(env: NodeJS.ProcessEnv = process.env): { settin
   const host = env.SMTP_HOST?.trim() ?? "";
   const portText = env.SMTP_PORT?.trim() ?? "";
   const user = env.SMTP_USER?.trim() ?? "";
-  const pass = env.SMTP_PASS ?? "";
+  // Gmail app passwords are often copied with display spaces; strip all whitespace.
+  const pass = (env.SMTP_PASS ?? "").replace(/\s+/g, "");
   const from = env.SMTP_FROM?.trim() ?? "";
   const port = Number(portText);
   const missing: string[] = [];

@@ -7,8 +7,10 @@ import { Event } from "@/server/models/Event";
 import { Division } from "@/server/models/Division";
 import { PaymentSubmission, type PaymentSubmissionDoc } from "@/server/models/PaymentSubmission";
 import { User } from "@/server/models/User";
+import { FighterProfile } from "@/server/models/FighterProfile";
 import { getStorageAdapter } from "@/server/storage/factory";
 import { getEmailAdapter } from "@/server/email/console";
+import { greetingLine } from "@/server/email/greeting";
 import { writeAuditLog } from "@/server/audit/log";
 import { validateScreenshotMeta } from "@/features/payments/file-validation";
 import {
@@ -178,19 +180,58 @@ async function decidePayment(
     return decided;
   });
 
-  const user = await User.findById(updated.userId);
-  if (user) {
-    await getEmailAdapter().send({
-      to: user.email,
-      subject: decision === "APPROVED" ? "Payment approved — registration confirmed" : "Payment rejected",
-      body:
-        decision === "APPROVED"
-          ? "Your payment has been reviewed and approved. Your registration is now confirmed."
-          : `Your payment submission was rejected. Reason: ${note || "No reason provided."} You may resubmit from your dashboard.`,
-    });
-  }
+  await notifyFighterOfPaymentDecision(updated, decision, note);
 
   return updated;
+}
+
+async function notifyFighterOfPaymentDecision(
+  submission: PaymentSubmissionDoc,
+  decision: "APPROVED" | "REJECTED",
+  note: string
+) {
+  const registration = await Registration.findById(submission.registrationId).select("divisionId").lean();
+  const [user, profile, event, division] = await Promise.all([
+    User.findById(submission.userId).select("email").lean(),
+    FighterProfile.findOne({ userId: submission.userId }).select("displayName").lean(),
+    Event.findById(submission.eventId).select("name").lean(),
+    registration?.divisionId
+      ? Division.findById(registration.divisionId).select("name").lean()
+      : Promise.resolve(null),
+  ]);
+  if (!user?.email) return;
+
+  const name = profile?.displayName?.trim() || user.email;
+  const card = `${event?.name ?? "your event"} — ${division?.name ?? "your division"}`;
+
+  const message =
+    decision === "APPROVED"
+      ? {
+          subject: "Registration verified — you're confirmed",
+          body: [
+            greetingLine(name),
+            "",
+            `An organizer verified your payment for ${card}.`,
+            "Your registration is confirmed. See you on the mats.",
+          ].join("\n"),
+        }
+      : {
+          subject: "Payment rejected — action needed",
+          body: [
+            greetingLine(name),
+            "",
+            `Your payment for ${card} was not approved.`,
+            `Reason: ${note.trim() || "No reason provided."}`,
+            "You can resubmit payment from your fighter dashboard.",
+          ].join("\n"),
+        };
+
+  try {
+    await getEmailAdapter().send({ to: user.email, ...message });
+  } catch (err) {
+    // Decision is already committed; do not fail the admin action on mail delivery.
+    console.error("[payment decision email failed]", err instanceof Error ? err.message : err);
+  }
 }
 
 export async function approvePayment(actor: Actor, paymentId: string, note = "") {

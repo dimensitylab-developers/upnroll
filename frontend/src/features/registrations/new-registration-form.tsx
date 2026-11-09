@@ -1,6 +1,7 @@
 "use client";
 
-import { useActionState, useState } from "react";
+import { useActionState, useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import { createRegistrationAction, type RegistrationActionState } from "./actions";
 import { GrapplerForm, type GrapplerDefaults } from "@/features/fighters/grappler-form";
 import { Label } from "@/components/ui/label";
@@ -29,27 +30,34 @@ export function NewRegistrationForm({
   photoVersion: string;
   waiverAcceptedAt: string | null;
 }) {
+  const router = useRouter();
   const [state, formAction, pending] = useActionState(createRegistrationAction, initialState);
   const [divisionId, setDivisionId] = useState("");
   const [consent, setConsent] = useState(false);
   const [agreement, setAgreement] = useState(false);
 
+  useEffect(() => {
+    if (state.redirectTo) router.push(state.redirectTo);
+  }, [state.redirectTo, router]);
+
   if (divisions.length === 0) {
     return <p className="text-sm text-muted-foreground">No divisions are currently open for registration.</p>;
   }
 
+  const navigating = Boolean(state.redirectTo);
+
   return (
     <GrapplerForm
       mode="event"
-      state={state}
+      state={navigating ? { ...state, error: undefined } : state}
       formAction={formAction}
-      pending={pending}
-      submitDisabled={!divisionId || !consent || !agreement}
+      pending={pending || navigating}
+      submitDisabled={!divisionId || !consent || !agreement || navigating}
       defaults={defaults}
       hasPhoto={hasPhoto}
       photoVersion={photoVersion}
       waiverAcceptedAt={waiverAcceptedAt}
-      submitLabel="Continue to payment"
+      submitLabel={navigating ? "Opening payment…" : "Continue to payment"}
       top={
         <section className="space-y-4">
           <SectionBanner>The card</SectionBanner>

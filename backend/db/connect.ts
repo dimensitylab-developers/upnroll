@@ -18,6 +18,19 @@ declare global {
 const slots = global.__upnrollMongoose ?? new WeakMap<object, ConnectSlot>();
 if (!global.__upnrollMongoose) global.__upnrollMongoose = slots;
 
+async function resetFailedConnect(slot: ConnectSlot): Promise<void> {
+  slot.promise = null;
+  // Drop a half-open client so the next call starts clean instead of
+  // stacking connect() on a stuck "connecting" topology.
+  if (mongoose.connection.readyState !== 0) {
+    try {
+      await mongoose.disconnect();
+    } catch {
+      /* ignore — next connect() still replaces the client */
+    }
+  }
+}
+
 export async function connectDB(): Promise<typeof mongoose> {
   if (mongoose.connection.readyState === 1) return mongoose;
 
@@ -31,13 +44,21 @@ export async function connectDB(): Promise<typeof mongoose> {
 
   const { MONGODB_URI } = getConfig();
   mongoose.set("bufferCommands", false);
-  slot.promise = mongoose.connect(MONGODB_URI).then(
-    () => mongoose,
-    (err: unknown) => {
-      slot!.promise = null;
-      throw err;
-    }
-  );
+  // family: 4 avoids Windows/Node preferring IPv6 for Atlas hosts when the
+  // local path cannot complete TLS (secureConnect timeouts).
+  slot.promise = mongoose
+    .connect(MONGODB_URI, {
+      family: 4,
+      serverSelectionTimeoutMS: 20_000,
+      connectTimeoutMS: 20_000,
+    })
+    .then(
+      () => mongoose,
+      async (err: unknown) => {
+        await resetFailedConnect(slot!);
+        throw err;
+      }
+    );
 
   return slot.promise;
 }

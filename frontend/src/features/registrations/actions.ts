@@ -1,13 +1,15 @@
 "use server";
 
-import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import { invalidatePublicTags } from "@/lib/public-tags";
 import { requireActor } from "@/server/auth/session";
+import { connectDB } from "@/server/db/connect";
 import { createRegistration, withdrawRegistration } from "@/server/services/registrationService";
 import { updateFighterProfile } from "@/server/services/fighterService";
 import { FighterProfile } from "@/server/models/FighterProfile";
-import { toAppError } from "@/server/http/errors";
+import { Registration } from "@/server/models/Registration";
+import { ACTIVE_REGISTRATION_STATUSES } from "@/server/services/registrationStateMachine";
+import { ConflictError, toAppError } from "@/server/http/errors";
 import { createRegistrationSchema } from "./schemas";
 import { grapplerDetailsSchema, grapplerFieldIssues, grapplerFromForm, toProfileFields } from "@/features/fighters/grappler-schema";
 import { readProfilePhoto, saveProfilePhoto } from "@/server/services/profilePhoto";
@@ -15,7 +17,25 @@ import { readProfilePhoto, saveProfilePhoto } from "@/server/services/profilePho
 export type RegistrationActionState = {
   error?: string;
   fieldErrors?: Record<string, string[] | undefined>;
+  /** Client navigates here — avoid redirect() after updateTag with useActionState. */
+  redirectTo?: string;
 };
+
+function paymentPath(registrationId: string) {
+  return `/fighter/registrations/${registrationId}/payment`;
+}
+
+async function existingActiveRegistrationId(userId: string, divisionId: string): Promise<string | null> {
+  await connectDB();
+  const existing = await Registration.findOne({
+    userId,
+    divisionId,
+    status: { $in: ACTIVE_REGISTRATION_STATUSES },
+  })
+    .select("_id")
+    .lean();
+  return existing ? String(existing._id) : null;
+}
 
 export async function createRegistrationAction(
   _prevState: RegistrationActionState,
@@ -42,7 +62,8 @@ export async function createRegistrationAction(
   const photo = await readProfilePhoto(formData.get("photo"));
   if ("error" in photo) return { error: photo.error };
 
-  let registrationId: string;
+  const divisionId = registrationParsed.data.divisionId;
+
   try {
     const existing = await FighterProfile.findOne({ userId: actor.userId }).select("photoKey").lean();
     if ("empty" in photo && !existing?.photoKey) {
@@ -58,18 +79,22 @@ export async function createRegistrationAction(
       waiverAcceptedAt: new Date(),
     });
 
-    const { registration } = await createRegistration(actor, registrationParsed.data.divisionId, {
+    const { registration } = await createRegistration(actor, divisionId, {
       consent: true,
       agreement: true,
     });
-    registrationId = String(registration._id);
     invalidatePublicTags(["schedule", "rankings", "fighters"]);
+    return { redirectTo: paymentPath(String(registration._id)) };
   } catch (err) {
-    const appError = toAppError(err);
-    return { error: appError.message };
+    const conflict =
+      err instanceof ConflictError ||
+      (err instanceof Error && /already have an active registration/i.test(err.message));
+    if (conflict) {
+      const existingId = await existingActiveRegistrationId(actor.userId, divisionId);
+      if (existingId) return { redirectTo: paymentPath(existingId) };
+    }
+    return { error: toAppError(err).message };
   }
-
-  redirect(`/fighter/registrations/${registrationId}/payment`);
 }
 
 export async function withdrawRegistrationAction(

@@ -39,4 +39,12 @@ describe("smtp configuration", () => {
       from: "events@example.com",
     });
   });
+
+  it("strips whitespace from SMTP_PASS (Gmail app-password copy format)", () => {
+    const spaced = {
+      ...complete,
+      SMTP_PASS: "abcd efgh ijkl mnop",
+    } as NodeJS.ProcessEnv;
+    expect(readSmtpSettings(spaced).settings?.pass).toBe("abcdefghijklmnop");
+  });
 });
