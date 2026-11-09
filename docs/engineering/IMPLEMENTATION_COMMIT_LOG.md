@@ -19,7 +19,9 @@ Rule: one focused Conventional Commit per implementation point; phase milestone 
 | Phase 2 | Transfer payment ownership rewrite | `40e2a58` | Completed |
 | Phase 2 | Bracket concurrent generation | `8523785` | Completed |
 | Phase 2 | Compound indexes | `793f6e1` | Completed |
-| Phase 2 | Phase completion checkpoint | _pending_ | In progress |
+| Phase 2 | Phase completion checkpoint | `8cb5a15` | Completed |
+| Phase 3 | Stream private downloads + metadata | `0e22c1c` | Completed |
+| Phase 3 | Phase completion checkpoint | _pending_ | In progress |
 
 ---
 

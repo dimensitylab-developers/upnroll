@@ -40,9 +40,9 @@ Pre-existing untracked architecture docs under `docs/architecture/` were left un
 
 | ID | Item | Priority | Status |
 |----|------|----------|--------|
-| P3-01 | Stream large private downloads where route handlers currently buffer via `get()` | Medium | Pending |
-| P3-02 | Confirm authorization on all private file routes; Content-Disposition attachment for screenshots | Medium | Pending |
-| P3-03 | Document orphan cleanup expectations for failed GridFS uploads | Low | Pending |
+| P3-01 | Stream large private downloads where route handlers currently buffer via `get()` | Medium | Completed (`0e22c1c`) |
+| P3-02 | Confirm authorization on all private file routes; Content-Disposition attachment for screenshots | Medium | Completed (`0e22c1c`) |
+| P3-03 | Document orphan cleanup expectations for failed GridFS uploads | Low | Completed (report) |
 
 ## Phase 4 — Backend code quality
 
