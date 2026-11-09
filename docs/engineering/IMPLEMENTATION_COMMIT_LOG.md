@@ -27,6 +27,10 @@ Rule: one focused Conventional Commit per implementation point; phase milestone 
 | Phase 6 | SMTP timeouts + Google env example | `047f3b0` | Completed |
 | Phase 7 | Logger + CastError mapping | `3242cdc` | Completed |
 | Phase 8 / Final | Hardening docs + checklist closeout | `297045d` | Completed |
+| QA Runtime | Remove force-dynamic (cacheComponents) | `902a3a1` | Completed |
+| QA Runtime | SiteHeader connection() date fix | `5d9e3e4` | Completed |
+| QA Runtime | Role portal redirects + admin race guard | `f951b63` | Completed |
+| QA Runtime | QA report suite under docs/qa | _pending docs commit_ | In progress |
 
 Note: `06e50b8` (`docs(architecture): …`) appeared on the branch during this window from a separate documentation commit and is not part of the hardening implementation stream.
 
