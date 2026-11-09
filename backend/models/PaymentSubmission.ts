@@ -26,6 +26,9 @@ const paymentSubmissionSchema = new Schema(
   { timestamps: true }
 );
 
+// Admin payment queue: filter by status and sort newest-first without a collection scan.
+paymentSubmissionSchema.index({ status: 1, createdAt: -1 });
+
 export type PaymentSubmissionDoc = InferSchemaType<typeof paymentSubmissionSchema>;
 
 export const PaymentSubmission: Model<PaymentSubmissionDoc> =

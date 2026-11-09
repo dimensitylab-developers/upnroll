@@ -16,6 +16,9 @@ const transferInviteSchema = new Schema(
   { timestamps: true }
 );
 
+// Speeds create/rotate lookups for an unclaimed invite on a registration.
+transferInviteSchema.index({ registrationId: 1, claimedAt: 1 });
+
 export type TransferInviteDoc = InferSchemaType<typeof transferInviteSchema>;
 
 export const TransferInvite: Model<TransferInviteDoc> =
