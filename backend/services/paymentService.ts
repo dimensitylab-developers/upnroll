@@ -50,6 +50,7 @@ export async function submitPayment(
 
   const fileCheck = validateScreenshotMeta(file);
   if (!fileCheck.valid) throw new ValidationError(fileCheck.message);
+  const contentType = fileCheck.contentType;
 
   const [event, division, user] = await Promise.all([
     Event.findById(registration.eventId),
@@ -60,9 +61,9 @@ export async function submitPayment(
 
   const expectedAmountMinorUnits = division.feeMinorUnitsOverride ?? event.paymentInstructions!.feeMinorUnits;
 
-  const ext = EXT_BY_TYPE[file.type] ?? "";
+  const ext = EXT_BY_TYPE[contentType] ?? "";
   const key = `payment-screenshots/${registrationId}/${Date.now()}-${randomBytes(4).toString("hex")}${ext}`;
-  await getStorageAdapter().put(key, file.buffer, file.type);
+  await getStorageAdapter().put(key, file.buffer, contentType);
 
   let submission;
   try {
@@ -195,13 +196,16 @@ export async function rejectPayment(actor: Actor, paymentId: string, note: strin
   return decidePayment(actor, paymentId, "REJECTED", note);
 }
 
+const PAYMENT_QUEUE_LIMIT = 200;
+
 export async function listPaymentQueue(actor: Actor, filterStatus?: PaymentSubmissionDoc["status"]) {
   assertAdmin(actor);
   await connectDB();
 
-  const all = await PaymentSubmission.find().sort({ createdAt: -1 }).lean();
-  const userIds = [...new Set(all.map((s) => String(s.userId)))];
-  const eventIds = [...new Set(all.map((s) => String(s.eventId)))];
+  const query = filterStatus ? { status: filterStatus } : {};
+  const rows = await PaymentSubmission.find(query).sort({ createdAt: -1 }).limit(PAYMENT_QUEUE_LIMIT).lean();
+  const userIds = [...new Set(rows.map((s) => String(s.userId)))];
+  const eventIds = [...new Set(rows.map((s) => String(s.eventId)))];
   const [users, events] = await Promise.all([
     User.find({ _id: { $in: userIds } }).select("email").lean(),
     Event.find({ _id: { $in: eventIds } }).select("name paymentInstructions.currency").lean(),
@@ -215,16 +219,14 @@ export async function listPaymentQueue(actor: Actor, filterStatus?: PaymentSubmi
   );
 
   const withDuplicates = flagDuplicateUtrs(
-    all.map((s) => ({ ...s, id: String(s._id), submittedUtr: s.submittedUtr ?? null }))
+    rows.map((s) => ({ ...s, id: String(s._id), submittedUtr: s.submittedUtr ?? null }))
   );
 
-  const enriched = withDuplicates.map((s) => ({
+  return withDuplicates.map((s) => ({
     ...s,
     user: userById.get(String(s.userId)) ?? null,
     event: eventById.get(String(s.eventId)) ?? null,
   }));
-
-  return filterStatus ? enriched.filter((s) => s.status === filterStatus) : enriched;
 }
 
 export async function getPaymentScreenshot(actor: Actor, paymentId: string) {
