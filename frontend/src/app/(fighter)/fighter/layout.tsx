@@ -21,7 +21,8 @@ export default function FighterLayout({ children }: { children: React.ReactNode 
 async function FighterShell({ children }: { children: React.ReactNode }) {
   const session = await getSession();
   if (!session) redirect("/login");
-  if (session.user.role !== "FIGHTER") redirect("/login");
+  // Authenticated admins stay signed in — send them to the admin portal, not login.
+  if (session.user.role !== "FIGHTER") redirect("/admin");
 
   return (
     <div className="min-h-screen bg-background flex flex-col">

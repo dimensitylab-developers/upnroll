@@ -21,7 +21,8 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 async function AdminShell({ children }: { children: React.ReactNode }) {
   const session = await getSession();
   if (!session) redirect("/login");
-  if (session.user.role !== "ADMIN") redirect("/login");
+  // Authenticated non-admins stay signed in — send them to their portal, not login.
+  if (session.user.role !== "ADMIN") redirect("/fighter/dashboard");
 
   return (
     <div className="min-h-screen bg-background flex flex-col">

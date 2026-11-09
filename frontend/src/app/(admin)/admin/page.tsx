@@ -6,7 +6,8 @@ import { Badge } from "@/components/ui/badge";
 
 export default async function AdminOverviewPage() {
   const session = await getSession();
-  if (!session) return null;
+  // Layout redirects non-admins; children may still start in parallel under Suspense.
+  if (!session || session.user.role !== "ADMIN") return null;
   const data = await getAdminDashboardData(actorFromSession(session));
 
   const stats = [
