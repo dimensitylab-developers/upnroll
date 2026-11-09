@@ -32,7 +32,15 @@ function hashToken(rawToken: string): string {
 }
 
 export async function createSession(userId: string, userAgent?: string): Promise<void> {
+  const cookieStore = await cookies();
+  // Rotate: drop any prior cookie-bound session before issuing a new token so
+  // a pre-login cookie cannot remain valid after authentication (session fixation).
+  const priorRaw = unpackCookieValue(cookieStore.get(SESSION_COOKIE_NAME)?.value);
+
   await connectDB();
+  if (priorRaw) {
+    await Session.deleteOne({ tokenHash: hashToken(priorRaw) });
+  }
 
   const rawToken = randomBytes(32).toString("hex");
   const expiresAt = new Date(Date.now() + SESSION_MAX_AGE_SECONDS * 1000);
@@ -44,7 +52,6 @@ export async function createSession(userId: string, userAgent?: string): Promise
     userAgent,
   });
 
-  const cookieStore = await cookies();
   cookieStore.set(SESSION_COOKIE_NAME, packCookieValue(rawToken), {
     httpOnly: true,
     secure: process.env.NODE_ENV === "production",

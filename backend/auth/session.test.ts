@@ -9,10 +9,12 @@ vi.mock("@/server/db/connect", () => ({ connectDB: vi.fn().mockResolvedValue(und
 
 const mockSessionFindOne = vi.fn();
 const mockSessionCreate = vi.fn().mockResolvedValue(undefined);
+const mockSessionDeleteOne = vi.fn().mockResolvedValue({ deletedCount: 0 });
 vi.mock("@/server/models/Session", () => ({
   Session: {
     findOne: (...args: unknown[]) => mockSessionFindOne(...args),
     create: (...args: unknown[]) => mockSessionCreate(...args),
+    deleteOne: (...args: unknown[]) => mockSessionDeleteOne(...args),
   },
 }));
 
@@ -126,7 +128,11 @@ describe("getSession / requireSession / requireRole", () => {
     });
 
     const { createSession, getSession } = await import("./session");
+    const { packCookieValue, SESSION_COOKIE_NAME } = await import("./cookies");
+    // Prior cookie present — createSession must revoke it before issuing a new token.
+    jar.set(SESSION_COOKIE_NAME, packCookieValue("prior-token"));
     await createSession("new-user");
+    expect(mockSessionDeleteOne).toHaveBeenCalled();
     const session = await getSession();
     expect(session?.user).toEqual({
       _id: "new-user",
