@@ -5,8 +5,6 @@ import { EventPoster } from "@/components/events/event-poster";
 import { EventStory } from "@/components/events/event-story";
 import { HELD_COVERS } from "@/components/events/held-archive";
 
-export const dynamic = "force-dynamic";
-
 function formatDate(value: Date | string) {
   return new Date(value).toLocaleDateString("en-IN", { day: "numeric", month: "long", year: "numeric" });
 }

@@ -13,8 +13,6 @@ function isVideo(url: string) {
 
 const SUPERFIGHT_SLUG = "up-n-roll-superfight-series";
 
-export const dynamic = "force-dynamic";
-
 export default async function PublicEventDetailPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
   let event;

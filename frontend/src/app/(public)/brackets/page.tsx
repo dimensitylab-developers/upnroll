@@ -8,8 +8,6 @@ import { EmojiStrip, MatEmojis } from "@/components/home/mat-emojis";
 import { SectionBanner } from "@/components/home/section-banner";
 import { Badge } from "@/components/ui/badge";
 
-export const dynamic = "force-dynamic";
-
 export default async function LiveBracketsPage() {
   const events = await listPublicEvents();
   const focus =

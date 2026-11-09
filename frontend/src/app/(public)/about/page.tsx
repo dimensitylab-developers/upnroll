@@ -3,7 +3,6 @@ import { listPublicEvents } from "@/server/services/eventService";
 import { AboutStory } from "@/components/home/about-story";
 
 export const metadata: Metadata = { title: "About Us" };
-export const dynamic = "force-dynamic";
 
 export default async function AboutPage() {
   const events = await listPublicEvents();

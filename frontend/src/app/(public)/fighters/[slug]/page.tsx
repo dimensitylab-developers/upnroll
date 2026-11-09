@@ -7,8 +7,6 @@ import { Table, TableHeader, TableRow, TableHead, TableBody, TableCell } from "@
 import { NotFoundError } from "@/server/http/errors";
 import { MatEmojis } from "@/components/home/mat-emojis";
 
-export const dynamic = "force-dynamic";
-
 export default async function PublicFighterProfilePage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
   const held = getHeldCardAthleteBySlug(slug);

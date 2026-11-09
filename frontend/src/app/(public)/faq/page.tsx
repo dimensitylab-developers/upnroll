@@ -1,8 +1,6 @@
 import { listPublished } from "@/server/services/contentService";
 import { FaqBoard } from "@/features/content/faq-board";
 
-export const dynamic = "force-dynamic";
-
 export default async function PublicFaqPage() {
   const faqs = await listPublished("FAQ");
   const items = faqs.map((f) => ({

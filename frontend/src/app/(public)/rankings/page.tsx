@@ -7,8 +7,6 @@ import { Table, TableHeader, TableRow, TableHead, TableBody, TableCell } from "@
 import { EmojiStrip, MatEmojis } from "@/components/home/mat-emojis";
 import { SectionBanner } from "@/components/home/section-banner";
 
-export const dynamic = "force-dynamic";
-
 const MEDALS = ["Gold", "Silver", "Bronze"];
 
 export default async function PublicRankingsPage() {

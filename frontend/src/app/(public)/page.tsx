@@ -9,8 +9,6 @@ import { FIGHTING_MEDIA, HAPPY_PHOTOS } from "@/components/home/site-photos";
 import { MangaBackdrop, MangaCards } from "@/components/home/manga-cards";
 import { SectionBanner } from "@/components/home/section-banner";
 
-export const dynamic = "force-dynamic";
-
 export default async function HomePage() {
   const events = await listPublicEvents();
   const featured = events.find((event) => event.status === "REGISTRATION_OPEN") ?? events[0] ?? null;
