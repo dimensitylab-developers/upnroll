@@ -22,6 +22,7 @@ import { claimSeat, releaseSeat } from "./divisionOccupancy";
 import { bindSession, sessionOpts, withTransaction } from "@/server/db/transaction";
 import { flagDuplicateUtrs } from "./paymentQueue";
 import { NotFoundError, ConflictError, ValidationError } from "@/server/http/errors";
+import { requireObjectId } from "@/server/validation/objectId";
 
 const EXT_BY_TYPE: Record<string, string> = {
   "image/png": ".png",
@@ -36,6 +37,7 @@ export async function submitPayment(
   file: { buffer: Buffer; size: number; type: string }
 ) {
   assertFighter(actor);
+  requireObjectId(registrationId, "registration");
   await connectDB();
 
   const registration = await Registration.findById(registrationId);
@@ -124,6 +126,7 @@ async function decidePayment(
   note: string
 ) {
   assertAdmin(actor);
+  requireObjectId(paymentId, "payment");
   await connectDB();
 
   const submission = await PaymentSubmission.findById(paymentId);
@@ -226,6 +229,7 @@ export async function listPaymentQueue(actor: Actor, filterStatus?: PaymentSubmi
 
 export async function getPaymentScreenshot(actor: Actor, paymentId: string) {
   assertAdmin(actor);
+  requireObjectId(paymentId, "payment");
   await connectDB();
   const submission = await PaymentSubmission.findById(paymentId).lean();
   if (!submission || !submission.screenshotStorageKey) {

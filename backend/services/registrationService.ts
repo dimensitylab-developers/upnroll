@@ -15,6 +15,7 @@ import { isActiveRegistration } from "./registrationStateMachine";
 import { claimSeat, releaseSeat } from "./divisionOccupancy";
 import { bindSession, isDuplicateKey, sessionOpts, withTransaction } from "@/server/db/transaction";
 import { NotFoundError, ConflictError, ValidationError } from "@/server/http/errors";
+import { requireObjectId } from "@/server/validation/objectId";
 
 function resolveFeeMinorUnits(
   event: { paymentInstructions?: { feeMinorUnits: number } | null },
@@ -29,6 +30,7 @@ export async function createRegistration(
   consents: { consent: boolean; agreement: boolean }
 ) {
   assertFighter(actor);
+  requireObjectId(divisionId, "division");
   await connectDB();
   if (!consents.consent || !consents.agreement) {
     throw new ValidationError("Tick both the consent and the agreement before you continue.");
@@ -128,6 +130,7 @@ export async function listMyRegistrations(actor: Actor) {
 
 export async function getRegistrationForFighter(actor: Actor, registrationId: string) {
   assertFighter(actor);
+  requireObjectId(registrationId, "registration");
   await connectDB();
   const userId = actor.userId;
   const registration = await Registration.findOne({ _id: registrationId, userId }).lean();
@@ -186,6 +189,7 @@ export async function listOpenDivisionsForRegistration(actor: Actor) {
 
 export async function listRegistrationsForEvent(actor: Actor, eventId: string) {
   assertAdmin(actor);
+  requireObjectId(eventId, "event");
   await connectDB();
   const registrations = await Registration.find({ eventId }).sort({ createdAt: -1 }).lean();
   const userIds = [...new Set(registrations.map((r) => String(r.userId)))];
@@ -212,6 +216,7 @@ export async function listRegistrationsForEvent(actor: Actor, eventId: string) {
 /** Pull an incomplete, abandoned, or unpaid registration so the bracket can move on. */
 export async function withdrawRegistration(actor: Actor, registrationId: string) {
   assertAdmin(actor);
+  requireObjectId(registrationId, "registration");
   await connectDB();
   return withTransaction(async (session) => {
     const registration = await bindSession(Registration.findById(registrationId), session);
