@@ -23,6 +23,9 @@ describe("smtp adapter", () => {
       port: 587,
       secure: false,
       auth: { user: "mailer", pass: "secret" },
+      connectionTimeout: 15_000,
+      greetingTimeout: 15_000,
+      socketTimeout: 30_000,
     });
     expect(sendMail).toHaveBeenCalledWith({
       from: "events@example.com",

@@ -12,7 +12,14 @@ export type TransportFactory = (options: {
   port: number;
   secure: boolean;
   auth: { user: string; pass: string };
+  connectionTimeout?: number;
+  greetingTimeout?: number;
+  socketTimeout?: number;
 }) => MailSender;
+
+const SMTP_CONNECTION_TIMEOUT_MS = 15_000;
+const SMTP_GREETING_TIMEOUT_MS = 15_000;
+const SMTP_SOCKET_TIMEOUT_MS = 30_000;
 
 export function createSmtpAdapter(settings: SmtpSettings, createTransport: TransportFactory = nodemailer.createTransport): EmailAdapter {
   return {
@@ -22,6 +29,9 @@ export function createSmtpAdapter(settings: SmtpSettings, createTransport: Trans
         port: settings.port,
         secure: settings.port === 465,
         auth: { user: settings.user, pass: settings.pass },
+        connectionTimeout: SMTP_CONNECTION_TIMEOUT_MS,
+        greetingTimeout: SMTP_GREETING_TIMEOUT_MS,
+        socketTimeout: SMTP_SOCKET_TIMEOUT_MS,
       });
       await transport.sendMail({
         from: settings.from,
