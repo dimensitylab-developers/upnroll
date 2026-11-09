@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { connection } from "next/server";
 import { listDivisionsForEvent, listPublicEvents } from "@/server/services/eventService";
 import { SectionBanner } from "@/components/home/section-banner";
 import { EventPoster } from "@/components/events/event-poster";
@@ -17,6 +18,8 @@ function statusLine(status: string) {
 }
 
 export default async function PublicEventsPage() {
+  // cacheComponents: DB/mongoose touches current time; opt into request time first.
+  await connection();
   const events = await listPublicEvents();
   const cards = await Promise.all(
     events.map(async (event) => ({

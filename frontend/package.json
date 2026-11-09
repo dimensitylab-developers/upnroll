@@ -4,6 +4,7 @@
   "private": true,
   "scripts": {
     "predev": "node ./scripts/ensure-root-modules.mjs",
+    "prebuild": "node ./scripts/ensure-root-modules.mjs",
     "dev": "next dev --webpack",
     "build": "next build --webpack",
     "start": "next start",

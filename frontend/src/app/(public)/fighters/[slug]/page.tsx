@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { connection } from "next/server";
 import { getPublicFighterBySlug } from "@/server/services/fighterService";
 import { athleteInitials, getHeldCardAthleteBySlug } from "@/data/held-card-athletes";
 import { Badge } from "@/components/ui/badge";
@@ -8,6 +9,8 @@ import { NotFoundError } from "@/server/http/errors";
 import { MatEmojis } from "@/components/home/mat-emojis";
 
 export default async function PublicFighterProfilePage({ params }: { params: Promise<{ slug: string }> }) {
+  // cacheComponents: DB/mongoose touches current time; opt into request time first.
+  await connection();
   const { slug } = await params;
   const held = getHeldCardAthleteBySlug(slug);
 

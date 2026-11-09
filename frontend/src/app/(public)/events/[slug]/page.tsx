@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { connection } from "next/server";
 import { getEventBySlug, listDivisionsForEvent } from "@/server/services/eventService";
 import { listPublicResults } from "@/server/services/matchService";
 import { listPublishedMediaForEvent } from "@/server/services/mediaService";
@@ -14,6 +15,8 @@ function isVideo(url: string) {
 const SUPERFIGHT_SLUG = "up-n-roll-superfight-series";
 
 export default async function PublicEventDetailPage({ params }: { params: Promise<{ slug: string }> }) {
+  // cacheComponents: DB/mongoose touches current time; opt into request time first.
+  await connection();
   const { slug } = await params;
   let event;
   try {

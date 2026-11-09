@@ -57,20 +57,21 @@ const nextConfig: NextConfig = {
       path.join(__dirname, "node_modules"),
       ...(Array.isArray(config.resolve.modules) ? config.resolve.modules : ["node_modules"]),
     ];
-    // The server compilation shares chunks with client references. Those chunks
-    // otherwise load server-only's throwing build and fail page-data collection.
-    // The browser compilation keeps the real package so a client import still fails.
-    if (isServer) {
-      config.resolve.alias = {
-        ...(config.resolve.alias ?? {}),
-        "server-only": path.join(__dirname, "node_modules/server-only/empty.js"),
-        // backend/ walks up to the repo root, frontend/ has its own copy.
-        // Next only externalizes mongoose when both resolutions are the same file.
-        // Pin one path so every server layer shares Node's single module instance.
-        mongoose: path.join(repoRoot, "node_modules/mongoose"),
-        mongodb: path.join(repoRoot, "node_modules/mongodb"),
-      };
-    }
+    // Pin packages that backend/ imports. Resolution walks up from backend/ to the
+    // repo root; dependencies live under frontend/node_modules (linked at root by
+    // ensure-root-modules). Without an explicit alias, Vercel root installs miss them.
+    const frontendModules = path.join(__dirname, "node_modules");
+    config.resolve.alias = {
+      ...(config.resolve.alias ?? {}),
+      // Server chunks shared with client references must not load the throwing entry.
+      // Browser builds keep index.js so a real client import still fails the build.
+      ...(isServer
+        ? { "server-only": path.join(frontendModules, "server-only/empty.js") }
+        : { "server-only": path.join(frontendModules, "server-only/index.js") }),
+      // Next only externalizes mongoose when every layer resolves the same file.
+      mongoose: path.join(repoRoot, "node_modules/mongoose"),
+      mongodb: path.join(repoRoot, "node_modules/mongodb"),
+    };
     return config;
   },
 };

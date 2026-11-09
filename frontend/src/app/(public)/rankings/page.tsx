@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { connection } from "next/server";
 import { listPublicRankings } from "@/server/services/rankingService";
 import { listPublicFighters } from "@/server/services/fighterService";
 import { listHeldCardAthletes } from "@/data/held-card-athletes";
@@ -10,6 +11,8 @@ import { SectionBanner } from "@/components/home/section-banner";
 const MEDALS = ["Gold", "Silver", "Bronze"];
 
 export default async function PublicRankingsPage() {
+  // cacheComponents: DB/mongoose touches current time; opt into request time first.
+  await connection();
   const [rankings, liveFighters, roster] = await Promise.all([
     listPublicRankings(),
     listPublicFighters(),
