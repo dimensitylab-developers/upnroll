@@ -1,8 +1,13 @@
 import { Schema, model, models, type InferSchemaType, type Model } from "mongoose";
 
+/**
+ * Transfer invite tokens are stored only as SHA-256 hashes (`tokenHash`).
+ * The raw token is returned once to the creator and never persisted.
+ * Legacy documents that still have a plaintext `token` field are ignored by lookups.
+ */
 const transferInviteSchema = new Schema(
   {
-    token: { type: String, required: true, unique: true, index: true },
+    tokenHash: { type: String, required: true, unique: true, index: true },
     registrationId: { type: Schema.Types.ObjectId, ref: "Registration", required: true, index: true },
     fromUserId: { type: Schema.Types.ObjectId, ref: "User", required: true },
     claimedByUserId: { type: Schema.Types.ObjectId, ref: "User", default: null },

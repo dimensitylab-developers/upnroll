@@ -2,7 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { invalidatePublicTags } from "@/lib/public-tags";
-import { actorFromSession, requireSession } from "@/server/auth/session";
+import { requireActor } from "@/server/auth/session";
 import { getFighterProfile, updateFighterProfile } from "@/server/services/fighterService";
 import { toAppError } from "@/server/http/errors";
 import { grapplerDetailsSchema, grapplerFieldIssues, grapplerFromForm, toProfileFields } from "@/features/fighters/grappler-schema";
@@ -15,7 +15,7 @@ export type ProfileActionState = {
 };
 
 export async function updateProfileAction(_prevState: ProfileActionState, formData: FormData): Promise<ProfileActionState> {
-  const actor = actorFromSession(await requireSession());
+  const actor = await requireActor("FIGHTER");
 
   const parsed = grapplerDetailsSchema.safeParse(grapplerFromForm(formData));
   if (!parsed.success) {

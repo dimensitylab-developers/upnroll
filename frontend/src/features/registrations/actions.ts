@@ -3,7 +3,7 @@
 import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import { invalidatePublicTags } from "@/lib/public-tags";
-import { actorFromSession, requireActor, requireSession } from "@/server/auth/session";
+import { requireActor } from "@/server/auth/session";
 import { createRegistration, withdrawRegistration } from "@/server/services/registrationService";
 import { updateFighterProfile } from "@/server/services/fighterService";
 import { FighterProfile } from "@/server/models/FighterProfile";
@@ -21,7 +21,7 @@ export async function createRegistrationAction(
   _prevState: RegistrationActionState,
   formData: FormData
 ): Promise<RegistrationActionState> {
-  const actor = actorFromSession(await requireSession());
+  const actor = await requireActor("FIGHTER");
 
   const registrationParsed = createRegistrationSchema.safeParse({
     divisionId: formData.get("divisionId"),
