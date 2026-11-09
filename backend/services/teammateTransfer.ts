@@ -4,6 +4,7 @@ import { assertFighter, type Actor } from "@/server/auth/actor";
 import { connectDB } from "@/server/db/connect";
 import { TransferInvite } from "@/server/models/TransferInvite";
 import { Registration, type RegistrationDoc } from "@/server/models/Registration";
+import { PaymentSubmission } from "@/server/models/PaymentSubmission";
 import { writeAuditLog } from "@/server/audit/log";
 import { isActiveRegistration, ACTIVE_REGISTRATION_STATUSES } from "./registrationStateMachine";
 import { ConflictError, NotFoundError, ValidationError } from "@/server/http/errors";
@@ -101,6 +102,13 @@ export async function claimTeammateTransfer(actor: Actor, rawToken: string) {
     const previousOwner = String(invite.fromUserId);
     registration.userId = actor.userId as unknown as RegistrationDoc["userId"];
     await registration.save(sessionOpts(session));
+
+    // Keep payment rows aligned with the registration owner after a transfer.
+    await PaymentSubmission.updateMany(
+      { registrationId: registration._id, userId: invite.fromUserId },
+      { $set: { userId: actor.userId } },
+      sessionOpts(session)
+    );
 
     await writeAuditLog(
       {
