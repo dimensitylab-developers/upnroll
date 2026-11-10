@@ -66,7 +66,7 @@ export const STARTER_FAQS: { question: string; answer: string }[] = [
   {
     question: "How do I contact Up ’n Roll?",
     answer:
-      "Email info.upnroll@gmail.com or call +91 7738719800. This assistant only answers from the published FAQ. For anything else, contact the organizers.",
+      "Message @up.n.roll on Instagram. This assistant only answers from the published FAQ. For anything else, contact the organizers there.",
   },
 ];
 
