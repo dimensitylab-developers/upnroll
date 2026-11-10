@@ -25,12 +25,13 @@ export async function readProfilePhoto(
 
 export async function saveProfilePhoto(actor: Actor, bytes: Buffer, ext: string, previousKey = ""): Promise<string> {
   assertFighter(actor);
-  const key = `profiles/${actor.userId}${ext}`;
+  const label = `profiles/${actor.userId}${ext}`;
   const storage = getStorageAdapter();
-  if (previousKey && previousKey !== key) await storage.delete(previousKey);
+  // Local disk overwrites the same path label; GridFS returns a new gridfs:<id> each put.
+  if (previousKey && previousKey !== label) await storage.delete(previousKey);
   const contentType = ext === ".png" ? "image/png" : ext === ".webp" ? "image/webp" : "image/jpeg";
-  await storage.put(key, bytes, contentType, {
+  const storedKey = await storage.put(label, bytes, contentType, {
     metadata: { purpose: "profile-photo", ownerUserId: actor.userId },
   });
-  return key;
+  return storedKey;
 }

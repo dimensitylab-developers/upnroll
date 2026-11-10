@@ -149,14 +149,15 @@ export async function setEventPaymentQr(actor: Actor, eventId: string, bytes: Bu
     event.paymentInstructions = { feeMinorUnits: 0, currency: "INR", qrImageKey: "" };
   }
   const { getStorageAdapter } = await import("@/server/storage/factory");
-  const key = `events/${eventId}/payment-qr${ext}`;
+  const label = `events/${eventId}/payment-qr${ext}`;
   const storage = getStorageAdapter();
   const previous = event.paymentInstructions.qrImageKey || "";
-  if (previous && previous !== key) await storage.delete(previous);
-  await storage.put(key, bytes, contentType, {
+  // Local disk overwrites the same path label; GridFS returns a new gridfs:<id> each put.
+  if (previous && previous !== label) await storage.delete(previous);
+  const storedKey = await storage.put(label, bytes, contentType, {
     metadata: { purpose: "payment-qr", eventId },
   });
-  event.paymentInstructions.qrImageKey = key;
+  event.paymentInstructions.qrImageKey = storedKey;
   await event.save();
 
   await writeAuditLog({
@@ -164,7 +165,7 @@ export async function setEventPaymentQr(actor: Actor, eventId: string, bytes: Bu
     action: "EVENT_PAYMENT_QR_UPDATED",
     targetType: "Event",
     targetId: eventId,
-    after: { qrImageKey: key },
+    after: { qrImageKey: storedKey },
   });
   return event;
 }

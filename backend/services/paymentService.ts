@@ -64,8 +64,8 @@ export async function submitPayment(
   const expectedAmountMinorUnits = division.feeMinorUnitsOverride ?? event.paymentInstructions!.feeMinorUnits;
 
   const ext = EXT_BY_TYPE[contentType] ?? "";
-  const key = `payment-screenshots/${registrationId}/${Date.now()}-${randomBytes(4).toString("hex")}${ext}`;
-  await getStorageAdapter().put(key, file.buffer, contentType, {
+  const label = `payment-screenshots/${registrationId}/${Date.now()}-${randomBytes(4).toString("hex")}${ext}`;
+  const storedKey = await getStorageAdapter().put(label, file.buffer, contentType, {
     metadata: {
       purpose: "payment-screenshot",
       ownerUserId: actor.userId,
@@ -90,7 +90,7 @@ export async function submitPayment(
             eventId: event._id,
             expectedAmountMinorUnits,
             submittedUtr: utr,
-            screenshotStorageKey: key,
+            screenshotStorageKey: storedKey,
             submittedAt: new Date(),
             status: "PENDING_REVIEW",
           },
@@ -115,7 +115,7 @@ export async function submitPayment(
       return created;
     });
   } catch (err) {
-    await getStorageAdapter().delete(key);
+    await getStorageAdapter().delete(storedKey);
     throw err;
   }
 
