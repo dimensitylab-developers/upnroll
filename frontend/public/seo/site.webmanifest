@@ -1,0 +1,23 @@
+{
+  "name": "Up 'n Roll",
+  "short_name": "Up 'n Roll",
+  "description": "Combat sports tournament platform — register, brackets, rankings.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#c8102e",
+  "icons": [
+    {
+      "src": "/seo/icon.png",
+      "sizes": "any",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/seo/og-square.jpg",
+      "sizes": "1024x1024",
+      "type": "image/jpeg",
+      "purpose": "any"
+    }
+  ]
+}
