@@ -33,4 +33,20 @@ describe("AppError hierarchy", () => {
     expect(wrapped).toBeInstanceOf(ValidationError);
     expect(wrapped.message).toBe("Invalid identifier.");
   });
+
+  it("toAppError maps missing STORAGE_DRIVER to a clear storage message", () => {
+    const wrapped = toAppError(new Error('STORAGE_DRIVER must be set to "gridfs" or "local" when NODE_ENV=production.'));
+    expect(wrapped.code).toBe("STORAGE_MISCONFIGURED");
+    expect(wrapped.message).toMatch(/Photo storage is not configured/i);
+  });
+
+  it("toAppError maps Mongoose ValidationError to a field message", () => {
+    const validation = Object.assign(new Error("FighterProfile validation failed"), {
+      name: "ValidationError",
+      errors: { displayName: { message: "Path `displayName` is required." } },
+    });
+    const wrapped = toAppError(validation);
+    expect(wrapped).toBeInstanceOf(ValidationError);
+    expect(wrapped.message).toContain("displayName");
+  });
 });
