@@ -7,6 +7,8 @@ import { ParticipantOrderForm } from "@/features/brackets/participant-order-form
 import { PublishBracketButton } from "@/features/brackets/publish-bracket-button";
 import { BracketView } from "@/features/brackets/bracket-view";
 import { Badge } from "@/components/ui/badge";
+import { PageBackLink } from "@/components/layout/page-back-link";
+import Link from "next/link";
 
 export default async function AdminBracketsPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
@@ -21,8 +23,11 @@ export default async function AdminBracketsPage({ params }: { params: Promise<{ 
   const divisions = await listDivisionsForEvent(id);
 
   return (
-    <div className="max-w-4xl mx-auto px-4 sm:px-6 space-y-10">
-      <h1 className="text-display text-2xl font-semibold">Brackets — {event.name}</h1>
+    <div className="mx-auto max-w-4xl space-y-10 px-0 sm:px-6">
+      <PageBackLink href={`/admin/events/${id}`} label="Back to event" />
+      <h1 className="text-display text-2xl font-semibold break-words">
+        Brackets — <Link href={`/admin/events/${id}`} className="underline">{event.name}</Link>
+      </h1>
 
       {divisions.length === 0 && <p className="text-sm text-muted-foreground">No divisions yet — create one first.</p>}
 

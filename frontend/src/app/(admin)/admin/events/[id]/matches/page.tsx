@@ -9,6 +9,7 @@ import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { PageHeader } from "@/components/page-header";
 import { MatchResultDialog } from "@/features/matches/match-result-dialog";
 import { ScheduleMatchDialog } from "@/features/matches/schedule-match-dialog";
+import { PageBackLink } from "@/components/layout/page-back-link";
 
 const UPCOMING_STATUSES = new Set(["PENDING", "SCHEDULED"]);
 const COMPLETED_STATUSES = new Set(["COMPLETED", "BYE"]);
@@ -143,7 +144,8 @@ export default async function AdminMatchesPage({ params }: { params: Promise<{ i
   const completed = matches.filter((m) => COMPLETED_STATUSES.has(m.status));
 
   return (
-    <div className="max-w-6xl mx-auto px-4 sm:px-6">
+    <div className="mx-auto max-w-6xl px-0 sm:px-6">
+      <PageBackLink href={`/admin/events/${id}`} label="Back to event" />
       <PageHeader title={`Matches — ${event.name}`} />
       <Tabs defaultValue="upcoming">
         <TabsList>

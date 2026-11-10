@@ -13,18 +13,35 @@ export function LoginForm() {
 
   return (
     <form action={formAction} className="space-y-4">
-      {state.error && <p className="text-sm text-primary">{state.error}</p>}
+      {state.error && (
+        <p className="rounded-sm border border-brand-red/40 bg-brand-red/5 px-3 py-2 text-sm text-primary" role="alert">
+          {state.error}
+        </p>
+      )}
       <div>
-        <Label htmlFor="email" className="mb-1.5 block">Email</Label>
-        <Input id="email" name="email" type="email" required autoComplete="email" />
-        {state.fieldErrors?.email && <p className="text-xs text-primary mt-1">{state.fieldErrors.email[0]}</p>}
+        <Label htmlFor="email" className="mb-1.5 block">
+          Email
+        </Label>
+        <Input id="email" name="email" type="email" required autoComplete="email" className="min-h-11" />
+        {state.fieldErrors?.email && <p className="mt-1 text-xs text-primary">{state.fieldErrors.email[0]}</p>}
       </div>
       <div>
-        <Label htmlFor="password" className="mb-1.5 block">Password</Label>
-        <Input id="password" name="password" type="password" required autoComplete="current-password" />
-        {state.fieldErrors?.password && <p className="text-xs text-primary mt-1">{state.fieldErrors.password[0]}</p>}
+        <Label htmlFor="password" className="mb-1.5 block">
+          Password
+        </Label>
+        <Input
+          id="password"
+          name="password"
+          type="password"
+          required
+          autoComplete="current-password"
+          className="min-h-11"
+        />
+        {state.fieldErrors?.password && (
+          <p className="mt-1 text-xs text-primary">{state.fieldErrors.password[0]}</p>
+        )}
       </div>
-      <Button type="submit" className="w-full" disabled={pending}>
+      <Button type="submit" className="min-h-11 w-full" disabled={pending}>
         {pending ? "Signing in…" : "Sign in"}
       </Button>
     </form>

@@ -3,20 +3,21 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { BrandMark } from "./brand";
 
 export function HeaderLockup() {
   const pathname = usePathname();
   const isHome = pathname === "/";
-  // Home starts hidden so we don't stack two wordmarks; other routes show immediately.
-  const [visible, setVisible] = useState(!isHome);
+  // Home starts with mark-only on mobile; wordmark reveals after hero scrolls away.
+  const [wordmarkVisible, setWordmarkVisible] = useState(!isHome);
 
   useEffect(() => {
     if (!isHome) {
-      setVisible(true);
+      setWordmarkVisible(true);
       return;
     }
 
-    setVisible(false);
+    setWordmarkVisible(false);
 
     const target = document.getElementById("home-wordmark");
     if (!target) return;
@@ -27,8 +28,7 @@ export function HeaderLockup() {
     };
 
     const update = () => {
-      // Reveal once the hero wordmark has scrolled up under (or past) the sticky header.
-      setVisible(target.getBoundingClientRect().bottom <= headerOffset() + 4);
+      setWordmarkVisible(target.getBoundingClientRect().bottom <= headerOffset() + 4);
     };
 
     update();
@@ -43,18 +43,20 @@ export function HeaderLockup() {
   return (
     <Link
       href="/"
-      aria-label="Up 'n Roll"
-      aria-hidden={!visible}
-      tabIndex={visible ? undefined : -1}
-      className={[
-        "shrink-0 overflow-hidden bg-white transition-[max-width,opacity,transform,padding] duration-300 ease-out",
-        visible
-          ? "max-w-[11rem] translate-y-0 px-2 py-1 opacity-100"
-          : "pointer-events-none max-w-0 -translate-y-1 px-0 py-1 opacity-0",
-      ].join(" ")}
+      aria-label="Up 'n Roll home"
+      className="flex min-h-11 shrink-0 items-center gap-2 rounded-sm bg-white px-1.5 py-1 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-black"
     >
+      <BrandMark className="h-8 w-8 shrink-0 sm:h-9 sm:w-9" />
       {/* eslint-disable-next-line @next/next/no-img-element */}
-      <img src="/logo-wordmark.png" alt="" className="h-11 w-auto max-w-none" />
+      <img
+        src="/logo-wordmark.png"
+        alt=""
+        aria-hidden={!wordmarkVisible}
+        className={[
+          "h-7 w-auto max-w-none transition-[max-width,opacity] duration-300 ease-out sm:h-9",
+          wordmarkVisible ? "max-w-[9rem] opacity-100 sm:max-w-[11rem]" : "max-w-0 opacity-0",
+        ].join(" ")}
+      />
     </Link>
   );
 }

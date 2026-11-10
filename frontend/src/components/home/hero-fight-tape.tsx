@@ -51,9 +51,9 @@ export function HeroFightTape() {
   }, [attachSource, muted]);
 
   return (
-    <div className="relative z-20 mx-auto w-full max-w-[280px] sm:max-w-[300px] lg:mr-2 lg:justify-self-end">
+    <div className="relative z-20 w-full">
       <div className="hero-video-float">
-        <div className="hero-video-frame relative border-2 border-black bg-white p-1.5 shadow-[12px_12px_0_0_#c8102e]">
+        <div className="hero-video-frame relative border-2 border-black bg-white p-1 shadow-[8px_8px_0_0_#c8102e] sm:p-1.5 sm:shadow-[12px_12px_0_0_#c8102e]">
           <div className="hero-sticker hero-sticker-left absolute -left-4 top-8 z-30 -rotate-12 border-2 border-black bg-white px-2 py-1 text-[10px] font-semibold uppercase tracking-[0.2em] shadow-[3px_3px_0_0_#000]">
             On the mat
           </div>

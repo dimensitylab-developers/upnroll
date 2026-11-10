@@ -96,8 +96,8 @@ export function SuperfightLanding({
 
       <div className="mx-auto max-w-6xl space-y-14 px-4 py-12 sm:px-6 lg:px-8">
         <p className="text-sm">
-          <Link href="/events" className="font-semibold text-brand-red underline">
-            ← All events
+          <Link href="/events" className="inline-flex min-h-11 items-center font-semibold text-brand-red underline">
+            ← Back to events
           </Link>
         </p>
 

@@ -7,6 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { Table, TableHeader, TableRow, TableHead, TableBody, TableCell } from "@/components/ui/table";
 import { NotFoundError } from "@/server/http/errors";
 import { MatEmojis } from "@/components/home/mat-emojis";
+import { PageBackLink } from "@/components/layout/page-back-link";
 
 export default async function PublicFighterProfilePage({ params }: { params: Promise<{ slug: string }> }) {
   // cacheComponents: DB/mongoose touches current time; opt into request time first.
@@ -30,14 +31,10 @@ export default async function PublicFighterProfilePage({ params }: { params: Pro
   const history = live?.history ?? [];
 
   return (
-    <main className="relative min-h-screen overflow-hidden px-4 py-16">
-      <MatEmojis className="absolute inset-0 opacity-40" />
+    <main className="relative min-h-screen overflow-x-hidden px-4 py-10 sm:py-16">
+      <MatEmojis className="pointer-events-none absolute inset-0 opacity-40" />
       <div className="relative mx-auto max-w-2xl">
-        <p className="mb-4 text-sm">
-          <Link href="/rankings" className="bg-white px-1 underline">
-            ← Rankings
-          </Link>
-        </p>
+        <PageBackLink href="/rankings" label="Back to rankings" />
 
         <div className="border-2 border-black bg-white p-5 shadow-[8px_8px_0_0_#000] sm:p-7">
           <div className="flex flex-wrap items-start gap-4">

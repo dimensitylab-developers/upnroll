@@ -7,6 +7,7 @@ import { listPublishedMediaForEvent } from "@/server/services/mediaService";
 import { HeldRecord, type HeldRecordData } from "@/components/events/held-record";
 import { SuperfightLanding } from "@/components/events/superfight-landing";
 import { Badge } from "@/components/ui/badge";
+import { PageBackLink } from "@/components/layout/page-back-link";
 
 function isVideo(url: string) {
   return /\.(mp4|webm|mov)(\?|$)/i.test(url);
@@ -66,12 +67,10 @@ export default async function PublicEventDetailPage({ params }: { params: Promis
     };
 
     return (
-      <main className="min-h-screen bg-background halftone-bg px-4 py-16">
+      <main className="min-h-screen bg-background halftone-bg px-4 py-10 sm:py-16">
         <div className="mx-auto max-w-6xl">
-          <Link href="/events" className="text-sm font-semibold text-brand-red">
-            All events
-          </Link>
-          <div className="mt-6">
+          <PageBackLink href="/events" label="Back to events" />
+          <div className="mt-2">
             <HeldRecord record={record} />
           </div>
         </div>
@@ -111,31 +110,32 @@ export default async function PublicEventDetailPage({ params }: { params: Promis
   }
 
   return (
-    <main className="min-h-screen bg-background halftone-bg px-4 py-16">
+    <main className="min-h-screen bg-background halftone-bg px-4 py-10 sm:py-16">
       <div className="mx-auto max-w-2xl">
+        <PageBackLink href="/events" label="Back to events" />
         <Badge variant="outline" className="mb-3">
           {event.status.replaceAll("_", " ")}
         </Badge>
-        <h1 className="text-display mb-2 text-4xl font-semibold">{event.name}</h1>
+        <h1 className="text-display mb-2 text-3xl font-semibold break-words sm:text-4xl">{event.name}</h1>
         {event.description === "Road to Super Fight." && <p className="mb-2">Road to Super Fight</p>}
         <p className="mb-6 text-muted-foreground">
           {new Date(event.startDate).toLocaleDateString("en-IN", { day: "numeric", month: "long", year: "numeric" })}
           {` · ${event.venue || "Venue to be announced"}`}
         </p>
 
-        <div className="mb-8 flex gap-3">
+        <div className="mb-8 flex flex-wrap gap-x-4 gap-y-2">
           {event.status === "REGISTRATION_OPEN" && (
-            <Link href="/register" className="text-sm font-semibold text-brand-red">
+            <Link href="/register?from=%2Fevents" className="min-h-11 inline-flex items-center text-sm font-semibold text-brand-red">
               Register
             </Link>
           )}
-          <Link href={`/events/${slug}/brackets`} className="text-sm underline">
+          <Link href={`/events/${slug}/brackets`} className="min-h-11 inline-flex items-center text-sm underline">
             Brackets
           </Link>
-          <Link href={`/events/${slug}/schedule`} className="text-sm underline">
+          <Link href={`/events/${slug}/schedule`} className="min-h-11 inline-flex items-center text-sm underline">
             Schedule
           </Link>
-          <Link href={`/events/${slug}/results`} className="text-sm underline">
+          <Link href={`/events/${slug}/results`} className="min-h-11 inline-flex items-center text-sm underline">
             Results
           </Link>
         </div>

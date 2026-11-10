@@ -32,7 +32,10 @@ function AuthControlsFallback() {
         <span className={`${comicCell} ${comicCellIdle} pointer-events-none opacity-50`}>Login</span>
         <span className={`${comicCell} ${comicCellActive} pointer-events-none opacity-50`}>Sign up</span>
       </div>
-      <div className="md:hidden ml-auto">
+      <div className="md:hidden ml-auto flex items-center gap-2">
+        <span className={`${comicCell} ${comicCellIdle} pointer-events-none opacity-50`} aria-hidden="true">
+          Login
+        </span>
         <span className={`${comicCell} ${comicCellIdle} pointer-events-none opacity-50`} aria-hidden="true">
           Menu
         </span>
@@ -44,8 +47,8 @@ function AuthControlsFallback() {
 function NextCardFallback() {
   return (
     <div className="border-t-2 border-black bg-black text-white" aria-hidden="true">
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-2">
-        <p className="text-sm text-white/40">Next card</p>
+      <div className="mx-auto max-w-6xl px-4 py-1.5 sm:px-6 lg:px-8">
+        <p className="text-xs text-white/40 sm:text-sm">Next card</p>
       </div>
     </div>
   );
@@ -63,7 +66,7 @@ async function HeaderSessionChrome() {
 
   return (
     <>
-      <div className="hidden md:flex items-center gap-2 ml-auto">
+      <div className="ml-auto hidden items-center gap-2 md:flex">
         {openEvent && (
           <Link
             href={`/events/${openEvent.slug}`}
@@ -74,11 +77,17 @@ async function HeaderSessionChrome() {
           </Link>
         )}
         {dashboardHref ? (
-          <Link href={dashboardHref} className={`${comicCell} ${comicCellActive}`}>Dashboard</Link>
+          <Link href={dashboardHref} className={`${comicCell} ${comicCellActive}`}>
+            Dashboard
+          </Link>
         ) : (
           <>
-            <Link href="/login" className={`${comicCell} ${comicCellIdle}`}>Login</Link>
-            <Link href="/register" className={`${comicCell} ${comicCellActive}`}>Sign up</Link>
+            <Link href="/login?from=%2F" className={`${comicCell} ${comicCellIdle}`}>
+              Login
+            </Link>
+            <Link href="/register?from=%2F" className={`${comicCell} ${comicCellActive}`}>
+              Sign up
+            </Link>
           </>
         )}
       </div>
@@ -100,16 +109,19 @@ async function HeaderNextCard() {
 
   return (
     <div className="border-t-2 border-black bg-black text-white">
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-2 flex flex-wrap items-center justify-between gap-x-4 gap-y-1 text-sm">
-        <p>
-          <span className="font-semibold text-brand-red">Next card</span>
-          {" "}
-          {openEvent.name}
-          {openEvent.slug === "up-n-roll-superfight-series" ? " · Road to Super Fight" : ""}
-          {" · "}
-          {formatCardDate(openEvent.startDate)}
+      <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-x-4 gap-y-1 px-4 py-1.5 text-xs sm:px-6 sm:py-2 sm:text-sm lg:px-8">
+        <p className="min-w-0">
+          <span className="font-semibold text-brand-red">Next card</span>{" "}
+          <span className="break-words">
+            {openEvent.name}
+            {openEvent.slug === "up-n-roll-superfight-series" ? " · Road to Super Fight" : ""}
+            {" · "}
+            {formatCardDate(openEvent.startDate)}
+          </span>
         </p>
-        <Link href="/register" className="font-semibold text-brand-red">Sign up</Link>
+        <Link href="/register?from=%2F" className="shrink-0 font-semibold text-brand-red">
+          Sign up
+        </Link>
       </div>
     </div>
   );
@@ -118,10 +130,10 @@ async function HeaderNextCard() {
 /** Static brand + primary nav paint independently of session / DB. */
 export function SiteHeader() {
   return (
-    <header className="sticky top-0 z-40 relative border-t-2 border-t-black border-b-2 border-b-brand-red bg-background halftone-bg">
+    <header className="sticky top-0 z-40 relative border-t-2 border-t-black border-b-2 border-b-brand-red bg-background halftone-bg pt-[env(safe-area-inset-top)]">
       <HeaderStickers />
-      <div className="relative z-10 max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center gap-3 min-h-16 py-3">
+      <div className="relative z-10 mx-auto max-w-6xl px-3 sm:px-6 lg:px-8">
+        <div className="flex min-h-14 items-center gap-2 py-2 sm:min-h-16 sm:gap-3 sm:py-3">
           <HeaderLockup />
           <ComicNav links={NAV_LINKS} />
           <Suspense fallback={<AuthControlsFallback />}>

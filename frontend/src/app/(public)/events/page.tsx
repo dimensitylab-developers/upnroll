@@ -42,11 +42,11 @@ export default async function PublicEventsPage() {
   ];
 
   return (
-    <main className="min-h-screen bg-background halftone-bg px-4 py-16">
-      <div className="mx-auto max-w-6xl space-y-16">
+    <main className="min-h-screen bg-background halftone-bg px-4 py-10 sm:py-16">
+      <div className="mx-auto max-w-6xl space-y-12 sm:space-y-16">
         <header className="max-w-2xl">
           <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-brand-red">Events</p>
-          <h1 className="text-display mt-2 text-5xl font-semibold leading-[0.95]">The next card</h1>
+          <h1 className="text-display mt-2 text-4xl font-semibold leading-[0.95] sm:text-5xl">The next card</h1>
           <p className="mt-4 text-base leading-relaxed">
             The date, the divisions, and where to follow the brackets. Further down is how a fight runs, then the cards already held.
           </p>
