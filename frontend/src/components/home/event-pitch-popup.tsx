@@ -92,7 +92,6 @@ export function EventPitchPopup() {
             src={BANNER_SRC}
             alt="Up 'n Roll No-Gi — 23 January 2027, Mumbai"
             fill
-            priority
             sizes="(max-width: 448px) 100vw, 28rem"
             className="object-cover object-top"
           />

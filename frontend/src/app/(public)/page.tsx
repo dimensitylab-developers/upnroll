@@ -1,5 +1,3 @@
-import { connection } from "next/server";
-import { listPublicEvents } from "@/server/services/eventService";
 import { AboutStory } from "@/components/home/about-story";
 import { FightingGallery } from "@/components/home/photo-crossfade";
 import { HappyStack } from "@/components/home/happy-stack";
@@ -9,11 +7,11 @@ import { EmojiStrip, MatEmojis } from "@/components/home/mat-emojis";
 import { FIGHTING_MEDIA, HAPPY_PHOTOS } from "@/components/home/site-photos";
 import { MangaBackdrop, MangaCards } from "@/components/home/manga-cards";
 import { SectionBanner } from "@/components/home/section-banner";
+import { cachedPublicEvents } from "@/lib/public-reads";
 
 export default async function HomePage() {
-  // cacheComponents: DB/mongoose touches current time; opt into request time first.
-  await connection();
-  const events = await listPublicEvents();
+  // Published event list is cross-request cached; mutations invalidate the "events" tag.
+  const events = await cachedPublicEvents();
   const featured = events.find((event) => event.status === "REGISTRATION_OPEN") ?? events[0] ?? null;
 
   return (

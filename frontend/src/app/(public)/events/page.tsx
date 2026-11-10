@@ -21,19 +21,19 @@ export default async function PublicEventsPage() {
   // cacheComponents: DB/mongoose touches current time; opt into request time first.
   await connection();
   const events = await listPublicEvents();
-  const cards = await Promise.all(
-    events.map(async (event) => ({
-      event,
-      divisions: await listDivisionsForEvent(String(event._id)),
-    }))
-  );
-  const coming = cards.filter((card) => card.event.status !== "COMPLETED");
-  const finished = cards.filter((card) => card.event.status === "COMPLETED");
-  const featured = coming[0] ?? null;
+  // Featured card only: upcoming ordered as returned (startDate asc), first non-completed.
+  const coming = events.filter((event) => event.status !== "COMPLETED");
+  const finished = events.filter((event) => event.status === "COMPLETED");
+  const featuredEvent = coming[0] ?? null;
   const later = coming.slice(1);
+  // Code-inferred: 0 division queries when no featured event; otherwise exactly 1.
+  const featuredDivisions = featuredEvent
+    ? await listDivisionsForEvent(String(featuredEvent._id))
+    : [];
+
   const heldCards = [
     ...HELD_COVERS.map((card) => ({ ...card, href: `/events/held/${card.slug}` })),
-    ...finished.map(({ event }) => ({
+    ...finished.map((event) => ({
       href: `/events/${event.slug}`,
       name: event.name,
       date: formatDate(event.startDate),
@@ -54,26 +54,26 @@ export default async function PublicEventsPage() {
 
         <section>
           <SectionBanner>Coming up</SectionBanner>
-          {featured ? (
+          {featuredEvent ? (
             <div className="space-y-4">
               <EventPoster
-                name={featured.event.name}
-                slug={featured.event.slug}
-                date={formatDate(featured.event.startDate)}
-                line={featured.event.description === "Road to Super Fight." ? "Road to Super Fight" : ""}
-                venue={featured.event.venue || ""}
-                statusLine={statusLine(featured.event.status)}
-                registerUntil={featured.event.status === "REGISTRATION_OPEN" ? formatDate(featured.event.registrationClosesAt) : null}
-                matCount={featured.event.matCount ?? 1}
-                canRegister={featured.event.status === "REGISTRATION_OPEN"}
-                divisions={featured.divisions.map((division) => ({
+                name={featuredEvent.name}
+                slug={featuredEvent.slug}
+                date={formatDate(featuredEvent.startDate)}
+                line={featuredEvent.description === "Road to Super Fight." ? "Road to Super Fight" : ""}
+                venue={featuredEvent.venue || ""}
+                statusLine={statusLine(featuredEvent.status)}
+                registerUntil={featuredEvent.status === "REGISTRATION_OPEN" ? formatDate(featuredEvent.registrationClosesAt) : null}
+                matCount={featuredEvent.matCount ?? 1}
+                canRegister={featuredEvent.status === "REGISTRATION_OPEN"}
+                divisions={featuredDivisions.map((division) => ({
                   id: String(division._id),
                   name: division.name,
                   discipline: division.discipline,
                   capacity: division.capacity,
                 }))}
               />
-              {later.map(({ event }) => (
+              {later.map((event) => (
                 <Link key={String(event._id)} href={`/events/${event.slug}`} className="block border-2 border-black bg-white px-5 py-4 shadow-[4px_4px_0_0_#000]">
                   <p className="font-semibold">{event.name}</p>
                   <p className="mt-1 text-sm text-muted-foreground">

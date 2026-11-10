@@ -2,7 +2,6 @@
 
 import { useEffect, useRef, useState } from "react";
 import { askChatbotAction } from "./ask-chatbot-action";
-import { setSkipPageLoader } from "@/components/layout/page-loader-skip";
 import { CHAT_PROMPTS } from "@/server/content/starterFaqs";
 
 type Message = { role: "user" | "assistant"; text: string };
@@ -82,12 +81,10 @@ export function ChatbotWidget() {
     setMessages((prev) => [...prev, { role: "user", text: q }]);
     setQuestion("");
     setLoading(true);
-    setSkipPageLoader(true);
     try {
       const [{ answer }] = await Promise.all([askChatbotAction(q), wait(TYPING_PAUSE_MS)]);
       setMessages((prev) => [...prev, { role: "assistant", text: answer }]);
     } finally {
-      setSkipPageLoader(false);
       setLoading(false);
     }
   }

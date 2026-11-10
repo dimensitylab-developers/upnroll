@@ -121,6 +121,10 @@ export function HappyStack({ photos }: { photos: { src: string; alt: string }[] 
                     <img
                       src={photo.src}
                       alt={photo.alt}
+                      width={360}
+                      height={450}
+                      loading="lazy"
+                      decoding="async"
                       className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.03]"
                       draggable={false}
                     />

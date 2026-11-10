@@ -5,6 +5,9 @@ const repoRoot = path.join(__dirname, "..");
 
 const nextConfig: NextConfig = {
   cacheComponents: true,
+  // Required with Cache Components on Next 16.4.x — avoids shared shell poisoning
+  // when Partial Prefetching is unset (see Nov 2026 security release notes).
+  partialPrefetching: true,
   // Passport photographs travel with the registration server action.
   experimental: {
     serverActions: {
