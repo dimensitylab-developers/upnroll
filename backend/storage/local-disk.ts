@@ -23,10 +23,20 @@ const EXT_TO_CONTENT_TYPE: Record<string, string> = {
 };
 
 export function resolveStoragePath(key: string): string {
-  if (!key || key.includes("\0") || path.isAbsolute(key) || isGridFsKey(key)) {
+  if (!key || key.includes("\0") || isGridFsKey(key)) {
     throw new ValidationError("Invalid storage key.");
   }
-  const resolved = path.resolve(ROOT, key);
+  // Normalize Windows separators so "..\\secrets" cannot bypass the root check on POSIX.
+  const normalized = key.replace(/\\/g, "/");
+  if (
+    path.isAbsolute(key) ||
+    path.isAbsolute(normalized) ||
+    normalized.startsWith("/") ||
+    normalized.split("/").some((part) => part === "..")
+  ) {
+    throw new ValidationError("Invalid storage key.");
+  }
+  const resolved = path.resolve(ROOT, normalized);
   const rootWithSep = ROOT.endsWith(path.sep) ? ROOT : ROOT + path.sep;
   if (resolved !== ROOT && !resolved.startsWith(rootWithSep)) {
     throw new ValidationError("Invalid storage key.");

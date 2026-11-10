@@ -15,9 +15,17 @@ describe("utrSchema", () => {
 
 describe("submitPaymentSchema", () => {
   it("accepts a valid submission shape", () => {
-    expect(submitPaymentSchema.safeParse({ registrationId: "abc123", utr: "409872165310" }).success).toBe(true);
+    expect(
+      submitPaymentSchema.safeParse({
+        registrationId: "507f1f77bcf86cd799439011",
+        utr: "409872165310",
+      }).success
+    ).toBe(true);
   });
   it("rejects a missing registrationId", () => {
     expect(submitPaymentSchema.safeParse({ registrationId: "", utr: "409872165310" }).success).toBe(false);
+  });
+  it("rejects a non-ObjectId registrationId", () => {
+    expect(submitPaymentSchema.safeParse({ registrationId: "abc123", utr: "409872165310" }).success).toBe(false);
   });
 });

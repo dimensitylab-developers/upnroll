@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 import Link from "next/link";
+import { connection } from "next/server";
 import { DynamicBoundary } from "@/components/dynamic-boundary";
 import { PageLoader } from "@/components/layout/page-loader";
 import { getSession } from "@/server/auth/session";
@@ -20,6 +21,8 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 }
 
 async function AdminShell({ children }: { children: React.ReactNode }) {
+  // Request-time boundary for Cache Components — DB/session reads must not prerender.
+  await connection();
   const session = await getSession();
   if (!session) redirect("/login");
   // Authenticated non-admins stay signed in — send them to their portal, not login.

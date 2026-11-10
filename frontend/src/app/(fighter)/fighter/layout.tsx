@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import { redirect } from "next/navigation";
+import Link from "next/link";
+import { connection } from "next/server";
 import { DynamicBoundary } from "@/components/dynamic-boundary";
 import { PageLoader } from "@/components/layout/page-loader";
 import { getSession } from "@/server/auth/session";
@@ -7,7 +9,6 @@ import { logoutAction } from "@/features/auth/actions";
 import { Button } from "@/components/ui/button";
 import { FighterNav } from "@/features/fighter/fighter-nav";
 import { BrandMark, BuiltBy, FounderCredit } from "@/components/layout/brand";
-import Link from "next/link";
 
 export const metadata: Metadata = { robots: { index: false, follow: false } };
 
@@ -20,6 +21,8 @@ export default function FighterLayout({ children }: { children: React.ReactNode 
 }
 
 async function FighterShell({ children }: { children: React.ReactNode }) {
+  // Request-time boundary for Cache Components — DB/session reads must not prerender.
+  await connection();
   const session = await getSession();
   if (!session) redirect("/login");
   // Authenticated admins stay signed in — send them to the admin portal, not login.
