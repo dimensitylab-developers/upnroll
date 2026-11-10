@@ -1,7 +1,8 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { actorFromSession, requireSession } from "@/server/auth/session";
+import { invalidatePublicTags } from "@/lib/public-tags";
+import { requireActor } from "@/server/auth/session";
 import { getFighterProfile, updateFighterProfile } from "@/server/services/fighterService";
 import { toAppError } from "@/server/http/errors";
 import { grapplerDetailsSchema, grapplerFieldIssues, grapplerFromForm, toProfileFields } from "@/features/fighters/grappler-schema";
@@ -14,7 +15,7 @@ export type ProfileActionState = {
 };
 
 export async function updateProfileAction(_prevState: ProfileActionState, formData: FormData): Promise<ProfileActionState> {
-  const actor = actorFromSession(await requireSession());
+  const actor = await requireActor("FIGHTER");
 
   const parsed = grapplerDetailsSchema.safeParse(grapplerFromForm(formData));
   if (!parsed.success) {
@@ -31,7 +32,8 @@ export async function updateProfileAction(_prevState: ProfileActionState, formDa
     const photoKey = "bytes" in photo
       ? await saveProfilePhoto(actor, photo.bytes, photo.ext, existing?.photoKey ?? "")
       : undefined;
-    await updateFighterProfile(actor, { ...toProfileFields(parsed.data), photoKey });
+    const profile = await updateFighterProfile(actor, { ...toProfileFields(parsed.data), photoKey });
+    invalidatePublicTags(profile.slug ? ["fighters", `fighter:${profile.slug}`] : ["fighters"]);
   } catch (err) {
     return { error: toAppError(err).message };
   }

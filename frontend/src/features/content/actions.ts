@@ -1,6 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import { invalidatePublicTags } from "@/lib/public-tags";
 import { requireActor } from "@/server/auth/session";
 import { createContentEntry, setContentPublicationState } from "@/server/services/contentService";
 import { toAppError } from "@/server/http/errors";
@@ -21,7 +22,8 @@ export async function createContentAction(_prevState: ContentActionState, formDa
   }
 
   try {
-    await createContentEntry(actor, parsed.data);
+    const entry = await createContentEntry(actor, parsed.data);
+    invalidatePublicTags([`content:${entry.type}`]);
   } catch (err) {
     return { error: toAppError(err).message };
   }
@@ -36,7 +38,8 @@ export async function publishContentAction(_prevState: ContentActionState, formD
   const state = String(formData.get("state") ?? "PUBLISHED") as "DRAFT" | "PUBLISHED";
 
   try {
-    await setContentPublicationState(actor, entryId, state);
+    const entry = await setContentPublicationState(actor, entryId, state);
+    invalidatePublicTags([`content:${entry.type}`]);
   } catch (err) {
     return { error: toAppError(err).message };
   }

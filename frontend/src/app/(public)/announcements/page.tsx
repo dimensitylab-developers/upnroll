@@ -1,9 +1,11 @@
-import { listPublished } from "@/server/services/contentService";
+import type { Metadata } from "next";
+import { cachedPublishedContent } from "@/lib/public-reads";
 
-export const dynamic = "force-dynamic";
+
+export const metadata: Metadata = { title: "Announcements" };
 
 export default async function PublicAnnouncementsPage() {
-  const announcements = await listPublished("ANNOUNCEMENT");
+  const announcements = await cachedPublishedContent("ANNOUNCEMENT");
 
   return (
     <main className="min-h-screen bg-background halftone-bg px-4 py-16">

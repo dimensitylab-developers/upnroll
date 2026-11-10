@@ -4,6 +4,12 @@ import { describe, it, expect, vi, beforeEach } from "vitest";
 // logic* (does the capacity re-check and rollback behave correctly), not a
 // DB integration test. Same mocking style as session.test.ts.
 vi.mock("@/server/db/connect", () => ({ connectDB: vi.fn().mockResolvedValue(undefined) }));
+vi.mock("@/server/db/transaction", () => ({
+  withTransaction: async (fn: (session: null) => Promise<unknown>) => fn(null),
+  bindSession: (query: unknown) => query,
+  sessionOpts: () => ({}),
+  isDuplicateKey: () => false,
+}));
 
 const admin = Object.freeze({ userId: "admin1", role: "ADMIN" as const });
 
@@ -19,8 +25,20 @@ vi.mock("@/server/models/Registration", () => ({
 }));
 
 const mockDivisionFindById = vi.fn();
+const mockDivisionFindOneAndUpdate = vi.fn();
 vi.mock("@/server/models/Division", () => ({
-  Division: { findById: (...args: unknown[]) => mockDivisionFindById(...args) },
+  Division: {
+    findById: (...args: unknown[]) => mockDivisionFindById(...args),
+    findOneAndUpdate: (...args: unknown[]) => mockDivisionFindOneAndUpdate(...args),
+  },
+}));
+
+vi.mock("@/server/models/Event", () => ({
+  Event: {
+    findById: () => ({
+      lean: () => Promise.resolve({ startDate: new Date("2026-12-31T00:00:00.000Z") }),
+    }),
+  },
 }));
 
 const mockRequestFindOneAndUpdate = vi.fn();
@@ -70,6 +88,7 @@ beforeEach(() => {
   vi.clearAllMocks();
   mockRequestUpdateOne.mockResolvedValue(undefined);
   mockUserFindById.mockResolvedValue({ _id: "u1", email: "fighter@example.com" });
+  mockDivisionFindOneAndUpdate.mockResolvedValue({ _id: "divNew", capacity: 4, filledCount: 1 });
 });
 
 describe("decideRequest — TRANSFER capacity re-check (M-4 regression)", () => {
@@ -105,8 +124,8 @@ describe("decideRequest — TRANSFER capacity re-check (M-4 regression)", () => 
     });
     const reg = registrationDoc();
     mockRegistrationFindById.mockResolvedValue(reg);
-    mockDivisionFindById.mockResolvedValue({ _id: "divNew", capacity: 4 });
-    mockRegistrationCountDocuments.mockResolvedValue(4); // already at capacity
+    mockDivisionFindOneAndUpdate.mockResolvedValue(null);
+    mockDivisionFindById.mockResolvedValue({ _id: "divNew", capacity: 4, filledCount: 4 });
 
     const { decideRequest } = await import("./requestService");
     const { ConflictError } = await import("@/server/http/errors");
@@ -114,11 +133,7 @@ describe("decideRequest — TRANSFER capacity re-check (M-4 regression)", () => 
     await expect(decideRequest(admin, "req1", "APPROVED", "ok")).rejects.toBeInstanceOf(ConflictError);
 
     expect(reg.save).not.toHaveBeenCalled();
-    expect(reg.divisionId).toBe("divOld"); // never mutated
-    expect(mockRequestUpdateOne).toHaveBeenCalledWith(
-      { _id: "req1" },
-      expect.objectContaining({ status: "PENDING" })
-    );
+    expect(reg.divisionId).toBe("divOld");
     expect(mockWriteAuditLog).toHaveBeenCalledWith(
       expect.objectContaining({ action: "REGISTRATION_REQUEST_APPROVAL_FAILED" })
     );
@@ -136,10 +151,11 @@ describe("decideRequest — TRANSFER capacity re-check (M-4 regression)", () => 
     const regA = registrationDoc({ _id: "regA" });
     const regB = registrationDoc({ _id: "regB" });
 
-    mockDivisionFindById.mockResolvedValue({ _id: "divNew", capacity: 1 });
-    mockRegistrationCountDocuments
-      .mockResolvedValueOnce(0) // first approval: division has room
-      .mockResolvedValueOnce(1); // second approval: now full because of the first
+    mockDivisionFindById.mockResolvedValue({ _id: "divNew", capacity: 1, filledCount: 1 });
+    mockDivisionFindOneAndUpdate
+      .mockResolvedValueOnce({ _id: "divNew", capacity: 1, filledCount: 1 })
+      .mockResolvedValueOnce({ _id: "divOld", capacity: 4, filledCount: 0 })
+      .mockResolvedValueOnce(null);
 
     mockRequestFindOneAndUpdate.mockResolvedValueOnce(requestA).mockResolvedValueOnce(requestB);
     mockRegistrationFindById.mockResolvedValueOnce(regA).mockResolvedValueOnce(regB);
@@ -170,6 +186,7 @@ describe("decideRequest — TRANSFER capacity re-check (M-4 regression)", () => 
       type: "CANCELLATION",
       registrationId: "reg1",
       userId: "u1",
+      save: vi.fn().mockResolvedValue(undefined),
     });
     const reg = registrationDoc();
     mockRegistrationFindById.mockResolvedValue(reg);

@@ -4,6 +4,10 @@ import type { NextConfig } from "next";
 const repoRoot = path.join(__dirname, "..");
 
 const nextConfig: NextConfig = {
+  cacheComponents: true,
+  // Required with Cache Components on Next 16.4.x — avoids shared shell poisoning
+  // when Partial Prefetching is unset (see Nov 2026 security release notes).
+  partialPrefetching: true,
   // Passport photographs travel with the registration server action.
   experimental: {
     serverActions: {
@@ -13,7 +17,42 @@ const nextConfig: NextConfig = {
   // Production traces files outside frontend/, including backend/.
   outputFileTracingRoot: repoRoot,
   // One mongoose instance. Bundling it per server chunk drops the connection.
-  serverExternalPackages: ["mongoose"],
+  serverExternalPackages: ["mongoose", "mongodb", "nodemailer"],
+  async headers() {
+    return [
+      {
+        source: "/:path*",
+        headers: [
+          { key: "X-Content-Type-Options", value: "nosniff" },
+          { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
+          { key: "X-Frame-Options", value: "DENY" },
+          // HSTS is ignored on plain HTTP; browsers only arm it after a trusted HTTPS response.
+          { key: "Strict-Transport-Security", value: "max-age=63072000; includeSubDomains; preload" },
+          {
+            key: "Permissions-Policy",
+            value: "camera=(), microphone=(), geolocation=(), payment=(), usb=()",
+          },
+          // Report-Only until a nonce/hash strategy for Next.js inline bootstraps is in place.
+          // Enforcing script-src 'self' alone would break the App Router runtime.
+          {
+            key: "Content-Security-Policy-Report-Only",
+            value: [
+              "default-src 'self'",
+              "script-src 'self'",
+              "style-src 'self' 'unsafe-inline'",
+              "img-src 'self' data: blob: https:",
+              "media-src 'self'",
+              "font-src 'self'",
+              "connect-src 'self'",
+              "frame-ancestors 'none'",
+              "base-uri 'self'",
+              "form-action 'self'",
+            ].join("; "),
+          },
+        ],
+      },
+    ];
+  },
   webpack: (config, { isServer }) => {
     // Files in backend/ resolve packages from their own folder upward.
     // Dependencies are installed in frontend/node_modules.
@@ -21,19 +60,21 @@ const nextConfig: NextConfig = {
       path.join(__dirname, "node_modules"),
       ...(Array.isArray(config.resolve.modules) ? config.resolve.modules : ["node_modules"]),
     ];
-    // The server compilation shares chunks with client references. Those chunks
-    // otherwise load server-only's throwing build and fail page-data collection.
-    // The browser compilation keeps the real package so a client import still fails.
-    if (isServer) {
-      config.resolve.alias = {
-        ...(config.resolve.alias ?? {}),
-        "server-only": path.join(__dirname, "node_modules/server-only/empty.js"),
-        // backend/ walks up to the repo root, frontend/ has its own copy.
-        // Next only externalizes mongoose when both resolutions are the same file.
-        // Pin one path so every server layer shares Node's single module instance.
-        mongoose: path.join(repoRoot, "node_modules/mongoose"),
-      };
-    }
+    // Pin packages that backend/ imports. Resolution walks up from backend/ to the
+    // repo root; dependencies live under frontend/node_modules (linked at root by
+    // ensure-root-modules). Without an explicit alias, Vercel root installs miss them.
+    const frontendModules = path.join(__dirname, "node_modules");
+    config.resolve.alias = {
+      ...(config.resolve.alias ?? {}),
+      // Server chunks shared with client references must not load the throwing entry.
+      // Browser builds keep index.js so a real client import still fails the build.
+      ...(isServer
+        ? { "server-only": path.join(frontendModules, "server-only/empty.js") }
+        : { "server-only": path.join(frontendModules, "server-only/index.js") }),
+      // Next only externalizes mongoose when every layer resolves the same file.
+      mongoose: path.join(repoRoot, "node_modules/mongoose"),
+      mongodb: path.join(repoRoot, "node_modules/mongodb"),
+    };
     return config;
   },
 };

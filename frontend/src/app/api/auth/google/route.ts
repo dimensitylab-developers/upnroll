@@ -1,6 +1,5 @@
-import { createHmac, randomBytes } from "node:crypto";
 import { NextResponse } from "next/server";
-import { getConfig } from "@/lib/config";
+import { OAUTH_STATE_COOKIE, OAUTH_STATE_MAX_AGE_SECONDS, issueOAuthState } from "@/server/auth/oauth-state";
 
 export async function GET(request: Request) {
   const url = new URL(request.url);
@@ -10,16 +9,23 @@ export async function GET(request: Request) {
     return NextResponse.redirect(new URL("/login?google=unavailable", url.origin));
   }
 
-  const { SESSION_SECRET } = getConfig();
-  const state = randomBytes(16).toString("hex");
-  const signature = createHmac("sha256", SESSION_SECRET).update(state).digest("hex");
+  const { stateParam, cookieValue } = issueOAuthState();
   const redirectUri = `${url.origin}/api/auth/google/callback`;
   const auth = new URL("https://accounts.google.com/o/oauth2/v2/auth");
   auth.searchParams.set("client_id", clientId);
   auth.searchParams.set("redirect_uri", redirectUri);
   auth.searchParams.set("response_type", "code");
   auth.searchParams.set("scope", "openid email profile");
-  auth.searchParams.set("state", `${state}.${signature}`);
+  auth.searchParams.set("state", stateParam);
   auth.searchParams.set("prompt", "select_account");
-  return NextResponse.redirect(auth);
+
+  const response = NextResponse.redirect(auth);
+  response.cookies.set(OAUTH_STATE_COOKIE, cookieValue, {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "lax",
+    path: "/",
+    maxAge: OAUTH_STATE_MAX_AGE_SECONDS,
+  });
+  return response;
 }

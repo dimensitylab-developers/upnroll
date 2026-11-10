@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { objectIdSchema } from "@/lib/object-id";
 
 /**
  * UTR/transaction reference format. Conservative generic placeholder
@@ -13,7 +14,7 @@ export const utrSchema = z
   .regex(/^[A-Za-z0-9]+$/, "Transaction reference should only contain letters and numbers.");
 
 export const submitPaymentSchema = z.object({
-  registrationId: z.string().min(1),
+  registrationId: objectIdSchema,
   utr: utrSchema,
 });
 export type SubmitPaymentInput = z.infer<typeof submitPaymentSchema>;

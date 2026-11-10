@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { connection } from "next/server";
 import { listDivisionsForEvent, listPublicEvents } from "@/server/services/eventService";
 import { getPublishedBracketForDivision } from "@/server/services/bracketService";
 import { listPublicSchedule } from "@/server/services/matchService";
@@ -8,9 +9,9 @@ import { EmojiStrip, MatEmojis } from "@/components/home/mat-emojis";
 import { SectionBanner } from "@/components/home/section-banner";
 import { Badge } from "@/components/ui/badge";
 
-export const dynamic = "force-dynamic";
-
 export default async function LiveBracketsPage() {
+  // cacheComponents: DB/mongoose touches current time; opt into request time first.
+  await connection();
   const events = await listPublicEvents();
   const focus =
     events.find((event) => event.status === "REGISTRATION_OPEN" || event.status === "REGISTRATION_CLOSED") ??

@@ -11,8 +11,11 @@ import { toAdminFighterView } from "./fighterService";
 import { writeAuditLog } from "@/server/audit/log";
 import { Match } from "@/server/models/Match";
 import { recordMatchResult } from "./matchService";
-import { isActiveRegistration, ACTIVE_REGISTRATION_STATUSES } from "./registrationStateMachine";
+import { isActiveRegistration } from "./registrationStateMachine";
+import { claimSeat, releaseSeat } from "./divisionOccupancy";
+import { bindSession, isDuplicateKey, sessionOpts, withTransaction } from "@/server/db/transaction";
 import { NotFoundError, ConflictError, ValidationError } from "@/server/http/errors";
+import { requireObjectId } from "@/server/validation/objectId";
 
 function resolveFeeMinorUnits(
   event: { paymentInstructions?: { feeMinorUnits: number } | null },
@@ -27,64 +30,80 @@ export async function createRegistration(
   consents: { consent: boolean; agreement: boolean }
 ) {
   assertFighter(actor);
+  requireObjectId(divisionId, "division");
   await connectDB();
-  const userId = actor.userId;
-
-  const division = await Division.findById(divisionId);
-  if (!division) throw new NotFoundError("Division not found.");
-
-  const event = await Event.findById(division.eventId);
-  if (!event) throw new NotFoundError("Event not found.");
-
   if (!consents.consent || !consents.agreement) {
     throw new ValidationError("Tick both the consent and the agreement before you continue.");
   }
 
-  const now = new Date();
-  if (event.status !== "REGISTRATION_OPEN" || now < event.registrationOpensAt || now > event.registrationClosesAt) {
-    throw new ValidationError("Registration is not currently open for this event.");
+  try {
+    return await withTransaction(async (session) => {
+      const userId = actor.userId;
+      const division = await bindSession(Division.findById(divisionId), session);
+      if (!division) throw new NotFoundError("Division not found.");
+
+      const event = await bindSession(Event.findById(division.eventId), session);
+      if (!event) throw new NotFoundError("Event not found.");
+
+      const now = new Date();
+      if (event.status !== "REGISTRATION_OPEN" || now < event.registrationOpensAt || now > event.registrationClosesAt) {
+        throw new ValidationError("Registration is not currently open for this event.");
+      }
+
+      const existing = await bindSession(Registration.findOne({ userId, divisionId }), session);
+      if (existing && isActiveRegistration(existing.status as RegistrationDoc["status"])) {
+        throw new ConflictError("You already have an active registration in this division.");
+      }
+
+      await claimSeat(division._id, session);
+
+      const [registration] = await Registration.create(
+        [
+          {
+            userId,
+            eventId: event._id,
+            divisionId: division._id,
+            status: "AWAITING_PAYMENT",
+            consentAcceptedAt: now,
+            agreementAcceptedAt: now,
+            statusHistory: [{ status: "AWAITING_PAYMENT", at: now }],
+          },
+        ],
+        { session }
+      );
+
+      const expectedAmountMinorUnits = resolveFeeMinorUnits(event, division);
+      const [paymentSubmission] = await PaymentSubmission.create(
+        [
+          {
+            registrationId: registration._id,
+            userId,
+            eventId: event._id,
+            expectedAmountMinorUnits,
+            status: "AWAITING_SUBMISSION",
+          },
+        ],
+        { session }
+      );
+
+      await writeAuditLog(
+        {
+          actorId: userId,
+          action: "REGISTRATION_CREATED",
+          targetType: "Registration",
+          targetId: String(registration._id),
+        },
+        session
+      );
+
+      return { registration, paymentSubmission };
+    });
+  } catch (err) {
+    if (isDuplicateKey(err)) {
+      throw new ConflictError("You already have an active registration in this division.");
+    }
+    throw err;
   }
-
-  const existing = await Registration.findOne({ userId, divisionId });
-  if (existing && isActiveRegistration(existing.status as RegistrationDoc["status"])) {
-    throw new ConflictError("You already have an active registration in this division.");
-  }
-
-  const activeCount = await Registration.countDocuments({
-    divisionId,
-    status: { $in: ACTIVE_REGISTRATION_STATUSES },
-  });
-  if (activeCount >= division.capacity) {
-    throw new ConflictError("This division is at capacity.");
-  }
-
-  const registration = await Registration.create({
-    userId,
-    eventId: event._id,
-    divisionId: division._id,
-    status: "AWAITING_PAYMENT",
-    consentAcceptedAt: now,
-    agreementAcceptedAt: now,
-    statusHistory: [{ status: "AWAITING_PAYMENT", at: now }],
-  });
-
-  const expectedAmountMinorUnits = resolveFeeMinorUnits(event, division);
-  const paymentSubmission = await PaymentSubmission.create({
-    registrationId: registration._id,
-    userId,
-    eventId: event._id,
-    expectedAmountMinorUnits,
-    status: "AWAITING_SUBMISSION",
-  });
-
-  await writeAuditLog({
-    actorId: userId,
-    action: "REGISTRATION_CREATED",
-    targetType: "Registration",
-    targetId: String(registration._id),
-  });
-
-  return { registration, paymentSubmission };
 }
 
 export async function listMyRegistrations(actor: Actor) {
@@ -111,6 +130,7 @@ export async function listMyRegistrations(actor: Actor) {
 
 export async function getRegistrationForFighter(actor: Actor, registrationId: string) {
   assertFighter(actor);
+  requireObjectId(registrationId, "registration");
   await connectDB();
   const userId = actor.userId;
   const registration = await Registration.findOne({ _id: registrationId, userId }).lean();
@@ -151,7 +171,8 @@ export async function listRecentRegistrationsForAdmin(actor: Actor, limit = 5) {
   }));
 }
 
-export async function listOpenDivisionsForRegistration() {
+export async function listOpenDivisionsForRegistration(actor: Actor) {
+  assertFighter(actor);
   await connectDB();
   const now = new Date();
   const events = await Event.find({
@@ -168,6 +189,7 @@ export async function listOpenDivisionsForRegistration() {
 
 export async function listRegistrationsForEvent(actor: Actor, eventId: string) {
   assertAdmin(actor);
+  requireObjectId(eventId, "event");
   await connectDB();
   const registrations = await Registration.find({ eventId }).sort({ createdAt: -1 }).lean();
   const userIds = [...new Set(registrations.map((r) => String(r.userId)))];
@@ -194,41 +216,51 @@ export async function listRegistrationsForEvent(actor: Actor, eventId: string) {
 /** Pull an incomplete, abandoned, or unpaid registration so the bracket can move on. */
 export async function withdrawRegistration(actor: Actor, registrationId: string) {
   assertAdmin(actor);
+  requireObjectId(registrationId, "registration");
   await connectDB();
-  const registration = await Registration.findById(registrationId);
-  if (!registration) throw new NotFoundError("Registration not found.");
-  if (!isActiveRegistration(registration.status as RegistrationDoc["status"])) {
-    throw new ConflictError("This registration is already closed.");
-  }
-
-  registration.status = "CANCELLED";
-  registration.statusHistory.push({ status: "CANCELLED", at: new Date() });
-  await registration.save();
-
-  const matches = await Match.find({
-    status: { $in: ["PENDING", "SCHEDULED"] },
-    $or: [{ competitorARegistrationId: registration._id }, { competitorBRegistrationId: registration._id }],
-  });
-
-  for (const match of matches) {
-    const isA = String(match.competitorARegistrationId) === String(registration._id);
-    const other = isA ? match.competitorBRegistrationId : match.competitorARegistrationId;
-    if (other && match.status === "SCHEDULED") {
-      await recordMatchResult(actor, String(match._id), String(other), "WITHDRAWAL");
-    } else if (isA) {
-      match.competitorARegistrationId = null;
-      await match.save();
-    } else {
-      match.competitorBRegistrationId = null;
-      await match.save();
+  return withTransaction(async (session) => {
+    const registration = await bindSession(Registration.findById(registrationId), session);
+    if (!registration) throw new NotFoundError("Registration not found.");
+    if (!isActiveRegistration(registration.status as RegistrationDoc["status"])) {
+      throw new ConflictError("This registration is already closed.");
     }
-  }
 
-  await writeAuditLog({
-    actorId: actor.userId,
-    action: "REGISTRATION_WITHDRAWN",
-    targetType: "Registration",
-    targetId: registrationId,
+    await releaseSeat(registration.divisionId, session);
+    registration.status = "CANCELLED";
+    registration.statusHistory.push({ status: "CANCELLED", at: new Date() });
+    await registration.save(sessionOpts(session));
+
+    const matches = await bindSession(
+      Match.find({
+        status: { $in: ["PENDING", "SCHEDULED"] },
+        $or: [{ competitorARegistrationId: registration._id }, { competitorBRegistrationId: registration._id }],
+      }),
+      session
+    );
+
+    for (const match of matches) {
+      const isA = String(match.competitorARegistrationId) === String(registration._id);
+      const other = isA ? match.competitorBRegistrationId : match.competitorARegistrationId;
+      if (other && match.status === "SCHEDULED") {
+        await recordMatchResult(actor, String(match._id), String(other), "WITHDRAWAL", session);
+      } else if (isA) {
+        match.competitorARegistrationId = null;
+        await match.save(sessionOpts(session));
+      } else {
+        match.competitorBRegistrationId = null;
+        await match.save(sessionOpts(session));
+      }
+    }
+
+    await writeAuditLog(
+      {
+        actorId: actor.userId,
+        action: "REGISTRATION_WITHDRAWN",
+        targetType: "Registration",
+        targetId: registrationId,
+      },
+      session
+    );
+    return registration;
   });
-  return registration;
 }

@@ -11,6 +11,7 @@ import { WithdrawButton } from "@/features/registrations/withdraw-button";
 import { FighterRecord } from "@/features/admin/fighter-record";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { PageBackLink } from "@/components/layout/page-back-link";
 
 export default async function AdminEventDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
@@ -28,10 +29,11 @@ export default async function AdminEventDetailPage({ params }: { params: Promise
   ]);
 
   return (
-    <div className="max-w-5xl mx-auto px-4 sm:px-6 space-y-8">
-      <div className="manga-panel p-8">
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-2">
-          <h1 className="text-display text-2xl font-semibold">{event.name}</h1>
+    <div className="mx-auto max-w-5xl space-y-8 px-0 sm:px-6">
+      <PageBackLink href="/admin/events" label="Back to events" />
+      <div className="manga-panel p-5 sm:p-8">
+        <div className="mb-2 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+          <h1 className="text-display text-2xl font-semibold break-words">{event.name}</h1>
           <Badge variant="outline">{event.status.replaceAll("_", " ")}</Badge>
         </div>
         <p className="text-sm text-muted-foreground mb-4">{event.slug} · {event.venue || "No venue set"}</p>

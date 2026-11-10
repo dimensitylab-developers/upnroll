@@ -10,6 +10,10 @@ describe("resolveStoragePath", () => {
     expect(() => resolveStoragePath("a\0b")).toThrow(ValidationError);
   });
 
+  it("rejects a gridfs storage key", () => {
+    expect(() => resolveStoragePath("gridfs:aaaaaaaaaaaaaaaaaaaaaaaa")).toThrow(ValidationError);
+  });
+
   it("accepts a key inside the storage root", () => {
     expect(resolveStoragePath("profiles/fighter.png")).toContain("profiles");
   });

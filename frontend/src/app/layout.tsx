@@ -1,8 +1,6 @@
 import type { Metadata } from "next";
 import { Inter, Oswald, Permanent_Marker } from "next/font/google";
 import Providers from "@/components/Providers";
-import { NavigationLoader } from "@/components/layout/navigation-loader";
-import { ChatbotWidget } from "@/features/chatbot/chatbot-widget";
 import "./globals.css";
 
 const inter = Inter({
@@ -73,8 +71,6 @@ export default function RootLayout({
           dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationJsonLd) }}
         />
         <Providers>{children}</Providers>
-        <NavigationLoader />
-        <ChatbotWidget />
       </body>
     </html>
   );

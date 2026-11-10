@@ -1,4 +1,4 @@
-import { actorFromSession, requireSession } from "@/server/auth/session";
+import { requireActor } from "@/server/auth/session";
 import { listOpenDivisionsForRegistration } from "@/server/services/registrationService";
 import { getFighterProfile } from "@/server/services/fighterService";
 import { NewRegistrationForm } from "@/features/registrations/new-registration-form";
@@ -9,9 +9,9 @@ function yesNo(value: boolean | undefined) {
 }
 
 export default async function NewRegistrationPage() {
-  const actor = actorFromSession(await requireSession());
+  const actor = await requireActor("FIGHTER");
   const [divisions, profile] = await Promise.all([
-    listOpenDivisionsForRegistration(),
+    listOpenDivisionsForRegistration(actor),
     getFighterProfile(actor),
   ]);
 

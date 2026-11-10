@@ -1,24 +1,11 @@
-import { createHmac, randomBytes, timingSafeEqual } from "node:crypto";
-import { NextResponse } from "next/server";
-import { getConfig } from "@/lib/config";
+import { randomBytes } from "node:crypto";
+import { NextResponse, type NextRequest } from "next/server";
 import { connectDB } from "@/server/db/connect";
 import { User } from "@/server/models/User";
 import { FighterProfile } from "@/server/models/FighterProfile";
 import { hashPassword } from "@/server/auth/password";
 import { createSession } from "@/server/auth/session";
-
-function validState(state: string | null): boolean {
-  if (!state) return false;
-  const dot = state.lastIndexOf(".");
-  if (dot === -1) return false;
-  const raw = state.slice(0, dot);
-  const signature = state.slice(dot + 1);
-  const { SESSION_SECRET } = getConfig();
-  const expected = createHmac("sha256", SESSION_SECRET).update(raw).digest("hex");
-  const a = Buffer.from(signature);
-  const b = Buffer.from(expected);
-  return a.length === b.length && timingSafeEqual(a, b);
-}
+import { OAUTH_STATE_COOKIE, verifyOAuthState } from "@/server/auth/oauth-state";
 
 function slugify(name: string): string {
   const base = name
@@ -29,14 +16,28 @@ function slugify(name: string): string {
   return `${base || "grappler"}-${randomBytes(2).toString("hex")}`;
 }
 
-export async function GET(request: Request) {
-  const url = new URL(request.url);
+function clearOAuthCookie(response: NextResponse) {
+  response.cookies.set(OAUTH_STATE_COOKIE, "", {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "lax",
+    path: "/",
+    maxAge: 0,
+  });
+}
+
+export async function GET(request: NextRequest) {
+  const url = request.nextUrl;
   const fail = new URL("/login?google=failed", url.origin);
   const clientId = process.env.GOOGLE_CLIENT_ID;
   const clientSecret = process.env.GOOGLE_CLIENT_SECRET;
   const code = url.searchParams.get("code");
-  if (!clientId || !clientSecret || !code || !validState(url.searchParams.get("state"))) {
-    return NextResponse.redirect(fail);
+  const stateCookie = request.cookies.get(OAUTH_STATE_COOKIE)?.value;
+
+  if (!clientId || !clientSecret || !code || !verifyOAuthState(url.searchParams.get("state"), stateCookie)) {
+    const response = NextResponse.redirect(fail);
+    clearOAuthCookie(response);
+    return response;
   }
 
   const redirectUri = `${url.origin}/api/auth/google/callback`;
@@ -51,20 +52,42 @@ export async function GET(request: Request) {
       grant_type: "authorization_code",
     }),
   });
-  if (!tokenResponse.ok) return NextResponse.redirect(fail);
+  if (!tokenResponse.ok) {
+    const response = NextResponse.redirect(fail);
+    clearOAuthCookie(response);
+    return response;
+  }
   const token = (await tokenResponse.json()) as { access_token?: string };
-  if (!token.access_token) return NextResponse.redirect(fail);
+  if (!token.access_token) {
+    const response = NextResponse.redirect(fail);
+    clearOAuthCookie(response);
+    return response;
+  }
 
   const profileResponse = await fetch("https://www.googleapis.com/oauth2/v3/userinfo", {
     headers: { Authorization: `Bearer ${token.access_token}` },
   });
-  if (!profileResponse.ok) return NextResponse.redirect(fail);
+  if (!profileResponse.ok) {
+    const response = NextResponse.redirect(fail);
+    clearOAuthCookie(response);
+    return response;
+  }
   const profile = (await profileResponse.json()) as { email?: string; name?: string };
   const email = profile.email?.toLowerCase().trim();
-  if (!email) return NextResponse.redirect(fail);
+  if (!email) {
+    const response = NextResponse.redirect(fail);
+    clearOAuthCookie(response);
+    return response;
+  }
 
   await connectDB();
   let user = await User.findOne({ email });
+  if (user && user.status !== "ACTIVE") {
+    const response = NextResponse.redirect(new URL("/login?google=disabled", url.origin));
+    clearOAuthCookie(response);
+    return response;
+  }
+
   if (!user) {
     user = await User.create({
       email,
@@ -93,5 +116,7 @@ export async function GET(request: Request) {
 
   await createSession(String(user._id));
   const next = user.role === "ADMIN" ? "/admin" : "/fighter/dashboard";
-  return NextResponse.redirect(new URL(next, url.origin));
+  const response = NextResponse.redirect(new URL(next, url.origin));
+  clearOAuthCookie(response);
+  return response;
 }

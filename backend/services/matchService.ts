@@ -10,17 +10,39 @@ import { FighterProfile } from "@/server/models/FighterProfile";
 import { User } from "@/server/models/User";
 import { getEmailAdapter } from "@/server/email/console";
 import { Event } from "@/server/models/Event";
+import { PUBLIC_EVENT_STATUSES } from "./eventService";
 import { Division } from "@/server/models/Division";
 import { writeAuditLog } from "@/server/audit/log";
 import { nextSlot, canCorrectResult } from "./bracketEngine";
 import { NotFoundError, ConflictError, ValidationError } from "@/server/http/errors";
 import { notifyWhatsApp } from "@/server/notifications/whatsapp";
+import type { ClientSession } from "mongoose";
+import { bindSession, sessionOpts, withTransaction, type DbSession } from "@/server/db/transaction";
+import { requireObjectId } from "@/server/validation/objectId";
 
-export async function recordMatchResult(actor: Actor, matchId: string, winnerRegistrationId: string, method: string) {
+export async function recordMatchResult(
+  actor: Actor,
+  matchId: string,
+  winnerRegistrationId: string,
+  method: string,
+  existingSession?: ClientSession | null
+) {
   assertAdmin(actor);
+  requireObjectId(matchId, "match");
+  requireObjectId(winnerRegistrationId, "registration");
   await connectDB();
+  if (existingSession) return writeMatchResult(actor, matchId, winnerRegistrationId, method, existingSession);
+  return withTransaction((session) => writeMatchResult(actor, matchId, winnerRegistrationId, method, session));
+}
 
-  const match = await Match.findById(matchId);
+async function writeMatchResult(
+  actor: Actor,
+  matchId: string,
+  winnerRegistrationId: string,
+  method: string,
+  session: DbSession
+) {
+  const match = await bindSession(Match.findById(matchId), session);
   if (!match) throw new NotFoundError("Match not found.");
   if (match.status !== "SCHEDULED") {
     throw new ConflictError("A result can only be recorded for a scheduled match with both competitors set.");
@@ -36,27 +58,36 @@ export async function recordMatchResult(actor: Actor, matchId: string, winnerReg
   match.resultMethod = method;
   match.resultRecordedBy = actor.userId as unknown as MatchDoc["resultRecordedBy"];
   match.resultRecordedAt = new Date();
-  await match.save();
+  await match.save(sessionOpts(session));
 
-  await advanceWinnerIfApplicable(match.bracketId.toString(), match.round, match.order, winnerRegistrationId);
+  await advanceWinnerIfApplicable(match.bracketId.toString(), match.round, match.order, winnerRegistrationId, session);
 
-  await writeAuditLog({
-    actorId: actor.userId,
-    action: "MATCH_RESULT_RECORDED",
-    targetType: "Match",
-    targetId: matchId,
-    after: { winnerRegistrationId, method },
-  });
+  await writeAuditLog(
+    {
+      actorId: actor.userId,
+      action: "MATCH_RESULT_RECORDED",
+      targetType: "Match",
+      targetId: matchId,
+      after: { winnerRegistrationId, method },
+    },
+    session
+  );
 
   return match;
 }
 
-async function advanceWinnerIfApplicable(bracketId: string, round: number, order: number, winnerRegistrationId: string) {
-  const bracket = await Bracket.findById(bracketId);
+async function advanceWinnerIfApplicable(
+  bracketId: string,
+  round: number,
+  order: number,
+  winnerRegistrationId: string,
+  session: DbSession
+) {
+  const bracket = await bindSession(Bracket.findById(bracketId), session);
   if (!bracket || round + 1 >= bracket.roundsCount) return; // final match — nothing downstream
 
   const { round: nextRound, order: nextOrder, slot } = nextSlot(round, order);
-  const next = await Match.findOne({ bracketId, round: nextRound, order: nextOrder });
+  const next = await bindSession(Match.findOne({ bracketId, round: nextRound, order: nextOrder }), session);
   if (!next) return;
 
   if (slot === "A") next.competitorARegistrationId = winnerRegistrationId as unknown as MatchDoc["competitorARegistrationId"];
@@ -65,7 +96,7 @@ async function advanceWinnerIfApplicable(bracketId: string, round: number, order
   if (next.competitorARegistrationId && next.competitorBRegistrationId && next.status === "PENDING") {
     next.status = "SCHEDULED";
   }
-  await next.save();
+  await next.save(sessionOpts(session));
 }
 
 export async function correctMatchResult(
@@ -80,7 +111,18 @@ export async function correctMatchResult(
 
   if (!reason.trim()) throw new ValidationError("A reason is required to correct a result.");
 
-  const match = await Match.findById(matchId);
+  return withTransaction((session) => correctMatchResultInSession(actor, matchId, newWinnerRegistrationId, newMethod, reason, session));
+}
+
+async function correctMatchResultInSession(
+  actor: Actor,
+  matchId: string,
+  newWinnerRegistrationId: string,
+  newMethod: string,
+  reason: string,
+  session: DbSession
+) {
+  const match = await bindSession(Match.findById(matchId), session);
   if (!match) throw new NotFoundError("Match not found.");
   if (match.status !== "COMPLETED") throw new ConflictError("Only a completed match's result can be corrected.");
 
@@ -89,11 +131,11 @@ export async function correctMatchResult(
     throw new ValidationError("The winner must be one of this match's two competitors.");
   }
 
-  const bracket = await Bracket.findById(match.bracketId);
+  const bracket = await bindSession(Bracket.findById(match.bracketId), session);
   let nextMatch = null;
   if (bracket && match.round + 1 < bracket.roundsCount) {
     const { round: nextRound, order: nextOrder } = nextSlot(match.round, match.order);
-    nextMatch = await Match.findOne({ bracketId: match.bracketId, round: nextRound, order: nextOrder });
+    nextMatch = await bindSession(Match.findOne({ bracketId: match.bracketId, round: nextRound, order: nextOrder }), session);
   }
   if (!canCorrectResult(nextMatch?.status ?? null)) {
     throw new ConflictError(
@@ -112,21 +154,23 @@ export async function correctMatchResult(
   });
   match.winnerRegistrationId = newWinnerRegistrationId as unknown as MatchDoc["winnerRegistrationId"];
   match.resultMethod = newMethod;
-  await match.save();
+  await match.save(sessionOpts(session));
 
-  // If there's a downstream match and it isn't decided yet, re-propagate the corrected winner.
   if (nextMatch) {
-    await advanceWinnerIfApplicable(match.bracketId.toString(), match.round, match.order, newWinnerRegistrationId);
+    await advanceWinnerIfApplicable(match.bracketId.toString(), match.round, match.order, newWinnerRegistrationId, session);
   }
 
-  await writeAuditLog({
-    actorId: actor.userId,
-    action: "MATCH_RESULT_CORRECTED",
-    targetType: "Match",
-    targetId: matchId,
-    before,
-    after: { winnerRegistrationId: newWinnerRegistrationId, resultMethod: newMethod, reason },
-  });
+  await writeAuditLog(
+    {
+      actorId: actor.userId,
+      action: "MATCH_RESULT_CORRECTED",
+      targetType: "Match",
+      targetId: matchId,
+      before,
+      after: { winnerRegistrationId: newWinnerRegistrationId, resultMethod: newMethod, reason },
+    },
+    session
+  );
 
   return match;
 }
@@ -266,7 +310,7 @@ export async function listPublicMatchHistory(userId: string): Promise<{
 
 export async function listPublicSchedule(eventSlug: string) {
   await connectDB();
-  const event = await Event.findOne({ slug: eventSlug }).lean();
+  const event = await Event.findOne({ slug: eventSlug, status: { $in: PUBLIC_EVENT_STATUSES } }).lean();
   if (!event) throw new NotFoundError("Event not found.");
 
   const publishedBracketIds = (await Bracket.find({ eventId: event._id, status: "PUBLISHED" }).lean()).map((b) => b._id);

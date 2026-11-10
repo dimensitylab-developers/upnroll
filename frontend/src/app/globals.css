@@ -395,4 +395,14 @@
       transition: none;
     }
   }
+
+  /* Tone down continuous hero motion on small screens for battery / focus. */
+  @media (max-width: 639px) {
+    .hero-video-float {
+      animation: none;
+    }
+    .mat-emoji-drift {
+      animation: none;
+    }
+  }
 }

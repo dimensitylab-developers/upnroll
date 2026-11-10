@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { objectIdSchema } from "@/lib/object-id";
 
 const dateString = z.string().min(1, "Required.").transform((v) => new Date(v));
 
@@ -26,7 +27,7 @@ export const createEventSchema = z
 export type CreateEventInput = z.infer<typeof createEventSchema>;
 
 export const createDivisionSchema = z.object({
-  eventId: z.string().min(1),
+  eventId: objectIdSchema,
   name: z.string().trim().min(1, "Enter a division name."),
   discipline: z.string().trim().min(1, "Enter a discipline."),
   capacity: z.coerce.number().int().min(1, "Capacity must be at least 1."),

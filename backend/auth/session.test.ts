@@ -9,10 +9,12 @@ vi.mock("@/server/db/connect", () => ({ connectDB: vi.fn().mockResolvedValue(und
 
 const mockSessionFindOne = vi.fn();
 const mockSessionCreate = vi.fn().mockResolvedValue(undefined);
+const mockSessionDeleteOne = vi.fn().mockResolvedValue({ deletedCount: 0 });
 vi.mock("@/server/models/Session", () => ({
   Session: {
     findOne: (...args: unknown[]) => mockSessionFindOne(...args),
     create: (...args: unknown[]) => mockSessionCreate(...args),
+    deleteOne: (...args: unknown[]) => mockSessionDeleteOne(...args),
   },
 }));
 
@@ -126,7 +128,11 @@ describe("getSession / requireSession / requireRole", () => {
     });
 
     const { createSession, getSession } = await import("./session");
+    const { packCookieValue, SESSION_COOKIE_NAME } = await import("./cookies");
+    // Prior cookie present — createSession must revoke it before issuing a new token.
+    jar.set(SESSION_COOKIE_NAME, packCookieValue("prior-token"));
     await createSession("new-user");
+    expect(mockSessionDeleteOne).toHaveBeenCalled();
     const session = await getSession();
     expect(session?.user).toEqual({
       _id: "new-user",
@@ -134,6 +140,44 @@ describe("getSession / requireSession / requireRole", () => {
       role: "FIGHTER",
       status: "ACTIVE",
     });
+  });
+
+  it("loads the session once when getSession runs twice in one request cache", async () => {
+    const React = await import("react");
+    const internals = React.__SERVER_INTERNALS_DO_NOT_USE_OR_WARN_USERS_THEY_CANNOT_UPGRADE;
+    const buckets = new Map<object, Map<unknown, unknown>>();
+    const previous = internals.A;
+    internals.A = {
+      getCacheForType(create: () => Map<unknown, unknown>) {
+        let bucket = buckets.get(create);
+        if (!bucket) {
+          bucket = create();
+          buckets.set(create, bucket);
+        }
+        return bucket;
+      },
+    };
+
+    const { packCookieValue } = await import("./cookies");
+    mockCookieStore.get.mockReturnValue({ value: packCookieValue("raw-token") });
+    mockSessionFindOne.mockReturnValue({
+      lean: () => Promise.resolve({ userId: "u1", expiresAt: new Date(Date.now() + 100000) }),
+    });
+    mockUserFindById.mockReturnValue({
+      select: () => ({
+        lean: () => Promise.resolve({ _id: "u1", email: "a@example.com", role: "FIGHTER", status: "ACTIVE" }),
+      }),
+    });
+
+    try {
+      const { getSession } = await import("./session");
+      const first = await getSession();
+      const second = await getSession();
+      expect(second).toEqual(first);
+      expect(mockSessionFindOne).toHaveBeenCalledTimes(1);
+    } finally {
+      internals.A = previous;
+    }
   });
 
   it("requireRole passes through when the role matches", async () => {

@@ -3,6 +3,7 @@ import { requireActor } from "@/server/auth/session";
 import { NotFoundError } from "@/server/http/errors";
 import { getEventForAdmin, listDivisionsForEvent } from "@/server/services/eventService";
 import { CreateDivisionForm } from "@/features/events/create-division-form";
+import { PageBackLink } from "@/components/layout/page-back-link";
 
 export default async function AdminDivisionsPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
@@ -17,9 +18,10 @@ export default async function AdminDivisionsPage({ params }: { params: Promise<{
   const divisions = await listDivisionsForEvent(id);
 
   return (
-    <div className="max-w-2xl mx-auto px-4 sm:px-6 space-y-8">
-      <div className="manga-panel p-8">
-        <h1 className="text-display text-2xl font-semibold mb-1">Divisions — {event.name}</h1>
+    <div className="mx-auto max-w-2xl space-y-8 px-0 sm:px-6">
+      <PageBackLink href={`/admin/events/${id}`} label="Back to event" />
+      <div className="manga-panel p-5 sm:p-8">
+        <h1 className="text-display mb-1 text-2xl font-semibold break-words">Divisions — {event.name}</h1>
         <p className="text-sm text-muted-foreground mb-6">Discipline/weight-class taxonomy pending client approval (OD-001/OD-002) — enter freely for now.</p>
         <CreateDivisionForm eventId={id} />
       </div>

@@ -1,5 +1,6 @@
 import "server-only";
 import { randomBytes, createHash } from "node:crypto";
+import { cache } from "react";
 import { cookies } from "next/headers";
 import { connectDB } from "@/server/db/connect";
 import { Session } from "@/server/models/Session";
@@ -31,7 +32,15 @@ function hashToken(rawToken: string): string {
 }
 
 export async function createSession(userId: string, userAgent?: string): Promise<void> {
+  const cookieStore = await cookies();
+  // Rotate: drop any prior cookie-bound session before issuing a new token so
+  // a pre-login cookie cannot remain valid after authentication (session fixation).
+  const priorRaw = unpackCookieValue(cookieStore.get(SESSION_COOKIE_NAME)?.value);
+
   await connectDB();
+  if (priorRaw) {
+    await Session.deleteOne({ tokenHash: hashToken(priorRaw) });
+  }
 
   const rawToken = randomBytes(32).toString("hex");
   const expiresAt = new Date(Date.now() + SESSION_MAX_AGE_SECONDS * 1000);
@@ -43,7 +52,6 @@ export async function createSession(userId: string, userAgent?: string): Promise
     userAgent,
   });
 
-  const cookieStore = await cookies();
   cookieStore.set(SESSION_COOKIE_NAME, packCookieValue(rawToken), {
     httpOnly: true,
     secure: process.env.NODE_ENV === "production",
@@ -65,7 +73,7 @@ export async function destroySession(): Promise<void> {
   cookieStore.delete(SESSION_COOKIE_NAME);
 }
 
-export async function getSession(): Promise<AppSession | null> {
+export const getSession = cache(async function getSession(): Promise<AppSession | null> {
   const cookieStore = await cookies();
   const rawToken = unpackCookieValue(cookieStore.get(SESSION_COOKIE_NAME)?.value);
   if (!rawToken) return null;
@@ -78,7 +86,7 @@ export async function getSession(): Promise<AppSession | null> {
   if (!user || user.status !== "ACTIVE") return null;
 
   return { user: toSessionUser(user) };
-}
+});
 
 /** For Server Actions / route handlers: throws instead of redirecting. */
 export async function requireSession(): Promise<AppSession> {

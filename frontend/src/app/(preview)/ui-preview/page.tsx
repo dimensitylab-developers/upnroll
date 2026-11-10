@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { connection } from "next/server";
 import { notFound } from "next/navigation";
 import { PreviewNav } from "@/components/preview/preview-nav";
 import { BrandAndTokens } from "@/components/preview/sections/brand-and-tokens";
@@ -29,12 +30,12 @@ export const metadata: Metadata = {
 
 // `next build`/`next start` always set NODE_ENV=production, including for a
 // staging/review deployment — so NODE_ENV alone can't distinguish "public
-// production" from "authorized review." Gate on an explicit opt-in instead,
-// and force per-request evaluation (not force-dynamic as "static forever
-// 404," which is what a build-time notFound() would otherwise bake in).
-export const dynamic = "force-dynamic";
+// production" from "authorized review." Gate on an explicit opt-in instead.
+// connection() keeps that check on the request, so a production build does not
+// bake in a permanent 404.
 
-export default function UiPreviewPage() {
+export default async function UiPreviewPage() {
+  await connection();
   // Part P: restrict the design showroom once the real site launches.
   // Enabled in local dev by default; any other environment (including a
   // review/staging deployment) must explicitly opt in via UI_PREVIEW_ENABLED.

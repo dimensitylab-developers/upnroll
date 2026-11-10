@@ -6,6 +6,11 @@ export default defineConfig({
     environment: "node",
     include: ["src/**/*.test.ts", "../backend/**/*.test.ts"],
   },
+  ssr: {
+    resolve: {
+      conditions: ["react-server", "node", "import", "module", "default"],
+    },
+  },
   resolve: {
     alias: [
       { find: "server-only", replacement: path.resolve(__dirname, "./src/test/server-only-stub.ts") },

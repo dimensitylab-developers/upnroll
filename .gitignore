@@ -39,6 +39,7 @@ yarn-error.log*
 
 # local dev-only private file storage (backend/storage/local-disk.ts)
 /.local-storage/
+/.local-qa/
 
 # typescript
 *.tsbuildinfo

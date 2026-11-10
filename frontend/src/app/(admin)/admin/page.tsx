@@ -3,11 +3,11 @@ import { actorFromSession, getSession } from "@/server/auth/session";
 import { getAdminDashboardData } from "@/server/services/dashboardService";
 import { Badge } from "@/components/ui/badge";
 
-export const dynamic = "force-dynamic";
 
 export default async function AdminOverviewPage() {
   const session = await getSession();
-  if (!session) return null;
+  // Layout redirects non-admins; children may still start in parallel under Suspense.
+  if (!session || session.user.role !== "ADMIN") return null;
   const data = await getAdminDashboardData(actorFromSession(session));
 
   const stats = [

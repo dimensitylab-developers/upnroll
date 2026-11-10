@@ -40,6 +40,8 @@ matchSchema.index({ bracketId: 1, round: 1, order: 1 }, { unique: true });
 // whole collection (Match.find({ status: { $in: ["COMPLETED", "BYE"] } })) —
 // without this, that query is a full collection scan as match volume grows.
 matchSchema.index({ status: 1 });
+// Public/admin schedule and results pages filter by event + status together.
+matchSchema.index({ eventId: 1, status: 1 });
 
 export type MatchDoc = InferSchemaType<typeof matchSchema>;
 

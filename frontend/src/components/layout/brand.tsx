@@ -1,6 +1,8 @@
+import Image from "next/image";
+
 export function BrandMark({ className = "h-10 w-10" }: { className?: string }) {
   return (
-    <img
+    <Image
       src="/logo-mark.png"
       alt=""
       width={40}

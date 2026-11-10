@@ -1,9 +1,10 @@
 import { z } from "zod";
+import { objectIdSchema } from "@/lib/object-id";
 
 export const createRequestSchema = z.object({
-  registrationId: z.string().min(1),
+  registrationId: objectIdSchema,
   type: z.enum(["CANCELLATION", "TRANSFER"]),
-  requestedDivisionId: z.string().optional(),
+  requestedDivisionId: objectIdSchema.optional(),
   reason: z.string().trim().min(5, "Explain the reason for this request."),
 });
 export type CreateRequestInput = z.infer<typeof createRequestSchema>;

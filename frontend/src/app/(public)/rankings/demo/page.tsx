@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { RankingDemo } from "@/features/rankings/ranking-demo";
 
-export const metadata: Metadata = { title: "Seeding demo" };
+export const metadata: Metadata = { title: "Seeding demo", robots: { index: false, follow: false } };
 
 export default function RankingDemoPage() {
   return (

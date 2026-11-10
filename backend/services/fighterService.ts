@@ -182,6 +182,8 @@ export async function countFighters(actor: Actor) {
   return FighterProfile.countDocuments();
 }
 
+const PUBLIC_FIGHTER_FIELDS = "displayName slug gym discipline userId";
+
 /** Full grappler form for organizers. Aadhaar and medical answers stay off public pages. */
 export async function listFightersForAdmin(actor: Actor) {
   assertAdmin(actor);
@@ -193,8 +195,6 @@ export async function listFightersForAdmin(actor: Actor) {
   const emailById = new Map(users.map((user) => [String(user._id), user.email]));
   return profiles.map((profile) => toAdminFighterView(profile, emailById.get(String(profile.userId)) ?? ""));
 }
-
-const PUBLIC_FIGHTER_FIELDS = "displayName slug gym discipline userId";
 
 export async function listPublicFighters() {
   await connectDB();

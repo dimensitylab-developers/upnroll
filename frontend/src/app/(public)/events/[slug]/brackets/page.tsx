@@ -1,46 +1,69 @@
+import type { Metadata } from "next";
+import { Suspense } from "react";
 import { notFound } from "next/navigation";
-import { getEventBySlug, listDivisionsForEvent } from "@/server/services/eventService";
-import { getPublishedBracketForDivision } from "@/server/services/bracketService";
+import { cachedPublicDivisions, cachedPublicEvent, cachedPublishedBracket } from "@/lib/public-reads";
 import { BracketView } from "@/features/brackets/bracket-view";
+import { PageBackLink } from "@/components/layout/page-back-link";
 
-export const dynamic = "force-dynamic";
+export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
+  const { slug } = await params;
+  try {
+    const event = await cachedPublicEvent(slug);
+    return { title: `${event.name} brackets` };
+  } catch {
+    return { title: "Brackets" };
+  }
+}
 
 export default async function PublicBracketsPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
   let event;
   try {
-    event = await getEventBySlug(slug);
+    event = await cachedPublicEvent(slug);
   } catch {
     notFound();
   }
-  const divisions = await listDivisionsForEvent(String(event._id));
 
+  return (
+    <main className="min-h-screen bg-background halftone-bg px-4 py-10 sm:py-16">
+      <div className="mx-auto max-w-4xl">
+        <PageBackLink href={`/events/${slug}`} label="Back to event" />
+        <h1 className="text-display mb-6 text-3xl font-semibold break-words sm:mb-8 sm:text-4xl">
+          {event.name} — Brackets
+        </h1>
+        <Suspense fallback={<p className="text-sm text-muted-foreground">Loading brackets…</p>}>
+          <DivisionBrackets eventId={String(event._id)} />
+        </Suspense>
+      </div>
+    </main>
+  );
+}
+
+async function DivisionBrackets({ eventId }: { eventId: string }) {
+  const divisions = await cachedPublicDivisions(eventId);
   const brackets = await Promise.all(
-    divisions.map(async (d) => {
+    divisions.map(async (division) => {
       try {
-        const result = await getPublishedBracketForDivision(String(d._id));
-        return { division: d, ...result };
+        const result = await cachedPublishedBracket(division._id);
+        return { division, ...result };
       } catch {
         return null;
       }
     })
   );
-  const published = brackets.filter((b): b is NonNullable<typeof b> => b !== null);
+  const published = brackets.filter((bracket): bracket is NonNullable<typeof bracket> => bracket !== null);
 
   return (
-    <main className="min-h-screen bg-background halftone-bg px-4 py-16">
-      <div className="max-w-4xl mx-auto">
-        <h1 className="text-display text-4xl font-semibold mb-8">{event.name} — Brackets</h1>
-        {published.length === 0 && <p className="text-sm text-muted-foreground">No brackets published yet.</p>}
-        <div className="space-y-10">
-          {published.map((b) => (
-            <div key={String(b.bracket._id)}>
-              <h2 className="text-display text-xl font-semibold mb-4">{b.division.name}</h2>
-              <BracketView matches={b.matches} roundsCount={b.bracket.roundsCount} />
-            </div>
-          ))}
-        </div>
+    <>
+      {published.length === 0 && <p className="text-sm text-muted-foreground">No brackets published yet.</p>}
+      <div className="space-y-10">
+        {published.map((bracket) => (
+          <div key={String(bracket.bracket._id)}>
+            <h2 className="text-display mb-4 text-xl font-semibold">{bracket.division.name}</h2>
+            <BracketView matches={bracket.matches} roundsCount={bracket.bracket.roundsCount} />
+          </div>
+        ))}
       </div>
-    </main>
+    </>
   );
 }

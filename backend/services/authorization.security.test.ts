@@ -5,9 +5,11 @@ vi.mock("@/server/db/connect", () => ({ connectDB: vi.fn().mockResolvedValue(und
 
 const findChain = (rows: unknown[]) => ({
   sort: () => ({
+    limit: () => ({ lean: () => Promise.resolve(rows) }),
     select: () => ({ lean: () => Promise.resolve(rows) }),
     lean: () => Promise.resolve(rows),
   }),
+  limit: () => ({ lean: () => Promise.resolve(rows) }),
   select: () => ({ lean: () => Promise.resolve(rows) }),
   lean: () => Promise.resolve(rows),
 });
@@ -60,7 +62,7 @@ vi.mock("@/server/models/Bracket", () => ({ Bracket: { find: () => findChain([])
 vi.mock("@/server/models/AuditLog", () => ({ AuditLog: { find: () => findChain([]) } }));
 vi.mock("@/server/models/ContentEntry", () => ({ ContentEntry: { find: () => findChain([]) } }));
 vi.mock("@/server/models/MediaAsset", () => ({ MediaAsset: { find: () => findChain([]) } }));
-vi.mock("@/server/storage/local-disk", () => ({ getStorageAdapter: () => ({ get: vi.fn(), put: vi.fn() }) }));
+vi.mock("@/server/storage/factory", () => ({ getStorageAdapter: () => ({ get: vi.fn(), put: vi.fn(), open: vi.fn(), delete: vi.fn() }) }));
 vi.mock("@/server/email/console", () => ({ getEmailAdapter: () => ({ send: vi.fn() }) }));
 vi.mock("@/server/audit/log", () => ({
   writeAuditLog: vi.fn(),
@@ -72,6 +74,11 @@ const fighter = Object.freeze({ userId: "fighter-1", role: "FIGHTER" as const })
 const other = Object.freeze({ userId: "fighter-2", role: "FIGHTER" as const });
 
 describe("protected reads and mutations", () => {
+  it("rejects a fighter listing registrations for an event", async () => {
+    const { listRegistrationsForEvent } = await import("./registrationService");
+    await expect(listRegistrationsForEvent(fighter, "event-1")).rejects.toBeInstanceOf(ForbiddenError);
+  });
+
   it("rejects a fighter reading the payment queue", async () => {
     const { listPaymentQueue } = await import("./paymentService");
     await expect(listPaymentQueue(fighter)).rejects.toBeInstanceOf(ForbiddenError);
@@ -87,9 +94,14 @@ describe("protected reads and mutations", () => {
     await expect(getFighterProfile(admin)).rejects.toBeInstanceOf(ForbiddenError);
   });
 
+  it("rejects an admin listing divisions open for registration", async () => {
+    const { listOpenDivisionsForRegistration } = await import("./registrationService");
+    await expect(listOpenDivisionsForRegistration(admin)).rejects.toBeInstanceOf(ForbiddenError);
+  });
+
   it("rejects a fighter opening another fighter's registration", async () => {
     const { getRegistrationForFighter } = await import("./registrationService");
-    await expect(getRegistrationForFighter(other, "reg-1")).rejects.toBeInstanceOf(NotFoundError);
+    await expect(getRegistrationForFighter(other, "507f1f77bcf86cd799439011")).rejects.toBeInstanceOf(NotFoundError);
   });
 
   it("lets an admin open the payment queue", async () => {

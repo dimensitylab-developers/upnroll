@@ -1,0 +1,5 @@
+{
+  "installCommand": "npm ci --prefix frontend && node frontend/scripts/ensure-root-modules.mjs",
+  "buildCommand": "npm run build --prefix frontend",
+  "outputDirectory": "frontend/.next"
+}

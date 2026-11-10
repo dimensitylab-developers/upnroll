@@ -40,9 +40,21 @@ export class ConflictError extends AppError {
   }
 }
 
+function isMongooseCastError(err: unknown): boolean {
+  return (
+    typeof err === "object" &&
+    err !== null &&
+    "name" in err &&
+    (err as { name?: string }).name === "CastError"
+  );
+}
+
 /** Normalizes any thrown value into a safe, user-facing message + AppError. */
 export function toAppError(err: unknown): AppError {
   if (err instanceof AppError) return err;
+  if (isMongooseCastError(err)) {
+    return new ValidationError("Invalid identifier.");
+  }
   if (err instanceof Error) return new AppError("INTERNAL_ERROR", "Something went wrong.", 500);
   return new AppError("INTERNAL_ERROR", "Something went wrong.", 500);
 }

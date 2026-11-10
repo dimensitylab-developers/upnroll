@@ -1,7 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { actorFromSession, requireSession } from "@/server/auth/session";
+import { requireActor } from "@/server/auth/session";
 import { submitPayment } from "@/server/services/paymentService";
 import { toAppError } from "@/server/http/errors";
 import { submitPaymentSchema } from "./schemas";
@@ -12,7 +12,7 @@ export async function submitPaymentAction(
   _prevState: SubmitPaymentActionState,
   formData: FormData
 ): Promise<SubmitPaymentActionState> {
-  const actor = actorFromSession(await requireSession());
+  const actor = await requireActor("FIGHTER");
 
   const parsed = submitPaymentSchema.safeParse({
     registrationId: formData.get("registrationId"),

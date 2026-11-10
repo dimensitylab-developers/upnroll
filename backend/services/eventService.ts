@@ -1,9 +1,12 @@
 import "server-only";
+import { cache } from "react";
 import { connectDB } from "@/server/db/connect";
 import { Event, type EventStatus } from "@/server/models/Event";
 import { Division } from "@/server/models/Division";
 import { writeAuditLog } from "@/server/audit/log";
 import { NotFoundError, ConflictError, ValidationError } from "@/server/http/errors";
+import { requireFilledCount } from "./divisionOccupancy";
+import { sessionOpts, withTransaction } from "@/server/db/transaction";
 import { assertAdmin, type Actor } from "@/server/auth/actor";
 
 export type CreateEventInput = {
@@ -19,7 +22,7 @@ export type CreateEventInput = {
   matCount?: number;
 };
 
-const PUBLIC_EVENT_STATUSES: EventStatus[] = ["REGISTRATION_OPEN", "REGISTRATION_CLOSED", "COMPLETED"];
+export const PUBLIC_EVENT_STATUSES: EventStatus[] = ["REGISTRATION_OPEN", "REGISTRATION_CLOSED", "COMPLETED"];
 
 export async function createEvent(actor: Actor, input: CreateEventInput) {
   assertAdmin(actor);
@@ -117,10 +120,10 @@ export async function listUpcomingEventsForAdmin(actor: Actor, limit = 5) {
   return Event.find({ startDate: { $gte: now } }).sort({ startDate: 1 }).limit(limit).lean();
 }
 
-export async function listPublicEvents() {
+export const listPublicEvents = cache(async function listPublicEvents() {
   await connectDB();
   return Event.find({ status: { $in: PUBLIC_EVENT_STATUSES } }).sort({ startDate: 1 }).lean();
-}
+});
 
 export async function getEventBySlug(slug: string) {
   await connectDB();
@@ -156,11 +159,40 @@ export async function createDivision(actor: Actor, input: CreateDivisionInput) {
     name: input.name,
     discipline: input.discipline,
     capacity: input.capacity,
+    filledCount: 0,
     feeMinorUnitsOverride: input.feeMinorUnitsOverride ?? null,
   });
 
   await writeAuditLog({ actorId: actor.userId, action: "DIVISION_CREATED", targetType: "Division", targetId: String(division._id) });
   return division;
+}
+
+export async function setDivisionCapacity(actor: Actor, divisionId: string, capacity: number) {
+  assertAdmin(actor);
+  await connectDB();
+  if (!Number.isInteger(capacity) || capacity < 1) throw new ValidationError("Capacity must be at least 1.");
+
+  return withTransaction(async (session) => {
+    const division = await Division.findById(divisionId).session(session);
+    if (!division) throw new NotFoundError("Division not found.");
+    const filled = requireFilledCount(division.filledCount);
+    if (capacity < filled) {
+      throw new ConflictError("Capacity cannot be lower than the current number of active registrations.");
+    }
+    division.capacity = capacity;
+    await division.save(sessionOpts(session));
+    await writeAuditLog(
+      {
+        actorId: actor.userId,
+        action: "DIVISION_CAPACITY_CHANGED",
+        targetType: "Division",
+        targetId: divisionId,
+        after: { capacity, filledCount: filled },
+      },
+      session
+    );
+    return division;
+  });
 }
 
 export async function listDivisionsForEvent(eventId: string) {

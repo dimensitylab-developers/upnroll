@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { connection } from "next/server";
 import { listPublicRankings } from "@/server/services/rankingService";
 import { listPublicFighters } from "@/server/services/fighterService";
 import { listHeldCardAthletes } from "@/data/held-card-athletes";
@@ -7,11 +8,11 @@ import { Table, TableHeader, TableRow, TableHead, TableBody, TableCell } from "@
 import { EmojiStrip, MatEmojis } from "@/components/home/mat-emojis";
 import { SectionBanner } from "@/components/home/section-banner";
 
-export const dynamic = "force-dynamic";
-
 const MEDALS = ["Gold", "Silver", "Bronze"];
 
 export default async function PublicRankingsPage() {
+  // cacheComponents: DB/mongoose touches current time; opt into request time first.
+  await connection();
   const [rankings, liveFighters, roster] = await Promise.all([
     listPublicRankings(),
     listPublicFighters(),
@@ -64,11 +65,11 @@ export default async function PublicRankingsPage() {
   const rest = profileCards.filter((card) => card !== featured);
 
   return (
-    <main className="relative min-h-screen overflow-hidden px-4 py-16">
-      <MatEmojis className="absolute inset-0" />
+    <main className="relative min-h-screen overflow-x-hidden px-4 py-10 sm:py-16">
+      <MatEmojis className="pointer-events-none absolute inset-0 opacity-40 sm:opacity-100" />
       <div className="relative mx-auto max-w-5xl">
         <EmojiStrip emojis={["mount", "armbar", "hip-throw", "rear-naked-choke", "triangle-choke", "knee-slice"]} />
-        <h1 className="mt-4 text-display text-4xl font-semibold">Rankings</h1>
+        <h1 className="mt-4 text-display text-3xl font-semibold sm:text-4xl">Rankings</h1>
         <p className="mt-2 max-w-2xl bg-white px-2 py-1 text-sm">
           3 points per win. Medal places are gold, silver, and bronze. Grappler profiles live here — photos land as we get them. After registration opens in production, every confirmed athlete appears on this board from their account.
         </p>
@@ -81,43 +82,75 @@ export default async function PublicRankingsPage() {
         <section className="mt-10">
           <SectionBanner>The board</SectionBanner>
           <div className="border-2 border-black bg-white shadow-[6px_6px_0_0_#000]">
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Place</TableHead>
-                  <TableHead>Grappler</TableHead>
-                  <TableHead>Record</TableHead>
-                  <TableHead>Points</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {rankings.map((row) => (
-                  <TableRow key={row.slug ?? row.rank}>
-                    <TableCell>{MEDALS[row.rank - 1] ?? `#${row.rank}`}</TableCell>
-                    <TableCell>
-                      {row.slug ? (
-                        <Link href={`/fighters/${row.slug}`} className="underline">
-                          {row.displayName}
-                        </Link>
-                      ) : (
-                        row.displayName
-                      )}
-                    </TableCell>
-                    <TableCell>
+            {/* Mobile: stacked cards keep stats readable without page-wide overflow */}
+            <ul className="divide-y-2 divide-black md:hidden">
+              {rankings.map((row) => (
+                <li key={row.slug ?? row.rank} className="flex items-start justify-between gap-3 px-4 py-3">
+                  <div className="min-w-0">
+                    <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-brand-red">
+                      {MEDALS[row.rank - 1] ?? `#${row.rank}`}
+                    </p>
+                    {row.slug ? (
+                      <Link href={`/fighters/${row.slug}`} className="mt-1 block break-words font-semibold underline">
+                        {row.displayName}
+                      </Link>
+                    ) : (
+                      <p className="mt-1 break-words font-semibold">{row.displayName}</p>
+                    )}
+                  </div>
+                  <div className="shrink-0 text-right text-sm">
+                    <p>
                       {row.wins}-{row.losses}
-                    </TableCell>
-                    <TableCell>{row.points}</TableCell>
-                  </TableRow>
-                ))}
-                {rankings.length === 0 && (
+                    </p>
+                    <p className="font-semibold">{row.points} pts</p>
+                  </div>
+                </li>
+              ))}
+              {rankings.length === 0 && (
+                <li className="px-4 py-8 text-center text-sm text-muted-foreground">
+                  No live points yet. Profiles from the held card are below.
+                </li>
+              )}
+            </ul>
+            <div className="hidden md:block">
+              <Table>
+                <TableHeader>
                   <TableRow>
-                    <TableCell colSpan={4} className="py-8 text-center text-sm text-muted-foreground">
-                      No live points yet. Profiles from the held card are below.
-                    </TableCell>
+                    <TableHead>Place</TableHead>
+                    <TableHead>Grappler</TableHead>
+                    <TableHead>Record</TableHead>
+                    <TableHead>Points</TableHead>
                   </TableRow>
-                )}
-              </TableBody>
-            </Table>
+                </TableHeader>
+                <TableBody>
+                  {rankings.map((row) => (
+                    <TableRow key={row.slug ?? row.rank}>
+                      <TableCell>{MEDALS[row.rank - 1] ?? `#${row.rank}`}</TableCell>
+                      <TableCell>
+                        {row.slug ? (
+                          <Link href={`/fighters/${row.slug}`} className="underline">
+                            {row.displayName}
+                          </Link>
+                        ) : (
+                          row.displayName
+                        )}
+                      </TableCell>
+                      <TableCell>
+                        {row.wins}-{row.losses}
+                      </TableCell>
+                      <TableCell>{row.points}</TableCell>
+                    </TableRow>
+                  ))}
+                  {rankings.length === 0 && (
+                    <TableRow>
+                      <TableCell colSpan={4} className="py-8 text-center text-sm text-muted-foreground">
+                        No live points yet. Profiles from the held card are below.
+                      </TableCell>
+                    </TableRow>
+                  )}
+                </TableBody>
+              </Table>
+            </div>
           </div>
         </section>
 

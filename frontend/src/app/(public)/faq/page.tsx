@@ -1,9 +1,10 @@
+import { connection } from "next/server";
 import { listPublished } from "@/server/services/contentService";
 import { FaqBoard } from "@/features/content/faq-board";
 
-export const dynamic = "force-dynamic";
-
 export default async function PublicFaqPage() {
+  // cacheComponents: DB/mongoose touches current time; opt into request time first.
+  await connection();
   const faqs = await listPublished("FAQ");
   const items = faqs.map((f) => ({
     id: String(f._id),

@@ -24,6 +24,8 @@ export function FightingGallery({
 
   useEffect(() => {
     if (count < 2) return;
+    const mediaQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
+    if (mediaQuery.matches) return;
     const timer = window.setInterval(() => {
       setIndex((current) => (current + 1) % count);
     }, 5000);
@@ -49,6 +51,11 @@ export function FightingGallery({
             <img
               src={active.src}
               alt={active.alt}
+              width={960}
+              height={540}
+              decoding="async"
+              // Active still only — neighbors load when selected via thumbnails.
+              fetchPriority="low"
               className="absolute inset-0 h-full w-full object-cover object-center"
             />
 
@@ -122,6 +129,8 @@ export function FightingGallery({
             {stills.map((item, itemIndex) => {
               const selected = itemIndex === index;
               const featured = itemIndex === 0 || itemIndex === 5;
+              // Only eager-load the active still thumbnail; the rest stay lazy.
+              const eager = itemIndex === index;
               return (
                 <li
                   key={item.src}
@@ -141,6 +150,10 @@ export function FightingGallery({
                       <img
                         src={item.src}
                         alt={item.alt}
+                        width={featured ? 640 : 320}
+                        height={featured ? 400 : 320}
+                        loading={eager ? "eager" : "lazy"}
+                        decoding="async"
                         className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
                       />
                     </div>

@@ -7,17 +7,20 @@ import { RankingRecord } from "@/server/models/RankingRecord";
 import { FighterProfile } from "@/server/models/FighterProfile";
 import { writeAuditLog } from "@/server/audit/log";
 import { computeRecord, winLossPointsStrategy, type DecidedMatch } from "./rankingEngine";
+import { bindSession, sessionOpts, withTransaction } from "@/server/db/transaction";
+import { ConflictError } from "@/server/http/errors";
 
 export async function recalculateRankings(actor: Actor) {
   assertAdmin(actor);
   await connectDB();
 
-  const decided = await Match.find({ status: { $in: ["COMPLETED", "BYE"] } }).lean();
+  return withTransaction(async (session) => {
+  const decided = await bindSession(Match.find({ status: { $in: ["COMPLETED", "BYE"] } }), session).lean();
 
   const registrationIds = [
     ...new Set(decided.flatMap((m) => [m.competitorARegistrationId, m.competitorBRegistrationId, m.winnerRegistrationId].filter(Boolean).map(String))),
   ];
-  const registrations = await Registration.find({ _id: { $in: registrationIds } }).lean();
+  const registrations = await bindSession(Registration.find({ _id: { $in: registrationIds } }), session).lean();
   const userIdByRegistrationId = new Map(registrations.map((r) => [String(r._id), String(r.userId)]));
 
   const decidedMatches: DecidedMatch[] = decided.map((m) => ({
@@ -30,30 +33,46 @@ export async function recalculateRankings(actor: Actor) {
 
   const fighterUserIds = [...new Set(decidedMatches.flatMap((m) => m.competitorUserIds))];
 
-  const existingVersion = (await RankingRecord.findOne().sort({ calculationVersion: -1 }).lean())?.calculationVersion ?? 0;
+  const existingVersion =
+    (await bindSession(RankingRecord.findOne().sort({ calculationVersion: -1 }), session).lean())?.calculationVersion ?? 0;
   const newVersion = existingVersion + 1;
   const computedAt = new Date();
 
-  await Promise.all(
-    fighterUserIds.map(async (userId) => {
-      const record = computeRecord(userId, decidedMatches);
-      const points = winLossPointsStrategy(record);
-      await RankingRecord.findOneAndUpdate(
-        { userId },
-        { scope: "GLOBAL", wins: record.wins, losses: record.losses, points, calculationVersion: newVersion, computedAt },
-        { upsert: true }
+  for (const userId of fighterUserIds) {
+    const record = computeRecord(userId, decidedMatches);
+    const points = winLossPointsStrategy(record);
+    const current = await bindSession(RankingRecord.findOne({ userId }), session);
+    if (current && current.calculationVersion > existingVersion) {
+      throw new ConflictError("Rankings were recalculated by someone else. Run the calculation again.");
+    }
+    if (current) {
+      current.scope = "GLOBAL";
+      current.wins = record.wins;
+      current.losses = record.losses;
+      current.points = points;
+      current.calculationVersion = newVersion;
+      current.computedAt = computedAt;
+      await current.save(sessionOpts(session));
+    } else {
+      await RankingRecord.create(
+        [{ userId, scope: "GLOBAL", wins: record.wins, losses: record.losses, points, calculationVersion: newVersion, computedAt }],
+        { session }
       );
-    })
+    }
+  }
+
+  await writeAuditLog(
+    {
+      actorId: actor.userId,
+      action: "RANKINGS_RECALCULATED",
+      targetType: "RankingRecord",
+      after: { calculationVersion: newVersion, fighterCount: fighterUserIds.length },
+    },
+    session
   );
 
-  await writeAuditLog({
-    actorId: actor.userId,
-    action: "RANKINGS_RECALCULATED",
-    targetType: "RankingRecord",
-    after: { calculationVersion: newVersion, fighterCount: fighterUserIds.length },
-  });
-
   return { calculationVersion: newVersion, fighterCount: fighterUserIds.length };
+  });
 }
 
 export async function listPublicRankings() {

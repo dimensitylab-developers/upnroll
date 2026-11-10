@@ -26,4 +26,11 @@ describe("AppError hierarchy", () => {
     expect(wrapped.code).toBe("INTERNAL_ERROR");
     expect(wrapped.message).not.toContain("secrets");
   });
+
+  it("toAppError maps Mongoose CastError to ValidationError", () => {
+    const cast = Object.assign(new Error("Cast to ObjectId failed"), { name: "CastError" });
+    const wrapped = toAppError(cast);
+    expect(wrapped).toBeInstanceOf(ValidationError);
+    expect(wrapped.message).toBe("Invalid identifier.");
+  });
 });

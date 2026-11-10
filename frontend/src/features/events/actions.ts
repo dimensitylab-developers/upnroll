@@ -1,6 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import { invalidatePublicTags } from "@/lib/public-tags";
 import { requireActor } from "@/server/auth/session";
 import { createEvent, createDivision, updateEventStatus, updateEventMatCount } from "@/server/services/eventService";
 import { EVENT_STATUSES, type EventStatus } from "@/server/models/Event";
@@ -28,7 +29,7 @@ export async function createEventAction(_prevState: EventActionState, formData: 
   }
 
   try {
-    await createEvent(actor, {
+    const event = await createEvent(actor, {
       name: parsed.data.name,
       slug: parsed.data.slug,
       venue: parsed.data.venue,
@@ -39,6 +40,7 @@ export async function createEventAction(_prevState: EventActionState, formData: 
       currency: parsed.data.currency,
       matCount: parsed.data.matCount,
     });
+    invalidatePublicTags(["events", `event:${event.slug}`]);
   } catch (err) {
     return { error: toAppError(err).message };
   }
@@ -62,6 +64,7 @@ export async function createDivisionAction(_prevState: EventActionState, formDat
 
   try {
     await createDivision(actor, parsed.data);
+    invalidatePublicTags(["events", `divisions:${parsed.data.eventId}`]);
   } catch (err) {
     return { error: toAppError(err).message };
   }
@@ -80,7 +83,8 @@ export async function updateEventStatusAction(_prevState: EventActionState, form
   }
 
   try {
-    await updateEventStatus(actor, eventId, status as EventStatus);
+    const event = await updateEventStatus(actor, eventId, status as EventStatus);
+    invalidatePublicTags(["events", `event:${event.slug}`, "schedule"]);
   } catch (err) {
     return { error: toAppError(err).message };
   }
@@ -98,6 +102,7 @@ export async function updateEventMatCountAction(_prevState: EventActionState, fo
   }
   try {
     await updateEventMatCount(actor, eventId, matCount);
+    invalidatePublicTags(["schedule"]);
   } catch (err) {
     return { error: toAppError(err).message };
   }

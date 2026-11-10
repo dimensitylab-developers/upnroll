@@ -1,5 +1,5 @@
 import "server-only";
-import { getStorageAdapter } from "@/server/storage/local-disk";
+import { getStorageAdapter } from "@/server/storage/factory";
 import { detectImageType, type ImageContentType } from "@/features/payments/file-validation";
 import { assertFighter, type Actor } from "@/server/auth/actor";
 
@@ -29,6 +29,8 @@ export async function saveProfilePhoto(actor: Actor, bytes: Buffer, ext: string,
   const storage = getStorageAdapter();
   if (previousKey && previousKey !== key) await storage.delete(previousKey);
   const contentType = ext === ".png" ? "image/png" : ext === ".webp" ? "image/webp" : "image/jpeg";
-  await storage.put(key, bytes, contentType);
+  await storage.put(key, bytes, contentType, {
+    metadata: { purpose: "profile-photo", ownerUserId: actor.userId },
+  });
   return key;
 }

@@ -6,6 +6,8 @@ const divisionSchema = new Schema(
     name: { type: String, required: true, trim: true },
     discipline: { type: String, required: true, trim: true },
     capacity: { type: Number, required: true, min: 1 },
+    // Set by createDivision or the occupancy backfill. A missing value is not zero.
+    filledCount: { type: Number, min: 0 },
     // Overrides Event.paymentInstructions.feeMinorUnits when set; null means "use event default".
     feeMinorUnitsOverride: { type: Number, default: null },
   },

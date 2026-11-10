@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { SectionBanner } from "@/components/home/section-banner";
+import { ageFromDob } from "./grappler-schema";
 import { WAIVER_CLAUSES, WAIVER_IMPORTANT } from "./waiver";
 
 export type GrapplerFormState = {
@@ -143,6 +144,14 @@ export function GrapplerForm({
   const values = defaults;
   const errors = state.fieldErrors;
   const photoRequired = mode === "event" && !hasPhoto;
+  const initialAge = (() => {
+    if (values?.dateOfBirth) {
+      const fromDob = ageFromDob(values.dateOfBirth);
+      if (fromDob >= 0) return String(fromDob);
+    }
+    return values?.age ?? "";
+  })();
+  const [age, setAge] = useState(initialAge);
 
   useEffect(() => {
     return () => {
@@ -158,6 +167,12 @@ export function GrapplerForm({
     });
   }
 
+  function onDateOfBirthChange(event: ChangeEvent<HTMLInputElement>) {
+    const iso = event.target.value;
+    const calculated = ageFromDob(iso);
+    setAge(calculated >= 0 ? String(calculated) : "");
+  }
+
   return (
     <form action={formAction} className="space-y-8">
       {state.error && <p className="text-sm text-primary">{state.error}</p>}
@@ -169,8 +184,41 @@ export function GrapplerForm({
         <div className="grid items-start gap-4 lg:grid-cols-[1fr_9rem]">
           <div className="grid gap-4 sm:grid-cols-2">
             <TextField label="Full name (as per ID)" name="displayName" errors={errors} defaultValue={values?.displayName} autoComplete="name" />
-            <TextField label="Date of birth" name="dateOfBirth" type="date" errors={errors} defaultValue={values?.dateOfBirth} autoComplete="bday" />
-            <TextField label="Age" name="age" type="number" min={5} max={80} errors={errors} defaultValue={values?.age} />
+            <div>
+              <Label htmlFor="dateOfBirth" className="mb-1.5 block">
+                Date of birth
+              </Label>
+              <Input
+                id="dateOfBirth"
+                name="dateOfBirth"
+                type="date"
+                required
+                defaultValue={values?.dateOfBirth}
+                autoComplete="bday"
+                onChange={onDateOfBirthChange}
+              />
+              <FieldError name="dateOfBirth" errors={errors} />
+            </div>
+            <div>
+              <Label htmlFor="age" className="mb-1.5 block">
+                Age
+              </Label>
+              <Input
+                id="age"
+                name="age"
+                type="number"
+                min={5}
+                max={80}
+                required
+                readOnly
+                value={age}
+                aria-describedby="age-hint"
+              />
+              <p id="age-hint" className="mt-1 text-xs text-muted-foreground">
+                Calculated from date of birth.
+              </p>
+              <FieldError name="age" errors={errors} />
+            </div>
             <Choice
               legend="Gender"
               name="gender"

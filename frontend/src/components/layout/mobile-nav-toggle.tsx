@@ -1,10 +1,15 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useId, useRef, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Menu, X } from "lucide-react";
 import { comicCell, comicCellActive, comicCellIdle } from "./comic-cell";
+
+function withFrom(href: string, from: string) {
+  const sep = href.includes("?") ? "&" : "?";
+  return `${href}${sep}from=${encodeURIComponent(from)}`;
+}
 
 export function MobileNavToggle({
   links,
@@ -17,24 +22,74 @@ export function MobileNavToggle({
 }) {
   const [open, setOpen] = useState(false);
   const pathname = usePathname();
+  const menuId = useId();
+  const buttonRef = useRef<HTMLButtonElement>(null);
+  const panelRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    setOpen(false);
+  }, [pathname]);
+
+  useEffect(() => {
+    if (!open) return;
+
+    const onKey = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        setOpen(false);
+        buttonRef.current?.focus();
+      }
+    };
+    window.addEventListener("keydown", onKey);
+
+    const firstLink = panelRef.current?.querySelector<HTMLElement>("a, button");
+    firstLink?.focus();
+
+    return () => window.removeEventListener("keydown", onKey);
+  }, [open]);
+
+  function closeAndReturnFocus() {
+    setOpen(false);
+    buttonRef.current?.focus();
+  }
 
   return (
-    <div className="md:hidden ml-auto">
+    <div className="ml-auto flex items-center gap-2 md:hidden">
+      {!dashboardHref && (
+        <Link
+          href={withFrom("/login", pathname || "/")}
+          className={`${comicCell} ${comicCellIdle} min-h-11`}
+        >
+          Login
+        </Link>
+      )}
       <button
+        ref={buttonRef}
         type="button"
         aria-label={open ? "Close menu" : "Open menu"}
         aria-expanded={open}
-        onClick={() => setOpen((v) => !v)}
-        className={`${comicCell} ${comicCellIdle}`}
+        aria-controls={menuId}
+        onClick={() => setOpen((value) => !value)}
+        className={`${comicCell} ${comicCellIdle} min-h-11 min-w-11`}
       >
         {open ? <X className="size-4" /> : <Menu className="size-4" />}
       </button>
       {open && (
-        <div className="absolute left-0 right-0 top-full border-b-2 border-b-brand-red bg-background px-4 py-4 halftone-bg">
+        <div
+          id={menuId}
+          ref={panelRef}
+          className="absolute left-0 right-0 top-full z-50 border-b-2 border-b-brand-red bg-background px-4 py-4 halftone-bg shadow-[0_12px_0_0_rgba(0,0,0,0.08)]"
+        >
           <nav aria-label="Primary mobile" className="flex flex-col gap-2">
+            <p className="px-1 text-[11px] font-semibold uppercase tracking-[0.18em] text-brand-red">
+              Menu
+            </p>
             {event && (
-              <Link href={event.href} className={`${comicCell} ${comicCellActive}`} onClick={() => setOpen(false)}>
-                {event.label}
+              <Link
+                href={event.href}
+                className={`${comicCell} ${comicCellActive} min-h-11`}
+                onClick={closeAndReturnFocus}
+              >
+                <span className="truncate">{event.label}</span>
               </Link>
             )}
             {links.map((link) => {
@@ -44,26 +99,29 @@ export function MobileNavToggle({
                   key={link.href}
                   href={link.href}
                   aria-current={active ? "page" : undefined}
-                  className={`${comicCell} ${active ? comicCellActive : comicCellIdle}`}
-                  onClick={() => setOpen(false)}
+                  className={`${comicCell} ${active ? comicCellActive : comicCellIdle} min-h-11`}
+                  onClick={closeAndReturnFocus}
                 >
                   {link.label}
                 </Link>
               );
             })}
             {dashboardHref ? (
-              <Link href={dashboardHref} className={`${comicCell} ${comicCellActive}`} onClick={() => setOpen(false)}>
+              <Link
+                href={dashboardHref}
+                className={`${comicCell} ${comicCellActive} min-h-11`}
+                onClick={closeAndReturnFocus}
+              >
                 Dashboard
               </Link>
             ) : (
-              <>
-                <Link href="/login" className={`${comicCell} ${comicCellIdle}`} onClick={() => setOpen(false)}>
-                  Login
-                </Link>
-                <Link href="/register" className={`${comicCell} ${comicCellActive}`} onClick={() => setOpen(false)}>
-                  Sign up
-                </Link>
-              </>
+              <Link
+                href={withFrom("/register", pathname || "/")}
+                className={`${comicCell} ${comicCellActive} min-h-11`}
+                onClick={closeAndReturnFocus}
+              >
+                Sign up
+              </Link>
             )}
           </nav>
         </div>
