@@ -56,7 +56,7 @@ export function SuperfightLanding({
   const mats = matCount === 1 ? "1 mat" : `${matCount} mats`;
 
   return (
-    <main className="min-h-screen bg-[#f2eee6]">
+    <main className="route-enter min-h-screen bg-[#f2eee6]">
       {/* Banner hero — full pitch for #2 */}
       <section className="relative overflow-hidden border-b-2 border-black bg-black">
         <div className="relative mx-auto max-w-6xl">

@@ -67,7 +67,15 @@ export function FighterHypeCard({
       <div className="relative aspect-[5/4] overflow-hidden bg-[#e8e2d8]">
         {photoSrc ? (
           // eslint-disable-next-line @next/next/no-img-element
-          <img src={photoSrc} alt="" className="h-full w-full object-cover object-top" />
+          <img
+            src={photoSrc}
+            alt=""
+            width={320}
+            height={256}
+            loading="lazy"
+            decoding="async"
+            className="h-full w-full object-cover object-top"
+          />
         ) : (
           <div className="flex h-full w-full items-center justify-center">
             <span className="text-display text-xl font-semibold text-black/25">{initials(fighter.displayName) || "UR"}</span>
@@ -108,7 +116,15 @@ export function FighterHypeCard({
       <div className="relative aspect-[4/5] overflow-hidden bg-[#e8e2d8]">
         {photoSrc ? (
           // eslint-disable-next-line @next/next/no-img-element
-          <img src={photoSrc} alt="" className="h-full w-full object-cover object-top" />
+          <img
+            src={photoSrc}
+            alt=""
+            width={232}
+            height={290}
+            loading="lazy"
+            decoding="async"
+            className="h-full w-full object-cover object-top"
+          />
         ) : (
           <div className="flex h-full w-full flex-col items-center justify-center gap-2 border-b border-black/5">
             <span className="text-display text-3xl font-semibold tracking-tight text-black/25">

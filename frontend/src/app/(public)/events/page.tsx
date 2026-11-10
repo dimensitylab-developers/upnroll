@@ -1,6 +1,5 @@
 import Link from "next/link";
-import { connection } from "next/server";
-import { listDivisionsForEvent, listPublicEvents } from "@/server/services/eventService";
+import { cachedPublicDivisions, cachedPublicEvents } from "@/lib/public-reads";
 import { SectionBanner } from "@/components/home/section-banner";
 import { EventPoster } from "@/components/events/event-poster";
 import { EventStory } from "@/components/events/event-story";
@@ -18,18 +17,13 @@ function statusLine(status: string) {
 }
 
 export default async function PublicEventsPage() {
-  // cacheComponents: DB/mongoose touches current time; opt into request time first.
-  await connection();
-  const events = await listPublicEvents();
-  // Featured card only: upcoming ordered as returned (startDate asc), first non-completed.
+  // Cross-request cached public reads; event mutations invalidate the "events" tag.
+  const events = await cachedPublicEvents();
   const coming = events.filter((event) => event.status !== "COMPLETED");
   const finished = events.filter((event) => event.status === "COMPLETED");
   const featuredEvent = coming[0] ?? null;
   const later = coming.slice(1);
-  // Code-inferred: 0 division queries when no featured event; otherwise exactly 1.
-  const featuredDivisions = featuredEvent
-    ? await listDivisionsForEvent(String(featuredEvent._id))
-    : [];
+  const featuredDivisions = featuredEvent ? await cachedPublicDivisions(featuredEvent._id) : [];
 
   const heldCards = [
     ...HELD_COVERS.map((card) => ({ ...card, href: `/events/held/${card.slug}` })),
@@ -42,7 +36,7 @@ export default async function PublicEventsPage() {
   ];
 
   return (
-    <main className="min-h-screen bg-background halftone-bg px-4 py-10 sm:py-16">
+    <main className="route-enter min-h-screen bg-background halftone-bg px-4 py-10 sm:py-16">
       <div className="mx-auto max-w-6xl space-y-12 sm:space-y-16">
         <header className="max-w-2xl">
           <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-brand-red">Events</p>
@@ -74,7 +68,7 @@ export default async function PublicEventsPage() {
                 }))}
               />
               {later.map((event) => (
-                <Link key={String(event._id)} href={`/events/${event.slug}`} className="block border-2 border-black bg-white px-5 py-4 shadow-[4px_4px_0_0_#000]">
+                <Link key={String(event._id)} href={`/events/${event.slug}`} className="block border-2 border-black bg-white px-5 py-4 shadow-[4px_4px_0_0_#000] transition-colors active:bg-brand-red/10">
                   <p className="font-semibold">{event.name}</p>
                   <p className="mt-1 text-sm text-muted-foreground">
                     {formatDate(event.startDate)}
@@ -105,7 +99,7 @@ export default async function PublicEventsPage() {
           <ul className="grid gap-4 md:grid-cols-2">
             {heldCards.map((card) => (
               <li key={card.href} className={heldCards.length === 1 ? "md:col-span-2" : undefined}>
-                <Link href={card.href} className="grid h-full border-2 border-black bg-white shadow-[8px_8px_0_0_#000] md:grid-cols-[13rem_minmax(0,1fr)]">
+                <Link href={card.href} className="grid h-full border-2 border-black bg-white shadow-[8px_8px_0_0_#000] transition-colors active:bg-brand-red/5 md:grid-cols-[13rem_minmax(0,1fr)]">
                   <div className="bg-black px-6 py-6 text-white">
                     <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-brand-red">Held</p>
                     <p className="text-display mt-3 text-2xl font-semibold">{card.date}</p>

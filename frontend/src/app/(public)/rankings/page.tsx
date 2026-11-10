@@ -1,19 +1,30 @@
 import Link from "next/link";
 import { connection } from "next/server";
-import { listPublicRankings } from "@/server/services/rankingService";
-import { listPublicFighters } from "@/server/services/fighterService";
+import { cachedPublicFighters, cachedPublicRankings } from "@/lib/public-reads";
 import { listHeldCardAthletes } from "@/data/held-card-athletes";
 import { FighterHypeCard } from "@/features/fighters/fighter-hype-card";
 import { RankingsPodium, type PodiumFighter } from "@/features/rankings/rankings-podium";
 import { EmojiStrip, MatEmojis } from "@/components/home/mat-emojis";
 import { SectionBanner } from "@/components/home/section-banner";
+import { PaginationNav } from "@/components/pagination-nav";
 
-export default async function PublicRankingsPage() {
-  // cacheComponents: DB/mongoose touches current time; opt into request time first.
+/** Request-bound via searchParams — do not instant-prerender. */
+export const instant = false;
+
+const PAGE_SIZE = 10;
+const CARDS_PAGE_SIZE = 10;
+
+export default async function PublicRankingsPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ page?: string; cardsPage?: string }>;
+}) {
   await connection();
+  const { page: pageParam, cardsPage: cardsPageParam } = await searchParams;
+
   const [rankings, liveFighters, roster] = await Promise.all([
-    listPublicRankings(),
-    listPublicFighters(),
+    cachedPublicRankings(),
+    cachedPublicFighters(),
     Promise.resolve(listHeldCardAthletes()),
   ]);
   const liveBySlug = new Map(liveFighters.map((fighter) => [fighter.slug, fighter]));
@@ -102,8 +113,16 @@ export default async function PublicRankingsPage() {
   const podium = board.slice(0, 3);
   const rest = board.slice(3);
 
+  const totalPages = Math.max(1, Math.ceil(rest.length / PAGE_SIZE));
+  const page = Math.min(Math.max(1, Number(pageParam) || 1), totalPages);
+  const pagedRest = rest.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
+
+  const cardsTotalPages = Math.max(1, Math.ceil(profileCards.length / CARDS_PAGE_SIZE));
+  const cardsPage = Math.min(Math.max(1, Number(cardsPageParam) || 1), cardsTotalPages);
+  const pagedProfileCards = profileCards.slice((cardsPage - 1) * CARDS_PAGE_SIZE, cardsPage * CARDS_PAGE_SIZE);
+
   return (
-    <main className="relative min-h-screen overflow-x-hidden px-4 py-10 sm:py-16">
+    <main className="route-enter relative min-h-screen overflow-x-hidden px-4 py-10 sm:py-16">
       <MatEmojis className="pointer-events-none absolute inset-0 opacity-40 sm:opacity-100" />
       <div className="relative mx-auto max-w-5xl">
         <EmojiStrip emojis={["mount", "armbar", "hip-throw", "rear-naked-choke", "triangle-choke", "knee-slice"]} />
@@ -117,7 +136,7 @@ export default async function PublicRankingsPage() {
           </Link>
         </p>
 
-        <section className="mt-10">
+        <section id="leaderboard" className="mt-10 scroll-mt-24">
           <SectionBanner>Leaderboard</SectionBanner>
 
           {podium.length > 0 ? (
@@ -130,9 +149,9 @@ export default async function PublicRankingsPage() {
             </div>
           )}
 
-          {rest.length > 0 ? (
+          {pagedRest.length > 0 ? (
             <ol className="mt-4 divide-y-2 divide-black border-2 border-black bg-white shadow-[5px_5px_0_0_#000]">
-              {rest.map((row) => (
+              {pagedRest.map((row) => (
                 <li
                   key={row.slug ?? row.rank}
                   className="flex items-center gap-3 px-3 py-3 transition-colors hover:bg-[#f7f4ef] sm:gap-4 sm:px-4"
@@ -162,22 +181,48 @@ export default async function PublicRankingsPage() {
               ))}
             </ol>
           ) : null}
+          {rest.length > 0 ? (
+            <p className="mt-3 text-center text-xs text-muted-foreground">
+              {(page - 1) * PAGE_SIZE + 1}–{Math.min(page * PAGE_SIZE, rest.length)} of {rest.length} below the podium
+            </p>
+          ) : null}
+          <PaginationNav
+            page={page}
+            totalPages={totalPages}
+            basePath="/rankings"
+            hash="leaderboard"
+            extraParams={cardsPage > 1 ? { cardsPage: String(cardsPage) } : undefined}
+          />
         </section>
 
-        <section className="mt-14">
+        <section id="cards" className="mt-14 scroll-mt-24">
           <SectionBanner>Grappler cards</SectionBanner>
           <p className="mb-4 max-w-2xl bg-white px-2 py-1 text-sm">
             Dense board — tap a card for the full profile. No private contact or medical details.
           </p>
 
           <ul className="grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-4 md:grid-cols-4 lg:grid-cols-5">
-            {profileCards.map((card) => (
+            {pagedProfileCards.map((card) => (
               <li key={card.key}>
                 <FighterHypeCard fighter={card.fighter} href={card.href} compact />
               </li>
             ))}
           </ul>
           {profileCards.length === 0 && <p className="text-sm text-muted-foreground">No grappler profiles yet.</p>}
+          {profileCards.length > 0 ? (
+            <p className="mt-3 text-center text-xs text-muted-foreground">
+              {(cardsPage - 1) * CARDS_PAGE_SIZE + 1}–{Math.min(cardsPage * CARDS_PAGE_SIZE, profileCards.length)} of{" "}
+              {profileCards.length}
+            </p>
+          ) : null}
+          <PaginationNav
+            page={cardsPage}
+            totalPages={cardsTotalPages}
+            basePath="/rankings"
+            paramName="cardsPage"
+            hash="cards"
+            extraParams={page > 1 ? { page: String(page) } : undefined}
+          />
         </section>
       </div>
     </main>

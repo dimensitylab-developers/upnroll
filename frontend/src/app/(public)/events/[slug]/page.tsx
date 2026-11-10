@@ -1,9 +1,11 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { connection } from "next/server";
-import { getEventBySlug, listDivisionsForEvent } from "@/server/services/eventService";
-import { listPublicResults } from "@/server/services/matchService";
-import { listPublishedMediaForEvent } from "@/server/services/mediaService";
+import {
+  cachedPublicDivisions,
+  cachedPublicEvent,
+  cachedPublicResults,
+  cachedPublishedMediaForEvent,
+} from "@/lib/public-reads";
 import { HeldRecord, type HeldRecordData } from "@/components/events/held-record";
 import { SuperfightLanding } from "@/components/events/superfight-landing";
 import { Badge } from "@/components/ui/badge";
@@ -16,21 +18,20 @@ function isVideo(url: string) {
 const SUPERFIGHT_SLUG = "up-n-roll-superfight-series";
 
 export default async function PublicEventDetailPage({ params }: { params: Promise<{ slug: string }> }) {
-  // cacheComponents: DB/mongoose touches current time; opt into request time first.
-  await connection();
   const { slug } = await params;
   let event;
   try {
-    event = await getEventBySlug(slug);
+    event = await cachedPublicEvent(slug);
   } catch {
     notFound();
   }
-  const divisions = await listDivisionsForEvent(String(event._id));
+
+  const divisions = await cachedPublicDivisions(event._id);
 
   if (event.status === "COMPLETED") {
     const [media, results] = await Promise.all([
-      listPublishedMediaForEvent(String(event._id)),
-      listPublicResults(slug).catch(() => []),
+      cachedPublishedMediaForEvent(event._id),
+      cachedPublicResults(slug).catch(() => []),
     ]);
     const finals = new Map<string, { name: string; round: number }>();
     for (const match of results) {
@@ -67,7 +68,7 @@ export default async function PublicEventDetailPage({ params }: { params: Promis
     };
 
     return (
-      <main className="min-h-screen bg-background halftone-bg px-4 py-10 sm:py-16">
+      <main className="route-enter min-h-screen bg-background halftone-bg px-4 py-10 sm:py-16">
         <div className="mx-auto max-w-6xl">
           <PageBackLink href="/events" label="Back to events" />
           <div className="mt-2">
@@ -110,7 +111,7 @@ export default async function PublicEventDetailPage({ params }: { params: Promis
   }
 
   return (
-    <main className="min-h-screen bg-background halftone-bg px-4 py-10 sm:py-16">
+    <main className="route-enter min-h-screen bg-background halftone-bg px-4 py-10 sm:py-16">
       <div className="mx-auto max-w-2xl">
         <PageBackLink href="/events" label="Back to events" />
         <Badge variant="outline" className="mb-3">

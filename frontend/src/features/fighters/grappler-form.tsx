@@ -59,7 +59,11 @@ type GrapplerFormProps = {
 function FieldError({ name, errors }: { name: string; errors?: GrapplerFormState["fieldErrors"] }) {
   const message = errors?.[name]?.[0];
   if (!message) return null;
-  return <p className="text-xs text-primary mt-1">{message}</p>;
+  return (
+    <p className="mt-1 text-xs text-primary" data-field-error="true">
+      {message}
+    </p>
+  );
 }
 
 function TextField({
@@ -173,10 +177,28 @@ export function GrapplerForm({
     setAge(calculated >= 0 ? String(calculated) : "");
   }
 
+  const fieldErrorCount = errors ? Object.values(errors).filter((list) => list && list.length > 0).length : 0;
+
+  useEffect(() => {
+    if (!fieldErrorCount) return;
+    const first = document.querySelector<HTMLElement>("[data-field-error='true']");
+    first?.scrollIntoView({ behavior: "smooth", block: "center" });
+  }, [fieldErrorCount, errors]);
+
   return (
     <form action={formAction} className="space-y-8">
       {state.error && <p className="text-sm text-primary">{state.error}</p>}
-      {state.success && <p className="text-sm text-brand-cyan">Profile updated.</p>}
+      {state.success && (
+        <p className="border-2 border-black bg-white px-3 py-2 text-sm font-semibold text-brand-cyan shadow-[3px_3px_0_0_#000]">
+          Profile saved to your account.
+        </p>
+      )}
+      {fieldErrorCount > 0 && (
+        <p className="border-2 border-black bg-white px-3 py-2 text-sm text-primary shadow-[3px_3px_0_0_#000]" role="alert">
+          Could not save yet — fix {fieldErrorCount} field{fieldErrorCount === 1 ? "" : "s"} highlighted below
+          (Aadhaar must be 12 digits, medical fitness must be Yes, and required grappler details cannot be blank).
+        </p>
+      )}
       {top}
 
       <section className="space-y-4">

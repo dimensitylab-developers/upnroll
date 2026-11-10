@@ -6,7 +6,7 @@ import { listPublicResults, listPublicSchedule } from "@/server/services/matchSe
 import { listPublicRankings } from "@/server/services/rankingService";
 import { getPublicFighterBySlug, listPublicFighters } from "@/server/services/fighterService";
 import { listPublished } from "@/server/services/contentService";
-import { listPublishedMedia } from "@/server/services/mediaService";
+import { listPublishedMedia, listPublishedMediaForEvent } from "@/server/services/mediaService";
 import { getPublicSiteContact } from "@/server/services/siteSettingsService";
 import type { ContentType } from "@/server/models/ContentEntry";
 import { NotFoundError } from "@/server/http/errors";
@@ -31,6 +31,8 @@ export async function cachedPublicEvents() {
       startDate: event.startDate,
       status: event.status,
       description: event.description ?? "",
+      registrationClosesAt: event.registrationClosesAt,
+      matCount: event.matCount ?? 1,
     }))
   );
 }
@@ -49,7 +51,24 @@ export async function cachedPublicEvent(slug: string) {
     startDate: event.startDate,
     status: event.status,
     description: event.description ?? "",
+    registrationClosesAt: event.registrationClosesAt,
+    matCount: event.matCount ?? 1,
   });
+}
+
+export async function cachedPublishedMediaForEvent(eventId: string) {
+  "use cache";
+  cacheTag("media", `media:${eventId}`);
+  cacheLife("minutes");
+  if (process.env.CI === "true") return [];
+  const items = await listPublishedMediaForEvent(eventId);
+  return plain(
+    items.map((item) => ({
+      _id: String(item._id),
+      caption: item.caption,
+      externalUrl: item.externalUrl,
+    }))
+  );
 }
 
 export async function cachedPublicDivisions(eventId: string) {
@@ -83,6 +102,30 @@ export async function cachedPublishedBracket(divisionId: string) {
       status: match.status,
     })),
   });
+}
+
+/** Same payload as cachedPublishedBracket, or null when unpublished (safe for list pages). */
+export async function cachedPublishedBracketOrNull(divisionId: string) {
+  "use cache";
+  cacheTag(`brackets:${divisionId}`);
+  cacheLife("minutes");
+  if (process.env.CI === "true") return null;
+  try {
+    const result = await getPublishedBracketForDivision(divisionId);
+    return plain({
+      bracket: { _id: String(result.bracket._id), roundsCount: result.bracket.roundsCount },
+      matches: result.matches.map((match) => ({
+        round: match.round,
+        order: match.order,
+        competitorAName: match.competitorAName,
+        competitorBName: match.competitorBName,
+        winnerName: match.winnerName,
+        status: match.status,
+      })),
+    });
+  } catch {
+    return null;
+  }
 }
 
 export async function cachedPublicSchedule(slug: string) {

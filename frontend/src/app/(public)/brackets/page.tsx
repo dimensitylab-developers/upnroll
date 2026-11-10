@@ -1,8 +1,10 @@
 import Link from "next/link";
-import { connection } from "next/server";
-import { listDivisionsForEvent, listPublicEvents } from "@/server/services/eventService";
-import { getPublishedBracketForDivision } from "@/server/services/bracketService";
-import { listPublicSchedule } from "@/server/services/matchService";
+import {
+  cachedPublicDivisions,
+  cachedPublicEvents,
+  cachedPublicSchedule,
+  cachedPublishedBracketOrNull,
+} from "@/lib/public-reads";
 import { BracketView } from "@/features/brackets/bracket-view";
 import { LiveRefresh } from "@/components/home/live-refresh";
 import { EmojiStrip, MatEmojis } from "@/components/home/mat-emojis";
@@ -10,38 +12,35 @@ import { SectionBanner } from "@/components/home/section-banner";
 import { Badge } from "@/components/ui/badge";
 
 export default async function LiveBracketsPage() {
-  // cacheComponents: DB/mongoose touches current time; opt into request time first.
-  await connection();
-  const events = await listPublicEvents();
+  // Cached public reads with minute freshness; LiveRefresh soft-revalidates the tree.
+  const events = await cachedPublicEvents();
   const focus =
     events.find((event) => event.status === "REGISTRATION_OPEN" || event.status === "REGISTRATION_CLOSED") ??
     events.find((event) => event.status === "COMPLETED") ??
     events[0] ??
     null;
 
-  const divisions = focus ? await listDivisionsForEvent(String(focus._id)) : [];
+  const [divisions, schedule] = focus
+    ? await Promise.all([cachedPublicDivisions(focus._id), cachedPublicSchedule(focus.slug).catch(() => [])])
+    : [[], []];
+
   const brackets = focus
     ? (
         await Promise.all(
           divisions.map(async (division) => {
-            try {
-              const result = await getPublishedBracketForDivision(String(division._id));
-              return { division, ...result };
-            } catch {
-              return null;
-            }
+            const result = await cachedPublishedBracketOrNull(division._id);
+            return result ? { division, ...result } : null;
           })
         )
       ).filter((row): row is NonNullable<typeof row> => row !== null)
     : [];
 
-  const schedule = focus ? await listPublicSchedule(focus.slug).catch(() => []) : [];
   const live = schedule.filter((match) => match.status === "SCHEDULED");
   const decided = schedule.filter((match) => match.status === "COMPLETED" || match.status === "BYE");
   const waiting = schedule.filter((match) => match.status === "PENDING");
 
   return (
-    <main className="relative min-h-screen overflow-hidden px-4 py-16">
+    <main className="route-enter relative min-h-screen overflow-hidden px-4 py-16">
       <MatEmojis className="absolute inset-0" />
       <div className="relative mx-auto max-w-5xl">
         <div className="mb-4 flex flex-wrap items-center gap-3">
@@ -83,7 +82,7 @@ export default async function LiveBracketsPage() {
               ) : (
                 <ul className="grid gap-3 sm:grid-cols-2">
                   {live.map((match) => (
-                    <li key={String(match._id)} className="border-2 border-black bg-white p-4 shadow-[4px_4px_0_0_#000]">
+                    <li key={`${match.round}-${match.order}-${match.competitorAName}-${match.competitorBName}`} className="border-2 border-black bg-white p-4 shadow-[4px_4px_0_0_#000]">
                       <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-brand-red">
                         Mat {match.mat || "TBD"} · Round {match.round + 1}
                       </p>
@@ -108,7 +107,7 @@ export default async function LiveBracketsPage() {
               ) : (
                 <ul className="space-y-2">
                   {[...decided].reverse().slice(0, 12).map((match) => (
-                    <li key={String(match._id)} className="flex flex-wrap items-center justify-between gap-2 border-2 border-black bg-white px-4 py-3 text-sm shadow-[3px_3px_0_0_#000]">
+                    <li key={`${match.round}-${match.order}-${match.winnerName}`} className="flex flex-wrap items-center justify-between gap-2 border-2 border-black bg-white px-4 py-3 text-sm shadow-[3px_3px_0_0_#000]">
                       <span>
                         {match.competitorAName ?? "TBD"} vs {match.competitorBName ?? "TBD"}
                       </span>
@@ -129,7 +128,7 @@ export default async function LiveBracketsPage() {
               ) : (
                 <div className="space-y-10">
                   {brackets.map((row) => (
-                    <div key={String(row.bracket._id)}>
+                    <div key={row.bracket._id}>
                       <h3 className="mb-4 text-display text-xl font-semibold">{row.division.name}</h3>
                       <BracketView matches={row.matches} roundsCount={row.bracket.roundsCount} />
                     </div>

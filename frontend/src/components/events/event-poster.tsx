@@ -126,11 +126,20 @@ export function EventPoster({
           )}
           <p className="mt-3 text-sm">{mats} on the floor. Open matches are split across them.</p>
 
-          {canRegister && (
-            <Link href="/register" className="mt-8 inline-flex border-2 border-black bg-brand-red px-4 py-2 text-sm font-semibold text-white shadow-[4px_4px_0_0_#000]">
-              Register to compete
+          <div className="mt-8 flex flex-wrap gap-3">
+            <Link
+              href={`/events/${slug}`}
+              prefetch
+              className="inline-flex border-2 border-black bg-white px-4 py-2 text-sm font-semibold shadow-[4px_4px_0_0_#000] transition-colors active:bg-brand-red/10"
+            >
+              Open full card
             </Link>
-          )}
+            {canRegister ? (
+              <Link href="/register" className="inline-flex border-2 border-black bg-brand-red px-4 py-2 text-sm font-semibold text-white shadow-[4px_4px_0_0_#000]">
+                Register to compete
+              </Link>
+            ) : null}
+          </div>
         </div>
 
         <div className="border-t-2 border-black lg:border-t-0 lg:border-l-2">

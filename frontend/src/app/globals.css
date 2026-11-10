@@ -313,6 +313,15 @@
     100% { transform: translateX(280%); }
   }
 
+  /* Subtle enter-only opacity for route content (no exit hold). */
+  .route-enter {
+    animation: route-enter 150ms ease-out both;
+  }
+  @keyframes route-enter {
+    from { opacity: 0.72; }
+    to { opacity: 1; }
+  }
+
   /* Auth sign-in / sign-out mat gate */
   .auth-gate {
     animation: auth-gate-in 0.28s cubic-bezier(0.2, 0.9, 0.2, 1.1) both;
@@ -498,6 +507,7 @@
   @media (prefers-reduced-motion: reduce) {
     .live-pulse { animation: none; }
     .upnroll-loader-bar { animation: none; width: 100%; }
+    .route-enter { animation: none; }
     .chatbot-pop, .chatbot-float { animation: none; }
     .pitch-popup-in, .pitch-popup-out, .pitch-fuse { animation: none; }
     .hero-stamp, .hero-mark, .hero-line-1, .hero-line-2, .hero-line-3, .hero-video-float { animation: none; }

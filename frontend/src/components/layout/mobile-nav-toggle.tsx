@@ -94,12 +94,17 @@ export function MobileNavToggle({
             )}
             {links.map((link) => {
               const active = pathname === link.href || pathname.startsWith(`${link.href}/`);
+              const prefetch =
+                link.href === "/events" || link.href === "/rankings" || link.href === "/brackets" || link.href === "/about"
+                  ? true
+                  : undefined;
               return (
                 <Link
                   key={link.href}
                   href={link.href}
+                  prefetch={prefetch}
                   aria-current={active ? "page" : undefined}
-                  className={`${comicCell} ${active ? comicCellActive : comicCellIdle} min-h-11`}
+                  className={`${comicCell} ${active ? comicCellActive : comicCellIdle} relative min-h-11`}
                   onClick={closeAndReturnFocus}
                 >
                   {link.label}

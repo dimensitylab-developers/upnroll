@@ -15,7 +15,7 @@ export default async function HomePage() {
   const featured = events.find((event) => event.status === "REGISTRATION_OPEN") ?? events[0] ?? null;
 
   return (
-    <main className="relative">
+    <main className="route-enter relative">
       <EventPitchPopup />
       <MangaBackdrop className="top-[28rem] hidden min-h-[80vh] lg:block" />
       <HomeHero />
