@@ -5,13 +5,26 @@ import { NotFoundError } from "@/server/http/errors";
 import { getEventForAdmin, listDivisionsForEvent } from "@/server/services/eventService";
 import { EventStatusForm } from "@/features/events/event-status-form";
 import { MatCountForm } from "@/features/events/mat-count-form";
+import { EditEventForm } from "@/features/events/edit-event-form";
+import { EditDivisionForm } from "@/features/events/edit-division-form";
+import { PaymentQrForm } from "@/features/events/payment-qr-form";
 import { listRegistrationsForEvent } from "@/server/services/registrationService";
 import { isActiveRegistration } from "@/server/services/registrationStateMachine";
 import { WithdrawButton } from "@/features/registrations/withdraw-button";
-import { FighterRecord } from "@/features/admin/fighter-record";
+import { AdminEmpty } from "@/features/admin/ui/admin-empty";
+import { AdminSection } from "@/features/admin/ui/admin-section";
+import { AdminStamp } from "@/features/admin/ui/admin-stamp";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
 import { PageBackLink } from "@/components/layout/page-back-link";
+
+/** Session/DB-bound route — allow blocking navigation under Cache Components. */
+export const instant = false;
+
+const DOORS = [
+  { path: "divisions", label: "Divisions" },
+  { path: "brackets", label: "Brackets" },
+  { path: "matches", label: "Matches" },
+] as const;
 
 export default async function AdminEventDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
@@ -23,70 +36,122 @@ export default async function AdminEventDetailPage({ params }: { params: Promise
     if (err instanceof NotFoundError) notFound();
     throw err;
   }
-  const [divisions, registrations] = await Promise.all([
-    listDivisionsForEvent(id),
-    listRegistrationsForEvent(actor, id),
-  ]);
+  const [divisions, registrations] = await Promise.all([listDivisionsForEvent(id), listRegistrationsForEvent(actor, id)]);
+  const hasQr = Boolean(event.paymentInstructions?.qrImageKey);
 
   return (
-    <div className="mx-auto max-w-5xl space-y-8 px-0 sm:px-6">
+    <div className="space-y-10">
       <PageBackLink href="/admin/events" label="Back to events" />
-      <div className="manga-panel p-5 sm:p-8">
-        <div className="mb-2 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-          <h1 className="text-display text-2xl font-semibold break-words">{event.name}</h1>
-          <Badge variant="outline">{event.status.replaceAll("_", " ")}</Badge>
+
+      <section className="border-2 border-black bg-black px-5 py-7 text-white shadow-[8px_8px_0_0_#c8102e] sm:px-8">
+        <div className="flex flex-wrap items-start justify-between gap-3">
+          <div>
+            <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-brand-red">Event hub</p>
+            <h1 className="text-display mt-2 text-3xl font-semibold break-words">{event.name}</h1>
+            <p className="mt-2 text-sm text-white/70">
+              {event.slug} · {event.venue || "Venue TBA"} ·{" "}
+              {new Date(event.startDate).toLocaleDateString("en-IN", { day: "numeric", month: "long", year: "numeric" })}
+            </p>
+          </div>
+          <Badge className="border-white bg-brand-red text-white">{event.status.replaceAll("_", " ")}</Badge>
         </div>
-        <p className="text-sm text-muted-foreground mb-4">{event.slug} · {event.venue || "No venue set"}</p>
-        <EventStatusForm eventId={id} currentStatus={event.status} />
-        <div className="mt-6">
-          <MatCountForm eventId={id} matCount={event.matCount ?? 1} />
+        <div className="mt-6 flex flex-wrap gap-2">
+          {DOORS.map((door) => (
+            <Link
+              key={door.path}
+              href={`/admin/events/${id}/${door.path}`}
+              className="inline-flex -skew-x-12 border-2 border-black bg-white px-4 py-2 text-xs font-semibold uppercase tracking-wider text-black shadow-[4px_4px_0_0_#c8102e]"
+            >
+              <span className="inline-block skew-x-12">{door.label}</span>
+            </Link>
+          ))}
+        </div>
+      </section>
+
+      <div className="grid gap-6 lg:grid-cols-2">
+        <div className="border-2 border-black bg-white p-5 shadow-[6px_6px_0_0_#000] sm:p-6">
+          <AdminStamp>Status & mats</AdminStamp>
+          <EventStatusForm eventId={id} currentStatus={event.status} />
+          <div className="mt-6">
+            <MatCountForm eventId={id} matCount={event.matCount ?? 1} />
+          </div>
+        </div>
+        <div className="border-2 border-black bg-white p-5 shadow-[6px_6px_0_0_#000] sm:p-6">
+          <AdminStamp>Payment QR</AdminStamp>
+          <p className="mb-4 text-sm text-muted-foreground">Fighters see this image on the payment page once it is uploaded.</p>
+          <PaymentQrForm eventId={id} hasQr={hasQr} />
         </div>
       </div>
 
-      <div className="flex flex-wrap gap-3">
-        <Button asChild variant="outline"><Link href={`/admin/events/${id}/divisions`}>Divisions</Link></Button>
-        <Button asChild variant="outline"><Link href={`/admin/events/${id}/brackets`}>Brackets</Link></Button>
-        <Button asChild variant="outline"><Link href={`/admin/events/${id}/matches`}>Matches</Link></Button>
-      </div>
+      <AdminSection title="Overview">
+        <div className="border-2 border-black bg-white p-5 shadow-[6px_6px_0_0_#000] sm:p-6">
+          <EditEventForm
+            eventId={id}
+            name={event.name}
+            description={event.description ?? ""}
+            venue={event.venue ?? ""}
+            startDate={event.startDate}
+            registrationOpensAt={event.registrationOpensAt}
+            registrationClosesAt={event.registrationClosesAt}
+            feeMinorUnits={event.paymentInstructions?.feeMinorUnits ?? 0}
+            currency={event.paymentInstructions?.currency ?? "INR"}
+          />
+        </div>
+      </AdminSection>
 
-      <div>
-        <h2 className="text-display text-xl font-semibold mb-3">Divisions</h2>
-        <div className="space-y-2">
+      <AdminSection title="Divisions" actionHref={`/admin/events/${id}/divisions`} actionLabel="Full divisions page →">
+        <div className="space-y-3">
           {divisions.map((d) => (
-            <div key={String(d._id)} className="manga-panel p-3 text-sm flex flex-col sm:flex-row sm:justify-between gap-1">
-              <span>{d.name} — {d.discipline}</span>
-              <span className="text-muted-foreground">Capacity {d.capacity}</span>
+            <div key={String(d._id)} className="border-2 border-black bg-white p-4 shadow-[4px_4px_0_0_#000]">
+              <p className="text-sm text-muted-foreground">
+                Filled {d.filledCount ?? 0} / {d.capacity}
+              </p>
+              <EditDivisionForm
+                eventId={id}
+                divisionId={String(d._id)}
+                name={d.name}
+                discipline={d.discipline}
+                capacity={d.capacity}
+              />
             </div>
           ))}
-          {divisions.length === 0 && <p className="text-sm text-muted-foreground">No divisions yet.</p>}
+          {divisions.length === 0 && <AdminEmpty>No divisions yet. Create them on the divisions page.</AdminEmpty>}
         </div>
-      </div>
+      </AdminSection>
 
-      <div>
-        <h2 className="text-display text-xl font-semibold mb-3">Registrations</h2>
-        <p className="text-sm text-muted-foreground mb-3">
-          The full form is listed with each entry. Withdraw an incomplete, abandoned, or unpaid registration so the bracket stays intact.
+      <AdminSection title="Registrations">
+        <p className="mb-4 text-sm text-muted-foreground">
+          Open a fighter sheet for the full registration profile. Withdraw incomplete or unpaid spots so the bracket stays clean.
         </p>
-        <div className="space-y-4">
+        <div className="space-y-3">
           {registrations.map((registration) => (
-            <article key={String(registration._id)} className="manga-panel p-4 sm:p-5 space-y-4">
-              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 text-sm">
-                <span className="font-medium">{registration.fighterName} — {registration.divisionName}</span>
-                <span className="flex items-center gap-3">
-                  <span className="text-muted-foreground">{registration.status.replaceAll("_", " ")}</span>
+            <article key={String(registration._id)} className="border-2 border-black bg-white p-4 shadow-[5px_5px_0_0_#000] sm:p-5">
+              <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                <div className="min-w-0">
+                  <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-muted-foreground">Full name (as per ID)</p>
+                  <p className="text-display text-xl font-semibold">{registration.fighterName}</p>
+                  <p className="mt-1 text-sm text-muted-foreground">{registration.divisionName}</p>
+                </div>
+                <div className="flex flex-wrap items-center gap-3">
+                  <span className="text-sm text-muted-foreground">{registration.status.replaceAll("_", " ")}</span>
+                  {registration.fighter ? (
+                    <Link
+                      href={`/admin/fighters/${registration.fighter.userId}`}
+                      className="text-xs font-semibold uppercase tracking-wider text-brand-red"
+                    >
+                      Open sheet →
+                    </Link>
+                  ) : (
+                    <span className="text-sm text-muted-foreground">No profile yet</span>
+                  )}
                   {isActiveRegistration(registration.status) && <WithdrawButton registrationId={String(registration._id)} />}
-                </span>
+                </div>
               </div>
-              {registration.fighter ? (
-                <FighterRecord fighter={registration.fighter} />
-              ) : (
-                <p className="text-sm text-muted-foreground">This registration has no fighter profile yet.</p>
-              )}
             </article>
           ))}
-          {registrations.length === 0 && <p className="text-sm text-muted-foreground">No registrations yet.</p>}
+          {registrations.length === 0 && <AdminEmpty>No registrations yet.</AdminEmpty>}
         </div>
-      </div>
+      </AdminSection>
     </div>
   );
 }

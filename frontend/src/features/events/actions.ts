@@ -3,10 +3,19 @@
 import { revalidatePath } from "next/cache";
 import { invalidatePublicTags } from "@/lib/public-tags";
 import { requireActor } from "@/server/auth/session";
-import { createEvent, createDivision, updateEventStatus, updateEventMatCount } from "@/server/services/eventService";
+import {
+  createEvent,
+  createDivision,
+  updateEventStatus,
+  updateEventMatCount,
+  updateEventDetails,
+  updateDivision,
+  setEventPaymentQr,
+} from "@/server/services/eventService";
 import { EVENT_STATUSES, type EventStatus } from "@/server/models/Event";
 import { toAppError } from "@/server/http/errors";
-import { createEventSchema, createDivisionSchema } from "./schemas";
+import { detectImageType } from "@/features/payments/file-validation";
+import { createEventSchema, createDivisionSchema, updateEventDetailsSchema, updateDivisionSchema } from "./schemas";
 
 export type EventActionState = { error?: string };
 
@@ -108,5 +117,96 @@ export async function updateEventMatCountAction(_prevState: EventActionState, fo
   }
   revalidatePath(`/admin/events/${eventId}`);
   revalidatePath(`/admin/events/${eventId}/matches`);
+  return {};
+}
+
+export async function updateEventDetailsAction(_prevState: EventActionState, formData: FormData): Promise<EventActionState> {
+  const actor = await requireActor("ADMIN");
+  const parsed = updateEventDetailsSchema.safeParse({
+    eventId: formData.get("eventId"),
+    name: formData.get("name"),
+    description: formData.get("description"),
+    venue: formData.get("venue"),
+    startDate: formData.get("startDate"),
+    registrationOpensAt: formData.get("registrationOpensAt"),
+    registrationClosesAt: formData.get("registrationClosesAt"),
+    feeAmount: formData.get("feeAmount"),
+    currency: formData.get("currency") || "INR",
+  });
+  if (!parsed.success) {
+    return { error: parsed.error.issues[0]?.message ?? "Check the event details and try again." };
+  }
+
+  try {
+    const event = await updateEventDetails(actor, parsed.data.eventId, {
+      name: parsed.data.name,
+      description: parsed.data.description,
+      venue: parsed.data.venue,
+      startDate: parsed.data.startDate,
+      registrationOpensAt: parsed.data.registrationOpensAt,
+      registrationClosesAt: parsed.data.registrationClosesAt,
+      feeMinorUnits: Math.round(parseFloat(parsed.data.feeAmount) * 100),
+      currency: parsed.data.currency,
+    });
+    invalidatePublicTags(["events", `event:${event.slug}`, "schedule"]);
+  } catch (err) {
+    return { error: toAppError(err).message };
+  }
+
+  revalidatePath(`/admin/events/${parsed.data.eventId}`);
+  revalidatePath("/admin/events");
+  revalidatePath("/admin");
+  return {};
+}
+
+export async function updateDivisionAction(_prevState: EventActionState, formData: FormData): Promise<EventActionState> {
+  const actor = await requireActor("ADMIN");
+  const parsed = updateDivisionSchema.safeParse({
+    divisionId: formData.get("divisionId"),
+    eventId: formData.get("eventId"),
+    name: formData.get("name"),
+    discipline: formData.get("discipline"),
+    capacity: formData.get("capacity"),
+  });
+  if (!parsed.success) {
+    return { error: parsed.error.issues[0]?.message ?? "Check the division details and try again." };
+  }
+
+  try {
+    await updateDivision(actor, parsed.data.divisionId, {
+      name: parsed.data.name,
+      discipline: parsed.data.discipline,
+      capacity: parsed.data.capacity,
+    });
+    invalidatePublicTags(["events", `divisions:${parsed.data.eventId}`]);
+  } catch (err) {
+    return { error: toAppError(err).message };
+  }
+
+  revalidatePath(`/admin/events/${parsed.data.eventId}`);
+  revalidatePath(`/admin/events/${parsed.data.eventId}/divisions`);
+  return {};
+}
+
+export async function uploadEventPaymentQrAction(_prevState: EventActionState, formData: FormData): Promise<EventActionState> {
+  const actor = await requireActor("ADMIN");
+  const eventId = String(formData.get("eventId") ?? "");
+  const file = formData.get("qr");
+  if (!eventId) return { error: "Missing event." };
+  if (!(file instanceof File) || file.size === 0) return { error: "Choose a QR image." };
+  if (file.size > 1_500_000) return { error: "QR image must be under 1.5 MB." };
+
+  try {
+    const bytes = Buffer.from(await file.arrayBuffer());
+    const detected = detectImageType(bytes);
+    if (!detected) return { error: "Use a JPG, PNG, or WebP image." };
+    const ext = detected === "image/png" ? ".png" : detected === "image/webp" ? ".webp" : ".jpg";
+    const event = await setEventPaymentQr(actor, eventId, bytes, ext, detected);
+    invalidatePublicTags(["events", `event:${event.slug}`]);
+  } catch (err) {
+    return { error: toAppError(err).message };
+  }
+
+  revalidatePath(`/admin/events/${eventId}`);
   return {};
 }

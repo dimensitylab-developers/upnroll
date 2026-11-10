@@ -1,8 +1,14 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import { actorFromSession, getSession } from "@/server/auth/session";
 import { listMyRegistrations } from "@/server/services/registrationService";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+
+/** Session/DB-bound route — allow blocking navigation under Cache Components. */
+export const instant = false;
+
+export const metadata: Metadata = { title: "Registrations" };
 
 export default async function MyRegistrationsPage() {
   const session = await getSession();

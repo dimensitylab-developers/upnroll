@@ -59,6 +59,31 @@ export async function setContentPublicationState(actor: Actor, entryId: string, 
   return entry;
 }
 
+export async function updateContentEntry(
+  actor: Actor,
+  entryId: string,
+  input: { title: string; body: string; type: ContentType }
+) {
+  assertAdmin(actor);
+  await connectDB();
+  const entry = await ContentEntry.findById(entryId);
+  if (!entry) throw new NotFoundError("Content entry not found.");
+  const before = { title: entry.title, body: entry.body, type: entry.type };
+  entry.title = input.title;
+  entry.body = input.body;
+  entry.type = input.type;
+  await entry.save();
+  await writeAuditLog({
+    actorId: actor.userId,
+    action: "CONTENT_UPDATED",
+    targetType: "ContentEntry",
+    targetId: entryId,
+    before,
+    after: { title: entry.title, body: entry.body, type: entry.type },
+  });
+  return entry;
+}
+
 export async function listAllContent(actor: Actor, type?: ContentType) {
   assertAdmin(actor);
   await connectDB();

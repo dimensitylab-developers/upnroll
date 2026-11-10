@@ -34,7 +34,11 @@ vi.mock("@/server/models/FighterProfile", () => ({
         displayName: "Asha",
         slug: "asha",
         gym: "North",
+        academy: "North Academy",
         discipline: "No-Gi",
+        beltRank: "Purple",
+        weightDivision: "−70 kg",
+        photoKey: "",
         aadhaar: "9999",
         medicalConditionDetail: "private",
         userId: "fighter-1",
@@ -47,13 +51,24 @@ vi.mock("@/server/models/FighterProfile", () => ({
           displayName: "Asha",
           slug: "asha",
           gym: "North",
+          academy: "North Academy",
           discipline: "No-Gi",
+          beltRank: "Purple",
+          weightDivision: "−70 kg",
+          photoKey: "",
           aadhaar: "9999",
           userId: "fighter-1",
         }),
       }),
       lean: () => Promise.resolve(null),
     }),
+  },
+}));
+vi.mock("@/server/models/RankingRecord", () => ({
+  RankingRecord: {
+    find: () => findChain([]),
+    findOne: vi.fn().mockReturnValue({ lean: () => Promise.resolve(null) }),
+    countDocuments: vi.fn().mockResolvedValue(0),
   },
 }));
 vi.mock("@/server/models/Division", () => ({ Division: { find: () => findChain([]), findById: vi.fn() } }));
@@ -115,9 +130,24 @@ describe("public projections", () => {
     const { listPublicFighters } = await import("./fighterService");
     const rows = await listPublicFighters();
     expect(rows).toEqual([
-      { _id: "p1", displayName: "Asha", slug: "asha", gym: "North", discipline: "No-Gi" },
+      {
+        _id: "p1",
+        displayName: "Asha",
+        slug: "asha",
+        gym: "North",
+        academy: "North Academy",
+        discipline: "No-Gi",
+        beltRank: "Purple",
+        weightDivision: "−70 kg",
+        hasPhoto: false,
+        wins: 0,
+        losses: 0,
+        points: 0,
+        rank: null,
+      },
     ]);
     expect(JSON.stringify(rows)).not.toContain("aadhaar");
     expect(JSON.stringify(rows)).not.toContain("medical");
+    expect(JSON.stringify(rows)).not.toContain("photoKey");
   });
 });

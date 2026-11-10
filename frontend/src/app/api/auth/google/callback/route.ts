@@ -5,6 +5,7 @@ import { User } from "@/server/models/User";
 import { FighterProfile } from "@/server/models/FighterProfile";
 import { hashPassword } from "@/server/auth/password";
 import { createSession } from "@/server/auth/session";
+import { writeAuditLog } from "@/server/audit/log";
 import { OAUTH_STATE_COOKIE, verifyOAuthState } from "@/server/auth/oauth-state";
 
 function slugify(name: string): string {
@@ -88,6 +89,8 @@ export async function GET(request: NextRequest) {
     return response;
   }
 
+  const googleName = profile.name?.trim() || email.split("@")[0] || "Grappler";
+  let createdAccount = false;
   if (!user) {
     user = await User.create({
       email,
@@ -95,26 +98,58 @@ export async function GET(request: NextRequest) {
       role: "FIGHTER",
       emailVerified: true,
       emailVerifiedAt: new Date(),
+      displayName: googleName,
     });
+    createdAccount = true;
   } else if (user.emailVerified === false) {
     user.emailVerified = true;
     user.emailVerifiedAt = new Date();
+    if (!user.displayName?.trim()) user.displayName = googleName;
+    await user.save();
+  } else if (!user.displayName?.trim()) {
+    user.displayName = googleName;
     await user.save();
   }
 
   const existingProfile = await FighterProfile.findOne({ userId: user._id }).lean();
+  let createdProfile = false;
+  let profileId = existingProfile ? String(existingProfile._id) : "";
   if (!existingProfile) {
-    const displayName = profile.name?.trim() || email.split("@")[0];
-    let slug = slugify(displayName);
+    let slug = slugify(googleName);
     for (let attempt = 0; attempt < 5; attempt++) {
       const taken = await FighterProfile.findOne({ slug }).lean();
       if (!taken) break;
-      slug = slugify(displayName);
+      slug = slugify(googleName);
     }
-    await FighterProfile.create({ userId: user._id, displayName, slug, discipline: "No-Gi" });
+    const created = await FighterProfile.create({
+      userId: user._id,
+      displayName: googleName,
+      slug,
+      discipline: "No-Gi",
+    });
+    profileId = String(created._id);
+    createdProfile = true;
   }
 
   await createSession(String(user._id));
+  if (createdAccount) {
+    await writeAuditLog({ actorId: String(user._id), action: "USER_REGISTERED", targetType: "User", targetId: String(user._id) });
+  }
+  if (createdProfile) {
+    await writeAuditLog({
+      actorId: String(user._id),
+      action: "FIGHTER_PROFILE_CREATED",
+      targetType: "FighterProfile",
+      targetId: profileId,
+    });
+  }
+  await writeAuditLog({
+    actorId: String(user._id),
+    action: "USER_LOGIN",
+    targetType: "User",
+    targetId: String(user._id),
+    after: { via: "google" },
+  });
   const next = user.role === "ADMIN" ? "/admin" : "/fighter/dashboard";
   const response = NextResponse.redirect(new URL(next, url.origin));
   clearOAuthCookie(response);

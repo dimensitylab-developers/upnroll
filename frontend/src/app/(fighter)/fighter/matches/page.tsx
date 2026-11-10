@@ -1,6 +1,12 @@
+import type { Metadata } from "next";
 import { actorFromSession, getSession } from "@/server/auth/session";
 import { listMatchesForFighter } from "@/server/services/matchService";
 import { Badge } from "@/components/ui/badge";
+
+/** Session/DB-bound route — allow blocking navigation under Cache Components. */
+export const instant = false;
+
+export const metadata: Metadata = { title: "Matches" };
 
 export default async function FighterMatchesPage() {
   const session = await getSession();

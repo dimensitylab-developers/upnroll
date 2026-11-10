@@ -2,8 +2,9 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { connection } from "next/server";
 import { getPublicFighterBySlug } from "@/server/services/fighterService";
-import { athleteInitials, getHeldCardAthleteBySlug } from "@/data/held-card-athletes";
-import { Badge } from "@/components/ui/badge";
+import { getHeldCardAthleteBySlug } from "@/data/held-card-athletes";
+import { FighterHypeCard } from "@/features/fighters/fighter-hype-card";
+import { ShareFighterCardButton } from "@/features/fighters/share-fighter-card-button";
 import { Table, TableHeader, TableRow, TableHead, TableBody, TableCell } from "@/components/ui/table";
 import { NotFoundError } from "@/server/http/errors";
 import { MatEmojis } from "@/components/home/mat-emojis";
@@ -25,9 +26,22 @@ export default async function PublicFighterProfilePage({ params }: { params: Pro
   if (!live && !held) notFound();
 
   const displayName = live?.profile.displayName ?? held!.displayName;
-  const gym = live?.profile.gym || held?.gym || "Independent";
-  const discipline = live?.profile.discipline || held?.divisions[0] || null;
-  const record = live?.record ?? { wins: 0, losses: 0 };
+  const card = live?.card ?? {
+    displayName,
+    slug,
+    gym: held?.gym || "",
+    academy: held?.gym || "",
+    discipline: held?.divisions[0] || "",
+    beltRank: "",
+    weightDivision: held?.weights[0] || "",
+    hasPhoto: false,
+    wins: 0,
+    losses: 0,
+    points: 0,
+    rank: null,
+    featured: Boolean(held?.featured),
+    houseLabel: held?.houseLabel,
+  };
   const history = live?.history ?? [];
 
   return (
@@ -36,95 +50,25 @@ export default async function PublicFighterProfilePage({ params }: { params: Pro
       <div className="relative mx-auto max-w-2xl">
         <PageBackLink href="/rankings" label="Back to rankings" />
 
-        <div className="border-2 border-black bg-white p-5 shadow-[8px_8px_0_0_#000] sm:p-7">
-          <div className="flex flex-wrap items-start gap-4">
-            <div
-              className={`flex size-20 shrink-0 items-center justify-center border-2 border-black text-xl font-semibold ${
-                held?.featured ? "bg-brand-red text-white" : "bg-neutral-100"
-              }`}
-              aria-hidden="true"
+        <div className="mt-4 space-y-4">
+          <FighterHypeCard
+            fighter={{
+              ...card,
+              featured: Boolean(held?.featured),
+              houseLabel: held?.houseLabel ?? "Up 'n Roll",
+            }}
+          />
+          <div className="flex flex-wrap gap-2">
+            <ShareFighterCardButton slug={slug} displayName={displayName} />
+            <Link
+              href="/rankings"
+              className="inline-flex min-h-10 items-center border-2 border-black bg-white px-3 text-xs font-semibold uppercase tracking-[0.14em] shadow-[3px_3px_0_0_#000]"
             >
-              {athleteInitials(displayName)}
-            </div>
-            <div className="min-w-0 flex-1">
-              {held?.featured && (
-                <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-brand-red">
-                  {held.houseLabel ?? "Up 'n Roll"}
-                </p>
-              )}
-              <h1 className="text-display text-3xl font-semibold sm:text-4xl">{displayName}</h1>
-              <p className="mt-1 text-muted-foreground">
-                {gym}
-                {discipline ? ` · ${discipline}` : ""}
-              </p>
-              <div className="mt-3 flex flex-wrap gap-2">
-                <Badge variant="outline">
-                  {record.wins}-{record.losses}
-                </Badge>
-                {held && <Badge variant="outline">{held.event}</Badge>}
-                {!live && <Badge variant="outline">Photo coming</Badge>}
-              </div>
-            </div>
+              Rankings board →
+            </Link>
           </div>
-
-          {held && (
-            <dl className="mt-6 grid gap-2 border-t-2 border-dashed border-black pt-4 text-sm sm:grid-cols-2">
-              {held.age != null && (
-                <>
-                  <dt className="font-semibold">Age</dt>
-                  <dd>{held.age}</dd>
-                </>
-              )}
-              {held.gender && (
-                <>
-                  <dt className="font-semibold">Gender</dt>
-                  <dd>{held.gender}</dd>
-                </>
-              )}
-              {(held.city || held.state) && (
-                <>
-                  <dt className="font-semibold">From</dt>
-                  <dd>{[held.city, held.state].filter(Boolean).join(", ")}</dd>
-                </>
-              )}
-              {held.coach && (
-                <>
-                  <dt className="font-semibold">Coach</dt>
-                  <dd>{held.coach}</dd>
-                </>
-              )}
-              {held.weights.length > 0 && (
-                <>
-                  <dt className="font-semibold">Weight</dt>
-                  <dd>{held.weights.join(" · ")}</dd>
-                </>
-              )}
-              {held.divisions.length > 0 && (
-                <>
-                  <dt className="font-semibold">Division</dt>
-                  <dd>{held.divisions.join(" · ")}</dd>
-                </>
-              )}
-              {held.instagram && (
-                <>
-                  <dt className="font-semibold">Instagram</dt>
-                  <dd>
-                    <a
-                      href={`https://www.instagram.com/${held.instagram}/`}
-                      className="underline"
-                      target="_blank"
-                      rel="noreferrer"
-                    >
-                      @{held.instagram}
-                    </a>
-                  </dd>
-                </>
-              )}
-            </dl>
-          )}
-
-          <p className="mt-4 text-xs text-muted-foreground">
-            Photographs will sit in the open square once we have them. After registration is live in production, confirmed accounts keep this profile updated from the form.
+          <p className="text-sm text-muted-foreground">
+            Public card only — record, academy, belt, division, and photo. Personal and medical details stay private.
           </p>
         </div>
 

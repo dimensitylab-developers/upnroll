@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { BuiltBy, FounderCredit } from "./brand";
+import type { SiteContact } from "./site-contact";
 import { SITE_CONTACT } from "./site-contact";
 
 const EXPLORE = [
@@ -28,13 +29,12 @@ function FooterHeading({ children }: { children: string }) {
   );
 }
 
-export function SiteFooter() {
-  const hasEmail = Boolean(SITE_CONTACT.email);
-  const hasPhone = Boolean(SITE_CONTACT.phoneDisplay && SITE_CONTACT.phoneTel);
+export function SiteFooter({ contact = SITE_CONTACT }: { contact?: SiteContact }) {
+  const hasEmail = Boolean(contact.email);
+  const hasPhone = Boolean(contact.phoneDisplay && contact.phoneTel);
 
   return (
     <footer className="border-t-2 border-black bg-[#efeae2]">
-      {/* Brand strip — wordmark needs a light ground */}
       <div className="border-b-2 border-black bg-black">
         <div className="mx-auto flex max-w-6xl flex-col gap-6 px-4 py-8 sm:px-6 lg:flex-row lg:items-end lg:justify-between lg:px-8 lg:py-10">
           <div className="max-w-xl">
@@ -58,12 +58,12 @@ export function SiteFooter() {
 
           <div className="flex flex-wrap items-center gap-3">
             <a
-              href={SITE_CONTACT.instagramUrl}
+              href={contact.instagramUrl}
               target="_blank"
               rel="noreferrer"
               className="inline-flex -skew-x-12 border-2 border-black bg-brand-red px-5 py-3 text-sm font-semibold uppercase tracking-wider text-white shadow-[5px_5px_0_0_#fff]"
             >
-              <span className="inline-block skew-x-12">@{SITE_CONTACT.instagramHandle}</span>
+              <span className="inline-block skew-x-12">@{contact.instagramHandle}</span>
             </a>
             <Link
               href="/events"
@@ -75,7 +75,6 @@ export function SiteFooter() {
         </div>
       </div>
 
-      {/* Link grid */}
       <div className="mx-auto grid max-w-6xl gap-8 px-4 py-10 sm:grid-cols-2 sm:px-6 lg:grid-cols-4 lg:gap-6 lg:px-8 lg:py-12">
         <div>
           <FooterHeading>Explore</FooterHeading>
@@ -113,29 +112,32 @@ export function SiteFooter() {
           <FooterHeading>Contact</FooterHeading>
           <div className="grid gap-3 sm:grid-cols-2">
             <a
-              href={SITE_CONTACT.instagramUrl}
+              href={contact.instagramUrl}
               target="_blank"
               rel="noreferrer"
               className="border-2 border-black bg-white p-4 shadow-[5px_5px_0_0_#000] transition-transform hover:-translate-y-0.5 hover:shadow-[7px_7px_0_0_#c8102e]"
             >
               <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-brand-red">Instagram</p>
-              <p className="text-display mt-2 text-xl font-semibold">@{SITE_CONTACT.instagramHandle}</p>
+              <p className="text-display mt-2 text-xl font-semibold">@{contact.instagramHandle}</p>
               <p className="mt-1 text-sm text-muted-foreground">DM for cards and day-of questions</p>
             </a>
 
             <div className="border-2 border-black bg-black p-4 text-white shadow-[5px_5px_0_0_#c8102e]">
               <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-brand-red">Venue city</p>
-              <p className="text-display mt-2 text-xl font-semibold">{SITE_CONTACT.city}</p>
+              <p className="text-display mt-2 text-xl font-semibold">{contact.city}</p>
               <p className="mt-1 text-sm text-white/65">No-Gi · Road to Super Fight</p>
               {hasEmail && (
-                <a href={`mailto:${SITE_CONTACT.email}`} className="mt-3 block text-sm text-white/85 underline">
-                  {SITE_CONTACT.email}
+                <a href={`mailto:${contact.email}`} className="mt-3 block text-sm text-white/85 underline">
+                  {contact.email}
                 </a>
               )}
               {hasPhone && (
-                <a href={`tel:${SITE_CONTACT.phoneTel}`} className="mt-1 block text-sm text-white/85 underline">
-                  {SITE_CONTACT.phoneDisplay}
+                <a href={`tel:${contact.phoneTel}`} className="mt-1 block text-sm text-white/85 underline">
+                  {contact.phoneDisplay}
                 </a>
+              )}
+              {!hasEmail && !hasPhone && (
+                <p className="mt-3 text-sm text-white/55">DM Instagram for cards and day-of questions.</p>
               )}
             </div>
           </div>

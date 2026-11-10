@@ -11,6 +11,9 @@ import { MatchResultDialog } from "@/features/matches/match-result-dialog";
 import { ScheduleMatchDialog } from "@/features/matches/schedule-match-dialog";
 import { PageBackLink } from "@/components/layout/page-back-link";
 
+/** Session/DB-bound route — allow blocking navigation under Cache Components. */
+export const instant = false;
+
 const UPCOMING_STATUSES = new Set(["PENDING", "SCHEDULED"]);
 const COMPLETED_STATUSES = new Set(["COMPLETED", "BYE"]);
 

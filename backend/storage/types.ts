@@ -5,9 +5,10 @@
 import type { Readable } from "node:stream";
 
 export type StoragePutMetadata = {
-  purpose?: "payment-screenshot" | "profile-photo";
+  purpose?: "payment-screenshot" | "profile-photo" | "payment-qr";
   ownerUserId?: string;
   registrationId?: string;
+  eventId?: string;
   sha256?: string;
 };
 

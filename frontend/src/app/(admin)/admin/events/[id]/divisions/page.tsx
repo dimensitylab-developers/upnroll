@@ -5,6 +5,9 @@ import { getEventForAdmin, listDivisionsForEvent } from "@/server/services/event
 import { CreateDivisionForm } from "@/features/events/create-division-form";
 import { PageBackLink } from "@/components/layout/page-back-link";
 
+/** Session/DB-bound route — allow blocking navigation under Cache Components. */
+export const instant = false;
+
 export default async function AdminDivisionsPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
   const actor = await requireActor("ADMIN");

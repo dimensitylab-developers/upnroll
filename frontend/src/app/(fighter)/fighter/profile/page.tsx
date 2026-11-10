@@ -1,7 +1,13 @@
+import type { Metadata } from "next";
 import { actorFromSession, getSession } from "@/server/auth/session";
 import { getFighterProfile } from "@/server/services/fighterService";
 import { ProfileForm } from "@/features/profile/profile-form";
 import type { GrapplerDefaults } from "@/features/fighters/grappler-form";
+
+/** Session/DB-bound route — allow blocking navigation under Cache Components. */
+export const instant = false;
+
+export const metadata: Metadata = { title: "Profile" };
 
 function yesNo(value: boolean | undefined, ready: boolean): string {
   if (!ready) return "";

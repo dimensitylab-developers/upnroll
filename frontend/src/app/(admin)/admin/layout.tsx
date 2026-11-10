@@ -5,12 +5,29 @@ import { connection } from "next/server";
 import { DynamicBoundary } from "@/components/dynamic-boundary";
 import { PageLoader } from "@/components/layout/page-loader";
 import { getSession } from "@/server/auth/session";
-import { logoutAction } from "@/features/auth/actions";
-import { Button } from "@/components/ui/button";
+import { portalGreeting, portalTabTitle, resolveDisplayName } from "@/server/auth/display-name";
+import { SignOutButton } from "@/features/auth/sign-out-button";
 import { AdminNav } from "@/features/admin/admin-nav";
 import { BrandMark, BuiltBy, FounderCredit } from "@/components/layout/brand";
 
-export const metadata: Metadata = { robots: { index: false, follow: false } };
+/** Admin is cookie/session-bound — never try to instant-prerender the portal. */
+export const instant = false;
+
+export async function generateMetadata(): Promise<Metadata> {
+  const session = await getSession();
+  if (!session || session.user.role !== "ADMIN") {
+    return { robots: { index: false, follow: false }, title: "Admin" };
+  }
+  const displayName = await resolveDisplayName(session.user._id, session.user.email);
+  const who = portalTabTitle(displayName, "ADMIN");
+  return {
+    robots: { index: false, follow: false },
+    title: {
+      absolute: `${who} · Up 'n Roll`,
+      template: `%s · ${who} · Up 'n Roll`,
+    },
+  };
+}
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
   return (
@@ -21,34 +38,52 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 }
 
 async function AdminShell({ children }: { children: React.ReactNode }) {
-  // Request-time boundary for Cache Components — DB/session reads must not prerender.
   await connection();
   const session = await getSession();
   if (!session) redirect("/login");
-  // Authenticated non-admins stay signed in — send them to their portal, not login.
   if (session.user.role !== "ADMIN") redirect("/fighter/dashboard");
 
+  const displayName = await resolveDisplayName(session.user._id, session.user.email);
+  const greeting = portalGreeting(displayName, "ADMIN");
+
   return (
-    <div className="flex min-h-screen flex-col bg-background">
-      <header className="manga-panel m-3 flex flex-col gap-3 px-4 py-3 sm:m-4 sm:flex-row sm:items-center sm:justify-between sm:px-5">
-        <div className="flex min-w-0 flex-col gap-3 sm:flex-row sm:items-center sm:gap-6">
-          <Link href="/admin" className="flex min-h-11 items-center gap-2 text-display text-base font-semibold sm:text-lg">
-            <BrandMark className="h-8 w-8 shrink-0" />
-            <span className="truncate">Up &apos;n Roll — Admin</span>
-          </Link>
+    <div className="flex min-h-dvh flex-col bg-[#efeae2]">
+      <header className="sticky top-0 z-40 border-b-2 border-black bg-black text-white">
+        <div className="mx-auto flex max-w-6xl flex-col gap-3 px-3 py-3 sm:gap-4 sm:px-6 sm:py-4 lg:px-8">
+          <div className="flex items-center justify-between gap-2">
+            <Link href="/admin" className="flex min-h-11 min-w-0 items-center gap-2 sm:gap-3">
+              <span className="shrink-0 border-2 border-white bg-white p-1.5 shadow-[4px_4px_0_0_#c8102e]">
+                <BrandMark className="h-7 w-7 sm:h-8 sm:w-8" />
+              </span>
+              <span className="min-w-0">
+                <span className="block text-[10px] font-semibold uppercase tracking-[0.22em] text-brand-red">House control</span>
+                <span className="text-display block truncate text-base font-semibold sm:text-lg lg:text-xl">
+                  <span className="sm:hidden">Admin</span>
+                  <span className="hidden sm:inline">Up &apos;n Roll Admin</span>
+                </span>
+              </span>
+            </Link>
+            <div className="flex shrink-0 items-center gap-2 sm:gap-3">
+              <div className="hidden text-right md:block">
+                <p className="text-sm font-medium text-white">{greeting}</p>
+                <p className="max-w-[14rem] truncate text-xs text-white/50">{session.user.email}</p>
+              </div>
+              <SignOutButton
+                name={displayName}
+                className="min-h-10 border-white bg-transparent px-3 text-white hover:bg-white hover:text-black sm:min-h-11"
+              />
+            </div>
+          </div>
           <AdminNav />
         </div>
-        <form action={logoutAction} className="sm:shrink-0">
-          <Button variant="outline" size="sm" type="submit" className="min-h-11 w-full sm:w-auto">
-            Sign out
-          </Button>
-        </form>
       </header>
-      <main className="flex-1 px-4 pb-10">{children}</main>
-      <div className="flex justify-end px-5 pb-[max(1rem,env(safe-area-inset-bottom))] pr-4">
-        <div className="flex flex-col items-end gap-1">
-          <FounderCredit />
-          <BuiltBy />
+      <main className="mx-auto w-full max-w-6xl flex-1 px-3 py-5 sm:px-6 sm:py-8 lg:px-8">{children}</main>
+      <div className="border-t-2 border-black bg-white">
+        <div className="mx-auto flex max-w-6xl justify-end gap-4 px-4 py-4 sm:px-6 lg:px-8">
+          <div className="flex flex-col items-end gap-1">
+            <FounderCredit />
+            <BuiltBy />
+          </div>
         </div>
       </div>
     </div>

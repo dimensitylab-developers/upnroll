@@ -75,7 +75,13 @@ export async function registerAction(
     const passwordHash = await hashPassword(password);
     // Public registration only ever creates FIGHTER accounts — see Part M:
     // admin accounts are created exclusively via scripts/create-admin.ts.
-    const user = await User.create({ email, passwordHash, role: "FIGHTER", emailVerified: false });
+    const user = await User.create({
+      email,
+      passwordHash,
+      role: "FIGHTER",
+      emailVerified: false,
+      displayName,
+    });
 
     let slug = slugify(displayName);
     for (let attempt = 0; attempt < 5; attempt++) {
@@ -83,7 +89,7 @@ export async function registerAction(
       if (!taken) break;
       slug = slugify(displayName);
     }
-    await FighterProfile.create({
+    const profile = await FighterProfile.create({
       userId: user._id,
       slug,
       displayName,
@@ -92,6 +98,12 @@ export async function registerAction(
     });
 
     await writeAuditLog({ actorId: String(user._id), action: "USER_REGISTERED", targetType: "User", targetId: String(user._id) });
+    await writeAuditLog({
+      actorId: String(user._id),
+      action: "FIGHTER_PROFILE_CREATED",
+      targetType: "FighterProfile",
+      targetId: String(profile._id),
+    });
     await sendVerificationCode(String(user._id), email);
   } catch (err) {
     if (isDbConnectivityError(err)) return { error: DB_UNAVAILABLE };
@@ -164,6 +176,13 @@ export async function verifyEmailAction(
   if (!confirmed) return { error: "That code does not match, or it has expired." };
 
   await createSession(confirmed.userId);
+  await writeAuditLog({
+    actorId: confirmed.userId,
+    action: "USER_LOGIN",
+    targetType: "User",
+    targetId: confirmed.userId,
+    after: { via: "email_verify" },
+  });
   redirect("/fighter/dashboard");
 }
 

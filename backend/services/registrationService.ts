@@ -165,7 +165,10 @@ export async function listRecentRegistrationsForAdmin(actor: Actor, limit = 5) {
 
   return registrations.map((r) => ({
     _id: r._id,
+    userId: String(r.userId),
     fighterName: profileByUserId.get(String(r.userId)) ?? "Unknown fighter",
+    status: r.status,
+    createdAt: r.createdAt as Date,
     event: eventById.get(String(r.eventId)) ?? null,
     division: divisionById.get(String(r.divisionId)) ?? null,
   }));

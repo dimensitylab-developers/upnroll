@@ -5,22 +5,28 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { BrandMark } from "./brand";
 
+/**
+ * Home: hide the whole brand lockup while the hero wordmark is on screen.
+ * After scroll, reveal Up 'n Roll in the sticky header. Other routes always show it.
+ */
 export function HeaderLockup() {
   const pathname = usePathname();
   const isHome = pathname === "/";
-  // Home starts with mark-only on mobile; wordmark reveals after hero scrolls away.
-  const [wordmarkVisible, setWordmarkVisible] = useState(!isHome);
+  const [revealed, setRevealed] = useState(!isHome);
 
   useEffect(() => {
     if (!isHome) {
-      setWordmarkVisible(true);
+      setRevealed(true);
       return;
     }
 
-    setWordmarkVisible(false);
+    setRevealed(false);
 
     const target = document.getElementById("home-wordmark");
-    if (!target) return;
+    if (!target) {
+      setRevealed(true);
+      return;
+    }
 
     const headerOffset = () => {
       const header = document.querySelector("header");
@@ -28,7 +34,7 @@ export function HeaderLockup() {
     };
 
     const update = () => {
-      setWordmarkVisible(target.getBoundingClientRect().bottom <= headerOffset() + 4);
+      setRevealed(target.getBoundingClientRect().bottom <= headerOffset() + 4);
     };
 
     update();
@@ -39,6 +45,10 @@ export function HeaderLockup() {
       window.removeEventListener("resize", update);
     };
   }, [isHome, pathname]);
+
+  if (isHome && !revealed) {
+    return <div className="hidden w-0 shrink-0" aria-hidden="true" />;
+  }
 
   return (
     <Link
@@ -51,11 +61,7 @@ export function HeaderLockup() {
       <img
         src="/logo-wordmark.png"
         alt=""
-        aria-hidden={!wordmarkVisible}
-        className={[
-          "h-7 w-auto max-w-none transition-[max-width,opacity] duration-300 ease-out sm:h-9",
-          wordmarkVisible ? "max-w-[9rem] opacity-100 sm:max-w-[11rem]" : "max-w-0 opacity-0",
-        ].join(" ")}
+        className="h-7 w-auto sm:h-9"
       />
     </Link>
   );

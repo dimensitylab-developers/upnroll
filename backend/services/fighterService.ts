@@ -1,10 +1,12 @@
 import "server-only";
 import { connectDB } from "@/server/db/connect";
 import { FighterProfile } from "@/server/models/FighterProfile";
+import { RankingRecord } from "@/server/models/RankingRecord";
 import { User } from "@/server/models/User";
 import { writeAuditLog } from "@/server/audit/log";
 import { listPublicMatchHistory } from "./matchService";
 import { NotFoundError } from "@/server/http/errors";
+import { requireObjectId } from "@/server/validation/objectId";
 import { assertAdmin, assertFighter, type Actor } from "@/server/auth/actor";
 
 export type AdminFighterView = {
@@ -163,6 +165,7 @@ export async function updateFighterProfile(actor: Actor, input: FighterDetailsIn
   if (input.waiverAcceptedAt) profile.waiverAcceptedAt = input.waiverAcceptedAt;
   if (input.discipline) profile.discipline = input.discipline;
   await profile.save();
+  await User.findByIdAndUpdate(actor.userId, { $set: { displayName: input.displayName } });
 
   await writeAuditLog({ actorId: actor.userId, action: "FIGHTER_PROFILE_UPDATED", targetType: "FighterProfile", targetId: String(profile._id) });
   return profile;
@@ -182,7 +185,53 @@ export async function countFighters(actor: Actor) {
   return FighterProfile.countDocuments();
 }
 
-const PUBLIC_FIGHTER_FIELDS = "displayName slug gym discipline userId";
+/** Public hype-card fields only — never aadhaar, medical, mobile, or other PII. */
+const PUBLIC_FIGHTER_FIELDS =
+  "displayName slug gym academy discipline beltRank weightDivision photoKey userId";
+
+export type PublicFighterCard = {
+  displayName: string;
+  slug: string;
+  gym: string;
+  academy: string;
+  discipline: string;
+  beltRank: string;
+  weightDivision: string;
+  hasPhoto: boolean;
+  wins: number;
+  losses: number;
+  points: number;
+  rank: number | null;
+};
+
+function toPublicCard(
+  profile: {
+    displayName?: string;
+    slug?: string;
+    gym?: string;
+    academy?: string;
+    discipline?: string;
+    beltRank?: string;
+    weightDivision?: string;
+    photoKey?: string;
+  },
+  record?: { wins?: number; losses?: number; points?: number; rank?: number | null }
+): PublicFighterCard {
+  return {
+    displayName: profile.displayName?.trim() || "Grappler",
+    slug: profile.slug || "",
+    gym: profile.gym?.trim() || "",
+    academy: profile.academy?.trim() || "",
+    discipline: profile.discipline?.trim() || "",
+    beltRank: profile.beltRank?.trim() || "",
+    weightDivision: profile.weightDivision?.trim() || "",
+    hasPhoto: Boolean(profile.photoKey?.trim()),
+    wins: record?.wins ?? 0,
+    losses: record?.losses ?? 0,
+    points: record?.points ?? 0,
+    rank: record?.rank ?? null,
+  };
+}
 
 /** Full grappler form for organizers. Aadhaar and medical answers stay off public pages. */
 export async function listFightersForAdmin(actor: Actor) {
@@ -196,16 +245,38 @@ export async function listFightersForAdmin(actor: Actor) {
   return profiles.map((profile) => toAdminFighterView(profile, emailById.get(String(profile.userId)) ?? ""));
 }
 
+/** One fighter’s full registration-style profile for the admin roster detail. */
+export async function getFighterForAdmin(actor: Actor, userId: string): Promise<AdminFighterView> {
+  assertAdmin(actor);
+  const id = requireObjectId(userId, "fighter");
+  await connectDB();
+  const profile = await FighterProfile.findOne({ userId: id }).lean();
+  if (!profile) throw new NotFoundError("Fighter not found.");
+  const user = await User.findById(id).select("email").lean();
+  return toAdminFighterView(profile, user?.email ?? "");
+}
+
 export async function listPublicFighters() {
   await connectDB();
-  const rows = await FighterProfile.find().sort({ displayName: 1 }).select("displayName slug gym discipline").lean();
-  return rows.map((p) => ({
-    _id: String(p._id),
-    displayName: p.displayName,
-    slug: p.slug,
-    gym: p.gym,
-    discipline: p.discipline,
-  }));
+  const [rows, rankingRows] = await Promise.all([
+    FighterProfile.find()
+      .sort({ displayName: 1 })
+      .select(PUBLIC_FIGHTER_FIELDS)
+      .lean(),
+    RankingRecord.find().sort({ points: -1, wins: -1 }).lean(),
+  ]);
+
+  const rankByUserId = new Map(
+    rankingRows.map((row, index) => [
+      String(row.userId),
+      { wins: row.wins, losses: row.losses, points: row.points, rank: index + 1 },
+    ])
+  );
+
+  return rows.map((profile) => {
+    const card = toPublicCard(profile, rankByUserId.get(String(profile.userId)));
+    return { _id: String(profile._id), ...card };
+  });
 }
 
 export async function getPublicFighterBySlug(slug: string) {
@@ -213,15 +284,51 @@ export async function getPublicFighterBySlug(slug: string) {
   const profile = await FighterProfile.findOne({ slug }).select(PUBLIC_FIGHTER_FIELDS).lean();
   if (!profile) throw new NotFoundError("Fighter not found.");
 
-  const record = await listPublicMatchHistory(String(profile.userId));
+  const [record, ranking] = await Promise.all([
+    listPublicMatchHistory(String(profile.userId)),
+    RankingRecord.findOne({ userId: profile.userId }).lean(),
+  ]);
+
+  let rank: number | null = null;
+  if (ranking) {
+    const ahead = await RankingRecord.countDocuments({
+      $or: [
+        { points: { $gt: ranking.points } },
+        { points: ranking.points, wins: { $gt: ranking.wins } },
+      ],
+    });
+    rank = ahead + 1;
+  }
+
+  const card = toPublicCard(profile, {
+    wins: ranking?.wins ?? record.wins,
+    losses: ranking?.losses ?? record.losses,
+    points: ranking?.points ?? 0,
+    rank,
+  });
 
   return {
     profile: {
-      displayName: profile.displayName,
-      gym: profile.gym,
-      discipline: profile.discipline,
+      displayName: card.displayName,
+      slug: card.slug,
+      gym: card.gym,
+      academy: card.academy,
+      discipline: card.discipline,
+      beltRank: card.beltRank,
+      weightDivision: card.weightDivision,
+      hasPhoto: card.hasPhoto,
     },
-    record: { wins: record.wins, losses: record.losses },
+    record: { wins: card.wins, losses: card.losses, points: card.points, rank: card.rank },
+    card,
     history: record.history,
   };
+}
+
+/** Open a public passport photo by slug — only if the fighter published a photo key. */
+export async function getPublicFighterPhotoKeyBySlug(slug: string): Promise<string> {
+  await connectDB();
+  const profile = await FighterProfile.findOne({ slug }).select("photoKey").lean();
+  const key = profile?.photoKey?.trim();
+  if (!key) throw new NotFoundError("Photograph not found.");
+  return key;
 }

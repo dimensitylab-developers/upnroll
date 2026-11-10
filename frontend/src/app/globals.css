@@ -123,6 +123,19 @@
     background-color: var(--color-brand-red);
     color: white;
   }
+
+  /* Keep typed text + caret visible on auth fields (incl. Chrome autofill). */
+  input.caret-black {
+    caret-color: #000;
+  }
+  input.caret-black:-webkit-autofill,
+  input.caret-black:-webkit-autofill:hover,
+  input.caret-black:-webkit-autofill:focus {
+    -webkit-text-fill-color: #000;
+    caret-color: #000;
+    box-shadow: 0 0 0 1000px #fff inset;
+    transition: background-color 99999s ease-out;
+  }
 }
 
 @layer utilities {
@@ -232,6 +245,42 @@
     50% { opacity: 0.45; }
   }
 
+  /* Fighter desk identity — quiet entrance */
+  .desk-identity {
+    animation: desk-identity-in 0.45s cubic-bezier(0.2, 0.9, 0.2, 1.05) both;
+  }
+  @keyframes desk-identity-in {
+    0% { opacity: 0; transform: translateY(10px); }
+    100% { opacity: 1; transform: translateY(0); }
+  }
+
+  .fighter-playing-card {
+    transform-origin: center bottom;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .fighter-playing-card {
+      transition: none !important;
+      transform: none !important;
+    }
+  }
+
+  /* Rankings podium — staggered rise onto the stage */
+  .podium-slot {
+    animation: podium-rise 0.55s cubic-bezier(0.2, 0.9, 0.2, 1.08) both;
+  }
+  .podium-rise-1 { animation-delay: 0.12s; }
+  .podium-rise-2 { animation-delay: 0s; }
+  .podium-rise-3 { animation-delay: 0.22s; }
+  @keyframes podium-rise {
+    0% { opacity: 0; transform: translateY(28px); }
+    100% { opacity: 1; transform: translateY(0); }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .podium-slot {
+      animation: none !important;
+    }
+  }
+
   .pitch-popup-in {
     animation: pitch-popup-in 0.45s cubic-bezier(0.2, 0.9, 0.2, 1.15) both;
   }
@@ -262,6 +311,67 @@
   @keyframes upnroll-loader {
     0% { transform: translateX(-120%); }
     100% { transform: translateX(280%); }
+  }
+
+  /* Auth sign-in / sign-out mat gate */
+  .auth-gate {
+    animation: auth-gate-in 0.28s cubic-bezier(0.2, 0.9, 0.2, 1.1) both;
+  }
+  .auth-gate-speed {
+    background: repeating-linear-gradient(
+      105deg,
+      transparent,
+      transparent 14px,
+      rgba(255, 255, 255, 0.06) 14px,
+      rgba(255, 255, 255, 0.06) 15px
+    );
+    animation: auth-speed-drift 1.1s linear infinite;
+  }
+  .auth-gate-halftone {
+    background-image: radial-gradient(rgba(255, 255, 255, 0.35) 1px, transparent 1.15px);
+    background-size: 10px 10px;
+  }
+  .auth-gate-mark {
+    animation: auth-mark-bob 0.9s ease-in-out infinite;
+  }
+  .auth-gate-stamp {
+    transform: rotate(-3deg);
+    animation: auth-stamp-slam 0.45s cubic-bezier(0.2, 0.9, 0.2, 1.25) both;
+  }
+  .auth-gate-nameplate {
+    animation: auth-name-in 0.5s cubic-bezier(0.2, 0.9, 0.2, 1.15) 0.12s both;
+  }
+  .auth-gate-progress {
+    width: 100%;
+    height: 100%;
+    transform: scaleX(0);
+    transform-origin: left center;
+    animation: auth-progress-fill var(--auth-gate-ms, 2.2s) linear forwards;
+  }
+  @keyframes auth-gate-in {
+    0% { opacity: 0; }
+    100% { opacity: 1; }
+  }
+  @keyframes auth-stamp-slam {
+    0% { opacity: 0; transform: rotate(-12deg) scale(1.35); }
+    70% { opacity: 1; transform: rotate(-2deg) scale(0.96); }
+    100% { opacity: 1; transform: rotate(-3deg) scale(1); }
+  }
+  @keyframes auth-name-in {
+    0% { opacity: 0; transform: translateY(14px) scale(0.92); }
+    100% { opacity: 1; transform: translateY(0) scale(1); }
+  }
+  @keyframes auth-progress-fill {
+    from { transform: scaleX(0); }
+    to { transform: scaleX(1); }
+  }
+  @keyframes auth-mark-bob {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-6px); }
+  }
+  @keyframes auth-speed-drift {
+    0% { background-position: 0 0; }
+    100% { background-position: 40px 0; }
   }
 
   .chatbot-pop {
@@ -394,6 +504,8 @@
     .hero-stamp, .hero-mark, .hero-chip, .hero-speech, .hero-cta, .hero-aside, .hero-sticker, .hero-video-frame, .hero-video-zoom {
       transition: none;
     }
+    .auth-gate, .auth-gate-speed, .auth-gate-mark, .auth-gate-stamp, .auth-gate-nameplate, .auth-gate-progress { animation: none; }
+    .auth-gate-progress { transform: scaleX(1); }
   }
 
   /* Tone down continuous hero motion on small screens for battery / focus. */

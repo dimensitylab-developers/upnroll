@@ -1,7 +1,13 @@
+import type { Metadata } from "next";
 import { connection } from "next/server";
 import { listPublicRankings } from "@/server/services/rankingService";
 import { RecalculateRankingsButton } from "@/features/rankings/recalculate-button";
 import { Table, TableHeader, TableRow, TableHead, TableBody, TableCell } from "@/components/ui/table";
+
+/** Session/DB-bound route — allow blocking navigation under Cache Components. */
+export const instant = false;
+
+export const metadata: Metadata = { title: "Rankings" };
 
 export default async function AdminRankingsPage() {
   await connection();

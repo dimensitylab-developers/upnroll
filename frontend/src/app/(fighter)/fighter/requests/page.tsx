@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import { actorFromSession, getSession } from "@/server/auth/session";
 import { listMyRegistrations } from "@/server/services/registrationService";
 import { listDivisionsForEvent } from "@/server/services/eventService";
@@ -6,6 +7,11 @@ import { isActiveRegistration } from "@/server/services/registrationStateMachine
 import { CreateRequestDialog } from "@/features/requests/create-request-dialog";
 import { TeammateTransferButton } from "@/features/requests/teammate-transfer-button";
 import { Badge } from "@/components/ui/badge";
+
+/** Session/DB-bound route — allow blocking navigation under Cache Components. */
+export const instant = false;
+
+export const metadata: Metadata = { title: "Requests" };
 
 export default async function FighterRequestsPage() {
   const session = await getSession();

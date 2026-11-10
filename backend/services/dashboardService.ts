@@ -6,20 +6,43 @@ import { listPaymentQueue } from "./paymentService";
 import { listRequestsForAdmin, listRequestsForFighter } from "./requestService";
 import { listRecentRegistrationsForAdmin, listMyRegistrations } from "./registrationService";
 import { countFighters, getFighterProfile } from "./fighterService";
-import { listRecentAuditLogs } from "@/server/audit/log";
+import {
+  getAdminPresenceStats,
+  listRecentAccountsForAdmin,
+  listRecentAuditLogs,
+  listRecentAuditLogsByActions,
+} from "@/server/audit/log";
 import { listMatchesForFighter } from "./matchService";
 import { warmUpMinutes } from "./tournamentRules";
 
-/** Composes existing services into the data the admin overview page needs — no new queries beyond what each service already runs. */
+const ENTRY_ACTIONS = ["USER_LOGIN"] as const;
+const PROFILE_ACTIONS = ["FIGHTER_PROFILE_CREATED", "FIGHTER_PROFILE_UPDATED"] as const;
+
+/** Composes existing services into the data the admin overview page needs. */
 export async function getAdminDashboardData(actor: Actor) {
   assertAdmin(actor);
-  const [fighterCount, upcomingEvents, pendingPayments, allRequests, recentRegistrations, recentActivity] = await Promise.all([
+  const [
+    fighterCount,
+    upcomingEvents,
+    pendingPayments,
+    allRequests,
+    recentRegistrations,
+    recentActivity,
+    recentEntries,
+    recentProfiles,
+    recentAccounts,
+    presence,
+  ] = await Promise.all([
     countFighters(actor),
     listUpcomingEventsForAdmin(actor, 5),
     listPaymentQueue(actor, "PENDING_REVIEW"),
     listRequestsForAdmin(actor),
-    listRecentRegistrationsForAdmin(actor, 5),
-    listRecentAuditLogs(actor, 8),
+    listRecentRegistrationsForAdmin(actor, 8),
+    listRecentAuditLogs(actor, 10),
+    listRecentAuditLogsByActions(actor, [...ENTRY_ACTIONS], 8),
+    listRecentAuditLogsByActions(actor, [...PROFILE_ACTIONS], 8),
+    listRecentAccountsForAdmin(actor, 8),
+    getAdminPresenceStats(actor),
   ]);
 
   return {
@@ -29,7 +52,24 @@ export async function getAdminDashboardData(actor: Actor) {
     pendingRequests: allRequests.filter((r) => r.status === "PENDING"),
     recentRegistrations,
     recentActivity,
+    recentEntries,
+    recentProfiles,
+    recentAccounts,
+    presence,
   };
+}
+
+function profileChecklist(profile: Awaited<ReturnType<typeof getFighterProfile>>) {
+  const checks = [
+    { id: "name", label: "Full name", done: Boolean(profile?.displayName?.trim()) },
+    { id: "photo", label: "Passport photo", done: Boolean(profile?.photoKey) },
+    { id: "personal", label: "Personal details", done: Boolean(profile?.dateOfBirth && profile?.mobile && profile?.cityState) },
+    { id: "competition", label: "Competition details", done: Boolean(profile?.academy && profile?.beltRank && profile?.weightDivision) },
+    { id: "medical", label: "Medical answers", done: Boolean(profile?.dateOfBirth && profile?.medicallyFit !== undefined) },
+    { id: "waiver", label: "Terms agreed", done: Boolean(profile?.waiverAcceptedAt) },
+  ] as const;
+  const done = checks.filter((c) => c.done).length;
+  return { checks, done, total: checks.length, percent: Math.round((done / checks.length) * 100) };
 }
 
 /** Composes existing services into the data the fighter dashboard needs — every call is already scoped to `userId`. */
@@ -55,6 +95,8 @@ export async function getFighterDashboardData(actor: Actor) {
         : null,
     }));
   const pendingRequests = requests.filter((r) => r.status === "PENDING");
+  const wins = recentResults.filter((m) => m.outcome === "WIN").length;
+  const losses = recentResults.filter((m) => m.outcome === "LOSS").length;
   const now = new Date();
   const alerts = upcomingMatches.flatMap((match) => {
     if (!match.scheduledAt) return [];
@@ -64,5 +106,14 @@ export async function getFighterDashboardData(actor: Actor) {
     return [`Warm up. You are on ${mat} in about ${minutes} minutes.`];
   });
 
-  return { profile, registrations, upcomingMatches, recentResults, pendingRequests, alerts };
+  return {
+    profile,
+    profileHealth: profileChecklist(profile),
+    registrations,
+    upcomingMatches,
+    recentResults,
+    pendingRequests,
+    alerts,
+    record: { wins, losses },
+  };
 }

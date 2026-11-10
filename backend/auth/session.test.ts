@@ -27,6 +27,9 @@ const mockCookieStore = { get: vi.fn(), set: vi.fn() };
 vi.mock("next/headers", () => ({
   cookies: vi.fn().mockResolvedValue(mockCookieStore),
 }));
+vi.mock("next/server", () => ({
+  connection: vi.fn().mockResolvedValue(undefined),
+}));
 
 beforeAll(() => {
   process.env.MONGODB_URI = "mongodb://127.0.0.1:27017/test";

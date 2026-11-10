@@ -2,6 +2,7 @@ import "server-only";
 import { randomBytes, createHash } from "node:crypto";
 import { cache } from "react";
 import { cookies } from "next/headers";
+import { connection } from "next/server";
 import { connectDB } from "@/server/db/connect";
 import { Session } from "@/server/models/Session";
 import { User, type UserRole } from "@/server/models/User";
@@ -73,7 +74,8 @@ export async function destroySession(): Promise<void> {
   cookieStore.delete(SESSION_COOKIE_NAME);
 }
 
-export const getSession = cache(async function getSession(): Promise<AppSession | null> {
+/** Request-deduped DB/cookie read. Always enter via `getSession()` so `connection()` runs first. */
+const readSession = cache(async function readSession(): Promise<AppSession | null> {
   const cookieStore = await cookies();
   const rawToken = unpackCookieValue(cookieStore.get(SESSION_COOKIE_NAME)?.value);
   if (!rawToken) return null;
@@ -87,6 +89,12 @@ export const getSession = cache(async function getSession(): Promise<AppSession 
 
   return { user: toSessionUser(user) };
 });
+
+/** Marks the route request-bound before cookies/Mongo/Date.now (Cache Components). */
+export async function getSession(): Promise<AppSession | null> {
+  await connection();
+  return readSession();
+}
 
 /** For Server Actions / route handlers: throws instead of redirecting. */
 export async function requireSession(): Promise<AppSession> {

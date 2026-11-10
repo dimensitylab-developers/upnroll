@@ -6,9 +6,9 @@ import { useSyncExternalStore } from "react";
 import { cn } from "@/lib/utils";
 
 const LINKS = [
-  { href: "/fighter/dashboard", label: "Dashboard" },
+  { href: "/fighter/dashboard", label: "Desk" },
   { href: "/fighter/profile", label: "Profile" },
-  { href: "/fighter/registrations", label: "Registrations" },
+  { href: "/fighter/registrations", label: "Cards" },
   { href: "/fighter/matches", label: "Matches" },
   { href: "/fighter/requests", label: "Requests" },
 ];
@@ -17,7 +17,7 @@ function useHasHydrated() {
   return useSyncExternalStore(
     () => () => {},
     () => true,
-    () => false,
+    () => false
   );
 }
 
@@ -26,7 +26,10 @@ export function FighterNav() {
   const hydrated = useHasHydrated();
 
   return (
-    <nav className="flex flex-wrap gap-x-4 gap-y-2 overflow-x-auto">
+    <nav
+      className="flex gap-1 overflow-x-auto [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+      aria-label="Fighter sections"
+    >
       {LINKS.map((link) => {
         const active = hydrated && pathname.startsWith(link.href);
         return (
@@ -35,8 +38,10 @@ export function FighterNav() {
             href={link.href}
             aria-current={active ? "page" : undefined}
             className={cn(
-              "text-sm whitespace-nowrap",
-              active ? "font-semibold underline" : "text-muted-foreground hover:underline"
+              "shrink-0 px-2.5 py-1.5 text-xs uppercase tracking-[0.14em] whitespace-nowrap",
+              active
+                ? "bg-black font-semibold text-white"
+                : "text-muted-foreground hover:bg-black/5 hover:text-foreground"
             )}
           >
             {link.label}

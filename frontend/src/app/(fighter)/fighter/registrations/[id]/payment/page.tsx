@@ -7,6 +7,9 @@ import { PaymentForm } from "@/features/payments/payment-form";
 import { QrCode } from "lucide-react";
 import { PageBackLink } from "@/components/layout/page-back-link";
 
+/** Session/DB-bound route — allow blocking navigation under Cache Components. */
+export const instant = false;
+
 export default async function RegistrationPaymentPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
   const session = await getSession();
@@ -21,6 +24,10 @@ export default async function RegistrationPaymentPage({ params }: { params: Prom
   }
 
   const { registration, event, division, latestSubmission } = data;
+  const eventId = event ? String(event._id) : "";
+  const hasQr = Boolean(event?.paymentInstructions?.qrImageKey);
+  const fee = event?.paymentInstructions?.feeMinorUnits ?? 0;
+  const currency = event?.paymentInstructions?.currency ?? "INR";
 
   return (
     <div className="mx-auto max-w-xl">
@@ -30,6 +37,11 @@ export default async function RegistrationPaymentPage({ params }: { params: Prom
           <p className="break-words font-semibold">
             {event?.name} — {division?.name}
           </p>
+          {fee > 0 && (
+            <p className="mt-1 text-sm text-muted-foreground">
+              Entry fee {(fee / 100).toLocaleString("en-IN", { style: "currency", currency })}
+            </p>
+          )}
         </div>
 
         <p className="mb-4 text-sm text-muted-foreground">
@@ -45,11 +57,22 @@ export default async function RegistrationPaymentPage({ params }: { params: Prom
                 Previous submission rejected: {latestSubmission.reviewNote}
               </p>
             )}
-            <div className="mx-auto mb-4 flex size-40 items-center justify-center rounded-md border border-dashed border-black/20 bg-muted">
-              <QrCode className="size-16 text-muted-foreground" />
+            <div className="mx-auto mb-4 flex size-48 items-center justify-center overflow-hidden rounded-md border-2 border-black bg-white shadow-[4px_4px_0_0_#000]">
+              {hasQr && eventId ? (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img
+                  src={`/api/v1/fighter/events/${eventId}/payment-qr?registrationId=${id}`}
+                  alt="Payment QR code"
+                  className="h-full w-full object-contain p-2"
+                />
+              ) : (
+                <QrCode className="size-16 text-muted-foreground" />
+              )}
             </div>
             <p className="mb-6 text-center text-xs text-muted-foreground">
-              Client-supplied QR image placeholder — pending OD-006.
+              {hasQr
+                ? "Scan the QR, pay the entry fee, then submit your UTR and screenshot below."
+                : "Organizers have not uploaded a payment QR yet. You can still submit a UTR once you have paid by the house instructions."}
             </p>
             <PaymentForm registrationId={String(registration._id)} />
           </>
@@ -60,9 +83,7 @@ export default async function RegistrationPaymentPage({ params }: { params: Prom
         ) : registration.status === "CONFIRMED" ? (
           <p className="text-sm text-brand-cyan">Payment approved — your registration is confirmed.</p>
         ) : (
-          <p className="text-sm text-muted-foreground">
-            No action available for this registration&apos;s current status.
-          </p>
+          <p className="text-sm text-muted-foreground">No action available for this registration&apos;s current status.</p>
         )}
       </div>
     </div>

@@ -73,6 +73,124 @@ export async function updateEventStatus(actor: Actor, eventId: string, status: E
   return event;
 }
 
+export type UpdateEventDetailsInput = {
+  name: string;
+  description?: string;
+  venue?: string;
+  startDate: Date;
+  registrationOpensAt: Date;
+  registrationClosesAt: Date;
+  feeMinorUnits: number;
+  currency?: string;
+};
+
+export async function updateEventDetails(actor: Actor, eventId: string, input: UpdateEventDetailsInput) {
+  assertAdmin(actor);
+  await connectDB();
+  const event = await Event.findById(eventId);
+  if (!event) throw new NotFoundError("Event not found.");
+  if (input.registrationOpensAt >= input.registrationClosesAt) {
+    throw new ValidationError("Registration must open before it closes.");
+  }
+  if (!Number.isInteger(input.feeMinorUnits) || input.feeMinorUnits < 0) {
+    throw new ValidationError("Fee must be zero or a positive amount.");
+  }
+
+  if (!event.paymentInstructions) {
+    event.paymentInstructions = { feeMinorUnits: 0, currency: "INR", qrImageKey: "" };
+  }
+
+  const before = {
+    name: event.name,
+    description: event.description,
+    venue: event.venue,
+    startDate: event.startDate,
+    registrationOpensAt: event.registrationOpensAt,
+    registrationClosesAt: event.registrationClosesAt,
+    feeMinorUnits: event.paymentInstructions.feeMinorUnits,
+  };
+
+  event.name = input.name;
+  event.description = input.description ?? "";
+  event.venue = input.venue ?? "";
+  event.startDate = input.startDate;
+  event.registrationOpensAt = input.registrationOpensAt;
+  event.registrationClosesAt = input.registrationClosesAt;
+  event.paymentInstructions.feeMinorUnits = input.feeMinorUnits;
+  event.paymentInstructions.currency = input.currency ?? event.paymentInstructions.currency ?? "INR";
+  await event.save();
+
+  await writeAuditLog({
+    actorId: actor.userId,
+    action: "EVENT_DETAILS_UPDATED",
+    targetType: "Event",
+    targetId: eventId,
+    before,
+    after: {
+      name: event.name,
+      description: event.description,
+      venue: event.venue,
+      startDate: event.startDate,
+      registrationOpensAt: event.registrationOpensAt,
+      registrationClosesAt: event.registrationClosesAt,
+      feeMinorUnits: event.paymentInstructions.feeMinorUnits,
+    },
+  });
+  return event;
+}
+
+export async function setEventPaymentQr(actor: Actor, eventId: string, bytes: Buffer, ext: string, contentType: string) {
+  assertAdmin(actor);
+  await connectDB();
+  const event = await Event.findById(eventId);
+  if (!event) throw new NotFoundError("Event not found.");
+
+  if (!event.paymentInstructions) {
+    event.paymentInstructions = { feeMinorUnits: 0, currency: "INR", qrImageKey: "" };
+  }
+  const { getStorageAdapter } = await import("@/server/storage/factory");
+  const key = `events/${eventId}/payment-qr${ext}`;
+  const storage = getStorageAdapter();
+  const previous = event.paymentInstructions.qrImageKey || "";
+  if (previous && previous !== key) await storage.delete(previous);
+  await storage.put(key, bytes, contentType, {
+    metadata: { purpose: "payment-qr", eventId },
+  });
+  event.paymentInstructions.qrImageKey = key;
+  await event.save();
+
+  await writeAuditLog({
+    actorId: actor.userId,
+    action: "EVENT_PAYMENT_QR_UPDATED",
+    targetType: "Event",
+    targetId: eventId,
+    after: { qrImageKey: key },
+  });
+  return event;
+}
+
+export async function openEventPaymentQr(actor: Actor, eventId: string) {
+  assertAdmin(actor);
+  await connectDB();
+  const event = await Event.findById(eventId).lean();
+  if (!event) throw new NotFoundError("Event not found.");
+  const key = event.paymentInstructions?.qrImageKey;
+  if (!key) throw new NotFoundError("Payment QR not set.");
+  const { getStorageAdapter } = await import("@/server/storage/factory");
+  return getStorageAdapter().open(key);
+}
+
+/** Fighter-facing QR open — caller must already authorize the registration ownership. */
+export async function openEventPaymentQrForPublic(eventId: string) {
+  await connectDB();
+  const event = await Event.findById(eventId).lean();
+  if (!event) throw new NotFoundError("Event not found.");
+  const key = event.paymentInstructions?.qrImageKey;
+  if (!key) throw new NotFoundError("Payment QR not set.");
+  const { getStorageAdapter } = await import("@/server/storage/factory");
+  return getStorageAdapter().open(key);
+}
+
 export async function updateEventMatCount(actor: Actor, eventId: string, matCount: number) {
   assertAdmin(actor);
   await connectDB();
@@ -188,6 +306,49 @@ export async function setDivisionCapacity(actor: Actor, divisionId: string, capa
         targetType: "Division",
         targetId: divisionId,
         after: { capacity, filledCount: filled },
+      },
+      session
+    );
+    return division;
+  });
+}
+
+export type UpdateDivisionInput = {
+  name: string;
+  discipline: string;
+  capacity: number;
+};
+
+export async function updateDivision(actor: Actor, divisionId: string, input: UpdateDivisionInput) {
+  assertAdmin(actor);
+  await connectDB();
+  if (!input.name.trim() || !input.discipline.trim()) {
+    throw new ValidationError("Enter a division name and discipline.");
+  }
+  if (!Number.isInteger(input.capacity) || input.capacity < 1) {
+    throw new ValidationError("Capacity must be at least 1.");
+  }
+
+  return withTransaction(async (session) => {
+    const division = await Division.findById(divisionId).session(session);
+    if (!division) throw new NotFoundError("Division not found.");
+    const filled = requireFilledCount(division.filledCount);
+    if (input.capacity < filled) {
+      throw new ConflictError("Capacity cannot be lower than the current number of active registrations.");
+    }
+    const before = { name: division.name, discipline: division.discipline, capacity: division.capacity };
+    division.name = input.name.trim();
+    division.discipline = input.discipline.trim();
+    division.capacity = input.capacity;
+    await division.save(sessionOpts(session));
+    await writeAuditLog(
+      {
+        actorId: actor.userId,
+        action: "DIVISION_UPDATED",
+        targetType: "Division",
+        targetId: divisionId,
+        before,
+        after: { name: division.name, discipline: division.discipline, capacity: division.capacity, filledCount: filled },
       },
       session
     );

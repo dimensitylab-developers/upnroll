@@ -7,6 +7,7 @@ import { listPublicRankings } from "@/server/services/rankingService";
 import { getPublicFighterBySlug, listPublicFighters } from "@/server/services/fighterService";
 import { listPublished } from "@/server/services/contentService";
 import { listPublishedMedia } from "@/server/services/mediaService";
+import { getPublicSiteContact } from "@/server/services/siteSettingsService";
 import type { ContentType } from "@/server/models/ContentEntry";
 import { NotFoundError } from "@/server/http/errors";
 
@@ -161,4 +162,21 @@ export async function cachedPublishedMedia() {
       externalUrl: item.externalUrl,
     }))
   );
+}
+
+export async function cachedPublicSiteContact() {
+  "use cache";
+  cacheTag("site-settings");
+  cacheLife("minutes");
+  if (process.env.CI === "true") {
+    return {
+      instagramHandle: "up.n.roll",
+      instagramUrl: "https://www.instagram.com/up.n.roll/",
+      email: "",
+      phoneDisplay: "",
+      phoneTel: "",
+      city: "Mumbai",
+    };
+  }
+  return plain(await getPublicSiteContact());
 }

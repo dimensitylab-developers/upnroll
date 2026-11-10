@@ -7,3 +7,8 @@ export const createContentSchema = z.object({
   body: z.string().trim().min(2, "Enter the body text."),
 });
 export type CreateContentInput = z.infer<typeof createContentSchema>;
+
+export const updateContentSchema = createContentSchema.extend({
+  entryId: z.string().trim().min(1, "Missing content entry."),
+});
+export type UpdateContentInput = z.infer<typeof updateContentSchema>;

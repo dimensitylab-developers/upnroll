@@ -16,9 +16,10 @@ function getArg(flag: string): string | undefined {
 async function main() {
   const email = (getArg("--email") ?? process.env.ADMIN_SEED_EMAIL ?? "").toLowerCase().trim();
   const password = getArg("--password") ?? process.env.ADMIN_SEED_PASSWORD ?? "";
+  const displayName = (getArg("--name") ?? process.env.ADMIN_SEED_NAME ?? "").trim();
 
   if (!email || !password) {
-    console.error("Usage: npx tsx scripts/create-admin.ts --email <email> --password <password>");
+    console.error("Usage: npx tsx scripts/create-admin.ts --email <email> --password <password> [--name \"James\"]");
     process.exit(1);
   }
   if (password.length < 10) {
@@ -32,10 +33,16 @@ async function main() {
   if (existing) {
     existing.role = "ADMIN";
     existing.passwordHash = await hashPassword(password);
+    if (displayName) existing.displayName = displayName;
     await existing.save();
     console.log(`Updated existing user ${email} to role ADMIN.`);
   } else {
-    await User.create({ email, passwordHash: await hashPassword(password), role: "ADMIN" });
+    await User.create({
+      email,
+      passwordHash: await hashPassword(password),
+      role: "ADMIN",
+      displayName: displayName || "",
+    });
     console.log(`Created admin user ${email}.`);
   }
 

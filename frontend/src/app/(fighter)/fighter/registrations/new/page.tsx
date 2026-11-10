@@ -4,6 +4,9 @@ import { getFighterProfile } from "@/server/services/fighterService";
 import { NewRegistrationForm } from "@/features/registrations/new-registration-form";
 import type { GrapplerDefaults } from "@/features/fighters/grappler-form";
 
+/** Session/DB-bound route — allow blocking navigation under Cache Components. */
+export const instant = false;
+
 function yesNo(value: boolean | undefined) {
   return value ? "yes" : "no";
 }

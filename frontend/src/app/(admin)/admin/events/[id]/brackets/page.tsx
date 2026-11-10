@@ -10,6 +10,9 @@ import { Badge } from "@/components/ui/badge";
 import { PageBackLink } from "@/components/layout/page-back-link";
 import Link from "next/link";
 
+/** Session/DB-bound route — allow blocking navigation under Cache Components. */
+export const instant = false;
+
 export default async function AdminBracketsPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
   const actor = await requireActor("ADMIN");
