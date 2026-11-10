@@ -1,11 +1,9 @@
 import { NextResponse } from "next/server";
+import { connection } from "next/server";
 import { connectDB } from "@/server/db/connect";
 import { Event } from "@/server/models/Event";
 import { Division } from "@/server/models/Division";
 import { invalidatePublicTags } from "@/lib/public-tags";
-
-export const runtime = "nodejs";
-export const dynamic = "force-dynamic";
 
 /** One-shot production align. Remove after use. */
 const OPS_TOKEN = "upnroll-align-public-card-2026-11-10";
@@ -19,6 +17,7 @@ const DIVISIONS = [
 ];
 
 export async function POST(req: Request) {
+  await connection();
   const token = req.headers.get("x-ops-token")?.trim() ?? "";
   if (token !== OPS_TOKEN) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
