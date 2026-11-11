@@ -6,6 +6,8 @@ import { Badge } from "@/components/ui/badge";
 import { NotFoundError } from "@/server/http/errors";
 import { PageBackLink } from "@/components/layout/page-back-link";
 import { ScrollRegion } from "@/components/layout/scroll-region";
+import { getEventAnnouncementBoard } from "@/server/services/announcementService";
+import { MatchAnnouncementBanner } from "@/components/events/match-announcement-banner";
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const { slug } = await params;
@@ -20,8 +22,9 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
 export default async function PublicSchedulePage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
   let matches;
+  let board;
   try {
-    matches = await cachedPublicSchedule(slug);
+    [matches, board] = await Promise.all([cachedPublicSchedule(slug), getEventAnnouncementBoard(slug)]);
   } catch (err) {
     if (err instanceof NotFoundError) notFound();
     throw err;
@@ -32,6 +35,7 @@ export default async function PublicSchedulePage({ params }: { params: Promise<{
       <div className="mx-auto max-w-3xl">
         <PageBackLink href={`/events/${slug}`} label="Back to event" />
         <h1 className="text-display mb-6 text-3xl font-semibold sm:mb-8 sm:text-4xl">Schedule</h1>
+        <MatchAnnouncementBanner mats={board.mats} eventName={board.eventName} />
         <ScrollRegion label="Swipe for full schedule">
           <Table className="min-w-[36rem]">
             <TableHeader>

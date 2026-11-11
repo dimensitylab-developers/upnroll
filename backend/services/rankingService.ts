@@ -10,10 +10,19 @@ import { computeRecord, winLossPointsStrategy, type DecidedMatch } from "./ranki
 import { bindSession, sessionOpts, withTransaction } from "@/server/db/transaction";
 import { ConflictError } from "@/server/http/errors";
 
+/** System/outbox path — no interactive admin actor. Still audited. */
+export async function recalculateRankingsSystem(systemActorId = "system:outbox") {
+  await connectDB();
+  return recalculateRankingsInTransaction(systemActorId);
+}
+
 export async function recalculateRankings(actor: Actor) {
   assertAdmin(actor);
   await connectDB();
+  return recalculateRankingsInTransaction(actor.userId);
+}
 
+async function recalculateRankingsInTransaction(actorId: string) {
   return withTransaction(async (session) => {
   const decided = await bindSession(Match.find({ status: { $in: ["COMPLETED", "BYE"] } }), session).lean();
 
@@ -63,7 +72,7 @@ export async function recalculateRankings(actor: Actor) {
 
   await writeAuditLog(
     {
-      actorId: actor.userId,
+      actorId,
       action: "RANKINGS_RECALCULATED",
       targetType: "RankingRecord",
       after: { calculationVersion: newVersion, fighterCount: fighterUserIds.length },

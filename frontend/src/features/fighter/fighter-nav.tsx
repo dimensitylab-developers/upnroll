@@ -11,6 +11,7 @@ const LINKS = [
   { href: "/fighter/registrations", label: "Cards" },
   { href: "/fighter/matches", label: "Matches" },
   { href: "/fighter/requests", label: "Requests" },
+  { href: "/fighter/notifications", label: "Alerts" },
 ];
 
 function useHasHydrated() {

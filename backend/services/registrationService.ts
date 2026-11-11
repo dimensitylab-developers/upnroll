@@ -16,6 +16,8 @@ import { claimSeat, releaseSeat } from "./divisionOccupancy";
 import { bindSession, isDuplicateKey, sessionOpts, withTransaction } from "@/server/db/transaction";
 import { NotFoundError, ConflictError, ValidationError } from "@/server/http/errors";
 import { requireObjectId } from "@/server/validation/objectId";
+import { getDefaultPaymentOption, getPaymentOption } from "./paymentOptionService";
+import { redeemReservedCouponInSession } from "./couponService";
 
 function resolveFeeMinorUnits(
   event: { paymentInstructions?: { feeMinorUnits: number } | null },
@@ -24,10 +26,19 @@ function resolveFeeMinorUnits(
   return division.feeMinorUnitsOverride ?? event.paymentInstructions?.feeMinorUnits ?? 0;
 }
 
+export type CreateRegistrationOptions = {
+  couponId?: string | null;
+  reservationIntentId?: string | null;
+  /** Ignored if present — never trusted from the client. Kept only to fail closed on tampering attempts in tests. */
+  clientAmountMinorUnits?: number | null;
+  clientPaymentOptionId?: string | null;
+};
+
 export async function createRegistration(
   actor: Actor,
   divisionId: string,
-  consents: { consent: boolean; agreement: boolean }
+  consents: { consent: boolean; agreement: boolean },
+  options: CreateRegistrationOptions = {}
 ) {
   assertFighter(actor);
   requireObjectId(divisionId, "division");
@@ -55,6 +66,41 @@ export async function createRegistration(
         throw new ConflictError("You already have an active registration in this division.");
       }
 
+      // Server-authoritative payment selection — never trust client fee/option.
+      let paymentOption = await getDefaultPaymentOption(String(event._id));
+      let couponId: string | null = null;
+      let couponCode = "";
+
+      if (options.couponId) {
+        if (!options.reservationIntentId) {
+          throw new ValidationError("Coupon reservation intent is required.");
+        }
+        // Placeholder registration id filled after create — redeem uses conditional update after insert.
+        // We redeem after Registration.create below.
+      }
+
+      if (
+        options.clientPaymentOptionId &&
+        options.clientPaymentOptionId !== paymentOption.id &&
+        !options.couponId
+      ) {
+        // Client may suggest an option id only when no coupon; still re-resolve server-side.
+        const suggested = await getPaymentOption(String(event._id), options.clientPaymentOptionId);
+        if (!suggested?.active) throw new ValidationError("That payment option is not available.");
+        paymentOption = suggested;
+      }
+
+      // Division override still applies on top of the selected option when set (legacy behaviour).
+      const expectedAmountMinorUnits =
+        division.feeMinorUnitsOverride != null ? division.feeMinorUnitsOverride : paymentOption.amountMinorUnits;
+
+      if (
+        options.clientAmountMinorUnits != null &&
+        options.clientAmountMinorUnits !== expectedAmountMinorUnits
+      ) {
+        throw new ValidationError("Payment amount mismatch. Refresh and try again.");
+      }
+
       await claimSeat(division._id, session);
 
       const [registration] = await Registration.create(
@@ -66,20 +112,64 @@ export async function createRegistration(
             status: "AWAITING_PAYMENT",
             consentAcceptedAt: now,
             agreementAcceptedAt: now,
+            feeSnapshot: {
+              amountMinorUnits: expectedAmountMinorUnits,
+              currency: paymentOption.currency,
+              paymentOptionId: paymentOption.id,
+              paymentOptionLabel: paymentOption.label,
+              qrImageKey: paymentOption.qrImageKey,
+              couponId: null,
+              couponCode: "",
+              snapshottedAt: now,
+            },
+            couponId: null,
             statusHistory: [{ status: "AWAITING_PAYMENT", at: now }],
           },
         ],
         { session }
       );
 
-      const expectedAmountMinorUnits = resolveFeeMinorUnits(event, division);
+      if (options.couponId) {
+        const redeemed = await redeemReservedCouponInSession(session, {
+          eventId: String(event._id),
+          couponId: options.couponId,
+          userId,
+          reservationIntentId: options.reservationIntentId!,
+          registrationId: String(registration._id),
+          now,
+        });
+        const couponOption = await getPaymentOption(String(event._id), redeemed.paymentOptionId);
+        if (!couponOption?.active) throw new ValidationError("Coupon payment option is unavailable.");
+        const amount =
+          division.feeMinorUnitsOverride != null ? division.feeMinorUnitsOverride : couponOption.amountMinorUnits;
+        if (options.clientAmountMinorUnits != null && options.clientAmountMinorUnits !== amount) {
+          throw new ValidationError("Payment amount mismatch. Refresh and try again.");
+        }
+        couponId = String(redeemed.coupon._id);
+        couponCode = redeemed.coupon.code;
+        paymentOption = couponOption;
+        registration.set("feeSnapshot", {
+          amountMinorUnits: amount,
+          currency: couponOption.currency,
+          paymentOptionId: couponOption.id,
+          paymentOptionLabel: couponOption.label,
+          qrImageKey: couponOption.qrImageKey,
+          couponId: redeemed.coupon._id,
+          couponCode,
+          snapshottedAt: now,
+        });
+        registration.couponId = redeemed.coupon._id as unknown as RegistrationDoc["couponId"];
+        await registration.save(sessionOpts(session));
+      }
+
+      const snapAmount = registration.feeSnapshot?.amountMinorUnits ?? expectedAmountMinorUnits;
       const [paymentSubmission] = await PaymentSubmission.create(
         [
           {
             registrationId: registration._id,
             userId,
             eventId: event._id,
-            expectedAmountMinorUnits,
+            expectedAmountMinorUnits: snapAmount,
             status: "AWAITING_SUBMISSION",
           },
         ],
@@ -92,6 +182,11 @@ export async function createRegistration(
           action: "REGISTRATION_CREATED",
           targetType: "Registration",
           targetId: String(registration._id),
+          after: {
+            amountMinorUnits: snapAmount,
+            paymentOptionId: paymentOption.id,
+            couponId,
+          },
         },
         session
       );
@@ -137,12 +232,38 @@ export async function getRegistrationForFighter(actor: Actor, registrationId: st
   if (!registration) throw new NotFoundError("Registration not found.");
 
   const [event, division, submissions] = await Promise.all([
-    Event.findById(registration.eventId).select("name paymentInstructions").lean(),
+    Event.findById(registration.eventId).select("name paymentInstructions paymentOptions timezone").lean(),
     Division.findById(registration.divisionId).lean(),
     PaymentSubmission.find({ registrationId }).sort({ createdAt: -1 }).lean(),
   ]);
 
-  return { registration, event, division, submissions, latestSubmission: submissions[0] ?? null };
+  const snap = registration.feeSnapshot;
+  const feeView = snap
+    ? {
+        amountMinorUnits: snap.amountMinorUnits,
+        currency: snap.currency,
+        paymentOptionId: snap.paymentOptionId ? String(snap.paymentOptionId) : null,
+        paymentOptionLabel: snap.paymentOptionLabel ?? "",
+        qrImageKey: snap.qrImageKey ?? "",
+        couponCode: snap.couponCode ?? "",
+      }
+    : {
+        amountMinorUnits: division?.feeMinorUnitsOverride ?? event?.paymentInstructions?.feeMinorUnits ?? 0,
+        currency: event?.paymentInstructions?.currency ?? "INR",
+        paymentOptionId: null,
+        paymentOptionLabel: "Default",
+        qrImageKey: event?.paymentInstructions?.qrImageKey ?? "",
+        couponCode: "",
+      };
+
+  return {
+    registration,
+    event,
+    division,
+    submissions,
+    latestSubmission: submissions[0] ?? null,
+    feeView,
+  };
 }
 
 /** Admin-dashboard feed: most recent registrations across every event, enriched for display. */

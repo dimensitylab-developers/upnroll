@@ -1,5 +1,11 @@
 {
   "installCommand": "npm ci --prefix frontend && node frontend/scripts/ensure-root-modules.mjs",
   "buildCommand": "npm run build --prefix frontend",
-  "outputDirectory": "frontend/.next"
+  "outputDirectory": "frontend/.next",
+  "crons": [
+    {
+      "path": "/api/cron/process-outbox",
+      "schedule": "* * * * *"
+    }
+  ]
 }

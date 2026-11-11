@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { actorFromSession, getSession } from "@/server/auth/session";
 import { getRegistrationForFighter, listMyRegistrations } from "@/server/services/registrationService";
 import { openEventPaymentQrForPublic } from "@/server/services/eventService";
+import { openPaymentOptionQr } from "@/server/services/paymentOptionService";
 import { ForbiddenError, NotFoundError } from "@/server/http/errors";
 import { fail } from "@/server/http/response";
 import { toWebFileStream } from "@/server/http/streamFile";
@@ -36,7 +37,10 @@ export async function GET(request: Request, { params }: { params: Promise<{ even
       }
     }
 
-    const { stream, contentType, length } = await openEventPaymentQrForPublic(eventId);
+    const paymentOptionId = new URL(request.url).searchParams.get("paymentOptionId");
+    const { stream, contentType, length } = paymentOptionId
+      ? await openPaymentOptionQr(eventId, paymentOptionId)
+      : await openEventPaymentQrForPublic(eventId);
     const headers: Record<string, string> = { "Content-Type": contentType, "Cache-Control": "private, max-age=60" };
     if (Number.isFinite(length) && length >= 0) headers["Content-Length"] = String(length);
     return new NextResponse(toWebFileStream(stream, request.signal), { headers });

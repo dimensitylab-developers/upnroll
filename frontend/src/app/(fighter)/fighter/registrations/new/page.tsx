@@ -53,6 +53,7 @@ export default async function NewRegistrationPage() {
       <NewRegistrationForm
         divisions={divisions.map((division) => ({
           id: String(division._id),
+          eventId: String(division.eventId),
           name: division.name,
           discipline: division.discipline,
           eventName: division.event?.name ?? "Unknown event",

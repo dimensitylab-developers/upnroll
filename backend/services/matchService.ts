@@ -175,7 +175,11 @@ async function correctMatchResultInSession(
   return match;
 }
 
-export async function updateMatchSchedule(actor: Actor, matchId: string, input: { scheduledAt?: Date | null; mat?: string }) {
+export async function updateMatchSchedule(
+  actor: Actor,
+  matchId: string,
+  input: { scheduledAt?: Date | null; mat?: string; allowConflicts?: boolean }
+) {
   assertAdmin(actor);
   await connectDB();
   const match = await Match.findById(matchId);
@@ -190,11 +194,54 @@ export async function updateMatchSchedule(actor: Actor, matchId: string, input: 
     }
   }
 
+  const nextScheduledAt = input.scheduledAt !== undefined ? input.scheduledAt : match.scheduledAt;
+  const nextMat = input.mat !== undefined ? input.mat : match.mat;
+
+  let conflicts: Array<{ detail: string }> = [];
+  if (nextScheduledAt) {
+    const { detectScheduleConflicts } = await import("./matchConflict");
+    conflicts = await detectScheduleConflicts({
+      matchId,
+      eventId: String(match.eventId),
+      scheduledAt: new Date(nextScheduledAt),
+      mat: nextMat || "",
+      competitorARegistrationId: match.competitorARegistrationId ? String(match.competitorARegistrationId) : null,
+      competitorBRegistrationId: match.competitorBRegistrationId ? String(match.competitorBRegistrationId) : null,
+    });
+    if (conflicts.length > 0 && !input.allowConflicts) {
+      throw new ConflictError(
+        `Scheduling conflict: ${conflicts.map((c) => c.detail).join(" ")} Set allowConflicts to proceed deliberately.`
+      );
+    }
+  }
+
+  const previousVersion = match.scheduleVersion ?? 0;
   if (input.scheduledAt !== undefined) match.scheduledAt = input.scheduledAt;
   if (input.mat !== undefined) match.mat = input.mat;
+  if (input.scheduledAt !== undefined || input.mat !== undefined) {
+    match.scheduleVersion = previousVersion + 1;
+  }
+  if (match.scheduledAt && match.status === "PENDING" && match.competitorARegistrationId && match.competitorBRegistrationId) {
+    match.status = "SCHEDULED";
+  }
   await match.save();
 
+  const { enqueueOutboxJob, supersedeOutboxJobsByPrefix } = await import("./outboxService");
+  const { scheduleMatchReminderForMatch } = await import("./reminderService");
+
+  // Supersede stale reminders; schedule new ones only when time is known.
+  await supersedeOutboxJobsByPrefix(`match-reminder:${matchId}:`);
   if (match.scheduledAt) {
+    const reminder = await scheduleMatchReminderForMatch(matchId);
+    if (previousVersion > 0) {
+      await enqueueOutboxJob({
+        type: "MATCH_SCHEDULE_CHANGED",
+        idempotencyKey: `schedule-change:${matchId}:v${match.scheduleVersion}`,
+        runAt: new Date(),
+        payload: { matchId, scheduleVersion: match.scheduleVersion },
+      });
+    }
+
     const ids = [match.competitorARegistrationId, match.competitorBRegistrationId].filter(Boolean);
     const registrations = await Registration.find({ _id: { $in: ids } }).lean();
     const profiles = await FighterProfile.find({ userId: { $in: registrations.map((r) => r.userId) } }).lean();
@@ -209,10 +256,22 @@ export async function updateMatchSchedule(actor: Actor, matchId: string, input: 
         .filter((user) => user.email)
         .map((user) => getEmailAdapter().send({ to: user.email, subject: "Your bout is scheduled", body })),
     ]);
+    void reminder;
   }
 
-  await writeAuditLog({ actorId: actor.userId, action: "MATCH_SCHEDULE_UPDATED", targetType: "Match", targetId: matchId });
-  return match;
+  await writeAuditLog({
+    actorId: actor.userId,
+    action: "MATCH_SCHEDULE_UPDATED",
+    targetType: "Match",
+    targetId: matchId,
+    after: {
+      scheduledAt: match.scheduledAt,
+      mat: match.mat,
+      scheduleVersion: match.scheduleVersion,
+      conflicts,
+    },
+  });
+  return { match, conflicts };
 }
 
 async function enrichWithNamesAndEvent(matches: LeanMatch[]) {

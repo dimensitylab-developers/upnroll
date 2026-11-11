@@ -15,6 +15,17 @@ vi.mock("@/server/models/Registration", () => ({ Registration: { find: () => ({ 
 vi.mock("@/server/models/FighterProfile", () => ({ FighterProfile: { find: () => ({ lean: () => Promise.resolve([]) }) } }));
 vi.mock("@/server/models/Event", () => ({ Event: { find: () => ({ lean: () => Promise.resolve([]) }) } }));
 vi.mock("@/server/models/Division", () => ({ Division: { find: () => ({ lean: () => Promise.resolve([]) }) } }));
+vi.mock("@/server/models/User", () => ({ User: { find: () => ({ select: () => ({ lean: () => Promise.resolve([]) }) }) } }));
+vi.mock("@/server/notifications/whatsapp", () => ({ notifyWhatsApp: vi.fn().mockResolvedValue(undefined) }));
+vi.mock("@/server/email/console", () => ({ getEmailAdapter: () => ({ send: vi.fn().mockResolvedValue(undefined) }) }));
+vi.mock("./matchConflict", () => ({ detectScheduleConflicts: vi.fn().mockResolvedValue([]) }));
+vi.mock("./outboxService", () => ({
+  enqueueOutboxJob: vi.fn().mockResolvedValue(undefined),
+  supersedeOutboxJobsByPrefix: vi.fn().mockResolvedValue(undefined),
+}));
+vi.mock("./reminderService", () => ({
+  scheduleMatchReminderForMatch: vi.fn().mockResolvedValue({ scheduled: true }),
+}));
 
 const mockWriteAuditLog = vi.fn().mockResolvedValue(undefined);
 vi.mock("@/server/audit/log", () => ({
@@ -24,10 +35,13 @@ vi.mock("@/server/audit/log", () => ({
 function matchDoc(overrides: Record<string, unknown> = {}) {
   return {
     _id: "match1",
+    eventId: "event1",
     competitorARegistrationId: "regA",
     competitorBRegistrationId: "regB",
     scheduledAt: null,
     mat: "",
+    status: "PENDING",
+    scheduleVersion: 0,
     save: vi.fn().mockResolvedValue(undefined),
     ...overrides,
   };
@@ -47,8 +61,8 @@ describe("updateMatchSchedule", () => {
 
     const result = await updateMatchSchedule(admin, "match1", { scheduledAt: new Date("2026-12-01T10:00:00Z"), mat: "Mat 1" });
 
-    expect(result.scheduledAt).toEqual(new Date("2026-12-01T10:00:00Z"));
-    expect(result.mat).toBe("Mat 1");
+    expect(result.match.scheduledAt).toEqual(new Date("2026-12-01T10:00:00Z"));
+    expect(result.match.mat).toBe("Mat 1");
     expect(match.save).toHaveBeenCalled();
     expect(mockWriteAuditLog).toHaveBeenCalled();
   });
@@ -82,7 +96,7 @@ describe("updateMatchSchedule", () => {
 
     const result = await updateMatchSchedule(admin, "match1", { mat: "" });
 
-    expect(result.mat).toBe("");
+    expect(result.match.mat).toBe("");
     expect(match.save).toHaveBeenCalled();
   });
 

@@ -7,9 +7,11 @@ import { GrapplerForm, type GrapplerDefaults } from "@/features/fighters/grapple
 import { Label } from "@/components/ui/label";
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/select";
 import { SectionBanner } from "@/components/home/section-banner";
+import { CouponField } from "./coupon-field";
 
 type DivisionOption = {
   id: string;
+  eventId: string;
   name: string;
   discipline: string;
   eventName: string;
@@ -35,6 +37,7 @@ export function NewRegistrationForm({
   const [divisionId, setDivisionId] = useState("");
   const [consent, setConsent] = useState(false);
   const [agreement, setAgreement] = useState(false);
+  const selectedDivision = divisions.find((d) => d.id === divisionId) ?? null;
 
   useEffect(() => {
     if (state.redirectTo) router.push(state.redirectTo);
@@ -48,6 +51,7 @@ export function NewRegistrationForm({
 
   return (
     <GrapplerForm
+      id="registration-main"
       mode="event"
       state={navigating ? { ...state, error: undefined } : state}
       formAction={formAction}
@@ -77,6 +81,7 @@ export function NewRegistrationForm({
               </SelectContent>
             </Select>
           </div>
+          <CouponField eventId={selectedDivision?.eventId ?? null} disabled={pending || navigating} />
         </section>
       }
       bottom={

@@ -107,6 +107,40 @@ export async function listRecentAccountsForAdmin(actor: Actor, limit = 8) {
   }));
 }
 
+/** Paginated audit feed for the admin audit page. */
+export async function listAuditLogsPage(actor: Actor, options: { limit?: number; skip?: number } = {}) {
+  assertAdmin(actor);
+  const limit = Math.min(100, Math.max(1, options.limit ?? 50));
+  const skip = Math.max(0, options.skip ?? 0);
+  await connectDB();
+  const [logs, total] = await Promise.all([
+    AuditLog.find()
+      .sort({ createdAt: -1 })
+      .skip(skip)
+      .limit(limit)
+      .select("action actorId targetType targetId before after createdAt")
+      .lean(),
+    AuditLog.countDocuments(),
+  ]);
+  const rows = await enrichAuditRows(logs);
+  return {
+    rows: logs.map((l, i) => ({
+      id: String(l._id),
+      action: l.action,
+      targetType: l.targetType,
+      targetId: l.targetId ?? "",
+      createdAt: l.createdAt as Date,
+      actorEmail: rows[i]?.actorEmail ?? "System",
+      actorName: rows[i]?.detail,
+      before: l.before,
+      after: l.after,
+    })),
+    total,
+    limit,
+    skip,
+  };
+}
+
 /** Counts for the “are people showing up?” strip on the admin home. */
 export async function getAdminPresenceStats(actor: Actor) {
   assertAdmin(actor);

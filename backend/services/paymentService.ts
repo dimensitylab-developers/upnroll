@@ -61,7 +61,11 @@ export async function submitPayment(
   ]);
   if (!event || !division || !user) throw new NotFoundError("Associated event, division, or user not found.");
 
-  const expectedAmountMinorUnits = division.feeMinorUnitsOverride ?? event.paymentInstructions!.feeMinorUnits;
+  // Prefer registration fee snapshot so later fee edits cannot rewrite an open submission.
+  const expectedAmountMinorUnits =
+    registration.feeSnapshot?.amountMinorUnits ??
+    division.feeMinorUnitsOverride ??
+    event.paymentInstructions!.feeMinorUnits;
 
   const ext = EXT_BY_TYPE[contentType] ?? "";
   const label = `payment-screenshots/${registrationId}/${Date.now()}-${randomBytes(4).toString("hex")}${ext}`;

@@ -9,6 +9,8 @@ import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { PageHeader } from "@/components/page-header";
 import { MatchResultDialog } from "@/features/matches/match-result-dialog";
 import { ScheduleMatchDialog } from "@/features/matches/schedule-match-dialog";
+import { JudgeCredentialsPanel } from "@/features/matches/judge-credentials-panel";
+import { fetchJudgeCredentialMeta } from "@/features/matches/judge-credential-actions";
 import { PageBackLink } from "@/components/layout/page-back-link";
 
 /** Session/DB-bound route — allow blocking navigation under Cache Components. */
@@ -45,7 +47,15 @@ function ScheduleStatusBadge({ scheduledAt, mat }: { scheduledAt: Date | string 
   );
 }
 
-function MatchTable({ eventId, matches }: { eventId: string; matches: EnrichedMatch[] }) {
+function MatchTable({
+  eventId,
+  matches,
+  judgeMetaByMatch,
+}: {
+  eventId: string;
+  matches: EnrichedMatch[];
+  judgeMetaByMatch: Map<string, Awaited<ReturnType<typeof fetchJudgeCredentialMeta>>>;
+}) {
   const grouped = groupByDivisionAndRound(matches);
 
   if (matches.length === 0) {
@@ -87,12 +97,21 @@ function MatchTable({ eventId, matches }: { eventId: string; matches: EnrichedMa
                           <TableCell>
                             <div className="flex flex-wrap gap-2">
                               {m.competitorARegistrationId && m.competitorBRegistrationId && (
-                                <ScheduleMatchDialog
-                                  eventId={eventId}
-                                  matchId={String(m._id)}
-                                  currentScheduledAt={m.scheduledAt}
-                                  currentMat={m.mat}
-                                />
+                                <>
+                                  <ScheduleMatchDialog
+                                    eventId={eventId}
+                                    matchId={String(m._id)}
+                                    currentScheduledAt={m.scheduledAt}
+                                    currentMat={m.mat}
+                                  />
+                                  <JudgeCredentialsPanel
+                                    eventId={eventId}
+                                    matchId={String(m._id)}
+                                    meta={judgeMetaByMatch.get(String(m._id)) ?? null}
+                                    canIssue={Boolean(m.competitorARegistrationId && m.competitorBRegistrationId)}
+                                    scheduleWarning={!m.scheduledAt}
+                                  />
+                                </>
                               )}
                               {m.status === "SCHEDULED" && m.competitorARegistrationId && m.competitorBRegistrationId ? (
                                 <MatchResultDialog
@@ -143,6 +162,10 @@ export default async function AdminMatchesPage({ params }: { params: Promise<{ i
     throw err;
   }
   const matches = await listMatchesForEvent(actor, id);
+  const judgeMetaEntries = await Promise.all(
+    matches.map(async (m) => [String(m._id), await fetchJudgeCredentialMeta(String(m._id))] as const)
+  );
+  const judgeMetaByMatch = new Map(judgeMetaEntries);
   const upcoming = matches.filter((m) => UPCOMING_STATUSES.has(m.status));
   const completed = matches.filter((m) => COMPLETED_STATUSES.has(m.status));
 
@@ -156,10 +179,10 @@ export default async function AdminMatchesPage({ params }: { params: Promise<{ i
           <TabsTrigger value="completed">Completed ({completed.length})</TabsTrigger>
         </TabsList>
         <TabsContent value="upcoming" className="mt-4">
-          <MatchTable eventId={id} matches={upcoming} />
+          <MatchTable eventId={id} matches={upcoming} judgeMetaByMatch={judgeMetaByMatch} />
         </TabsContent>
         <TabsContent value="completed" className="mt-4">
-          <MatchTable eventId={id} matches={completed} />
+          <MatchTable eventId={id} matches={completed} judgeMetaByMatch={judgeMetaByMatch} />
         </TabsContent>
       </Tabs>
     </div>

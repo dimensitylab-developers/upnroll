@@ -42,6 +42,7 @@ export type GrapplerDefaults = {
 };
 
 type GrapplerFormProps = {
+  id?: string;
   mode: "profile" | "event";
   state: GrapplerFormState;
   formAction: (payload: FormData) => void;
@@ -131,6 +132,7 @@ const YES_NO = [
 ];
 
 export function GrapplerForm({
+  id,
   mode,
   state,
   formAction,
@@ -186,7 +188,7 @@ export function GrapplerForm({
   }, [fieldErrorCount, errors]);
 
   return (
-    <form action={formAction} className="space-y-8">
+    <form id={id} action={formAction} className="space-y-8">
       {state.error && <p className="text-sm text-primary">{state.error}</p>}
       {state.success && (
         <p className="border-2 border-black bg-white px-3 py-2 text-sm font-semibold text-brand-cyan shadow-[3px_3px_0_0_#000]">

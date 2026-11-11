@@ -8,7 +8,15 @@ import "server-only";
  * result).
  */
 
-export type MatchStatus = "PENDING" | "SCHEDULED" | "COMPLETED" | "BYE";
+export type MatchStatus =
+  | "PENDING"
+  | "SCHEDULED"
+  | "LIVE"
+  | "DELAYED"
+  | "COMPLETED"
+  | "BYE"
+  | "CANCELLED"
+  | "ERROR";
 
 export type MatchSkeleton = {
   round: number;

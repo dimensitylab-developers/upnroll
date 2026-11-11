@@ -11,6 +11,20 @@ export type RegistrationStatus = (typeof REGISTRATION_STATUSES)[number];
 
 export const ACTIVE_REGISTRATION_STATUSES: RegistrationStatus[] = ["AWAITING_PAYMENT", "PENDING_VERIFICATION", "CONFIRMED"];
 
+const feeSnapshotSchema = new Schema(
+  {
+    amountMinorUnits: { type: Number, required: true, min: 0 },
+    currency: { type: String, required: true, default: "INR" },
+    paymentOptionId: { type: Schema.Types.ObjectId, default: null },
+    paymentOptionLabel: { type: String, default: "" },
+    qrImageKey: { type: String, default: "" },
+    couponId: { type: Schema.Types.ObjectId, ref: "Coupon", default: null },
+    couponCode: { type: String, default: "" },
+    snapshottedAt: { type: Date, required: true, default: Date.now },
+  },
+  { _id: false }
+);
+
 const registrationSchema = new Schema(
   {
     userId: { type: Schema.Types.ObjectId, ref: "User", required: true, index: true },
@@ -19,6 +33,9 @@ const registrationSchema = new Schema(
     status: { type: String, enum: REGISTRATION_STATUSES, required: true, default: "AWAITING_PAYMENT" },
     consentAcceptedAt: { type: Date, default: null },
     agreementAcceptedAt: { type: Date, default: null },
+    /** Authoritative fee/QR/coupon capture at registration time — later fee edits must not rewrite this. */
+    feeSnapshot: { type: feeSnapshotSchema, default: null },
+    couponId: { type: Schema.Types.ObjectId, ref: "Coupon", default: null },
     statusHistory: {
       type: [
         {
@@ -32,9 +49,6 @@ const registrationSchema = new Schema(
   { timestamps: true }
 );
 
-// Blocks a second active (non-cancelled/rejected) registration by the same
-// user in the same division — defense in depth alongside the service-layer
-// check in registrationService.createRegistration.
 registrationSchema.index(
   { userId: 1, divisionId: 1 },
   { unique: true, partialFilterExpression: { status: { $in: ACTIVE_REGISTRATION_STATUSES } } }

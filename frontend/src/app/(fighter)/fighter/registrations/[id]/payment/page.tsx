@@ -23,11 +23,17 @@ export default async function RegistrationPaymentPage({ params }: { params: Prom
     throw err;
   }
 
-  const { registration, event, division, latestSubmission } = data;
+  const { registration, event, division, latestSubmission, feeView } = data;
   const eventId = event ? String(event._id) : "";
-  const hasQr = Boolean(event?.paymentInstructions?.qrImageKey);
-  const fee = event?.paymentInstructions?.feeMinorUnits ?? 0;
-  const currency = event?.paymentInstructions?.currency ?? "INR";
+  const hasQr = Boolean(feeView.qrImageKey);
+  const fee = feeView.amountMinorUnits;
+  const currency = feeView.currency;
+  const qrSrc =
+    hasQr && eventId
+      ? feeView.paymentOptionId
+        ? `/api/v1/fighter/events/${eventId}/payment-qr?registrationId=${id}&paymentOptionId=${feeView.paymentOptionId}`
+        : `/api/v1/fighter/events/${eventId}/payment-qr?registrationId=${id}`
+      : "";
 
   return (
     <div className="mx-auto max-w-xl">
@@ -40,6 +46,8 @@ export default async function RegistrationPaymentPage({ params }: { params: Prom
           {fee > 0 && (
             <p className="mt-1 text-sm text-muted-foreground">
               Entry fee {(fee / 100).toLocaleString("en-IN", { style: "currency", currency })}
+              {feeView.paymentOptionLabel ? ` · ${feeView.paymentOptionLabel}` : ""}
+              {feeView.couponCode ? ` · coupon ${feeView.couponCode}` : ""}
             </p>
           )}
         </div>
@@ -58,10 +66,10 @@ export default async function RegistrationPaymentPage({ params }: { params: Prom
               </p>
             )}
             <div className="mx-auto mb-4 flex size-48 items-center justify-center overflow-hidden rounded-md border-2 border-black bg-white shadow-[4px_4px_0_0_#000]">
-              {hasQr && eventId ? (
+              {hasQr && qrSrc ? (
                 // eslint-disable-next-line @next/next/no-img-element
                 <img
-                  src={`/api/v1/fighter/events/${eventId}/payment-qr?registrationId=${id}`}
+                  src={qrSrc}
                   alt="Payment QR code"
                   className="h-full w-full object-contain p-2"
                 />

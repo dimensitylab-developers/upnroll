@@ -10,6 +10,8 @@ import { HeldRecord, type HeldRecordData } from "@/components/events/held-record
 import { SuperfightLanding } from "@/components/events/superfight-landing";
 import { Badge } from "@/components/ui/badge";
 import { PageBackLink } from "@/components/layout/page-back-link";
+import { getEventAnnouncementBoard } from "@/server/services/announcementService";
+import { MatchAnnouncementBanner } from "@/components/events/match-announcement-banner";
 
 function isVideo(url: string) {
   return /\.(mp4|webm|mov)(\?|$)/i.test(url);
@@ -26,7 +28,10 @@ export default async function PublicEventDetailPage({ params }: { params: Promis
     notFound();
   }
 
-  const divisions = await cachedPublicDivisions(event._id);
+  const [divisions, announcementBoard] = await Promise.all([
+    cachedPublicDivisions(event._id),
+    getEventAnnouncementBoard(slug).catch(() => null),
+  ]);
 
   if (event.status === "COMPLETED") {
     const [media, results] = await Promise.all([
@@ -123,6 +128,10 @@ export default async function PublicEventDetailPage({ params }: { params: Promis
           {new Date(event.startDate).toLocaleDateString("en-IN", { day: "numeric", month: "long", year: "numeric" })}
           {` · ${event.venue || "Venue to be announced"}`}
         </p>
+
+        {announcementBoard && (
+          <MatchAnnouncementBanner mats={announcementBoard.mats} eventName={announcementBoard.eventName} />
+        )}
 
         <div className="mb-8 flex flex-wrap gap-x-4 gap-y-2">
           {event.status === "REGISTRATION_OPEN" && (

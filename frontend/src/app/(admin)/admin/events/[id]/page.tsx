@@ -9,6 +9,9 @@ import { EditEventForm } from "@/features/events/edit-event-form";
 import { EditDivisionForm } from "@/features/events/edit-division-form";
 import { PaymentQrForm } from "@/features/events/payment-qr-form";
 import { listRegistrationsForEvent } from "@/server/services/registrationService";
+import { listCouponsForEvent } from "@/server/services/couponService";
+import { listPaymentOptionsForAdmin } from "@/server/services/paymentOptionService";
+import { EventPaymentsPanel } from "@/features/payments/event-payments-panel";
 import { isActiveRegistration } from "@/server/services/registrationStateMachine";
 import { WithdrawButton } from "@/features/registrations/withdraw-button";
 import { AdminEmpty } from "@/features/admin/ui/admin-empty";
@@ -24,6 +27,8 @@ const DOORS = [
   { path: "divisions", label: "Divisions" },
   { path: "brackets", label: "Brackets" },
   { path: "matches", label: "Matches" },
+  { path: "payments", label: "Fees & coupons" },
+  { path: "scoring-rules", label: "Scoring rules" },
 ] as const;
 
 export default async function AdminEventDetailPage({ params }: { params: Promise<{ id: string }> }) {
@@ -36,7 +41,12 @@ export default async function AdminEventDetailPage({ params }: { params: Promise
     if (err instanceof NotFoundError) notFound();
     throw err;
   }
-  const [divisions, registrations] = await Promise.all([listDivisionsForEvent(id), listRegistrationsForEvent(actor, id)]);
+  const [divisions, registrations, paymentOptions, coupons] = await Promise.all([
+    listDivisionsForEvent(id),
+    listRegistrationsForEvent(actor, id),
+    listPaymentOptionsForAdmin(actor, id),
+    listCouponsForEvent(actor, id),
+  ]);
   const hasQr = Boolean(event.paymentInstructions?.qrImageKey);
 
   return (
@@ -77,11 +87,34 @@ export default async function AdminEventDetailPage({ params }: { params: Promise
           </div>
         </div>
         <div className="border-2 border-black bg-white p-5 shadow-[6px_6px_0_0_#000] sm:p-6">
-          <AdminStamp>Payment QR</AdminStamp>
-          <p className="mb-4 text-sm text-muted-foreground">Fighters see this image on the payment page once it is uploaded.</p>
+          <AdminStamp>Default payment QR</AdminStamp>
+          <p className="mb-4 text-sm text-muted-foreground">
+            Quick upload for the default fee QR. For discount tiers and coupon codes, use the section below or{" "}
+            <Link href={`/admin/events/${id}/payments`} className="font-semibold text-brand-red underline">
+              Fees & coupons
+            </Link>
+            .
+          </p>
           <PaymentQrForm eventId={id} hasQr={hasQr} />
         </div>
       </div>
+
+      <AdminSection title="Fees, QR options & coupons" actionHref={`/admin/events/${id}/payments`} actionLabel="Open full page →">
+        <p className="mb-4 text-sm text-muted-foreground">
+          Create payment tiers (for example ₹2500 / ₹1500 / ₹2000), upload each QR, then generate single-use coupon codes linked to a tier.
+        </p>
+        <EventPaymentsPanel
+          eventId={id}
+          options={paymentOptions}
+          coupons={coupons.map((c) => ({
+            _id: String(c._id),
+            code: c.code,
+            status: c.status,
+            paymentOptionId: String(c.paymentOptionId),
+            effectivelyExpired: Boolean(c.effectivelyExpired),
+          }))}
+        />
+      </AdminSection>
 
       <AdminSection title="Overview">
         <div className="border-2 border-black bg-white p-5 shadow-[6px_6px_0_0_#000] sm:p-6">

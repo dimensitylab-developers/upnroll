@@ -79,9 +79,15 @@ export async function createRegistrationAction(
       waiverAcceptedAt: new Date(),
     });
 
+    const couponId = String(formData.get("couponId") ?? "").trim() || null;
+    const reservationIntentId = String(formData.get("reservationIntentId") ?? "").trim() || null;
+
     const { registration } = await createRegistration(actor, divisionId, {
       consent: true,
       agreement: true,
+    }, {
+      couponId,
+      reservationIntentId,
     });
     invalidatePublicTags(["schedule", "rankings", "fighters"]);
     return { redirectTo: paymentPath(String(registration._id)) };

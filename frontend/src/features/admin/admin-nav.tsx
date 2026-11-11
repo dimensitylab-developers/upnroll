@@ -15,6 +15,8 @@ const LINKS = [
   { href: "/admin/content", label: "Content" },
   { href: "/admin/settings", label: "Settings" },
   { href: "/admin/media", label: "Media" },
+  { href: "/admin/notifications", label: "Outbox" },
+  { href: "/admin/audit", label: "Audit" },
 ];
 
 function useHasHydrated() {

@@ -31,6 +31,7 @@ export async function createEvent(actor: Actor, input: CreateEventInput) {
   const existing = await Event.findOne({ slug: input.slug }).lean();
   if (existing) throw new ConflictError("An event with this slug already exists.");
 
+  const currency = input.currency ?? "INR";
   const event = await Event.create({
     name: input.name,
     slug: input.slug,
@@ -41,11 +42,23 @@ export async function createEvent(actor: Actor, input: CreateEventInput) {
     registrationClosesAt: input.registrationClosesAt,
     status: "DRAFT",
     matCount: input.matCount && input.matCount >= 1 ? Math.floor(input.matCount) : 1,
+    timezone: "Asia/Kolkata",
     paymentInstructions: {
       feeMinorUnits: input.feeMinorUnits,
-      currency: input.currency ?? "INR",
+      currency,
       qrImageKey: "",
     },
+    paymentOptions: [
+      {
+        label: "Default",
+        amountMinorUnits: input.feeMinorUnits,
+        currency,
+        qrImageKey: "",
+        active: true,
+        isDefault: true,
+      },
+    ],
+    scoringRules: { configured: false, winByHighestScore: false, allowTies: false, points: [], penalties: [], outcomes: [] },
   });
 
   await writeAuditLog({ actorId: actor.userId, action: "EVENT_CREATED", targetType: "Event", targetId: String(event._id) });
@@ -118,6 +131,24 @@ export async function updateEventDetails(actor: Actor, eventId: string, input: U
   event.registrationClosesAt = input.registrationClosesAt;
   event.paymentInstructions.feeMinorUnits = input.feeMinorUnits;
   event.paymentInstructions.currency = input.currency ?? event.paymentInstructions.currency ?? "INR";
+  if (!event.paymentOptions || event.paymentOptions.length === 0) {
+    event.paymentOptions = [
+      {
+        label: "Default",
+        amountMinorUnits: input.feeMinorUnits,
+        currency: event.paymentInstructions.currency,
+        qrImageKey: event.paymentInstructions.qrImageKey ?? "",
+        active: true,
+        isDefault: true,
+      },
+    ] as typeof event.paymentOptions;
+  } else {
+    const def = event.paymentOptions.find((o) => o.isDefault) ?? event.paymentOptions[0];
+    if (def) {
+      def.amountMinorUnits = input.feeMinorUnits;
+      def.currency = event.paymentInstructions.currency;
+    }
+  }
   await event.save();
 
   await writeAuditLog({
@@ -158,6 +189,22 @@ export async function setEventPaymentQr(actor: Actor, eventId: string, bytes: Bu
     metadata: { purpose: "payment-qr", eventId },
   });
   event.paymentInstructions.qrImageKey = storedKey;
+  // Keep the default payment option QR in sync with the legacy single-QR field.
+  if (!event.paymentOptions || event.paymentOptions.length === 0) {
+    event.paymentOptions = [
+      {
+        label: "Default",
+        amountMinorUnits: event.paymentInstructions.feeMinorUnits,
+        currency: event.paymentInstructions.currency ?? "INR",
+        qrImageKey: storedKey,
+        active: true,
+        isDefault: true,
+      },
+    ] as typeof event.paymentOptions;
+  } else {
+    const def = event.paymentOptions.find((o) => o.isDefault) ?? event.paymentOptions[0];
+    if (def) def.qrImageKey = storedKey;
+  }
   await event.save();
 
   await writeAuditLog({

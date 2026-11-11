@@ -31,6 +31,9 @@ export default async function AdminPaymentsPage() {
         <p className="mt-2 text-sm text-white/70">
           {pending} awaiting review · {queue.length} in the recent queue
         </p>
+        <p className="mt-3 text-sm text-white/80">
+          To create fee tiers or coupon codes, open an event → <span className="font-semibold text-white">Fees &amp; coupons</span>.
+        </p>
       </section>
 
       <div className="border-2 border-black bg-white p-4 shadow-[6px_6px_0_0_#000] sm:p-6">

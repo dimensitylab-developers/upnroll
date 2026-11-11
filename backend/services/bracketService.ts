@@ -168,17 +168,26 @@ export async function publishBracket(actor: Actor, bracketId: string) {
   assertAdmin(actor);
   await connectDB();
 
-  return withTransaction(async (session) => {
-    const bracket = await Bracket.findOneAndUpdate(
+  const bracket = await withTransaction(async (session) => {
+    const updated = await Bracket.findOneAndUpdate(
       { _id: bracketId, status: "DRAFT" },
       { status: "PUBLISHED" },
       { returnDocument: "after", session }
     );
-    if (!bracket) throw new ConflictError("Bracket not found, or it has already been published.");
+    if (!updated) throw new ConflictError("Bracket not found, or it has already been published.");
 
-    await writeAuditLog({ actorId: actor.userId, action: "BRACKET_PUBLISHED", targetType: "Bracket", targetId: bracketId }, session);
-    return bracket;
+    await writeAuditLog(
+      { actorId: actor.userId, action: "BRACKET_PUBLISHED", targetType: "Bracket", targetId: bracketId },
+      session
+    );
+    return updated;
   });
+
+  // Reminders only after publish — never from draft edits. Jobs are durable outbox records.
+  const { scheduleRemindersForPublishedBracket } = await import("./reminderService");
+  await scheduleRemindersForPublishedBracket(bracketId);
+
+  return bracket;
 }
 
 export async function getBracketForDivision(actor: Actor, divisionId: string) {
