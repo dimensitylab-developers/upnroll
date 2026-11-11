@@ -36,11 +36,13 @@ export function FounderCredit({ className = "" }: { className?: string }) {
   );
 }
 
+/** Static year — Cache Components forbids `new Date()` during prerender of static shells. */
+const COPYRIGHT_YEAR = 2026;
+
 export function SiteCopyright({ className = "" }: { className?: string }) {
-  const year = new Date().getFullYear();
   return (
     <p className={`text-[11px] leading-none text-muted-foreground ${className}`.trim()}>
-      © {year} Up &apos;n Roll. All rights reserved.
+      © {COPYRIGHT_YEAR} Up &apos;n Roll. All rights reserved.
     </p>
   );
 }
