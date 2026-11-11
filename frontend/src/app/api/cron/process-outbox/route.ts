@@ -1,6 +1,10 @@
 import { NextResponse } from "next/server";
 import { connection } from "next/server";
-import { processDueOutboxJobs, recoverStaleProcessingJobs } from "@/server/services/outboxService";
+import {
+  getOutboxRunGate,
+  processDueOutboxJobs,
+  recoverStaleProcessingJobs,
+} from "@/server/services/outboxService";
 
 async function handle(request: Request) {
   await connection();
@@ -14,11 +18,30 @@ async function handle(request: Request) {
     return NextResponse.json({ error: "Unauthorized." }, { status: 401 });
   }
 
+  const url = new URL(request.url);
+  const ua = request.headers.get("user-agent") ?? "";
+  const vercelCron = ua.includes("vercel-cron") || Boolean(request.headers.get("x-vercel-cron-schedule"));
+  // Frequent callers (GitHub Actions) skip off event day. Vercel daily cron / ?force=1 always sweep.
+  const force = url.searchParams.get("force") === "1" || vercelCron;
+
+  if (!force) {
+    const gate = await getOutboxRunGate();
+    if (!gate.run) {
+      return NextResponse.json({
+        ok: true,
+        skipped: true,
+        reason: gate.reason,
+        processed: 0,
+      });
+    }
+  }
+
   const recovered = await recoverStaleProcessingJobs();
   const results = await processDueOutboxJobs(25);
 
   return NextResponse.json({
     ok: true,
+    skipped: false,
     recovered,
     processed: results.length,
     results,

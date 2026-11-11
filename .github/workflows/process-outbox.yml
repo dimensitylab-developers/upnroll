@@ -1,0 +1,28 @@
+# Runs often, but the API no-ops unless it is event day (or jobs are already due).
+# Disable this workflow in GitHub between tournaments to save Actions minutes.
+name: Process outbox (event-day)
+
+on:
+  schedule:
+    # Every 5 minutes. Server returns skipped when no event activity.
+    - cron: "*/5 * * * *"
+  workflow_dispatch:
+
+jobs:
+  process:
+    runs-on: ubuntu-latest
+    timeout-minutes: 2
+    steps:
+      - name: Process due outbox jobs
+        env:
+          CRON_URL: ${{ secrets.CRON_OUTBOX_URL }}
+          CRON_SECRET: ${{ secrets.CRON_SECRET }}
+        run: |
+          if [ -z "$CRON_URL" ] || [ -z "$CRON_SECRET" ]; then
+            echo "Set repository secrets CRON_OUTBOX_URL and CRON_SECRET."
+            exit 1
+          fi
+          curl -fsS -X POST \
+            -H "Authorization: Bearer ${CRON_SECRET}" \
+            -H "Content-Type: application/json" \
+            "${CRON_URL}"

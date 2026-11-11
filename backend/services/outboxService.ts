@@ -91,6 +91,35 @@ export async function claimDueOutboxJobs(limit = 20) {
   return claimed;
 }
 
+/**
+ * Gate frequent schedulers (GitHub Actions) so they only do work around fight day.
+ * - due outbox jobs always run
+ * - otherwise only when a match is scheduled in a same-day window around now
+ */
+export async function getOutboxRunGate(now = new Date()): Promise<{ run: boolean; reason: string }> {
+  await connectDB();
+  const due = await OutboxJob.exists({ status: { $in: ["PENDING", "FAILED"] }, runAt: { $lte: now } });
+  if (due) return { run: true, reason: "due_jobs" };
+
+  // Cover an event day in India without running year-round: 6h behind → 18h ahead of now.
+  const windowStart = new Date(now.getTime() - 6 * 60 * 60 * 1000);
+  const windowEnd = new Date(now.getTime() + 18 * 60 * 60 * 1000);
+  const { Match } = await import("@/server/models/Match");
+  const { Bracket } = await import("@/server/models/Bracket");
+  const publishedIds = (
+    await Bracket.find({ status: "PUBLISHED" }).select("_id").lean()
+  ).map((b) => b._id);
+  if (publishedIds.length === 0) return { run: false, reason: "no_event_activity" };
+
+  const matchSoon = await Match.exists({
+    bracketId: { $in: publishedIds },
+    scheduledAt: { $gte: windowStart, $lte: windowEnd },
+    status: { $in: ["PENDING", "SCHEDULED", "LIVE", "DELAYED"] },
+  });
+  if (matchSoon) return { run: true, reason: "event_day_window" };
+  return { run: false, reason: "no_event_activity" };
+}
+
 export async function processOutboxJob(jobId: string) {
   await connectDB();
   const job = await OutboxJob.findById(jobId);
