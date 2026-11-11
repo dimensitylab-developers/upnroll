@@ -28,10 +28,10 @@ export default async function PublicBracketsPage({ params }: { params: Promise<{
     <main className="min-h-screen bg-background halftone-bg px-4 py-10 sm:py-16">
       <div className="mx-auto max-w-4xl">
         <PageBackLink href={`/events/${slug}`} label="Back to event" />
-        <h1 className="text-display mb-6 text-3xl font-semibold break-words sm:mb-8 sm:text-4xl">
+        <h1 className="text-display copy-slab mb-6 text-3xl font-semibold break-words sm:mb-8 sm:text-4xl">
           {event.name} — Brackets
         </h1>
-        <Suspense fallback={<p className="text-sm text-muted-foreground">Loading brackets…</p>}>
+        <Suspense fallback={<p className="copy-slab text-sm text-muted-foreground">Loading brackets…</p>}>
           <DivisionBrackets eventId={String(event._id)} />
         </Suspense>
       </div>
@@ -55,11 +55,13 @@ async function DivisionBrackets({ eventId }: { eventId: string }) {
 
   return (
     <>
-      {published.length === 0 && <p className="text-sm text-muted-foreground">No brackets published yet.</p>}
+      {published.length === 0 && (
+        <p className="copy-slab text-sm text-muted-foreground">No brackets published yet.</p>
+      )}
       <div className="space-y-10">
         {published.map((bracket) => (
           <div key={String(bracket.bracket._id)}>
-            <h2 className="text-display mb-4 text-xl font-semibold">{bracket.division.name}</h2>
+            <h2 className="text-display copy-slab mb-4 text-xl font-semibold">{bracket.division.name}</h2>
             <BracketView matches={bracket.matches} roundsCount={bracket.bracket.roundsCount} />
           </div>
         ))}

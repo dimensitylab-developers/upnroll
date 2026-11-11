@@ -25,7 +25,7 @@ const DOORS = [
   {
     title: "Results",
     path: "results",
-    body: "Who won — once the bout is over.",
+    body: "Who won, once the bout is over.",
   },
 ] as const;
 
@@ -63,7 +63,7 @@ export function SuperfightLanding({
           <div className="relative aspect-[3/4] w-full sm:aspect-[4/5] md:aspect-[16/10] lg:aspect-[21/9]">
             <Image
               src={BANNER}
-              alt={`${name} — No-Gi #2 banner`}
+              alt={`${name}. No-Gi #2 banner`}
               fill
               priority
               sizes="100vw"
@@ -185,7 +185,7 @@ export function SuperfightLanding({
         {/* Divisions */}
         <section>
           <SectionBanner>Divisions</SectionBanner>
-          <p className="mb-6 max-w-2xl text-sm leading-relaxed">
+          <p className="copy-slab mb-6 max-w-2xl text-sm leading-relaxed">
             No-Gi groups for the Mumbai card. Organizers may merge a small division.
           </p>
           {divisions.length > 0 ? (
@@ -200,7 +200,7 @@ export function SuperfightLanding({
               ))}
             </ul>
           ) : (
-            <p className="text-sm text-muted-foreground">Divisions will list here when they are set.</p>
+            <p className="copy-slab text-sm text-muted-foreground">Divisions will list here when they are set.</p>
           )}
         </section>
 

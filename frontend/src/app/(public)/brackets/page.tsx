@@ -48,12 +48,14 @@ export default async function LiveBracketsPage() {
           <EmojiStrip emojis={["double-leg-takedown", "armbar", "hip-throw", "triangle-choke"]} />
         </div>
         <h1 className="text-display text-4xl font-semibold">Brackets</h1>
-        <p className="mt-2 max-w-2xl bg-white px-2 py-1 text-sm">
+        <p className="copy-slab mt-2 max-w-2xl text-sm">
           Live board for the open card. Wins, losses, and every published bracket refresh as matches finish.
         </p>
 
         {!focus && (
-          <p className="mt-10 text-sm text-muted-foreground">No public card is up yet. Check back when an event opens.</p>
+          <p className="copy-slab mt-10 text-sm text-muted-foreground">
+            No public card is up yet. Check back when an event opens.
+          </p>
         )}
 
         {focus && (
@@ -78,7 +80,7 @@ export default async function LiveBracketsPage() {
             <section className="mt-12">
               <SectionBanner>Called to the mat</SectionBanner>
               {live.length === 0 ? (
-                <p className="bg-white px-2 py-1 text-sm">No bout is scheduled on the mat right now.</p>
+                <p className="copy-slab text-sm">No bout is scheduled on the mat right now.</p>
               ) : (
                 <ul className="grid gap-3 sm:grid-cols-2">
                   {live.map((match) => (
@@ -103,7 +105,7 @@ export default async function LiveBracketsPage() {
             <section className="mt-12">
               <SectionBanner>Just decided</SectionBanner>
               {decided.length === 0 ? (
-                <p className="bg-white px-2 py-1 text-sm">Results will land here as soon as a bout ends.</p>
+                <p className="copy-slab text-sm">Results will land here as soon as a bout ends.</p>
               ) : (
                 <ul className="space-y-2">
                   {[...decided].reverse().slice(0, 12).map((match) => (
@@ -124,7 +126,7 @@ export default async function LiveBracketsPage() {
             <section className="mt-12">
               <SectionBanner>Published brackets</SectionBanner>
               {brackets.length === 0 ? (
-                <p className="bg-white px-2 py-1 text-sm">No bracket has been published for this card yet.</p>
+                <p className="copy-slab text-sm">No bracket has been published for this card yet.</p>
               ) : (
                 <div className="space-y-10">
                   {brackets.map((row) => (

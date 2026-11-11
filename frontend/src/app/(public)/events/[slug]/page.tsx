@@ -123,8 +123,10 @@ export default async function PublicEventDetailPage({ params }: { params: Promis
           {event.status.replaceAll("_", " ")}
         </Badge>
         <h1 className="text-display mb-2 text-3xl font-semibold break-words sm:text-4xl">{event.name}</h1>
-        {event.description === "Road to Super Fight." && <p className="mb-2">Road to Super Fight</p>}
-        <p className="mb-6 text-muted-foreground">
+        {event.description === "Road to Super Fight." && (
+          <p className="copy-slab mb-2">Road to Super Fight</p>
+        )}
+        <p className="copy-slab mb-6 text-muted-foreground">
           {new Date(event.startDate).toLocaleDateString("en-IN", { day: "numeric", month: "long", year: "numeric" })}
           {` · ${event.venue || "Venue to be announced"}`}
         </p>

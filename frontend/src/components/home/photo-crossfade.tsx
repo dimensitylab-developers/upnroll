@@ -54,8 +54,9 @@ export function FightingGallery({
               width={960}
               height={540}
               decoding="async"
-              // Active still only — neighbors load when selected via thumbnails.
-              fetchPriority="low"
+              loading={index === 0 ? "eager" : "lazy"}
+              // First still is often LCP on home; keep it eager. Neighbors stay lazy.
+              fetchPriority={index === 0 ? "high" : "low"}
               className="absolute inset-0 h-full w-full object-cover object-center"
             />
 

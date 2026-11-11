@@ -45,7 +45,7 @@ export function HomeGlimpse({
     <>
       <section className="pb-14">
         <SectionBanner>Every card</SectionBanner>
-        <p className="mb-4 inline-block max-w-2xl bg-white px-2 text-display text-2xl font-semibold sm:text-3xl">
+        <p className="copy-slab mb-4 inline-block max-w-2xl text-display text-2xl font-semibold sm:text-3xl">
           Up &apos;n Roll runs the card. You bring the fight.
         </p>
         <ol className="grid sm:grid-cols-3 gap-3">
@@ -69,10 +69,10 @@ export function HomeGlimpse({
             </li>
           ))}
         </ul>
-        <p className="mt-4 inline-block max-w-3xl bg-white px-2 py-1 text-sm">
+        <p className="copy-slab mt-4 inline-block max-w-3xl text-sm">
           Registering means you have read the rules, you agree to them, and you accept the risks of combat sports.
         </p>
-        <p className="mt-3 inline-block bg-white px-2 py-1 text-sm">
+        <p className="copy-slab mt-3 inline-block text-sm">
           Each event publishes its own format, divisions, and scoring on the{" "}
           <Link href="/events" className="underline">events page</Link>.
         </p>

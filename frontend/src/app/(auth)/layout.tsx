@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { BrandMark, BuiltBy, FounderCredit } from "@/components/layout/brand";
+import { BrandMark, BuiltBy, FounderCredit, SiteCopyright } from "@/components/layout/brand";
 
 export default function AuthLayout({ children }: { children: React.ReactNode }) {
   return (
@@ -52,6 +52,7 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
         </div>
 
         <div className="mt-6 flex flex-col items-center gap-1 sm:items-start">
+          <SiteCopyright />
           <FounderCredit />
           <BuiltBy />
         </div>

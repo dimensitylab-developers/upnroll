@@ -6,7 +6,8 @@ const judgeSessionSchema = new Schema(
     matchId: { type: Schema.Types.ObjectId, ref: "Match", required: true, index: true },
     generation: { type: Number, required: true, min: 1 },
     tokenHash: { type: String, required: true, unique: true },
-    expiresAt: { type: Date, required: true, index: true },
+    // TTL index is declared below — do not also set index: true here.
+    expiresAt: { type: Date, required: true },
     userAgent: { type: String, default: "" },
     revokedAt: { type: Date, default: null },
   },

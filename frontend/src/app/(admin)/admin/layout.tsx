@@ -8,7 +8,7 @@ import { getSession } from "@/server/auth/session";
 import { portalGreeting, portalTabTitle, resolveDisplayName } from "@/server/auth/display-name";
 import { SignOutButton } from "@/features/auth/sign-out-button";
 import { AdminNav } from "@/features/admin/admin-nav";
-import { BrandMark, BuiltBy, FounderCredit } from "@/components/layout/brand";
+import { BrandMark, BuiltBy, FounderCredit, SiteCopyright } from "@/components/layout/brand";
 
 /** Admin is cookie/session-bound — never try to instant-prerender the portal. */
 export const instant = false;
@@ -81,6 +81,7 @@ async function AdminShell({ children }: { children: React.ReactNode }) {
       <div className="border-t-2 border-black bg-white">
         <div className="mx-auto flex max-w-6xl justify-end gap-4 px-4 py-4 sm:px-6 lg:px-8">
           <div className="flex flex-col items-end gap-1">
+            <SiteCopyright />
             <FounderCredit />
             <BuiltBy />
           </div>

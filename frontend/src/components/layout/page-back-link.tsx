@@ -17,7 +17,7 @@ export function PageBackLink({
       href={href}
       prefetch
       className={cn(
-        "relative mb-4 inline-flex min-h-11 items-center gap-2 self-start text-sm font-semibold text-brand-red",
+        "copy-slab relative mb-4 inline-flex min-h-11 items-center gap-2 self-start text-sm font-semibold text-brand-red",
         "rounded-sm transition-opacity duration-150 active:opacity-70",
         "focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-black",
         className

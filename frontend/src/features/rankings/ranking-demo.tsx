@@ -46,20 +46,20 @@ export function RankingDemo() {
     <div className="space-y-10">
       <section className="space-y-4">
         <SectionBanner>Hard limits</SectionBanner>
-        <p className="text-sm max-w-3xl">
+        <p className="copy-slab max-w-3xl text-sm">
           Gender, belt band, weight, and age decide who can meet. This board is one group: men, blue and purple belts, one weight band. The score only sorts people inside that group.
         </p>
       </section>
 
       <section className="space-y-4">
         <SectionBanner>Score out of 100</SectionBanner>
-        <ul className="text-sm grid sm:grid-cols-2 gap-2 max-w-3xl">
-          <li>Up ’n Roll results, about 45. A finish against a stronger athlete counts more.</li>
-          <li>Belt and time at that belt, about 18. Purple sits above blue.</li>
-          <li>Verified competition experience, 15.</li>
-          <li>Years training, 10. Useful, and still a weak signal on its own.</li>
-          <li>Last two or three matches, 10.</li>
-          <li>Coach rating, 2, and only when there is no Up ’n Roll record.</li>
+        <ul className="grid max-w-3xl gap-2 text-sm sm:grid-cols-2">
+          <li className="copy-slab">Up ’n Roll results, about 45. A finish against a stronger athlete counts more.</li>
+          <li className="copy-slab">Belt and time at that belt, about 18. Purple sits above blue.</li>
+          <li className="copy-slab">Verified competition experience, 15.</li>
+          <li className="copy-slab">Years training, 10. Useful, and still a weak signal on its own.</li>
+          <li className="copy-slab">Last two or three matches, 10.</li>
+          <li className="copy-slab">Coach rating, 2, and only when there is no Up ’n Roll record.</li>
         </ul>
         <ol className="space-y-3">
           {board.map((athlete) => (
@@ -88,7 +88,7 @@ export function RankingDemo() {
 
       <section className="space-y-4">
         <SectionBanner>The card</SectionBanner>
-        <p className="text-sm max-w-3xl">
+        <p className="copy-slab max-w-3xl text-sm">
           Seed 1 and seed 2 open in opposite halves. Two lines run on the card: one keeps moving forward, and the one who is out drops down and keeps moving on the second line.
         </p>
         <BracketChart
@@ -106,12 +106,12 @@ export function RankingDemo() {
             }
           }}
         />
-        {note && <p className="text-sm">{note}</p>}
+        {note && <p className="copy-slab text-sm">{note}</p>}
       </section>
 
       <section className="space-y-4">
         <SectionBanner>Judge panel</SectionBanner>
-        <p className="text-sm max-w-3xl">
+        <p className="copy-slab max-w-3xl text-sm">
           Record a result from the mat. The score and the list move. Clicking a name on the card is what slides someone forward. Nothing here is written to the live rankings table.
         </p>
         <div className="manga-panel p-4 grid sm:grid-cols-2 gap-4 max-w-3xl">
@@ -178,7 +178,7 @@ export function RankingDemo() {
         </div>
       </section>
 
-      <p className="text-sm text-muted-foreground max-w-3xl">
+      <p className="copy-slab max-w-3xl text-sm text-muted-foreground">
         After a few events, the results slice can switch to an Elo-style rating that updates after every match and accounts for opponent strength. This page keeps the six weights from the seeding sheet so the reasons stay visible.
       </p>
     </div>

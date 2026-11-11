@@ -101,17 +101,23 @@ export function BracketChart({
   return (
     <div className="space-y-6 overflow-x-auto pb-2">
       <div>
-        <h3 className="text-display font-semibold mb-1">Moving forward</h3>
-        <p className="text-sm text-muted-foreground mb-3">Names sit one under the other. Click the winner and they slide to the next box.</p>
+        <h3 className="text-display copy-slab font-semibold mb-1">Moving forward</h3>
+        <p className="copy-slab mb-3 text-sm text-muted-foreground">
+          Names sit one under the other. Click the winner and they slide to the next box.
+        </p>
         <Lane rounds={FORWARD_ROUNDS} matches={flow.forward} onPick={onDecide} />
       </div>
       <div className="flex items-center gap-3 text-sm" aria-hidden="true">
         <span className="h-8 border-l-2 border-black" />
-        <span className="uppercase tracking-wider text-xs">If you&apos;re out, you drop down and keep going</span>
+        <span className="copy-slab uppercase tracking-wider text-xs">
+          If you&apos;re out, you drop down and keep going
+        </span>
       </div>
       <div>
-        <h3 className="text-display font-semibold mb-1">Out, still going</h3>
-        <p className="text-sm text-muted-foreground mb-3">A loss in the opening or the semis lands here. That name keeps moving forward on this line.</p>
+        <h3 className="text-display copy-slab font-semibold mb-1">Out, still going</h3>
+        <p className="copy-slab mb-3 text-sm text-muted-foreground">
+          A loss in the opening or the semis lands here. That name keeps moving forward on this line.
+        </p>
         <Lane rounds={OUT_ROUNDS} matches={flow.out} onPick={onDecide} />
       </div>
     </div>

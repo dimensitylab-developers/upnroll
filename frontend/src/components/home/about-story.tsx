@@ -15,7 +15,7 @@ const NIGHT = [
   { n: "01", title: "On the card", body: "Your name is listed. That is the start of the night." },
   { n: "02", title: "Called to the mat", body: "When your bout is up, you step on. The bracket does not wait." },
   { n: "03", title: "Referee runs it", body: "Their word is the match. Safety before the score." },
-  { n: "04", title: "Result published", body: "Win, loss, or stoppage — everyone can see it." },
+  { n: "04", title: "Result published", body: "Win, loss, or stoppage. Everyone can see it." },
 ];
 
 const HOUSE = [
@@ -198,7 +198,7 @@ function AboutPageStory({ eventSlug }: { eventSlug?: string | null }) {
         {/* Path */}
         <section>
           <SectionBanner>How you enter</SectionBanner>
-          <p className="mb-8 max-w-xl text-sm leading-relaxed">Three moves from the couch to the mat.</p>
+          <p className="copy-slab mb-8 max-w-xl text-sm leading-relaxed">Three moves from the couch to the mat.</p>
           <ol className="relative grid gap-4 md:grid-cols-3">
             {PATH_STEPS.map((step, index) => (
               <li
@@ -221,7 +221,7 @@ function AboutPageStory({ eventSlug }: { eventSlug?: string | null }) {
         {/* Rules */}
         <section>
           <SectionBanner>The rules</SectionBanner>
-          <p className="mb-8 max-w-2xl text-sm leading-relaxed">
+          <p className="copy-slab mb-8 max-w-2xl text-sm leading-relaxed">
             What you can hunt depends on the belt. Penalties cost a point. Repeat them and the match can end.
           </p>
 
@@ -297,7 +297,7 @@ function AboutPageStory({ eventSlug }: { eventSlug?: string | null }) {
             </article>
           </div>
 
-          <p className="mt-5 max-w-3xl text-sm leading-relaxed">
+          <p className="copy-slab mt-5 max-w-3xl text-sm leading-relaxed">
             The full 12 July card stays on its{" "}
             <Link href="/events/held/no-gi-12-july-2026" className="font-semibold text-brand-red underline">
               held record
@@ -346,7 +346,7 @@ function AboutPageStory({ eventSlug }: { eventSlug?: string | null }) {
               </li>
             ))}
           </ul>
-          <p className="mt-6 max-w-2xl text-sm leading-relaxed text-muted-foreground">
+          <p className="copy-slab mt-6 max-w-2xl text-sm leading-relaxed text-muted-foreground">
             Registering means you have read the rules, you agree to them, and you accept the risks of combat sports.
           </p>
         </section>

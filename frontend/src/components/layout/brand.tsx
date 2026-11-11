@@ -36,10 +36,23 @@ export function FounderCredit({ className = "" }: { className?: string }) {
   );
 }
 
-export function BuiltBy({ className = "" }: { className?: string }) {
+export function SiteCopyright({ className = "" }: { className?: string }) {
+  const year = new Date().getFullYear();
   return (
     <p className={`text-[11px] leading-none text-muted-foreground ${className}`.trim()}>
-      © Built by Dimensity Labs
+      © {year} Up &apos;n Roll. All rights reserved.
+    </p>
+  );
+}
+
+export function BuiltBy({ className = "" }: { className?: string }) {
+  return (
+    <p
+      className={`inline-flex items-center gap-1.5 text-[11px] leading-none text-muted-foreground ${className}`.trim()}
+    >
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img src="/dimensity-mark.png" alt="" className="h-3 w-3 object-contain opacity-70" />
+      <span>Built by Dimensity Labs</span>
     </p>
   );
 }

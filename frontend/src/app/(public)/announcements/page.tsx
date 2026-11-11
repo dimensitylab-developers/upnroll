@@ -19,7 +19,9 @@ export default async function PublicAnnouncementsPage() {
               <p className="text-xs text-muted-foreground mt-2">{new Date(a.createdAt as Date).toLocaleDateString()}</p>
             </div>
           ))}
-          {announcements.length === 0 && <p className="text-sm text-muted-foreground">No announcements yet.</p>}
+          {announcements.length === 0 && (
+            <p className="copy-slab text-sm text-muted-foreground">No announcements yet.</p>
+          )}
         </div>
       </div>
     </main>

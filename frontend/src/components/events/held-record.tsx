@@ -41,7 +41,7 @@ function Empty({ children }: { children: string }) {
 
 function Heading({ id, children }: { id: string; children: string }) {
   return (
-    <h2 id={id} className="text-display scroll-mt-24 text-3xl font-semibold">
+    <h2 id={id} className="text-display copy-slab scroll-mt-24 text-3xl font-semibold">
       {children}
     </h2>
   );
@@ -60,7 +60,7 @@ export function HeldRecord({ record }: { record: HeldRecordData }) {
       <div className="mt-10 lg:grid lg:grid-cols-[11rem_minmax(0,1fr)] lg:gap-12">
         <nav aria-label="Record" className="mb-8 flex flex-wrap gap-x-4 gap-y-2 lg:sticky lg:top-24 lg:mb-0 lg:block lg:space-y-2">
           {SECTIONS.map(([id, label]) => (
-            <a key={id} href={`#${id}`} className="block text-sm hover:text-brand-red">
+            <a key={id} href={`#${id}`} className="copy-slab block text-sm hover:text-brand-red">
               {label}
             </a>
           ))}
@@ -92,7 +92,7 @@ export function HeldRecord({ record }: { record: HeldRecordData }) {
                 {record.videos.map((video) => (
                   <li key={video.src}>
                     <video controls preload="metadata" className="w-full max-w-xs border-2 border-black bg-black" src={video.src} />
-                    <p className="mt-2 text-sm">{video.caption}</p>
+                    <p className="copy-slab mt-2 text-sm">{video.caption}</p>
                   </li>
                 ))}
               </ul>
@@ -138,7 +138,7 @@ export function HeldRecord({ record }: { record: HeldRecordData }) {
                 {record.divisions.map((division) => (
                   <li key={division.name} className="border-t-2 border-black pt-3">
                     <p className="font-semibold">{division.name}</p>
-                    <p className="mt-1 text-sm">{division.detail}</p>
+                    <p className="copy-slab mt-1 text-sm">{division.detail}</p>
                   </li>
                 ))}
               </ul>
@@ -147,13 +147,13 @@ export function HeldRecord({ record }: { record: HeldRecordData }) {
               {record.rounds.map((round) => (
                 <div key={round.label} className="grid gap-1 py-3 sm:grid-cols-[8rem_1fr] sm:gap-6">
                   <dt className="text-display font-semibold text-brand-red">{round.label}</dt>
-                  <dd className="text-sm">{round.detail}</dd>
+                  <dd className="copy-slab text-sm">{round.detail}</dd>
                 </div>
               ))}
             </dl>
             {record.scoring.length > 0 && (
               <div className="mt-6">
-                <p className="text-sm leading-relaxed">{record.scoringNote}</p>
+                <p className="copy-slab text-sm leading-relaxed">{record.scoringNote}</p>
                 <dl className="mt-3 grid max-w-2xl gap-x-10 sm:grid-cols-2">
                   {record.scoring.map((item) => (
                     <div key={item.name} className="flex items-baseline justify-between border-b border-black/10 py-2">
@@ -171,7 +171,9 @@ export function HeldRecord({ record }: { record: HeldRecordData }) {
                     <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-brand-red">{rule.title}</p>
                     <ul className="mt-3 space-y-1.5 text-sm">
                       {rule.lines.map((line) => (
-                        <li key={line}>{line}</li>
+                        <li key={line} className="copy-slab">
+                          {line}
+                        </li>
                       ))}
                     </ul>
                   </div>
@@ -182,9 +184,9 @@ export function HeldRecord({ record }: { record: HeldRecordData }) {
 
           <section>
             <Heading id="bracket">The bracket</Heading>
-            <p className="mt-4 max-w-2xl text-sm leading-relaxed">{record.bracket}</p>
+            <p className="copy-slab mt-4 max-w-2xl text-sm leading-relaxed">{record.bracket}</p>
             {record.bracketHref && (
-              <Link href={record.bracketHref} className="mt-4 inline-block text-sm font-semibold text-brand-red">
+              <Link href={record.bracketHref} className="copy-slab mt-4 inline-block text-sm font-semibold text-brand-red">
                 Open the bracket
               </Link>
             )}
@@ -192,7 +194,7 @@ export function HeldRecord({ record }: { record: HeldRecordData }) {
 
           <section>
             <Heading id="rankings">Rankings</Heading>
-            <p className="mt-4 max-w-2xl text-sm leading-relaxed">{record.rankingsNote}</p>
+            <p className="copy-slab mt-4 max-w-2xl text-sm leading-relaxed">{record.rankingsNote}</p>
             {record.rankings.length > 0 && (
               <ol className="mt-4 max-w-2xl divide-y divide-black/10 border-y border-black/10">
                 {record.rankings.map((row, index) => (
@@ -209,10 +211,12 @@ export function HeldRecord({ record }: { record: HeldRecordData }) {
             <Heading id="ending">How it ended</Heading>
             <ul className="mt-4 max-w-2xl space-y-1.5 text-sm">
               {record.ending.map((item) => (
-                <li key={item}>{item}</li>
+                <li key={item} className="copy-slab">
+                  {item}
+                </li>
               ))}
             </ul>
-            <p className="mt-3 max-w-2xl text-sm leading-relaxed">{record.endingNote}</p>
+            <p className="copy-slab mt-3 max-w-2xl text-sm leading-relaxed">{record.endingNote}</p>
           </section>
         </div>
       </div>

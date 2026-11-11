@@ -3,6 +3,8 @@ import { FightingGallery } from "@/components/home/photo-crossfade";
 import { HappyStack } from "@/components/home/happy-stack";
 import { HomeHero } from "@/components/home/home-hero";
 import { EventPitchPopup } from "@/components/home/event-pitch-popup";
+import { HomeFaqSection } from "@/components/home/home-live";
+import { HomeMarquee } from "@/components/home/home-marquee";
 import { EmojiStrip, MatEmojis } from "@/components/home/mat-emojis";
 import { FIGHTING_MEDIA, HAPPY_PHOTOS } from "@/components/home/site-photos";
 import { MangaBackdrop, MangaCards } from "@/components/home/manga-cards";
@@ -19,14 +21,15 @@ export default async function HomePage() {
       <EventPitchPopup />
       <MangaBackdrop className="top-[28rem] hidden min-h-[80vh] lg:block" />
       <HomeHero />
+      <HomeMarquee />
 
       <section className="relative mx-auto max-w-6xl overflow-hidden px-4 py-14 sm:px-6 lg:px-8">
         <MatEmojis className="absolute inset-0 opacity-35" />
         <div className="relative mb-8 flex flex-wrap items-end justify-between gap-4">
           <div>
             <SectionBanner>On the mat</SectionBanner>
-            <p className="mt-3 max-w-xl bg-white px-2 py-1 text-sm">
-              Manga panels from the fight tape — slam, clinch, lock, sweep, choke.
+            <p className="copy-slab mt-3 max-w-xl text-sm">
+              Manga panels from the fight tape: slam, clinch, lock, sweep, choke.
             </p>
           </div>
           <EmojiStrip
@@ -59,6 +62,8 @@ export default async function HomePage() {
       <section id="about-us" className="relative mx-auto max-w-6xl px-4 pb-16 sm:px-6 lg:px-8">
         <AboutStory eventSlug={featured?.slug} />
       </section>
+
+      <HomeFaqSection />
     </main>
   );
 }

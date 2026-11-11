@@ -38,6 +38,45 @@ export async function judgeLogoutAction() {
   redirect("/judge/login");
 }
 
+export type JudgeFighterCard = {
+  registrationId: string | null;
+  displayName: string;
+  slug: string | null;
+  academy: string;
+  gym: string;
+  beltRank: string;
+  weightDivision: string;
+  discipline: string;
+  hasPhoto: boolean;
+};
+
+function toJudgeFighterCard(
+  registrationId: string | null,
+  profile: {
+    displayName?: string;
+    slug?: string;
+    academy?: string;
+    gym?: string;
+    beltRank?: string;
+    weightDivision?: string;
+    discipline?: string;
+    photoKey?: string;
+  } | null,
+  fallbackName: string
+): JudgeFighterCard {
+  return {
+    registrationId,
+    displayName: profile?.displayName?.trim() || fallbackName,
+    slug: profile?.slug?.trim() || null,
+    academy: profile?.academy?.trim() || "",
+    gym: profile?.gym?.trim() || "",
+    beltRank: profile?.beltRank?.trim() || "",
+    weightDivision: profile?.weightDivision?.trim() || "",
+    discipline: profile?.discipline?.trim() || "",
+    hasPhoto: Boolean(profile?.photoKey?.trim()),
+  };
+}
+
 export async function loadJudgeScoringConsole() {
   const judge = await requireJudgeSession();
   const state = await getMatchScoringState(judge.matchId);
@@ -47,24 +86,35 @@ export async function loadJudgeScoringConsole() {
   const regIds = [match.competitorARegistrationId, match.competitorBRegistrationId].filter(Boolean).map(String);
   const regs = await Registration.find({ _id: { $in: regIds } }).select("userId").lean();
   const profiles = await FighterProfile.find({ userId: { $in: regs.map((r) => r.userId) } })
-    .select("displayName userId")
+    .select("displayName slug academy gym beltRank weightDivision discipline photoKey userId")
     .lean();
-  const nameByUser = new Map(profiles.map((p) => [String(p.userId), p.displayName]));
-  const nameByReg = new Map(
-    regs.map((r) => [String(r._id), nameByUser.get(String(r.userId)) ?? "Competitor"])
+  const profileByUser = new Map(profiles.map((p) => [String(p.userId), p]));
+  const profileByReg = new Map(
+    regs.map((r) => [String(r._id), profileByUser.get(String(r.userId)) ?? null])
+  );
+
+  const registrationAId = match.competitorARegistrationId ? String(match.competitorARegistrationId) : null;
+  const registrationBId = match.competitorBRegistrationId ? String(match.competitorBRegistrationId) : null;
+  const fighterA = toJudgeFighterCard(
+    registrationAId,
+    registrationAId ? profileByReg.get(registrationAId) ?? null : null,
+    "Competitor A"
+  );
+  const fighterB = toJudgeFighterCard(
+    registrationBId,
+    registrationBId ? profileByReg.get(registrationBId) ?? null : null,
+    "Competitor B"
   );
 
   return {
     judge,
     state,
-    competitorAName: match.competitorARegistrationId
-      ? nameByReg.get(String(match.competitorARegistrationId)) ?? "A"
-      : "A",
-    competitorBName: match.competitorBRegistrationId
-      ? nameByReg.get(String(match.competitorBRegistrationId)) ?? "B"
-      : "B",
-    registrationAId: match.competitorARegistrationId ? String(match.competitorARegistrationId) : null,
-    registrationBId: match.competitorBRegistrationId ? String(match.competitorBRegistrationId) : null,
+    fighterA,
+    fighterB,
+    competitorAName: fighterA.displayName,
+    competitorBName: fighterB.displayName,
+    registrationAId,
+    registrationBId,
   };
 }
 
