@@ -39,7 +39,15 @@ export function FounderCredit({ className = "" }: { className?: string }) {
 export function BuiltBy({ className = "" }: { className?: string }) {
   return (
     <p className={`text-[11px] leading-none text-muted-foreground ${className}`.trim()}>
-      © Built by Dimensity Labs
+      © Built by{" "}
+      <a
+        href="https://dimensitylabs.dev"
+        target="_blank"
+        rel="noopener noreferrer"
+        className="underline underline-offset-2 transition-colors hover:text-foreground"
+      >
+        Dimensity Labs
+      </a>
     </p>
   );
 }
