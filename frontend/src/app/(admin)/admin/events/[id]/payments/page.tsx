@@ -26,7 +26,7 @@ export default async function AdminEventPaymentsPage({ params }: { params: Promi
   ]);
 
   return (
-    <div className="mx-auto max-w-4xl space-y-6">
+    <div className="mx-auto max-w-4xl space-y-6 px-1 sm:px-0">
       <PageBackLink href={`/admin/events/${id}`} label="Back to event" />
       <PageHeader title={`Payments — ${event.name}`} />
       <EventPaymentsPanel

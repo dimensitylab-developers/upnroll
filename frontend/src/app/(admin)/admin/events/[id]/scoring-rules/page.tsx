@@ -21,7 +21,7 @@ export default async function AdminScoringRulesPage({ params }: { params: Promis
   }
 
   return (
-    <div className="mx-auto max-w-3xl space-y-6">
+    <div className="mx-auto max-w-3xl space-y-6 px-1 sm:px-0">
       <PageBackLink href={`/admin/events/${id}`} label="Back to event" />
       <PageHeader title={`Scoring rules — ${event.name}`} />
       <ScoringRulesForm eventId={id} rules={event.scoringRules as ScoringRulesConfig | undefined} />

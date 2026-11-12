@@ -54,7 +54,17 @@ export function BuiltBy({ className = "" }: { className?: string }) {
     >
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img src="/dimensity-mark.png" alt="" className="h-3 w-3 object-contain opacity-70" />
-      <span>Built by Dimensity Labs</span>
+      <span>
+        Built by{" "}
+        <a
+          href="https://dimensitylabs.dev"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="underline underline-offset-2 transition-colors hover:text-foreground"
+        >
+          Dimensity Labs
+        </a>
+      </span>
     </p>
   );
 }
