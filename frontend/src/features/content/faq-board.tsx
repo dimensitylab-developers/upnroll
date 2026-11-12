@@ -9,66 +9,77 @@ export type FaqItem = {
   answer: string;
 };
 
-function numberFor(index: number) {
-  return String(index + 1).padStart(2, "0");
-}
-
-function Answer({ item, index }: { item: FaqItem; index: number }) {
+function PlusMinus({ open }: { open: boolean }) {
   return (
-    <div className="relative flex h-full flex-col">
-      <div className="checker-strip h-2.5 shrink-0" aria-hidden="true" />
-      <div className="relative flex-1 px-5 py-6 sm:px-7 sm:py-8">
-        <p className="pointer-events-none absolute top-4 right-4 text-display text-6xl font-semibold leading-none text-brand-red/15" aria-hidden="true">
-          {numberFor(index)}
-        </p>
-        <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-brand-red">Question {numberFor(index)}</p>
-        <h3 className="text-display mt-2 max-w-md text-2xl font-semibold leading-tight sm:text-3xl">{item.question}</h3>
-        <p className="mt-4 max-w-prose text-sm leading-relaxed">{item.answer}</p>
-      </div>
-    </div>
+    <span
+      className={cn(
+        "relative mt-0.5 inline-flex h-5 w-5 shrink-0 items-center justify-center text-brand-red",
+        "transition-transform duration-200"
+      )}
+      aria-hidden="true"
+    >
+      <span className="absolute h-[2.5px] w-3.5 bg-current" />
+      <span
+        className={cn(
+          "absolute h-3.5 w-[2.5px] bg-current transition-transform duration-200",
+          open && "rotate-90 scale-y-0"
+        )}
+      />
+    </span>
   );
 }
 
 export function FaqBoard({ items }: { items: FaqItem[] }) {
-  const [active, setActive] = useState(0);
-  const current = items[active] ?? items[0];
-  if (!current) return null;
+  const [openId, setOpenId] = useState<string | null>(items[0]?.id ?? null);
+  if (items.length === 0) return null;
 
   return (
-    <div
-      className={cn(
-        "border-2 border-black bg-white shadow-[8px_8px_0_0_#000] lg:grid lg:grid-cols-[minmax(0,0.92fr)_minmax(0,1.08fr)]",
-        items.length > 6 && "lg:h-[34rem]"
-      )}
-    >
-      <div className="lg:overflow-y-auto lg:border-r-2 lg:border-black" role="list">
-        {items.map((item, index) => {
-          const selected = index === active;
+    <div className="relative border-[3px] border-black bg-white shadow-[8px_8px_0_0_#000]">
+      <div
+        className="pointer-events-none absolute -top-3 -right-3 z-10 flex h-10 w-10 items-center justify-center border-2 border-black bg-[#F5C518] shadow-[3px_3px_0_0_#000]"
+        aria-hidden="true"
+      >
+        <span className="text-display text-xl font-semibold leading-none">✦</span>
+      </div>
+
+      <div className="divide-y divide-black/15">
+        {items.map((item) => {
+          const open = openId === item.id;
           return (
-            <div key={item.id} role="listitem" className={cn(index > 0 && "border-t border-black/10")}>
+            <div key={item.id} className="border-x-0">
               <button
                 type="button"
-                aria-pressed={selected}
-                onClick={() => setActive(index)}
+                aria-expanded={open}
+                onClick={() => setOpenId(open ? null : item.id)}
                 className={cn(
-                  "flex w-full items-start gap-3 px-4 py-3.5 text-left transition-colors",
-                  selected ? "bg-black text-white" : "bg-white hover:bg-black/[0.04]"
+                  "flex w-full items-start justify-between gap-4 px-4 py-4 text-left transition-colors sm:px-6 sm:py-5",
+                  open ? "bg-black/[0.03]" : "hover:bg-black/[0.03]"
                 )}
               >
-                <span className="text-display w-7 shrink-0 pt-0.5 text-sm font-semibold text-brand-red">{numberFor(index)}</span>
-                <span className="text-sm font-medium leading-snug">{item.question}</span>
+                <span className="text-display text-[15px] font-semibold uppercase leading-snug tracking-[0.04em] sm:text-base">
+                  {item.question}
+                </span>
+                <PlusMinus open={open} />
               </button>
-              {selected && (
-                <div className="border-t border-white/10 bg-black text-white lg:hidden">
-                  <p className="px-4 py-4 text-sm leading-relaxed">{item.answer}</p>
+
+              <div
+                className={cn(
+                  "grid transition-[grid-template-rows] duration-250 ease-out",
+                  open ? "grid-rows-[1fr]" : "grid-rows-[0fr]"
+                )}
+              >
+                <div className="overflow-hidden">
+                  <div className="px-4 pb-5 sm:px-6 sm:pb-6">
+                    <div className="mb-4 border-t border-dashed border-black/35" />
+                    <p className="max-w-prose text-sm leading-relaxed text-foreground/85 whitespace-pre-wrap">
+                      {item.answer}
+                    </p>
+                  </div>
                 </div>
-              )}
+              </div>
             </div>
           );
         })}
-      </div>
-      <div className="hidden overflow-y-auto lg:block" aria-live="polite">
-        <Answer item={current} index={active} />
       </div>
     </div>
   );

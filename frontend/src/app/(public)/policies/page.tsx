@@ -18,7 +18,9 @@ export default async function PublicPoliciesPage() {
               <p className="text-sm text-muted-foreground mt-1 whitespace-pre-wrap">{p.body}</p>
             </div>
           ))}
-          {policies.length === 0 && <p className="text-sm text-muted-foreground">No policies published yet.</p>}
+          {policies.length === 0 && (
+            <p className="copy-slab text-sm text-muted-foreground">No policies published yet.</p>
+          )}
         </div>
       </div>
     </main>

@@ -41,7 +41,7 @@ export default async function PublicEventsPage() {
         <header className="max-w-2xl">
           <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-brand-red">Events</p>
           <h1 className="text-display mt-2 text-4xl font-semibold leading-[0.95] sm:text-5xl">The next card</h1>
-          <p className="mt-4 text-base leading-relaxed">
+          <p className="copy-slab mt-4 text-base leading-relaxed">
             The date, the divisions, and where to follow the brackets. Further down is how a fight runs, then the cards already held.
           </p>
         </header>
@@ -80,7 +80,7 @@ export default async function PublicEventsPage() {
               ))}
             </div>
           ) : (
-            <p className="max-w-xl text-sm leading-relaxed">
+            <p className="copy-slab max-w-xl text-sm leading-relaxed">
               No card is open yet. When one is announced, the date, the divisions, the mats, and how to enter will show here.
             </p>
           )}
@@ -93,7 +93,7 @@ export default async function PublicEventsPage() {
 
         <section>
           <SectionBanner>Held</SectionBanner>
-          <p className="mb-6 max-w-2xl text-sm leading-relaxed">
+          <p className="copy-slab mb-6 max-w-2xl text-sm leading-relaxed">
             Every card that has been held keeps one record: photographs, video, the winner, how the rounds were run, the bracket, the rankings, and how it ended. The next card joins this list the same way.
           </p>
           <ul className="grid gap-4 md:grid-cols-2">

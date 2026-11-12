@@ -3,24 +3,50 @@ import { connection } from "next/server";
 import { cachedPublicFighters, cachedPublicRankings } from "@/lib/public-reads";
 import { listHeldCardAthletes } from "@/data/held-card-athletes";
 import { FighterHypeCard } from "@/features/fighters/fighter-hype-card";
-import { RankingsPodium, type PodiumFighter } from "@/features/rankings/rankings-podium";
-import { EmojiStrip, MatEmojis } from "@/components/home/mat-emojis";
+import {
+  RankingsDivisionBoard,
+  type DivisionRankedFighter,
+} from "@/features/rankings/rankings-division-board";
+import { resolveWeightClassId, WEIGHT_CLASSES, type WeightClassId } from "@/features/rankings/weight-classes";
 import { SectionBanner } from "@/components/home/section-banner";
 import { PaginationNav } from "@/components/pagination-nav";
 
-/** Request-bound via searchParams — do not instant-prerender. */
+/** Request-bound via searchParams. Do not instant-prerender. */
 export const instant = false;
 
-const PAGE_SIZE = 10;
 const CARDS_PAGE_SIZE = 10;
+
+type BoardFighter = {
+  displayName: string;
+  slug: string;
+  gym: string;
+  academy: string;
+  discipline: string;
+  beltRank: string;
+  weightDivision: string;
+  hasPhoto: boolean;
+  wins: number;
+  losses: number;
+  points: number;
+  rank: number | null;
+  featured: boolean;
+  houseLabel?: string;
+};
+
+function emptyByClass(): Record<WeightClassId, DivisionRankedFighter[]> {
+  return Object.fromEntries(WEIGHT_CLASSES.map((band) => [band.id, [] as DivisionRankedFighter[]])) as Record<
+    WeightClassId,
+    DivisionRankedFighter[]
+  >;
+}
 
 export default async function PublicRankingsPage({
   searchParams,
 }: {
-  searchParams: Promise<{ page?: string; cardsPage?: string }>;
+  searchParams: Promise<{ cardsPage?: string }>;
 }) {
   await connection();
-  const { page: pageParam, cardsPage: cardsPageParam } = await searchParams;
+  const { cardsPage: cardsPageParam } = await searchParams;
 
   const [rankings, liveFighters, roster] = await Promise.all([
     cachedPublicRankings(),
@@ -28,11 +54,14 @@ export default async function PublicRankingsPage({
     Promise.resolve(listHeldCardAthletes()),
   ]);
   const liveBySlug = new Map(liveFighters.map((fighter) => [fighter.slug, fighter]));
+  const rankingBySlug = new Map(
+    rankings.filter((row) => row.slug).map((row) => [row.slug as string, row])
+  );
 
-  // Live registered profiles win; held-card roster fills the board until photos/accounts catch up.
-  const profileCards = [
+  const profileCards: { key: string; href: string; fighter: BoardFighter }[] = [
     ...roster.map((athlete) => {
       const live = liveBySlug.get(athlete.slug);
+      const ranked = rankingBySlug.get(athlete.slug);
       return {
         key: athlete.slug,
         href: `/fighters/${athlete.slug}`,
@@ -45,10 +74,10 @@ export default async function PublicRankingsPage({
           beltRank: live?.beltRank || "",
           weightDivision: live?.weightDivision || athlete.weights[0] || "",
           hasPhoto: Boolean(live?.hasPhoto),
-          wins: live?.wins ?? 0,
-          losses: live?.losses ?? 0,
-          points: live?.points ?? 0,
-          rank: live?.rank ?? null,
+          wins: ranked?.wins ?? live?.wins ?? 0,
+          losses: ranked?.losses ?? live?.losses ?? 0,
+          points: ranked?.points ?? live?.points ?? 0,
+          rank: ranked?.rank ?? live?.rank ?? null,
           featured: Boolean(athlete.featured),
           houseLabel: athlete.houseLabel,
         },
@@ -56,14 +85,21 @@ export default async function PublicRankingsPage({
     }),
     ...liveFighters
       .filter((fighter) => !roster.some((athlete) => athlete.slug === fighter.slug))
-      .map((fighter) => ({
-        key: fighter.slug,
-        href: `/fighters/${fighter.slug}`,
-        fighter: {
-          ...fighter,
-          featured: false,
-        },
-      })),
+      .map((fighter) => {
+        const ranked = rankingBySlug.get(fighter.slug);
+        return {
+          key: fighter.slug,
+          href: `/fighters/${fighter.slug}`,
+          fighter: {
+            ...fighter,
+            wins: ranked?.wins ?? fighter.wins ?? 0,
+            losses: ranked?.losses ?? fighter.losses ?? 0,
+            points: ranked?.points ?? fighter.points ?? 0,
+            rank: ranked?.rank ?? fighter.rank ?? null,
+            featured: false,
+          },
+        };
+      }),
   ].sort((a, b) => {
     if (a.fighter.featured && !b.fighter.featured) return -1;
     if (!a.fighter.featured && b.fighter.featured) return 1;
@@ -71,134 +107,70 @@ export default async function PublicRankingsPage({
     return a.fighter.displayName.localeCompare(b.fighter.displayName);
   });
 
-  // Live ranking rows first; fill remaining places from profile cards so the podium can show 1·2·3.
-  const fromRankings: PodiumFighter[] = rankings.map((row) => {
-    const live = row.slug ? liveBySlug.get(row.slug) : undefined;
-    return {
-      rank: row.rank,
-      displayName: row.displayName,
-      slug: row.slug,
-      wins: row.wins,
-      losses: row.losses,
-      points: row.points,
-      hasPhoto: Boolean(live?.hasPhoto),
-      academy: live?.academy || live?.gym || "",
-    };
-  });
-
-  const usedSlugs = new Set(fromRankings.map((row) => row.slug).filter(Boolean));
-  const fillers: PodiumFighter[] = profileCards
-    .filter((card) => !usedSlugs.has(card.fighter.slug))
-    .map((card, index) => ({
-      rank: fromRankings.length + index + 1,
+  const byClass = emptyByClass();
+  for (const card of profileCards) {
+    const weightClassId = resolveWeightClassId(card.fighter.weightDivision);
+    if (!weightClassId) continue;
+    byClass[weightClassId].push({
+      rank: 0,
       displayName: card.fighter.displayName,
       slug: card.fighter.slug,
-      wins: card.fighter.wins ?? 0,
-      losses: card.fighter.losses ?? 0,
-      points: card.fighter.points ?? 0,
-      hasPhoto: Boolean(card.fighter.hasPhoto),
+      wins: card.fighter.wins,
+      losses: card.fighter.losses,
+      points: card.fighter.points,
+      hasPhoto: card.fighter.hasPhoto,
       academy: card.fighter.academy || card.fighter.gym || "",
-    }));
-
-  // Pin James Lewis to silver (place 2) on the public podium.
-  const merged = [...fromRankings, ...fillers];
-  const jamesIndex = merged.findIndex(
-    (row) => row.slug === "james-lewis" || row.displayName.trim().toLowerCase() === "james lewis"
-  );
-  if (jamesIndex >= 0) {
-    const [james] = merged.splice(jamesIndex, 1);
-    merged.splice(Math.min(1, merged.length), 0, james!);
+      weightClassId,
+    });
   }
-  const board = merged.map((row, index) => ({ ...row, rank: index + 1 }));
-  const podium = board.slice(0, 3);
-  const rest = board.slice(3);
 
-  const totalPages = Math.max(1, Math.ceil(rest.length / PAGE_SIZE));
-  const page = Math.min(Math.max(1, Number(pageParam) || 1), totalPages);
-  const pagedRest = rest.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
+  for (const band of WEIGHT_CLASSES) {
+    byClass[band.id].sort((a, b) => {
+      if (b.points !== a.points) return b.points - a.points;
+      if (b.wins !== a.wins) return b.wins - a.wins;
+      return a.displayName.localeCompare(b.displayName);
+    });
+    byClass[band.id] = byClass[band.id].map((fighter, index) => ({
+      ...fighter,
+      rank: index + 1,
+    }));
+  }
 
   const cardsTotalPages = Math.max(1, Math.ceil(profileCards.length / CARDS_PAGE_SIZE));
   const cardsPage = Math.min(Math.max(1, Number(cardsPageParam) || 1), cardsTotalPages);
   const pagedProfileCards = profileCards.slice((cardsPage - 1) * CARDS_PAGE_SIZE, cardsPage * CARDS_PAGE_SIZE);
 
   return (
-    <main className="route-enter relative min-h-screen overflow-x-hidden px-4 py-10 sm:py-16">
-      <MatEmojis className="pointer-events-none absolute inset-0 opacity-40 sm:opacity-100" />
-      <div className="relative mx-auto max-w-5xl">
-        <EmojiStrip emojis={["mount", "armbar", "hip-throw", "rear-naked-choke", "triangle-choke", "knee-slice"]} />
-        <h1 className="mt-4 text-display text-3xl font-semibold sm:text-4xl">Rankings</h1>
-        <p className="mt-2 max-w-2xl bg-white px-2 py-1 text-sm">
-          Leaderboard — gold, silver, bronze on the podium. Everyone else stacks below. 3 points per win.
-        </p>
-        <p className="mt-3 text-sm">
-          <Link href="/rankings/demo" className="bg-white px-1 underline">
-            See how seeding works
-          </Link>
-        </p>
-
-        <section id="leaderboard" className="mt-10 scroll-mt-24">
-          <SectionBanner>Leaderboard</SectionBanner>
-
-          {podium.length > 0 ? (
-            <div className="overflow-hidden border-2 border-black bg-[#faf8f4] pt-7 shadow-[8px_8px_0_0_#000] sm:pt-8">
-              <RankingsPodium top={podium} />
-            </div>
-          ) : (
-            <div className="border-2 border-black bg-white px-4 py-10 text-center text-sm text-muted-foreground shadow-[6px_6px_0_0_#000]">
-              No podium yet. Points land here after results publish.
-            </div>
-          )}
-
-          {pagedRest.length > 0 ? (
-            <ol className="mt-4 divide-y-2 divide-black border-2 border-black bg-white shadow-[5px_5px_0_0_#000]">
-              {pagedRest.map((row) => (
-                <li
-                  key={row.slug ?? row.rank}
-                  className="flex items-center gap-3 px-3 py-3 transition-colors hover:bg-[#f7f4ef] sm:gap-4 sm:px-4"
-                >
-                  <span className="flex h-9 w-9 shrink-0 items-center justify-center border-2 border-black bg-[#f7f4ef] text-display text-sm font-semibold sm:h-10 sm:w-10 sm:text-base">
-                    {row.rank}
-                  </span>
-                  <div className="min-w-0 flex-1">
-                    {row.slug ? (
-                      <Link href={`/fighters/${row.slug}`} className="block truncate font-semibold hover:text-brand-red">
-                        {row.displayName}
-                      </Link>
-                    ) : (
-                      <p className="truncate font-semibold">{row.displayName}</p>
-                    )}
-                    {row.academy ? <p className="truncate text-xs text-muted-foreground">{row.academy}</p> : null}
-                  </div>
-                  <div className="shrink-0 border-2 border-black bg-white px-2 py-1 text-right shadow-[2px_2px_0_0_#000]">
-                    <p className="text-display text-sm font-semibold leading-none">
-                      {row.wins}-{row.losses}
-                    </p>
-                    <p className="mt-0.5 text-[9px] font-semibold uppercase tracking-[0.12em] text-brand-red">
-                      {row.points} pts
-                    </p>
-                  </div>
-                </li>
-              ))}
-            </ol>
-          ) : null}
-          {rest.length > 0 ? (
-            <p className="mt-3 text-center text-xs text-muted-foreground">
-              {(page - 1) * PAGE_SIZE + 1}–{Math.min(page * PAGE_SIZE, rest.length)} of {rest.length} below the podium
+    <main className="route-enter min-h-screen bg-background halftone-bg">
+      <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6 sm:py-14 lg:px-8">
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+          <div>
+            <SectionBanner>On the board</SectionBanner>
+            <h1 className="text-display text-4xl font-semibold uppercase tracking-wide sm:text-5xl">
+              Rankings
+            </h1>
+            <p className="copy-slab mt-3 max-w-xl text-sm">
+              Weight-class board with a top seat and contenders under each. Photos drop into the frame
+              when fighters upload them. 3 points per win.
             </p>
-          ) : null}
-          <PaginationNav
-            page={page}
-            totalPages={totalPages}
-            basePath="/rankings"
-            hash="leaderboard"
-            extraParams={cardsPage > 1 ? { cardsPage: String(cardsPage) } : undefined}
-          />
+          </div>
+          <p className="text-sm">
+            <Link href="/rankings/demo" className="copy-slab underline underline-offset-2 hover:text-brand-red">
+              See how seeding works
+            </Link>
+          </p>
+        </div>
+      </div>
+
+      <div className="mx-auto max-w-7xl px-4 pb-10 sm:px-6 sm:pb-12 lg:px-8">
+        <section id="leaderboard" className="scroll-mt-24">
+          <RankingsDivisionBoard byClass={byClass} />
         </section>
 
-        <section id="cards" className="mt-14 scroll-mt-24">
+        <section id="cards" className="mt-16 scroll-mt-24">
           <SectionBanner>Grappler cards</SectionBanner>
-          <p className="mb-4 max-w-2xl bg-white px-2 py-1 text-sm">
-            Dense board — tap a card for the full profile. No private contact or medical details.
+          <p className="copy-slab mb-6 max-w-2xl text-sm">
+            Dense board. Tap a card for the full profile. No private contact or medical details.
           </p>
 
           <ul className="grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-4 md:grid-cols-4 lg:grid-cols-5">
@@ -208,10 +180,12 @@ export default async function PublicRankingsPage({
               </li>
             ))}
           </ul>
-          {profileCards.length === 0 && <p className="text-sm text-muted-foreground">No grappler profiles yet.</p>}
+          {profileCards.length === 0 && (
+            <p className="copy-slab text-sm text-muted-foreground">No grappler profiles yet.</p>
+          )}
           {profileCards.length > 0 ? (
-            <p className="mt-3 text-center text-xs text-muted-foreground">
-              {(cardsPage - 1) * CARDS_PAGE_SIZE + 1}–{Math.min(cardsPage * CARDS_PAGE_SIZE, profileCards.length)} of{" "}
+            <p className="copy-slab mt-3 text-center text-xs text-muted-foreground">
+              {(cardsPage - 1) * CARDS_PAGE_SIZE + 1}-{Math.min(cardsPage * CARDS_PAGE_SIZE, profileCards.length)} of{" "}
               {profileCards.length}
             </p>
           ) : null}
@@ -221,7 +195,6 @@ export default async function PublicRankingsPage({
             basePath="/rankings"
             paramName="cardsPage"
             hash="cards"
-            extraParams={page > 1 ? { page: String(page) } : undefined}
           />
         </section>
       </div>

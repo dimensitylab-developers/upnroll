@@ -90,7 +90,7 @@ export function EventPitchPopup() {
         <div className="relative aspect-[3/4] w-full overflow-hidden bg-black">
           <Image
             src={BANNER_SRC}
-            alt="Up 'n Roll No-Gi — 23 January 2027, Mumbai"
+            alt="Up 'n Roll No-Gi. 23 January 2027, Mumbai"
             fill
             sizes="(max-width: 448px) 100vw, 28rem"
             className="object-cover object-top"

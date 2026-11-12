@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { BuiltBy, FounderCredit } from "./brand";
+import { BuiltBy, FounderCredit, SiteCopyright } from "./brand";
 import type { SiteContact } from "./site-contact";
 import { SITE_CONTACT } from "./site-contact";
 
@@ -146,7 +146,10 @@ export function SiteFooter({ contact = SITE_CONTACT }: { contact?: SiteContact }
 
       <div className="border-t-2 border-black bg-white">
         <div className="mx-auto flex max-w-6xl flex-col gap-3 px-4 py-4 sm:flex-row sm:items-center sm:justify-between sm:px-6 lg:px-8">
-          <FounderCredit />
+          <div className="flex flex-col gap-2 sm:flex-row sm:flex-wrap sm:items-center sm:gap-x-4 sm:gap-y-1">
+            <SiteCopyright />
+            <FounderCredit />
+          </div>
           <BuiltBy />
         </div>
       </div>

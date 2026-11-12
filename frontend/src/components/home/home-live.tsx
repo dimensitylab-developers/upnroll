@@ -2,6 +2,8 @@ import Link from "next/link";
 import { cachedPublicDivisions, cachedPublicEvents, cachedPublishedContent, cachedPublishedMedia, cachedPublicRankings } from "@/lib/public-reads";
 import { Badge } from "@/components/ui/badge";
 import { HomeGlimpse } from "@/components/home/home-glimpse";
+import { pickHomeFaqs } from "@/components/home/home-faq-data";
+import { HomeFaqTimeline } from "@/components/home/home-faq-timeline";
 import { SectionBanner } from "@/components/home/section-banner";
 
 const GALLERY = [
@@ -58,7 +60,7 @@ export async function HomeEventsSection() {
       {featuredEvent && (
         <section className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pb-14">
           <SectionBanner>Featured event</SectionBanner>
-          <div className="bg-card border-2 border-black rounded-md p-6 sm:p-8 shadow-[6px_6px_0_0_#000] halftone-bg">
+          <div className="bg-card border-2 border-black rounded-md p-6 sm:p-8 shadow-[6px_6px_0_0_#000]">
             <Badge className="mb-4 bg-brand-cyan/20 text-brand-cyan border-brand-cyan/40">
               {featuredEvent.status.replaceAll("_", " ")}
             </Badge>
@@ -110,7 +112,7 @@ export async function HomeEventsSection() {
 
       {events.length === 0 && (
         <section className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pb-14">
-          <p className="text-sm text-muted-foreground">No events published yet — check back soon.</p>
+          <p className="copy-slab text-sm text-muted-foreground">No events published yet. Check back soon.</p>
         </section>
       )}
     </>
@@ -147,22 +149,18 @@ export async function HomeRankingsSection() {
 
 export async function HomeFaqSection() {
   const faqs = await cachedPublishedContent("FAQ");
-  if (faqs.length === 0) return null;
+  const items = pickHomeFaqs(faqs, 5);
+  if (items.length === 0) return null;
 
   return (
     <section className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pb-8">
-      <div className="flex items-end justify-between gap-4 mb-2">
-        <SectionBanner>Frequently asked</SectionBanner>
-        <Link href="/faq" className="text-sm underline mb-6">View all</Link>
+      <div className="mb-2 flex items-end justify-between gap-4">
+        <SectionBanner>Asked on the mat</SectionBanner>
+        <Link href="/faq" className="mb-6 text-sm font-semibold underline underline-offset-2">
+          Full FAQ
+        </Link>
       </div>
-      <div className="grid sm:grid-cols-2 gap-4">
-        {faqs.map((faq) => (
-          <div key={String(faq._id)} className="manga-panel p-4">
-            <p className="font-semibold">{faq.title}</p>
-            <p className="text-sm text-muted-foreground mt-1 whitespace-pre-wrap">{faq.body}</p>
-          </div>
-        ))}
-      </div>
+      <HomeFaqTimeline items={items} />
     </section>
   );
 }

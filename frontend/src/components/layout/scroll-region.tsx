@@ -12,10 +12,10 @@ export function ScrollRegion({
 }) {
   return (
     <div className={cn("relative", className)}>
-      <p className="mb-2 text-[11px] font-semibold uppercase tracking-[0.16em] text-muted-foreground md:hidden">
+      <p className="copy-slab mb-2 text-[11px] font-semibold uppercase tracking-[0.16em] text-muted-foreground md:hidden">
         {label}
       </p>
-      <div className="overflow-x-auto overscroll-x-contain pb-2 [-webkit-overflow-scrolling:touch]">
+      <div className="overflow-x-auto overscroll-x-contain border-2 border-black bg-white pb-2 shadow-[4px_4px_0_0_#000] [-webkit-overflow-scrolling:touch]">
         {children}
       </div>
       <div

@@ -215,6 +215,21 @@
     background-size: 12px 12px;
   }
 
+  /* White pad behind body copy on halftone. Inline uses clone so each line pads. */
+  .copy-slab {
+    background-color: #fff;
+    padding: 0.2em 0.45em;
+    box-decoration-break: clone;
+    -webkit-box-decoration-break: clone;
+  }
+
+  /* Prefer on spans inside a margin-bearing block for the per-line comic highlight. */
+  span.copy-slab,
+  a.copy-slab {
+    display: inline;
+    box-shadow: 0 0 0 1px #fff;
+  }
+
   .checker-strip {
     background-color: #fff;
     background-image:
@@ -224,6 +239,32 @@
       linear-gradient(-45deg, transparent 75%, #000 75%);
     background-size: 12px 12px;
     background-position: 0 0, 0 6px, 6px -6px, -6px 0;
+  }
+
+  /* Homepage fight-card ticker — dual opposing loops; pause on hover to read */
+  .home-marquee-track {
+    animation: home-marquee-scroll 38s linear infinite;
+  }
+  .home-marquee-track-reverse {
+    animation-name: home-marquee-scroll-reverse;
+    animation-duration: 26s;
+  }
+  .home-marquee:hover .home-marquee-track {
+    animation-play-state: paused;
+  }
+  @keyframes home-marquee-scroll {
+    from { transform: translateX(0); }
+    to { transform: translateX(-50%); }
+  }
+  @keyframes home-marquee-scroll-reverse {
+    from { transform: translateX(-50%); }
+    to { transform: translateX(0); }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .home-marquee-track,
+    .home-marquee-track-reverse {
+      animation: none;
+    }
   }
 
   .jagged-edge {
@@ -275,8 +316,18 @@
     0% { opacity: 0; transform: translateY(28px); }
     100% { opacity: 1; transform: translateY(0); }
   }
+
+  /* Homepage FAQ — staggered comic cards onto the rail */
+  .home-faq-rise {
+    animation: home-faq-rise 0.5s cubic-bezier(0.2, 0.9, 0.2, 1.08) both;
+  }
+  @keyframes home-faq-rise {
+    0% { opacity: 0; transform: translateY(22px) scale(0.97); }
+    100% { opacity: 1; transform: translateY(0) scale(1); }
+  }
   @media (prefers-reduced-motion: reduce) {
-    .podium-slot {
+    .podium-slot,
+    .home-faq-rise {
       animation: none !important;
     }
   }

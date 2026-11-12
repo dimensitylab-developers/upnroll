@@ -77,8 +77,8 @@ export function HappyStack({ photos }: { photos: { src: string; alt: string }[] 
   return (
     <div>
       <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
-        <p className="max-w-xl bg-white px-2 py-1 text-sm">
-          Polaroids on the board — tap to lift, double-tap to swap, or shuffle the whole frame.
+        <p className="copy-slab max-w-xl text-sm">
+          Polaroids on the board. Tap to lift, double-tap to swap, or shuffle the whole frame.
         </p>
         <button
           type="button"

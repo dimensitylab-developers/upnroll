@@ -34,7 +34,7 @@ export default async function PublicSchedulePage({ params }: { params: Promise<{
     <main className="min-h-screen bg-background halftone-bg px-4 py-10 sm:py-16">
       <div className="mx-auto max-w-3xl">
         <PageBackLink href={`/events/${slug}`} label="Back to event" />
-        <h1 className="text-display mb-6 text-3xl font-semibold sm:mb-8 sm:text-4xl">Schedule</h1>
+        <h1 className="text-display copy-slab mb-6 text-3xl font-semibold sm:mb-8 sm:text-4xl">Schedule</h1>
         <MatchAnnouncementBanner mats={board.mats} eventName={board.eventName} />
         <ScrollRegion label="Swipe for full schedule">
           <Table className="min-w-[36rem]">

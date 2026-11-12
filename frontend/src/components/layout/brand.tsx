@@ -36,18 +36,35 @@ export function FounderCredit({ className = "" }: { className?: string }) {
   );
 }
 
-export function BuiltBy({ className = "" }: { className?: string }) {
+/** Static year — Cache Components forbids `new Date()` during prerender of static shells. */
+const COPYRIGHT_YEAR = 2026;
+
+export function SiteCopyright({ className = "" }: { className?: string }) {
   return (
     <p className={`text-[11px] leading-none text-muted-foreground ${className}`.trim()}>
-      © Built by{" "}
-      <a
-        href="https://dimensitylabs.dev"
-        target="_blank"
-        rel="noopener noreferrer"
-        className="underline underline-offset-2 transition-colors hover:text-foreground"
-      >
-        Dimensity Labs
-      </a>
+      © {COPYRIGHT_YEAR} Up &apos;n Roll. All rights reserved.
+    </p>
+  );
+}
+
+export function BuiltBy({ className = "" }: { className?: string }) {
+  return (
+    <p
+      className={`inline-flex items-center gap-1.5 text-[11px] leading-none text-muted-foreground ${className}`.trim()}
+    >
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img src="/dimensity-mark.png" alt="" className="h-3 w-3 object-contain opacity-70" />
+      <span>
+        Built by{" "}
+        <a
+          href="https://dimensitylabs.dev"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="underline underline-offset-2 transition-colors hover:text-foreground"
+        >
+          Dimensity Labs
+        </a>
+      </span>
     </p>
   );
 }

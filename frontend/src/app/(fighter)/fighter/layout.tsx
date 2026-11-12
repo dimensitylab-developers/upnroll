@@ -8,7 +8,7 @@ import { getSession } from "@/server/auth/session";
 import { portalTabTitle, resolveDisplayName } from "@/server/auth/display-name";
 import { SignOutButton } from "@/features/auth/sign-out-button";
 import { FighterNav } from "@/features/fighter/fighter-nav";
-import { BrandMark, BuiltBy, FounderCredit } from "@/components/layout/brand";
+import { BrandMark, BuiltBy, FounderCredit, SiteCopyright } from "@/components/layout/brand";
 
 /** Fighter portal is cookie/session-bound — never try to instant-prerender it. */
 export const instant = false;
@@ -73,6 +73,7 @@ async function FighterShell({ children }: { children: React.ReactNode }) {
       <main className="relative mx-auto w-full max-w-5xl flex-1 px-3 pb-12 pt-4 sm:px-4 sm:pt-5">{children}</main>
       <div className="flex justify-end px-3 pb-[max(1rem,env(safe-area-inset-bottom))] sm:px-5">
         <div className="flex flex-col items-end gap-1">
+          <SiteCopyright />
           <FounderCredit />
           <BuiltBy />
         </div>

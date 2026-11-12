@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { FighterPhoto } from "@/features/fighters/fighter-photo";
 
 export type PodiumFighter = {
   rank: number;
@@ -80,9 +81,12 @@ function PodiumSlot({ fighter }: { fighter: PodiumFighter }) {
           </span>
         ) : null}
         <div className={`relative overflow-hidden border-2 border-black ${place.face} ${place.photo} ${place.shadow}`}>
-          {photoSrc ? (
-            // eslint-disable-next-line @next/next/no-img-element
-            <img src={photoSrc} alt="" className="h-full w-full object-cover object-top" />
+          {photoSrc && fighter.slug ? (
+            <FighterPhoto
+              slug={fighter.slug}
+              displayName={fighter.displayName}
+              className="h-full w-full object-cover object-top"
+            />
           ) : (
             <div className="flex h-full w-full flex-col items-center justify-center gap-1">
               <span className="text-display text-3xl font-semibold text-black/20 sm:text-4xl">

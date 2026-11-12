@@ -7,11 +7,8 @@ import { STARTER_FAQS } from "@/server/content/starterFaqs";
 import { writeAuditLog } from "@/server/audit/log";
 import { NotFoundError } from "@/server/http/errors";
 
-/** Publish the starter FAQ once, so the page and the chatbot have something to answer. */
+/** Publish missing starter FAQs so the page and chatbot stay current as the site grows. */
 async function ensureStarterFaqs() {
-  const published = await ContentEntry.countDocuments({ type: "FAQ", publicationState: "PUBLISHED" });
-  if (published > 0) return;
-
   const admin = await User.findOne({ role: "ADMIN" }).select("_id").lean();
   if (!admin) return;
 

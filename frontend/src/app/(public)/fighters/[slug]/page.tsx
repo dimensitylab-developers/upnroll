@@ -67,7 +67,7 @@ export default async function PublicFighterProfilePage({ params }: { params: Pro
               Rankings board →
             </Link>
           </div>
-          <p className="text-sm text-muted-foreground">
+          <p className="copy-slab text-sm text-muted-foreground">
             Public card only — record, academy, belt, division, and photo. Personal and medical details stay private.
           </p>
         </div>

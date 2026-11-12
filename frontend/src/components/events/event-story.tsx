@@ -7,7 +7,7 @@ const STOPS = [
   {
     n: "02",
     title: "Division",
-    body: "You fight inside one group — name, discipline, and a set number of spots. Small groups may merge.",
+    body: "You fight inside one group: name, discipline, and a set number of spots. Small groups may merge.",
   },
   {
     n: "03",
@@ -29,8 +29,8 @@ const STOPS = [
 export function EventStory() {
   return (
     <div>
-      <p className="mb-6 max-w-xl text-sm leading-relaxed">
-        From the form to the mat to the board — five steps.
+      <p className="copy-slab mb-6 max-w-xl text-sm leading-relaxed">
+        From the form to the mat to the board. Five steps.
       </p>
 
       <ol className="grid gap-3 sm:grid-cols-2 lg:grid-cols-5">

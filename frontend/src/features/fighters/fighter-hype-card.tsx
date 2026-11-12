@@ -1,5 +1,6 @@
 import Link from "next/link";
 import type { ReactNode } from "react";
+import { FighterPhoto } from "@/features/fighters/fighter-photo";
 
 export type FighterHypeCardData = {
   displayName: string;
@@ -66,14 +67,11 @@ export function FighterHypeCard({
 
       <div className="relative aspect-[5/4] overflow-hidden bg-[#e8e2d8]">
         {photoSrc ? (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img
-            src={photoSrc}
-            alt=""
+          <FighterPhoto
+            slug={fighter.slug}
+            displayName={fighter.displayName}
             width={320}
             height={256}
-            loading="lazy"
-            decoding="async"
             className="h-full w-full object-cover object-top"
           />
         ) : (
@@ -115,14 +113,11 @@ export function FighterHypeCard({
 
       <div className="relative aspect-[4/5] overflow-hidden bg-[#e8e2d8]">
         {photoSrc ? (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img
-            src={photoSrc}
-            alt=""
+          <FighterPhoto
+            slug={fighter.slug}
+            displayName={fighter.displayName}
             width={232}
             height={290}
-            loading="lazy"
-            decoding="async"
             className="h-full w-full object-cover object-top"
           />
         ) : (

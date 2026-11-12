@@ -9,8 +9,15 @@ export default async function JudgeScoringPage() {
   const session = await getJudgeSession();
   if (!session) redirect("/judge/login");
 
-  const { state, competitorAName, competitorBName, registrationAId, registrationBId } =
-    await loadJudgeScoringConsole();
+  const {
+    state,
+    fighterA,
+    fighterB,
+    competitorAName,
+    competitorBName,
+    registrationAId,
+    registrationBId,
+  } = await loadJudgeScoringConsole();
   const match = state.match;
 
   return (
@@ -20,9 +27,13 @@ export default async function JudgeScoringPage() {
       status={match.status}
       scoreA={match.scoreA}
       scoreB={match.scoreB}
+      penaltiesA={match.penaltiesA ?? 0}
+      penaltiesB={match.penaltiesB ?? 0}
       scoreVersion={match.scoreVersion}
       rules={state.rules}
       rulesReady={state.rulesReady}
+      fighterA={fighterA}
+      fighterB={fighterB}
       competitorAName={competitorAName}
       competitorBName={competitorBName}
       registrationAId={registrationAId}
