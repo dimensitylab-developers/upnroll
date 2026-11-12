@@ -20,6 +20,7 @@ const UPCOMING_STATUSES = new Set(["PENDING", "SCHEDULED"]);
 const COMPLETED_STATUSES = new Set(["COMPLETED", "BYE"]);
 
 type EnrichedMatch = Awaited<ReturnType<typeof listMatchesForEvent>>[number];
+type JudgeMeta = Awaited<ReturnType<typeof fetchJudgeCredentialMeta>>;
 
 function groupByDivisionAndRound(matches: EnrichedMatch[]) {
   const byDivision = new Map<string, Map<number, EnrichedMatch[]>>();
@@ -40,10 +41,65 @@ function ScheduleStatusBadge({ scheduledAt, mat }: { scheduledAt: Date | string 
     ? new Date(scheduledAt).toLocaleString(undefined, { dateStyle: "medium", timeStyle: "short" })
     : "No time set";
   return (
-    <Badge variant="secondary">
+    <Badge variant="secondary" className="whitespace-normal text-left">
       {dateLabel}
       {mat ? ` · ${mat}` : ""}
     </Badge>
+  );
+}
+
+function MatchActions({
+  eventId,
+  match: m,
+  judgeMeta,
+}: {
+  eventId: string;
+  match: EnrichedMatch;
+  judgeMeta: JudgeMeta;
+}) {
+  return (
+    <div className="flex w-full min-w-0 flex-col gap-2">
+      {m.competitorARegistrationId && m.competitorBRegistrationId && (
+        <>
+          <ScheduleMatchDialog
+            eventId={eventId}
+            matchId={String(m._id)}
+            currentScheduledAt={m.scheduledAt}
+            currentMat={m.mat}
+          />
+          <JudgeCredentialsPanel
+            eventId={eventId}
+            matchId={String(m._id)}
+            meta={judgeMeta}
+            canIssue={Boolean(m.competitorARegistrationId && m.competitorBRegistrationId)}
+            scheduleWarning={!m.scheduledAt}
+          />
+        </>
+      )}
+      {m.status === "SCHEDULED" && m.competitorARegistrationId && m.competitorBRegistrationId ? (
+        <MatchResultDialog
+          eventId={eventId}
+          matchId={String(m._id)}
+          competitorAId={String(m.competitorARegistrationId)}
+          competitorAName={m.competitorAName ?? "Competitor A"}
+          competitorBId={String(m.competitorBRegistrationId)}
+          competitorBName={m.competitorBName ?? "Competitor B"}
+          mode="record"
+        />
+      ) : m.status === "COMPLETED" && m.competitorARegistrationId && m.competitorBRegistrationId ? (
+        <MatchResultDialog
+          eventId={eventId}
+          matchId={String(m._id)}
+          competitorAId={String(m.competitorARegistrationId)}
+          competitorAName={m.competitorAName ?? "Competitor A"}
+          competitorBId={String(m.competitorBRegistrationId)}
+          competitorBName={m.competitorBName ?? "Competitor B"}
+          mode="correct"
+          currentWinnerId={String(m.winnerRegistrationId)}
+          currentMethod={m.resultMethod}
+        />
+      ) : null}
+    </div>
   );
 }
 
@@ -54,25 +110,55 @@ function MatchTable({
 }: {
   eventId: string;
   matches: EnrichedMatch[];
-  judgeMetaByMatch: Map<string, Awaited<ReturnType<typeof fetchJudgeCredentialMeta>>>;
+  judgeMetaByMatch: Map<string, JudgeMeta>;
 }) {
   const grouped = groupByDivisionAndRound(matches);
 
   if (matches.length === 0) {
-    return <p className="text-center text-sm text-muted-foreground py-8">No matches in this view.</p>;
+    return <p className="py-8 text-center text-sm text-muted-foreground">No matches in this view.</p>;
   }
 
   return (
     <div className="space-y-8">
       {[...grouped.entries()].map(([divisionName, byRound]) => (
         <div key={divisionName}>
-          <h2 className="text-display text-lg font-semibold mb-3">{divisionName}</h2>
+          <h2 className="text-display mb-3 text-lg font-semibold break-words">{divisionName}</h2>
           {[...byRound.entries()]
             .sort((a, b) => a[0] - b[0])
             .map(([round, roundMatches]) => (
               <div key={round} className="mb-4">
-                <h3 className="text-sm font-medium text-muted-foreground mb-2">Round {round + 1}</h3>
-                <div className="overflow-x-auto">
+                <h3 className="mb-2 text-sm font-medium text-muted-foreground">Round {round + 1}</h3>
+
+                {/* Mobile cards */}
+                <div className="space-y-3 md:hidden">
+                  {roundMatches.map((m) => (
+                    <article
+                      key={String(m._id)}
+                      className="border-2 border-black bg-white p-3 shadow-[4px_4px_0_0_#000]"
+                    >
+                      <p className="text-display text-base font-semibold break-words">
+                        {m.competitorAName ?? "TBD"} vs {m.competitorBName ?? "TBD"}
+                      </p>
+                      <div className="mt-2 flex flex-wrap gap-2">
+                        <Badge variant="outline">{m.status}</Badge>
+                        <ScheduleStatusBadge scheduledAt={m.scheduledAt} mat={m.mat} />
+                      </div>
+                      <p className="mt-2 text-sm text-muted-foreground">
+                        {m.winnerName ? `${m.winnerName} — ${m.resultMethod}` : "No result yet"}
+                      </p>
+                      <div className="mt-3">
+                        <MatchActions
+                          eventId={eventId}
+                          match={m}
+                          judgeMeta={judgeMetaByMatch.get(String(m._id)) ?? null}
+                        />
+                      </div>
+                    </article>
+                  ))}
+                </div>
+
+                {/* Desktop table */}
+                <div className="hidden overflow-x-auto md:block">
                   <Table>
                     <TableHeader>
                       <TableRow>
@@ -86,57 +172,24 @@ function MatchTable({
                     <TableBody>
                       {roundMatches.map((m) => (
                         <TableRow key={String(m._id)}>
-                          <TableCell>{m.competitorAName ?? "TBD"} vs {m.competitorBName ?? "TBD"}</TableCell>
-                          <TableCell><Badge variant="outline">{m.status}</Badge></TableCell>
+                          <TableCell>
+                            {m.competitorAName ?? "TBD"} vs {m.competitorBName ?? "TBD"}
+                          </TableCell>
+                          <TableCell>
+                            <Badge variant="outline">{m.status}</Badge>
+                          </TableCell>
                           <TableCell>
                             <ScheduleStatusBadge scheduledAt={m.scheduledAt} mat={m.mat} />
                           </TableCell>
                           <TableCell className="text-sm text-muted-foreground">
                             {m.winnerName ? `${m.winnerName} — ${m.resultMethod}` : "—"}
                           </TableCell>
-                          <TableCell>
-                            <div className="flex flex-wrap gap-2">
-                              {m.competitorARegistrationId && m.competitorBRegistrationId && (
-                                <>
-                                  <ScheduleMatchDialog
-                                    eventId={eventId}
-                                    matchId={String(m._id)}
-                                    currentScheduledAt={m.scheduledAt}
-                                    currentMat={m.mat}
-                                  />
-                                  <JudgeCredentialsPanel
-                                    eventId={eventId}
-                                    matchId={String(m._id)}
-                                    meta={judgeMetaByMatch.get(String(m._id)) ?? null}
-                                    canIssue={Boolean(m.competitorARegistrationId && m.competitorBRegistrationId)}
-                                    scheduleWarning={!m.scheduledAt}
-                                  />
-                                </>
-                              )}
-                              {m.status === "SCHEDULED" && m.competitorARegistrationId && m.competitorBRegistrationId ? (
-                                <MatchResultDialog
-                                  eventId={eventId}
-                                  matchId={String(m._id)}
-                                  competitorAId={String(m.competitorARegistrationId)}
-                                  competitorAName={m.competitorAName ?? "Competitor A"}
-                                  competitorBId={String(m.competitorBRegistrationId)}
-                                  competitorBName={m.competitorBName ?? "Competitor B"}
-                                  mode="record"
-                                />
-                              ) : m.status === "COMPLETED" && m.competitorARegistrationId && m.competitorBRegistrationId ? (
-                                <MatchResultDialog
-                                  eventId={eventId}
-                                  matchId={String(m._id)}
-                                  competitorAId={String(m.competitorARegistrationId)}
-                                  competitorAName={m.competitorAName ?? "Competitor A"}
-                                  competitorBId={String(m.competitorBRegistrationId)}
-                                  competitorBName={m.competitorBName ?? "Competitor B"}
-                                  mode="correct"
-                                  currentWinnerId={String(m.winnerRegistrationId)}
-                                  currentMethod={m.resultMethod}
-                                />
-                              ) : null}
-                            </div>
+                          <TableCell className="align-top">
+                            <MatchActions
+                              eventId={eventId}
+                              match={m}
+                              judgeMeta={judgeMetaByMatch.get(String(m._id)) ?? null}
+                            />
                           </TableCell>
                         </TableRow>
                       ))}
@@ -170,13 +223,17 @@ export default async function AdminMatchesPage({ params }: { params: Promise<{ i
   const completed = matches.filter((m) => COMPLETED_STATUSES.has(m.status));
 
   return (
-    <div className="mx-auto max-w-6xl px-0 sm:px-6">
+    <div className="mx-auto max-w-6xl px-1 sm:px-6">
       <PageBackLink href={`/admin/events/${id}`} label="Back to event" />
       <PageHeader title={`Matches — ${event.name}`} />
       <Tabs defaultValue="upcoming">
-        <TabsList>
-          <TabsTrigger value="upcoming">Upcoming ({upcoming.length})</TabsTrigger>
-          <TabsTrigger value="completed">Completed ({completed.length})</TabsTrigger>
+        <TabsList className="flex h-auto w-full flex-wrap gap-1">
+          <TabsTrigger value="upcoming" className="flex-1 min-w-[8rem]">
+            Upcoming ({upcoming.length})
+          </TabsTrigger>
+          <TabsTrigger value="completed" className="flex-1 min-w-[8rem]">
+            Completed ({completed.length})
+          </TabsTrigger>
         </TabsList>
         <TabsContent value="upcoming" className="mt-4">
           <MatchTable eventId={id} matches={upcoming} judgeMetaByMatch={judgeMetaByMatch} />

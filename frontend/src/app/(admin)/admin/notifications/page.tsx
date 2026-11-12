@@ -10,7 +10,7 @@ export default async function AdminNotificationsPage() {
   const jobs = await listFailedOutboxJobs(actor, 50);
 
   return (
-    <div className="mx-auto max-w-3xl space-y-6">
+    <div className="mx-auto max-w-3xl space-y-6 px-1 sm:px-0">
       <PageHeader title="Failed deliveries" />
       <p className="text-sm text-muted-foreground">
         Outbox jobs that exhausted retries. Retry after fixing the underlying issue (SMTP, data, etc.).

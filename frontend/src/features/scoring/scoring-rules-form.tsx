@@ -12,47 +12,21 @@ export function ScoringRulesForm({ eventId, rules }: { eventId: string; rules: S
   const [state, action, pending] = useActionState(saveScoringRulesAction, {} as ScoringAdminActionState);
 
   return (
-    <form action={action} className="space-y-4 border-2 border-black bg-white p-5 shadow-[6px_6px_0_0_#000] sm:p-6">
+    <form
+      action={action}
+      className="space-y-4 border-2 border-black bg-white p-4 shadow-[6px_6px_0_0_#000] sm:p-6"
+    >
       <input type="hidden" name="eventId" value={eventId} />
-      <MotionIntro />
-      <MotionSample />
       <div>
-        <Label htmlFor="rulesJson">Scoring rules JSON</Label>
-        <textarea
-          id="rulesJson"
-          name="rulesJson"
-          rows={18}
-          defaultValue={JSON.stringify(initial, null, 2)}
-          className="mt-2 w-full border-2 border-black bg-white p-3 font-mono text-xs shadow-[3px_3px_0_0_#c8102e]"
-          spellCheck={false}
-        />
+        <h2 className="text-display text-base font-semibold sm:text-lg">Tournament scoring rules</h2>
+        <p className="mt-1 text-sm text-muted-foreground">
+          Configure point buttons, penalties, and final outcomes before judges can score. Set{" "}
+          <code className="text-xs">configured</code> to true when ready.
+        </p>
       </div>
-      {state.error && <p className="text-sm text-destructive">{state.error}</p>}
-      {state.ok && <p className="text-sm text-brand-cyan">Rules saved.</p>}
-      <Button type="submit" disabled={pending} className="border-2 border-black shadow-[4px_4px_0_0_#c8102e]">
-        {pending ? "Saving…" : "Save scoring rules"}
-      </Button>
-    </form>
-  );
-}
-
-function MotionIntro() {
-  return (
-    <div>
-      <h2 className="text-display text-lg font-semibold">Tournament scoring rules</h2>
-      <p className="mt-1 text-sm text-muted-foreground">
-        Configure point buttons, penalties, and final outcomes before judges can score. Set <code className="text-xs">configured</code>{" "}
-        to true when ready.
-      </p>
-    </div>
-  );
-}
-
-function MotionSample() {
-  return (
-    <details className="border-2 border-dashed border-black/40 px-3 py-2 text-sm">
-      <summary className="cursor-pointer font-semibold">Example structure</summary>
-      <pre className="mt-2 overflow-x-auto text-xs">{`{
+      <details className="border-2 border-dashed border-black/40 px-3 py-2 text-sm">
+        <summary className="cursor-pointer font-semibold">Example structure</summary>
+        <pre className="mt-2 max-w-full overflow-x-auto whitespace-pre-wrap break-words text-[11px] sm:text-xs">{`{
   "configured": true,
   "winByHighestScore": true,
   "allowTies": false,
@@ -60,6 +34,27 @@ function MotionSample() {
   "penalties": [{ "code": "STALL", "label": "Stalling", "pointsAgainst": 1 }],
   "outcomes": [{ "code": "PTS", "label": "Points win", "requiresExplicitWinner": true }]
 }`}</pre>
-    </details>
+      </details>
+      <div className="min-w-0">
+        <Label htmlFor="rulesJson">Scoring rules JSON</Label>
+        <textarea
+          id="rulesJson"
+          name="rulesJson"
+          rows={16}
+          defaultValue={JSON.stringify(initial, null, 2)}
+          className="mt-2 max-h-[60vh] w-full overflow-auto border-2 border-black bg-white p-3 font-mono text-[11px] leading-relaxed shadow-[3px_3px_0_0_#c8102e] sm:text-xs"
+          spellCheck={false}
+        />
+      </div>
+      {state.error && <p className="text-sm text-destructive">{state.error}</p>}
+      {state.ok && <p className="text-sm text-brand-cyan">Rules saved.</p>}
+      <Button
+        type="submit"
+        disabled={pending}
+        className="min-h-11 w-full border-2 border-black shadow-[4px_4px_0_0_#c8102e] sm:w-auto"
+      >
+        {pending ? "Saving…" : "Save scoring rules"}
+      </Button>
+    </form>
   );
 }
