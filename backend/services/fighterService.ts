@@ -18,7 +18,6 @@ export type AdminFighterView = {
   gender: string;
   mobile: string;
   nationality: string;
-  aadhaar: string;
   cityState: string;
   emergencyContactName: string;
   emergencyRelationship: string;
@@ -36,6 +35,7 @@ export type AdminFighterView = {
   takingMedication: boolean;
   medicallyFit: boolean;
   hasPhoto: boolean;
+  hasAadhaarImage: boolean;
   waiverAcceptedAt: string | null;
 };
 
@@ -47,7 +47,6 @@ type ProfileForAdmin = {
   gender?: string;
   mobile?: string;
   nationality?: string;
-  aadhaar?: string;
   cityState?: string;
   emergencyContactName?: string;
   emergencyRelationship?: string;
@@ -66,6 +65,7 @@ type ProfileForAdmin = {
   takingMedication?: boolean;
   medicallyFit?: boolean;
   photoKey?: string;
+  aadhaarImageKey?: string;
   waiverAcceptedAt?: Date | null;
 };
 
@@ -79,7 +79,6 @@ export function toAdminFighterView(profile: ProfileForAdmin, email: string): Adm
     gender: profile.gender ?? "",
     mobile: profile.mobile ?? "",
     nationality: profile.nationality ?? "",
-    aadhaar: profile.aadhaar ?? "",
     cityState: profile.cityState ?? "",
     emergencyContactName: profile.emergencyContactName ?? "",
     emergencyRelationship: profile.emergencyRelationship ?? "",
@@ -97,6 +96,7 @@ export function toAdminFighterView(profile: ProfileForAdmin, email: string): Adm
     takingMedication: Boolean(profile.takingMedication),
     medicallyFit: Boolean(profile.medicallyFit),
     hasPhoto: Boolean(profile.photoKey),
+    hasAadhaarImage: Boolean(profile.aadhaarImageKey?.trim()),
     waiverAcceptedAt: profile.waiverAcceptedAt ? new Date(profile.waiverAcceptedAt).toISOString() : null,
   };
 }
@@ -109,7 +109,6 @@ export type FighterDetailsInput = {
   gender: string;
   mobile: string;
   nationality: string;
-  aadhaar: string;
   cityState: string;
   emergencyContactName: string;
   emergencyRelationship: string;
@@ -127,6 +126,7 @@ export type FighterDetailsInput = {
   takingMedication: boolean;
   medicallyFit: boolean;
   photoKey?: string;
+  aadhaarImageKey?: string;
   waiverAcceptedAt?: Date;
   discipline?: string;
 };
@@ -144,7 +144,6 @@ export async function updateFighterProfile(actor: Actor, input: FighterDetailsIn
   profile.gender = input.gender;
   profile.mobile = input.mobile;
   profile.nationality = input.nationality;
-  profile.aadhaar = input.aadhaar;
   profile.cityState = input.cityState;
   profile.emergencyContactName = input.emergencyContactName;
   profile.emergencyRelationship = input.emergencyRelationship;
@@ -162,6 +161,7 @@ export async function updateFighterProfile(actor: Actor, input: FighterDetailsIn
   profile.takingMedication = input.takingMedication;
   profile.medicallyFit = input.medicallyFit;
   if (input.photoKey) profile.photoKey = input.photoKey;
+  if (input.aadhaarImageKey) profile.aadhaarImageKey = input.aadhaarImageKey;
   if (input.waiverAcceptedAt) profile.waiverAcceptedAt = input.waiverAcceptedAt;
   if (input.discipline) profile.discipline = input.discipline;
   await profile.save();

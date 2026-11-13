@@ -12,8 +12,10 @@ const fighterProfileSchema = new Schema(
     gender: { type: String, default: "", trim: true },
     mobile: { type: String, default: "", trim: true },
     nationality: { type: String, default: "", trim: true },
-    // Aadhaar, medical answers, and the passport photo stay off public pages.
+    // Aadhaar number (legacy), Aadhaar card image, medical answers, and the
+    // passport photo stay off public pages.
     aadhaar: { type: String, default: "", trim: true },
+    aadhaarImageKey: { type: String, default: "", trim: true },
     cityState: { type: String, default: "", trim: true },
     emergencyContactName: { type: String, default: "", trim: true },
     emergencyRelationship: { type: String, default: "", trim: true },

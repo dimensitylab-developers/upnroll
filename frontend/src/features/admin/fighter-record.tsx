@@ -60,12 +60,26 @@ export function FighterRecord({ fighter }: { fighter: AdminFighterView }) {
           <Line label="Gender" value={shown(fighter.gender)} />
           <Line label="Mobile number" value={shown(fighter.mobile)} />
           <Line label="Nationality" value={shown(fighter.nationality)} />
-          <Line label="Aadhaar card number" value={shown(fighter.aadhaar)} />
           <Line label="City / State" value={shown(fighter.cityState)} />
           <Line label="Emergency contact name" value={shown(fighter.emergencyContactName)} />
           <Line label="Relationship" value={shown(fighter.emergencyRelationship)} />
           <Line label="Blood group" value={shown(fighter.bloodGroup)} />
         </dl>
+        <div className="max-w-md border-2 border-black bg-white p-4">
+          <p className="mb-2 text-[10px] uppercase tracking-wider text-muted-foreground">Aadhaar card image (private)</p>
+          <div className="aspect-[16/10] overflow-hidden border-2 border-black bg-white flex items-center justify-center">
+            {fighter.hasAadhaarImage ? (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img
+                src={`/api/v1/admin/fighters/${fighter.userId}/aadhaar`}
+                alt={`${name} Aadhaar card`}
+                className="h-full w-full object-contain"
+              />
+            ) : (
+              <span className="px-2 text-center text-[10px] uppercase tracking-wider text-muted-foreground">No Aadhaar image</span>
+            )}
+          </div>
+        </div>
       </section>
 
       <section className="space-y-4">

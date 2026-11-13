@@ -18,6 +18,7 @@ export default async function FighterProfilePage() {
   const session = await getSession();
   const profile = session ? await getFighterProfile(actorFromSession(session)) : null;
   const ready = Boolean(profile?.dateOfBirth);
+  const imageVersion = profile?.updatedAt ? new Date(profile.updatedAt).getTime().toString() : "";
   const defaults: GrapplerDefaults = {
     displayName: profile?.displayName ?? "",
     dateOfBirth: profile?.dateOfBirth ?? "",
@@ -25,7 +26,6 @@ export default async function FighterProfilePage() {
     gender: profile?.gender ?? "",
     mobile: profile?.mobile ?? "",
     nationality: profile?.nationality ?? "",
-    aadhaar: profile?.aadhaar ?? "",
     cityState: profile?.cityState ?? "",
     emergencyContactName: profile?.emergencyContactName ?? "",
     emergencyRelationship: profile?.emergencyRelationship ?? "",
@@ -48,12 +48,14 @@ export default async function FighterProfilePage() {
     <div className="manga-panel p-6 sm:p-8 max-w-4xl mx-auto">
       <h1 className="text-display text-2xl font-semibold mb-2">Your profile</h1>
       <p className="text-sm text-muted-foreground mb-6">
-        Belt, years training, academy, and coach are what the seeding board reads. Aadhaar and medical answers stay off public pages. Organizers see the full form in the admin panel.
+        Belt, years training, academy, and coach are what the seeding board reads. Aadhaar card image and medical answers stay off public pages. Organizers see the full form in the admin panel.
       </p>
       <ProfileForm
         defaults={defaults}
         hasPhoto={Boolean(profile?.photoKey)}
-        photoVersion={profile?.updatedAt ? new Date(profile.updatedAt).getTime().toString() : ""}
+        photoVersion={imageVersion}
+        hasAadhaarImage={Boolean(profile?.aadhaarImageKey)}
+        aadhaarImageVersion={imageVersion}
         waiverAcceptedAt={profile?.waiverAcceptedAt ? new Date(profile.waiverAcceptedAt).toISOString() : null}
       />
     </div>

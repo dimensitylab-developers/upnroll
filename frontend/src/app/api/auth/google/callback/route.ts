@@ -6,7 +6,14 @@ import { FighterProfile } from "@/server/models/FighterProfile";
 import { hashPassword } from "@/server/auth/password";
 import { createSession } from "@/server/auth/session";
 import { writeAuditLog } from "@/server/audit/log";
-import { OAUTH_STATE_COOKIE, verifyOAuthState } from "@/server/auth/oauth-state";
+import {
+  OAUTH_ENTRY_COOKIE,
+  OAUTH_STATE_COOKIE,
+  oauthErrorPath,
+  parseOAuthEntry,
+  verifyOAuthState,
+  type OAuthEntry,
+} from "@/server/auth/oauth-state";
 
 function slugify(name: string): string {
   const base = name
@@ -17,28 +24,34 @@ function slugify(name: string): string {
   return `${base || "grappler"}-${randomBytes(2).toString("hex")}`;
 }
 
-function clearOAuthCookie(response: NextResponse) {
-  response.cookies.set(OAUTH_STATE_COOKIE, "", {
+function clearOAuthCookies(response: NextResponse) {
+  const clear = {
     httpOnly: true,
     secure: process.env.NODE_ENV === "production",
-    sameSite: "lax",
+    sameSite: "lax" as const,
     path: "/",
     maxAge: 0,
-  });
+  };
+  response.cookies.set(OAUTH_STATE_COOKIE, "", clear);
+  response.cookies.set(OAUTH_ENTRY_COOKIE, "", clear);
+}
+
+function failRedirect(origin: string, entry: OAuthEntry, reason: "failed" | "disabled" = "failed") {
+  const response = NextResponse.redirect(new URL(oauthErrorPath(entry, reason), origin));
+  clearOAuthCookies(response);
+  return response;
 }
 
 export async function GET(request: NextRequest) {
   const url = request.nextUrl;
-  const fail = new URL("/login?google=failed", url.origin);
+  const entry = parseOAuthEntry(request.cookies.get(OAUTH_ENTRY_COOKIE)?.value);
   const clientId = process.env.GOOGLE_CLIENT_ID;
   const clientSecret = process.env.GOOGLE_CLIENT_SECRET;
   const code = url.searchParams.get("code");
   const stateCookie = request.cookies.get(OAUTH_STATE_COOKIE)?.value;
 
   if (!clientId || !clientSecret || !code || !verifyOAuthState(url.searchParams.get("state"), stateCookie)) {
-    const response = NextResponse.redirect(fail);
-    clearOAuthCookie(response);
-    return response;
+    return failRedirect(url.origin, entry, "failed");
   }
 
   const redirectUri = `${url.origin}/api/auth/google/callback`;
@@ -54,39 +67,29 @@ export async function GET(request: NextRequest) {
     }),
   });
   if (!tokenResponse.ok) {
-    const response = NextResponse.redirect(fail);
-    clearOAuthCookie(response);
-    return response;
+    return failRedirect(url.origin, entry, "failed");
   }
   const token = (await tokenResponse.json()) as { access_token?: string };
   if (!token.access_token) {
-    const response = NextResponse.redirect(fail);
-    clearOAuthCookie(response);
-    return response;
+    return failRedirect(url.origin, entry, "failed");
   }
 
   const profileResponse = await fetch("https://www.googleapis.com/oauth2/v3/userinfo", {
     headers: { Authorization: `Bearer ${token.access_token}` },
   });
   if (!profileResponse.ok) {
-    const response = NextResponse.redirect(fail);
-    clearOAuthCookie(response);
-    return response;
+    return failRedirect(url.origin, entry, "failed");
   }
   const profile = (await profileResponse.json()) as { email?: string; name?: string };
   const email = profile.email?.toLowerCase().trim();
   if (!email) {
-    const response = NextResponse.redirect(fail);
-    clearOAuthCookie(response);
-    return response;
+    return failRedirect(url.origin, entry, "failed");
   }
 
   await connectDB();
   let user = await User.findOne({ email });
   if (user && user.status !== "ACTIVE") {
-    const response = NextResponse.redirect(new URL("/login?google=disabled", url.origin));
-    clearOAuthCookie(response);
-    return response;
+    return failRedirect(url.origin, entry, "disabled");
   }
 
   const googleName = profile.name?.trim() || email.split("@")[0] || "Grappler";
@@ -152,6 +155,6 @@ export async function GET(request: NextRequest) {
   });
   const next = user.role === "ADMIN" ? "/admin" : "/fighter/dashboard";
   const response = NextResponse.redirect(new URL(next, url.origin));
-  clearOAuthCookie(response);
+  clearOAuthCookies(response);
   return response;
 }

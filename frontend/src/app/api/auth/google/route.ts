@@ -1,12 +1,20 @@
 import { NextResponse } from "next/server";
-import { OAUTH_STATE_COOKIE, OAUTH_STATE_MAX_AGE_SECONDS, issueOAuthState } from "@/server/auth/oauth-state";
+import {
+  OAUTH_ENTRY_COOKIE,
+  OAUTH_STATE_COOKIE,
+  OAUTH_STATE_MAX_AGE_SECONDS,
+  issueOAuthState,
+  oauthErrorPath,
+  parseOAuthEntry,
+} from "@/server/auth/oauth-state";
 
 export async function GET(request: Request) {
   const url = new URL(request.url);
+  const entry = parseOAuthEntry(url.searchParams.get("entry"));
   const clientId = process.env.GOOGLE_CLIENT_ID;
   const clientSecret = process.env.GOOGLE_CLIENT_SECRET;
   if (!clientId || !clientSecret) {
-    return NextResponse.redirect(new URL("/login?google=unavailable", url.origin));
+    return NextResponse.redirect(new URL(oauthErrorPath(entry, "unavailable"), url.origin));
   }
 
   const { stateParam, cookieValue } = issueOAuthState();
@@ -20,12 +28,14 @@ export async function GET(request: Request) {
   auth.searchParams.set("prompt", "select_account");
 
   const response = NextResponse.redirect(auth);
-  response.cookies.set(OAUTH_STATE_COOKIE, cookieValue, {
+  const cookieOpts = {
     httpOnly: true,
     secure: process.env.NODE_ENV === "production",
-    sameSite: "lax",
+    sameSite: "lax" as const,
     path: "/",
     maxAge: OAUTH_STATE_MAX_AGE_SECONDS,
-  });
+  };
+  response.cookies.set(OAUTH_STATE_COOKIE, cookieValue, cookieOpts);
+  response.cookies.set(OAUTH_ENTRY_COOKIE, entry, cookieOpts);
   return response;
 }

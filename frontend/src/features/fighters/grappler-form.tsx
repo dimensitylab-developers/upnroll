@@ -22,7 +22,6 @@ export type GrapplerDefaults = {
   gender: string;
   mobile: string;
   nationality: string;
-  aadhaar: string;
   cityState: string;
   emergencyContactName: string;
   emergencyRelationship: string;
@@ -50,6 +49,8 @@ type GrapplerFormProps = {
   defaults?: GrapplerDefaults;
   hasPhoto?: boolean;
   photoVersion?: string;
+  hasAadhaarImage?: boolean;
+  aadhaarImageVersion?: string;
   waiverAcceptedAt?: string | null;
   top?: ReactNode;
   bottom?: ReactNode;
@@ -140,16 +141,19 @@ export function GrapplerForm({
   defaults,
   hasPhoto = false,
   photoVersion = "",
+  hasAadhaarImage = false,
+  aadhaarImageVersion = "",
   waiverAcceptedAt,
   top,
   bottom,
   submitLabel,
   submitDisabled = false,
 }: GrapplerFormProps) {
-  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+  const [photoPreviewUrl, setPhotoPreviewUrl] = useState<string | null>(null);
+  const [aadhaarPreviewUrl, setAadhaarPreviewUrl] = useState<string | null>(null);
   const values = defaults;
   const errors = state.fieldErrors;
-  const photoRequired = mode === "event" && !hasPhoto;
+  const aadhaarRequired = mode === "event" && !hasAadhaarImage;
   const initialAge = (() => {
     if (values?.dateOfBirth) {
       const fromDob = ageFromDob(values.dateOfBirth);
@@ -161,13 +165,22 @@ export function GrapplerForm({
 
   useEffect(() => {
     return () => {
-      if (previewUrl) URL.revokeObjectURL(previewUrl);
+      if (photoPreviewUrl) URL.revokeObjectURL(photoPreviewUrl);
+      if (aadhaarPreviewUrl) URL.revokeObjectURL(aadhaarPreviewUrl);
     };
-  }, [previewUrl]);
+  }, [photoPreviewUrl, aadhaarPreviewUrl]);
 
   function onPhotoChange(event: ChangeEvent<HTMLInputElement>) {
     const file = event.target.files?.[0];
-    setPreviewUrl((current) => {
+    setPhotoPreviewUrl((current) => {
+      if (current) URL.revokeObjectURL(current);
+      return file ? URL.createObjectURL(file) : null;
+    });
+  }
+
+  function onAadhaarChange(event: ChangeEvent<HTMLInputElement>) {
+    const file = event.target.files?.[0];
+    setAadhaarPreviewUrl((current) => {
       if (current) URL.revokeObjectURL(current);
       return file ? URL.createObjectURL(file) : null;
     });
@@ -198,14 +211,14 @@ export function GrapplerForm({
       {fieldErrorCount > 0 && (
         <p className="border-2 border-black bg-white px-3 py-2 text-sm text-primary shadow-[3px_3px_0_0_#000]" role="alert">
           Could not save yet — fix {fieldErrorCount} field{fieldErrorCount === 1 ? "" : "s"} highlighted below
-          (Aadhaar must be 12 digits, medical fitness must be Yes, and required grappler details cannot be blank).
+          (medical fitness must be Yes, and required grappler details cannot be blank).
         </p>
       )}
       {top}
 
       <section className="space-y-4">
         <SectionBanner>1. Personal information</SectionBanner>
-        <div className="grid items-start gap-4 lg:grid-cols-[1fr_9rem]">
+        <div className={`grid items-start gap-4 ${mode === "profile" ? "lg:grid-cols-[1fr_9rem]" : ""}`}>
           <div className="grid gap-4 sm:grid-cols-2">
             <TextField label="Full name (as per ID)" name="displayName" errors={errors} defaultValue={values?.displayName} autoComplete="name" />
             <div>
@@ -256,39 +269,91 @@ export function GrapplerForm({
             />
             <TextField label="Mobile number" name="mobile" type="tel" errors={errors} defaultValue={values?.mobile} autoComplete="tel" />
             <TextField label="Nationality" name="nationality" errors={errors} defaultValue={values?.nationality} autoComplete="country-name" />
-            <TextField
-              label="Aadhaar card number (12 digit)"
-              name="aadhaar"
-              inputMode="numeric"
-              maxLength={12}
-              errors={errors}
-              defaultValue={values?.aadhaar}
-              hint="Kept off public pages. Organizers see it in the admin panel."
-            />
             <TextField label="City / State" name="cityState" errors={errors} defaultValue={values?.cityState} />
             <TextField label="Emergency contact name" name="emergencyContactName" errors={errors} defaultValue={values?.emergencyContactName} />
             <TextField label="Relationship" name="emergencyRelationship" errors={errors} defaultValue={values?.emergencyRelationship} />
             <TextField label="Blood group (optional)" name="bloodGroup" required={false} errors={errors} defaultValue={values?.bloodGroup} />
           </div>
-          <div>
-            <Label htmlFor="photo" className="mb-1.5 block">Passport size photograph</Label>
-            <div className="border-2 border-black bg-white w-full aspect-[3/4] mb-2 overflow-hidden flex items-center justify-center">
-              {previewUrl || hasPhoto ? (
-                // Chosen file shows immediately. Saved photos stay on the signed-in fighter's route.
+          {mode === "profile" && (
+            <div>
+              <Label htmlFor="photo" className="mb-1.5 block">
+                Passport size photograph
+              </Label>
+              <div className="border-2 border-black bg-white w-full aspect-[3/4] mb-2 overflow-hidden flex items-center justify-center">
+                {photoPreviewUrl || hasPhoto ? (
+                  // Chosen file shows immediately. Saved photos stay on the signed-in fighter's route.
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img
+                    src={photoPreviewUrl ?? `/api/v1/fighter/photo?v=${photoVersion}`}
+                    alt="Passport size photograph"
+                    className="w-full h-full object-contain"
+                  />
+                ) : (
+                  <span className="text-[10px] uppercase tracking-wider text-center px-2 text-muted-foreground">Passport size photograph</span>
+                )}
+              </div>
+              <Input id="photo" name="photo" type="file" accept="image/jpeg,image/png,image/webp" onChange={onPhotoChange} />
+              <p className="mt-1 text-xs text-muted-foreground">JPG, PNG, or WebP, under 1.5 MB. Shown on your public fighter card.</p>
+            </div>
+          )}
+        </div>
+
+        {mode === "event" && (
+          <div className="max-w-md">
+            <Label htmlFor="aadhaarImage" className="mb-1.5 block">
+              Aadhaar card image
+            </Label>
+            <div className="border-2 border-black bg-white w-full aspect-[16/10] mb-2 overflow-hidden flex items-center justify-center">
+              {aadhaarPreviewUrl || hasAadhaarImage ? (
                 // eslint-disable-next-line @next/next/no-img-element
                 <img
-                  src={previewUrl ?? `/api/v1/fighter/photo?v=${photoVersion}`}
-                  alt="Passport size photograph"
+                  src={aadhaarPreviewUrl ?? `/api/v1/fighter/aadhaar?v=${aadhaarImageVersion}`}
+                  alt="Aadhaar card"
                   className="w-full h-full object-contain"
                 />
               ) : (
-                <span className="text-[10px] uppercase tracking-wider text-center px-2 text-muted-foreground">Passport size photograph</span>
+                <span className="text-[10px] uppercase tracking-wider text-center px-2 text-muted-foreground">Aadhaar card image</span>
               )}
             </div>
-            <Input id="photo" name="photo" type="file" accept="image/jpeg,image/png,image/webp" required={photoRequired} onChange={onPhotoChange} />
-            <p className="mt-1 text-xs text-muted-foreground">JPG, PNG, or WebP, under 1.5 MB.</p>
+            <Input
+              id="aadhaarImage"
+              name="aadhaarImage"
+              type="file"
+              accept="image/jpeg,image/png,image/webp"
+              required={aadhaarRequired}
+              onChange={onAadhaarChange}
+            />
+            <p className="mt-1 text-xs text-muted-foreground">
+              Clear photo of your Aadhaar card. JPG, PNG, or WebP, under 1.5 MB. Private — organizers only; never on public pages.
+            </p>
+            <FieldError name="aadhaarImage" errors={errors} />
           </div>
-        </div>
+        )}
+
+        {mode === "profile" && (
+          <div className="max-w-md">
+            <Label htmlFor="aadhaarImage" className="mb-1.5 block">
+              Aadhaar card image {hasAadhaarImage ? "(optional replace)" : "(optional)"}
+            </Label>
+            <div className="border-2 border-black bg-white w-full aspect-[16/10] mb-2 overflow-hidden flex items-center justify-center">
+              {aadhaarPreviewUrl || hasAadhaarImage ? (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img
+                  src={aadhaarPreviewUrl ?? `/api/v1/fighter/aadhaar?v=${aadhaarImageVersion}`}
+                  alt="Aadhaar card"
+                  className="w-full h-full object-contain"
+                />
+              ) : (
+                <span className="text-[10px] uppercase tracking-wider text-center px-2 text-muted-foreground">No Aadhaar image yet</span>
+              )}
+            </div>
+            <Input id="aadhaarImage" name="aadhaarImage" type="file" accept="image/jpeg,image/png,image/webp" onChange={onAadhaarChange} />
+            <p className="mt-1 text-xs text-muted-foreground">
+              Required when you register for an event. Private — never shown on public pages.
+            </p>
+            <FieldError name="aadhaarImage" errors={errors} />
+          </div>
+        )}
       </section>
 
       <section className="space-y-4">

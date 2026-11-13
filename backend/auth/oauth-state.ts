@@ -3,7 +3,20 @@ import { createHmac, randomBytes, timingSafeEqual } from "node:crypto";
 import { getConfig } from "@/lib/config";
 
 export const OAUTH_STATE_COOKIE = "upnroll_oauth_state";
+/** Remembers whether Google OAuth started from login or register (for error redirects). */
+export const OAUTH_ENTRY_COOKIE = "upnroll_oauth_entry";
 export const OAUTH_STATE_MAX_AGE_SECONDS = 600;
+
+export type OAuthEntry = "login" | "register";
+
+export function parseOAuthEntry(value: string | undefined | null): OAuthEntry {
+  return value === "register" ? "register" : "login";
+}
+
+export function oauthErrorPath(entry: OAuthEntry, reason: "unavailable" | "failed" | "disabled"): string {
+  const base = entry === "register" ? "/register" : "/login";
+  return `${base}?google=${reason}`;
+}
 
 function sign(value: string): string {
   const { SESSION_SECRET } = getConfig();

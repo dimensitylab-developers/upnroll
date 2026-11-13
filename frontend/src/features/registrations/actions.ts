@@ -12,7 +12,7 @@ import { ACTIVE_REGISTRATION_STATUSES } from "@/server/services/registrationStat
 import { ConflictError, toAppError } from "@/server/http/errors";
 import { createRegistrationSchema } from "./schemas";
 import { grapplerDetailsSchema, grapplerFieldIssues, grapplerFromForm, toProfileFields } from "@/features/fighters/grappler-schema";
-import { readProfilePhoto, saveProfilePhoto } from "@/server/services/profilePhoto";
+import { readAadhaarImage, saveAadhaarImage } from "@/server/services/profilePhoto";
 
 export type RegistrationActionState = {
   error?: string;
@@ -59,23 +59,24 @@ export async function createRegistrationAction(
   const issues = grapplerFieldIssues(grapplerParsed.data);
   if (Object.keys(issues).length > 0) return { fieldErrors: issues };
 
-  const photo = await readProfilePhoto(formData.get("photo"));
-  if ("error" in photo) return { error: photo.error };
+  const aadhaar = await readAadhaarImage(formData.get("aadhaarImage"));
+  if ("error" in aadhaar) return { error: aadhaar.error };
 
   const divisionId = registrationParsed.data.divisionId;
 
   try {
-    const existing = await FighterProfile.findOne({ userId: actor.userId }).select("photoKey").lean();
-    if ("empty" in photo && !existing?.photoKey) {
-      return { error: "Add a passport size photograph." };
+    const existing = await FighterProfile.findOne({ userId: actor.userId }).select("aadhaarImageKey").lean();
+    if ("empty" in aadhaar && !existing?.aadhaarImageKey) {
+      return { error: "Add an Aadhaar card image.", fieldErrors: { aadhaarImage: ["Add an Aadhaar card image."] } };
     }
-    const photoKey = "bytes" in photo
-      ? await saveProfilePhoto(actor, photo.bytes, photo.ext, existing?.photoKey ?? "")
-      : undefined;
+    const aadhaarImageKey =
+      "bytes" in aadhaar
+        ? await saveAadhaarImage(actor, aadhaar.bytes, aadhaar.ext, existing?.aadhaarImageKey ?? "")
+        : undefined;
 
     await updateFighterProfile(actor, {
       ...toProfileFields(grapplerParsed.data),
-      photoKey,
+      aadhaarImageKey,
       waiverAcceptedAt: new Date(),
     });
 
