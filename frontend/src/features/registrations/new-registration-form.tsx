@@ -22,14 +22,14 @@ const initialState: RegistrationActionState = {};
 export function NewRegistrationForm({
   divisions,
   defaults,
-  hasPhoto,
-  photoVersion,
+  hasAadhaarImage,
+  aadhaarImageVersion,
   waiverAcceptedAt,
 }: {
   divisions: DivisionOption[];
   defaults: GrapplerDefaults;
-  hasPhoto: boolean;
-  photoVersion: string;
+  hasAadhaarImage: boolean;
+  aadhaarImageVersion: string;
   waiverAcceptedAt: string | null;
 }) {
   const router = useRouter();
@@ -58,8 +58,8 @@ export function NewRegistrationForm({
       pending={pending || navigating}
       submitDisabled={!divisionId || !consent || !agreement || navigating}
       defaults={defaults}
-      hasPhoto={hasPhoto}
-      photoVersion={photoVersion}
+      hasAadhaarImage={hasAadhaarImage}
+      aadhaarImageVersion={aadhaarImageVersion}
       waiverAcceptedAt={waiverAcceptedAt}
       submitLabel={navigating ? "Opening payment…" : "Continue to payment"}
       top={

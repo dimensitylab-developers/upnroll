@@ -12,11 +12,15 @@ export function ProfileForm({
   defaults,
   hasPhoto,
   photoVersion,
+  hasAadhaarImage,
+  aadhaarImageVersion,
   waiverAcceptedAt,
 }: {
   defaults: GrapplerDefaults;
   hasPhoto: boolean;
   photoVersion: string;
+  hasAadhaarImage: boolean;
+  aadhaarImageVersion: string;
   waiverAcceptedAt: string | null;
 }) {
   const router = useRouter();
@@ -29,7 +33,7 @@ export function ProfileForm({
   const dialogError =
     state.error ||
     (fieldErrorCount > 0
-      ? `Could not save yet — fix ${fieldErrorCount} field${fieldErrorCount === 1 ? "" : "s"} on the form (Aadhaar must be 12 digits, medical fitness must be Yes, and required grappler details cannot be blank).`
+      ? `Could not save yet — fix ${fieldErrorCount} field${fieldErrorCount === 1 ? "" : "s"} on the form (medical fitness must be Yes, and required grappler details cannot be blank).`
       : undefined);
 
   useEffect(() => {
@@ -55,6 +59,8 @@ export function ProfileForm({
         defaults={defaults}
         hasPhoto={hasPhoto}
         photoVersion={photoVersion}
+        hasAadhaarImage={hasAadhaarImage}
+        aadhaarImageVersion={aadhaarImageVersion}
         waiverAcceptedAt={waiverAcceptedAt}
       />
     </>

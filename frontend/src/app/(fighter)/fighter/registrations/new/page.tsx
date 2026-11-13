@@ -18,6 +18,7 @@ export default async function NewRegistrationPage() {
     getFighterProfile(actor),
   ]);
 
+  const imageVersion = profile?.updatedAt ? String(new Date(profile.updatedAt).getTime()) : "0";
   const defaults: GrapplerDefaults = {
     displayName: profile?.displayName ?? "",
     dateOfBirth: profile?.dateOfBirth ?? "",
@@ -25,7 +26,6 @@ export default async function NewRegistrationPage() {
     gender: profile?.gender ?? "",
     mobile: profile?.mobile ?? "",
     nationality: profile?.nationality ?? "",
-    aadhaar: profile?.aadhaar ?? "",
     cityState: profile?.cityState ?? "",
     emergencyContactName: profile?.emergencyContactName ?? "",
     emergencyRelationship: profile?.emergencyRelationship ?? "",
@@ -48,7 +48,7 @@ export default async function NewRegistrationPage() {
     <div className="mx-auto max-w-3xl manga-panel p-6 sm:p-8">
       <h1 className="mb-2 text-display text-2xl font-semibold">Register for an event</h1>
       <p className="mb-6 text-sm text-muted-foreground">
-        Fill the grappler form for this card, pick a division, then continue to payment.
+        Fill the grappler form for this card, upload your Aadhaar card image, pick a division, then continue to payment.
       </p>
       <NewRegistrationForm
         divisions={divisions.map((division) => ({
@@ -59,8 +59,8 @@ export default async function NewRegistrationPage() {
           eventName: division.event?.name ?? "Unknown event",
         }))}
         defaults={defaults}
-        hasPhoto={Boolean(profile?.photoKey)}
-        photoVersion={profile?.updatedAt ? String(new Date(profile.updatedAt).getTime()) : "0"}
+        hasAadhaarImage={Boolean(profile?.aadhaarImageKey)}
+        aadhaarImageVersion={imageVersion}
         waiverAcceptedAt={profile?.waiverAcceptedAt ? new Date(profile.waiverAcceptedAt).toISOString() : null}
       />
     </div>

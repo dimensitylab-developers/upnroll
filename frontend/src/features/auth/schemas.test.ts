@@ -22,7 +22,6 @@ function validGrappler(overrides: Record<string, unknown> = {}) {
     gender: "Female",
     mobile: "9876543210",
     nationality: "Indian",
-    aadhaar: "123456789012",
     cityState: "Mumbai, Maharashtra",
     emergencyContactName: "Anil Kolhapure",
     emergencyRelationship: "Father",
@@ -67,9 +66,9 @@ describe("registerSchema", () => {
 });
 
 describe("grapplerDetailsSchema", () => {
-  it("rejects an Aadhaar number that is not 12 digits", () => {
-    const result = grapplerDetailsSchema.safeParse(validGrappler({ aadhaar: "12345" }));
-    expect(result.success).toBe(false);
+  it("accepts a complete grappler form without an Aadhaar number", () => {
+    const result = grapplerDetailsSchema.safeParse(validGrappler());
+    expect(result.success).toBe(true);
   });
 
   it("requires a medical detail when the answer is yes", () => {

@@ -6,7 +6,7 @@ import { requireActor } from "@/server/auth/session";
 import { getFighterProfile, updateFighterProfile } from "@/server/services/fighterService";
 import { toAppError } from "@/server/http/errors";
 import { grapplerDetailsSchema, grapplerFieldIssues, grapplerFromForm, toProfileFields } from "@/features/fighters/grappler-schema";
-import { readProfilePhoto, saveProfilePhoto } from "@/server/services/profilePhoto";
+import { readAadhaarImage, readProfilePhoto, saveAadhaarImage, saveProfilePhoto } from "@/server/services/profilePhoto";
 
 export type ProfileActionState = {
   error?: string;
@@ -26,6 +26,9 @@ export async function updateProfileAction(_prevState: ProfileActionState, formDa
 
   const photo = await readProfilePhoto(formData.get("photo"));
   if ("error" in photo) return { error: photo.error };
+
+  const aadhaar = await readAadhaarImage(formData.get("aadhaarImage"));
+  if ("error" in aadhaar) return { error: aadhaar.error };
 
   const existing = await getFighterProfile(actor);
   if (!existing) {
@@ -50,9 +53,28 @@ export async function updateProfileAction(_prevState: ProfileActionState, formDa
     }
   }
 
+  let aadhaarImageKey: string | undefined;
+  if ("bytes" in aadhaar) {
+    try {
+      aadhaarImageKey = await saveAadhaarImage(actor, aadhaar.bytes, aadhaar.ext, existing.aadhaarImageKey ?? "");
+    } catch (err) {
+      const mapped = toAppError(err);
+      if (mapped.code === "STORAGE_MISCONFIGURED") {
+        return {
+          error: `${mapped.message} Tip: clear the Aadhaar image field and save your details first.`,
+        };
+      }
+      return { error: mapped.message };
+    }
+  }
+
   let slug = existing.slug ?? "";
   try {
-    const profile = await updateFighterProfile(actor, { ...toProfileFields(parsed.data), photoKey });
+    const profile = await updateFighterProfile(actor, {
+      ...toProfileFields(parsed.data),
+      photoKey,
+      aadhaarImageKey,
+    });
     slug = profile.slug ?? slug;
   } catch (err) {
     return { error: toAppError(err).message };
