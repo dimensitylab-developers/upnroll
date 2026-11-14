@@ -13,4 +13,4 @@ Not a load test. Observations from Next.js 16 webpack dev server only.
 ## Recommendations (non-blocking)
 
 - Prefer production `next start` for any timing judgments.
-- Consider loading indicators that mention “first load may take a moment” for verify redirect — optional UX, not required.
+- Consider loading indicators that mention “first load may take a moment” for verify redirect  optional UX, not required.

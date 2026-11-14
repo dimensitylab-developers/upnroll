@@ -217,12 +217,12 @@ async function main() {
   step("connected");
 
   const admin = await User.findOne({ email: ADMIN_EMAIL, role: "ADMIN" });
-  if (!admin) throw new Error(`Admin ${ADMIN_EMAIL} not found — cannot continue`);
+  if (!admin) throw new Error(`Admin ${ADMIN_EMAIL} not found  cannot continue`);
   evidence.adminUserId = String(admin._id);
   step(`admin located ${ADMIN_EMAIL}`);
 
   const alpha = await ensureFighter(`e2e.a.${RUN}@test.local`, "E2E Fighter Alpha", "9876500001");
-  // Prefer the browser-created account if RUN differs — also accept fixed RUN from CLI
+  // Prefer the browser-created account if RUN differs  also accept fixed RUN from CLI
   const alphaBrowser = await User.findOne({ email: "e2e.a.1794233342848@test.local" });
   const fighterA = alphaBrowser
     ? {
@@ -267,9 +267,9 @@ async function main() {
   // Negative: insufficient participants for bracket
   try {
     buildTwoPlayerBracket([String(fighterA.user._id)]);
-    evidence.bracketMinParticipants = "FAILED — accepted 1";
+    evidence.bracketMinParticipants = "FAILED  accepted 1";
   } catch {
-    evidence.bracketMinParticipants = "PASS — rejected <2";
+    evidence.bracketMinParticipants = "PASS  rejected <2";
     step("bracket engine rejects <2 participants");
   }
 
@@ -281,7 +281,7 @@ async function main() {
   evidence.paymentB = String(bPay.pending._id);
   step("both fighters registered + payment PENDING_REVIEW");
 
-  // Reject B first, then resubmit and approve — exercises reject path
+  // Reject B first, then resubmit and approve  exercises reject path
   await PaymentSubmission.findOneAndUpdate(
     { _id: bPay.pending._id, status: "PENDING_REVIEW" },
     { $set: { status: "REJECTED", reviewerId: admin._id, reviewedAt: new Date(), reviewNote: "e2e reject then retry" } }
@@ -293,7 +293,7 @@ async function main() {
   step("fighter B payment rejected + seat released");
 
   const bRetry = await registerAndPay(String(fighterB.user._id), event._id, division._id, 50000, `E2EUTR${RUN}B2`);
-  // Wait — registerAndPay creates NEW registration but B already has REJECTED one which is inactive.
+  // Wait  registerAndPay creates NEW registration but B already has REJECTED one which is inactive.
   // Good. But filledCount was decremented then claimSeat again.
   evidence.paymentBRetry = String(bRetry.pending._id);
   evidence.registrationBRetry = String(bRetry.registration._id);

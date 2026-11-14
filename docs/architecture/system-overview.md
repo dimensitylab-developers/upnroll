@@ -1,4 +1,4 @@
-# System Architecture Overview — Up 'n Roll
+# System Architecture Overview  Up 'n Roll
 
 Single Next.js 16 App Router application. No microservices, no separate backend, no monorepo (per Part A rules 6–9).
 

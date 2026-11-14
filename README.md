@@ -2,7 +2,7 @@
 
 # ⚡ Up 'n Roll.
 
-**Combat sports tournament management — built for the mat, not the spreadsheet.**
+**Combat sports tournament management  built for the mat, not the spreadsheet.**
 
 [![Next.js](https://img.shields.io/badge/Next.js-16-black?style=flat-square&logo=next.js)](https://nextjs.org)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5-blue?style=flat-square&logo=typescript)](https://www.typescriptlang.org)
@@ -18,7 +18,7 @@ Built by **DimensityLabs** · 6 phases shipped · 19/19 live assertions passed e
 
 ## What is Up 'n Roll?
 
-Up 'n Roll is a full-stack tournament management platform for combat sports organizations. It handles everything from fighter registration and QR-based payments, through automated bracket generation, to live results, rankings, and an admin-reviewed request workflow — all in one place.
+Up 'n Roll is a full-stack tournament management platform for combat sports organizations. It handles everything from fighter registration and QR-based payments, through automated bracket generation, to live results, rankings, and an admin-reviewed request workflow  all in one place.
 
 > Designed with an anime/manga-inspired visual identity. Fast, clean, and built to run on fight day.
 
@@ -31,11 +31,11 @@ Up 'n Roll is a full-stack tournament management platform for combat sports orga
 | 🏠 **Public Site** | Data-driven homepage, event listings, brackets, schedules, results, fighter directory, rankings, FAQ, announcements, policies |
 | 🔐 **Authentication** | Session-based auth, role-gated routes (fighter / admin), secure cookie management |
 | 🥊 **Fighter Portal** | Dashboard, profile editing, event registration, payment submission, match history, cancellation/transfer requests |
-| 🛠 **Admin Portal** | Full tournament control — events, divisions, brackets, matches, payments, rankings, media, content, request review |
+| 🛠 **Admin Portal** | Full tournament control  events, divisions, brackets, matches, payments, rankings, media, content, request review |
 | 🏆 **Bracket Engine** | Deterministic single-elimination generation, seeded-random or manual ordering, auto-resolved byes, result correction with audit trail |
 | 💳 **Payments** | QR + screenshot/UTR submission, private admin-only viewing, duplicate-UTR detection, manual approve/reject with reason |
 | 📊 **Rankings** | Pluggable `RankingStrategy` interface, recalculate-on-demand, public leaderboard |
-| 🤖 **Chatbot** | FAQ-bounded support widget — no LLM, deterministic keyword matching against admin-published content |
+| 🤖 **Chatbot** | FAQ-bounded support widget  no LLM, deterministic keyword matching against admin-published content |
 | 📋 **Requests** | Generic admin-reviewed cancellation/transfer workflow with notes and full status tracking |
 | 🔒 **Security** | Rate limiting, audit logging, IP capture, role-enforced middleware |
 
@@ -68,7 +68,7 @@ upnroll/
 │
 ├── scripts/           # CLI utilities (create-admin, seed-demo)
 ├── docs/              # Architecture, phases, decisions, deployment, legal
-└── package.json       # Root scripts — delegates to frontend/
+└── package.json       # Root scripts  delegates to frontend/
 ```
 
 > `frontend/` and `backend/` are already wired together via the `@/server/*` alias. You don't need to reconnect them.

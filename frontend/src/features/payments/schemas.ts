@@ -4,7 +4,7 @@ import { objectIdSchema } from "@/lib/object-id";
 /**
  * UTR/transaction reference format. Conservative generic placeholder
  * (alphanumeric, 6-30 chars) pending the client's actual UPI/bank
- * reference format — see docs/decisions/open-decisions.md (OD-005/OD-006).
+ * reference format  see docs/decisions/open-decisions.md (OD-005/OD-006).
  */
 export const utrSchema = z
   .string()

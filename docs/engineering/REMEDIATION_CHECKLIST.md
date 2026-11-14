@@ -1,9 +1,9 @@
-# Production Hardening — Remediation Checklist
+# Production Hardening  Remediation Checklist
 
 Branch: `suraj`  
 Investigation date: 2026-11-09  
 Method: Source inspection against architecture docs and live call sites.  
-Status: Living checklist — items move to Completed as commits land.
+Status: Living checklist  items move to Completed as commits land.
 
 ## Phase 0 findings (summary)
 
@@ -13,7 +13,7 @@ Pre-existing untracked architecture docs under `docs/architecture/` were left un
 
 ---
 
-## Phase 1 — Application security
+## Phase 1  Application security
 
 | ID | Item | Priority | Status |
 |----|------|----------|--------|
@@ -26,7 +26,7 @@ Pre-existing untracked architecture docs under `docs/architecture/` were left un
 | P1-07 | Add HSTS + Permissions-Policy; keep CSP Report-Only until Next nonce strategy exists | Medium | Completed (`2dc10d1`) |
 | P1-08 | Hash transfer-invite tokens at rest; return raw token only once to the creator | High | Completed (`914e6d5`) |
 
-## Phase 2 — Database & data integrity
+## Phase 2  Database & data integrity
 
 | ID | Item | Priority | Status |
 |----|------|----------|--------|
@@ -36,7 +36,7 @@ Pre-existing untracked architecture docs under `docs/architecture/` were left un
 | P2-04 | Review indexes on Registration / PaymentSubmission / Session / TransferInvite | Medium | Completed (`793f6e1`) |
 | P2-05 | Use detected image content-type (not client MIME) when storing payment screenshots | Medium | Completed (`1c69684`) |
 
-## Phase 3 — GridFS & file security
+## Phase 3  GridFS & file security
 
 | ID | Item | Priority | Status |
 |----|------|----------|--------|
@@ -44,7 +44,7 @@ Pre-existing untracked architecture docs under `docs/architecture/` were left un
 | P3-02 | Confirm authorization on all private file routes; Content-Disposition attachment for screenshots | Medium | Completed (`0e22c1c`) |
 | P3-03 | Document orphan cleanup expectations for failed GridFS uploads | Low | Completed (report) |
 
-## Phase 4 — Backend code quality
+## Phase 4  Backend code quality
 
 | ID | Item | Priority | Status |
 |----|------|----------|--------|
@@ -52,14 +52,14 @@ Pre-existing untracked architecture docs under `docs/architecture/` were left un
 | P4-02 | Centralize ObjectId parse helper used by services | Medium | Completed (`c82f83e` + match usage `dbe0216`) |
 | P4-03 | Soft-fail / isolate WhatsApp mock behind clearer interface comments | Low | Completed (`dbe0216`) |
 
-## Phase 5 — Next.js
+## Phase 5  Next.js
 
 | ID | Item | Priority | Status |
 |----|------|----------|--------|
 | P5-01 | Ensure fighter/admin actions consistently use `requireActor` | Medium | Completed (`914e6d5` + `85cb144`) |
 | P5-02 | Avoid leaking internal error detail through Server Action returns (audit) | Medium | Completed (existing `toAppError`; CastError `3242cdc`) |
 
-## Phase 6 — External integrations
+## Phase 6  External integrations
 
 | ID | Item | Priority | Status |
 |----|------|----------|--------|
@@ -67,14 +67,14 @@ Pre-existing untracked architecture docs under `docs/architecture/` were left un
 | P6-02 | Document Google OAuth env vars in `.env.example` | Medium | Completed (`047f3b0`) |
 | P6-03 | Keep WhatsApp mocked; document non-production status clearly | Medium | Completed (`dbe0216`) |
 
-## Phase 7 — Errors & logging
+## Phase 7  Errors & logging
 
 | ID | Item | Priority | Status |
 |----|------|----------|--------|
 | P7-01 | Structured server logger (no secrets / passwords / session tokens / full UTR dumps) | Medium | Completed (`3242cdc`) |
 | P7-02 | Map Mongoose CastError → ValidationError at the boundary | Medium | Completed (`3242cdc`) |
 
-## Phase 8 — Cleanup
+## Phase 8  Cleanup
 
 | ID | Item | Priority | Status |
 |----|------|----------|--------|

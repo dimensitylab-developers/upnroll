@@ -1,4 +1,4 @@
-# System Architecture Map — Up 'n Roll
+# System Architecture Map  Up 'n Roll
 
 > Generated from the **current codebase** (verified imports, routes, models, and call sites).  
 > Not an idealized target design. Last audited: 2026-11-09.
@@ -14,7 +14,7 @@ Primary communication patterns:
 | Server Component → `@/server/services/*` | Page data loads | Fully wired |
 | Server Action (`"use server"`) → services | Mutations | Fully wired |
 | Route Handler (`route.ts`) | Health, Google OAuth, binary GETs | Fully wired (limited surface) |
-| REST `/api/v1/*` JSON CRUD | Documented in `docs/api/api-contract.md` | **Proposal only — not implemented** |
+| REST `/api/v1/*` JSON CRUD | Documented in `docs/api/api-contract.md` | **Proposal only  not implemented** |
 
 ### Integration status legend
 
@@ -169,7 +169,7 @@ See full page inventory in [FRONTEND_ARCHITECTURE.md](./FRONTEND_ARCHITECTURE.md
 
 ```mermaid
 flowchart TB
-  subgraph PublicGroup["(public) — no auth"]
+  subgraph PublicGroup["(public)  no auth"]
     Home["/  Home"]
     Events["/events"]
     EventSlug["/events/[slug]"]
@@ -196,7 +196,7 @@ flowchart TB
     Verify["/verify"]
   end
 
-  subgraph FighterGroup["(fighter) — FIGHTER role"]
+  subgraph FighterGroup["(fighter)  FIGHTER role"]
     FDash["/fighter/dashboard"]
     FProf["/fighter/profile"]
     FRegs["/fighter/registrations"]
@@ -207,7 +207,7 @@ flowchart TB
     FXfer["/fighter/transfer/[token]"]
   end
 
-  subgraph AdminGroup["(admin) — ADMIN role"]
+  subgraph AdminGroup["(admin)  ADMIN role"]
     AHome["/admin"]
     AEvents["/admin/events"]
     AEvent["/admin/events/[id]"]
@@ -460,7 +460,7 @@ flowchart TB
   GoogleExt["accounts.google.com 🔵🟡"]
   DiskExt[".local-storage/ 🟢"]
   GridExt[(GridFS bucket privateFiles 🔵🟢)]
-  WAExt["WhatsApp API — NOT connected 🟣"]
+  WAExt["WhatsApp API  NOT connected 🟣"]
 
   AuthActions --> MongoExt
   AuthActions --> SMTPExt
@@ -573,7 +573,7 @@ flowchart TD
   Content --> CE[(contententries)]
   Chat["ChatbotWidget"] --> Ask["askChatbotAction"]
   Ask --> Cache["cachedPublishedContent FAQ"]
-  Ask --> Engine["chatbotEngine.matchFaq — local keywords, no LLM"]
+  Ask --> Engine["chatbotEngine.matchFaq  local keywords, no LLM"]
 ```
 
 ---
@@ -603,6 +603,6 @@ Pick any page and follow:
 3. **Only 6 product HTTP routes** (+ sitemap): health, Google OAuth ×2, 3 binary GETs.
 4. **16 Mongoose models**, all referenced; no orphan schemas.
 5. **No background job runner**; `paymentQueue.ts` is a duplicate-UTR helper, not a queue.
-6. **Payments are manual UTR + screenshot** — no Stripe/Razorpay.
+6. **Payments are manual UTR + screenshot**  no Stripe/Razorpay.
 7. **WhatsApp is a console mock**; SMTP is real in production, console in development.
 8. Older docs that assume a full `/api/v1` REST surface or missing GridFS are **stale** relative to this map.

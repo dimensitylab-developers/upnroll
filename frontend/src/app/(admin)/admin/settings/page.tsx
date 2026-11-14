@@ -6,7 +6,7 @@ import { SiteSettingsForm } from "@/features/settings/site-settings-form";
 import { HouseNameForm } from "@/features/settings/house-name-form";
 import { AdminStamp } from "@/features/admin/ui/admin-stamp";
 
-/** Session/DB-bound route — allow blocking navigation under Cache Components. */
+/** Session/DB-bound route  allow blocking navigation under Cache Components. */
 export const instant = false;
 
 export const metadata: Metadata = { title: "Settings" };
@@ -32,7 +32,7 @@ export default async function AdminSettingsPage() {
       <div className="border-2 border-black bg-white p-5 shadow-[6px_6px_0_0_#000] sm:p-8">
         <AdminStamp>Your house name</AdminStamp>
         <p className="mb-4 mt-3 text-sm text-muted-foreground">
-          This is how the desk greets you — “Hi, …” on sign-in and “Sign out, …” when you leave.
+          This is how the desk greets you  “Hi, …” on sign-in and “Sign out, …” when you leave.
         </p>
         <HouseNameForm defaultName={displayName} />
       </div>

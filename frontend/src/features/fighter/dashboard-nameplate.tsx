@@ -14,7 +14,7 @@ type DashboardNameplateProps = {
   sheetReady: boolean;
 };
 
-/** Athlete identity strip — clean weigh-in board energy, not a toy header. */
+/** Athlete identity strip  clean weigh-in board energy, not a toy header. */
 export function DashboardNameplate({
   name,
   shortName,
@@ -86,7 +86,7 @@ export function DashboardNameplate({
                 sheetReady ? "bg-black text-white" : "bg-brand-red text-white"
               }`}
             >
-              {sheetReady ? "Card ready" : "Sheet open"}
+              {sheetReady ? "Event ready" : "Sheet open"}
             </div>
           </div>
 

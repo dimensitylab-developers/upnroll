@@ -3,7 +3,7 @@ import type { RegistrationStatus } from "@/server/models/Registration";
 import type { PaymentSubmissionStatus } from "@/server/models/PaymentSubmission";
 
 /**
- * Pure state-transition guards — no DB, no I/O. Kept separate from the
+ * Pure state-transition guards  no DB, no I/O. Kept separate from the
  * services so the actual business rule can be unit-tested directly instead
  * of only indirectly through a live database.
  */

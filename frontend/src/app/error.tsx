@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
  * Route-segment error boundary (Next.js convention). Catches rendering/
  * data errors below the root layout and shows a safe, branded fallback
  * instead of a raw stack trace. Real error tracking (Sentry etc.) is an
- * OD-012-class infra decision, not wired here — this only logs to the
+ * OD-012-class infra decision, not wired here  this only logs to the
  * server console for now.
  */
 export default function Error({ error, reset }: { error: Error & { digest?: string }; reset: () => void }) {

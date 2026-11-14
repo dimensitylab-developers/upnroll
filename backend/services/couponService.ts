@@ -32,7 +32,7 @@ function isExpired(coupon: Pick<CouponDoc, "expiresAt" | "status">, now: Date): 
   return Boolean(coupon.expiresAt && coupon.expiresAt.getTime() <= now.getTime());
 }
 
-/** Enforce reservation expiry at read time — not only via cleanup. */
+/** Enforce reservation expiry at read time  not only via cleanup. */
 export function reservationStillValid(
   coupon: Pick<CouponDoc, "status" | "reservedUntil" | "reservedByUserId" | "reservationIntentId">,
   userId: string,
@@ -143,7 +143,7 @@ export async function disableCoupon(actor: Actor, couponId: string) {
   return coupon;
 }
 
-/** Explicit admin release of a redeemed coupon so it can be reissued — audited. */
+/** Explicit admin release of a redeemed coupon so it can be reissued  audited. */
 export async function releaseRedeemedCoupon(actor: Actor, couponId: string, reason: string) {
   assertAdmin(actor);
   requireObjectId(couponId, "coupon");

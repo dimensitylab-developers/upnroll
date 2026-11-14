@@ -33,7 +33,7 @@ const registrationSchema = new Schema(
     status: { type: String, enum: REGISTRATION_STATUSES, required: true, default: "AWAITING_PAYMENT" },
     consentAcceptedAt: { type: Date, default: null },
     agreementAcceptedAt: { type: Date, default: null },
-    /** Authoritative fee/QR/coupon capture at registration time — later fee edits must not rewrite this. */
+    /** Authoritative fee/QR/coupon capture at registration time  later fee edits must not rewrite this. */
     feeSnapshot: { type: feeSnapshotSchema, default: null },
     couponId: { type: Schema.Types.ObjectId, ref: "Coupon", default: null },
     statusHistory: {

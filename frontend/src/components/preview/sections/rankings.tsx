@@ -4,7 +4,7 @@ import { previewRankings } from "@/lib/preview/fixtures";
 
 export function Rankings() {
   return (
-    <Chapter id="rankings" title="Rankings" subtitle="Deliberately separated from the fighter directory (see ONE Championship research note) — rankings require an approved methodology, pending OD-004.">
+    <Chapter id="rankings" title="Rankings" subtitle="Deliberately separated from the fighter directory (see ONE Championship research note)  rankings require an approved methodology, pending OD-004.">
       <Table>
         <TableHeader>
           <TableRow>
@@ -27,7 +27,7 @@ export function Rankings() {
           ))}
         </TableBody>
       </Table>
-      <p className="text-xs text-muted-foreground mt-3">Methodology: fictional placeholder points — not an approved ranking formula. Last updated 2026-10-31 (preview build time).</p>
+      <p className="text-xs text-muted-foreground mt-3">Methodology: fictional placeholder points  not an approved ranking formula. Last updated 2026-10-31 (preview build time).</p>
       <FixtureBadge>No real ranking formula has been implemented or approved</FixtureBadge>
     </Chapter>
   );

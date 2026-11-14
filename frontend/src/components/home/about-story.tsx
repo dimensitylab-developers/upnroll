@@ -33,7 +33,7 @@ function AboutHomeTeaser({ eventSlug }: { eventSlug?: string | null }) {
           <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-brand-red">About Us</p>
           <h2 className="text-display mt-2 text-4xl font-semibold leading-[0.95] sm:text-5xl">Up &apos;n Roll</h2>
           <p className="mt-4 max-w-lg text-sm leading-relaxed text-white/80">
-            No-gi for grapplers everywhere — a real stage, fair brackets, and rankings that lead to the superfight.
+            No-gi for grapplers everywhere  a real stage, fair brackets, and rankings that lead to the superfight.
           </p>
           <div className="mt-6">
             <FounderCredit className="text-white/70" />
@@ -83,7 +83,7 @@ function AboutPageStory({ eventSlug }: { eventSlug?: string | null }) {
             About Up &apos;n Roll
           </h1>
           <p className="mt-5 max-w-xl text-sm leading-relaxed text-white/80 sm:text-base">
-            A no-gi grappling platform built for grapplers everywhere — first time on the mat or chasing the next belt.
+            A no-gi grappling platform built for grapplers everywhere  first time on the mat or chasing the next belt.
           </p>
         </div>
       </section>
@@ -99,7 +99,7 @@ function AboutPageStory({ eventSlug }: { eventSlug?: string | null }) {
             </p>
             <p className="mt-3 text-sm leading-relaxed text-muted-foreground sm:text-base">
               Registration fees come back as show money. Superfight winners take a bonus on top. Beginner and
-              Intermediate divisions for men and women — prize money in every division. Higher belts join as we grow.
+              Intermediate divisions for men and women  prize money in every division. Higher belts join as we grow.
             </p>
           </article>
           <article className="flex flex-col justify-between border-2 border-black bg-brand-red p-5 text-white shadow-[6px_6px_0_0_#000] sm:p-6">
@@ -139,14 +139,14 @@ function AboutPageStory({ eventSlug }: { eventSlug?: string | null }) {
             />
             <div className="absolute inset-0 bg-gradient-to-t from-black via-black/20 to-transparent" />
             <p className="absolute bottom-5 left-5 right-5 text-display text-2xl font-semibold text-white sm:text-3xl">
-              Jiu jitsu as a lifestyle — not just a card to enter.
+              Jiu jitsu as a lifestyle  not just a card to enter.
             </p>
           </article>
           <article className="border-2 border-black bg-white p-5 shadow-[8px_8px_0_0_#c8102e] sm:p-8">
             <SectionBanner>Made by an athlete</SectionBanner>
             <p className="mt-4 text-sm leading-relaxed sm:text-base">
               We know the nerves before a match, the sting of a loss, and the pride of a hard-earned win. It&apos;s not
-              an ego game — it&apos;s a place to test your skills, be heard, build confidence, and tap when you need to.
+              an ego game  it&apos;s a place to test your skills, be heard, build confidence, and tap when you need to.
             </p>
             <p className="mt-4 text-sm font-semibold text-brand-red">Come roll with us.</p>
             <div className="mt-6 border-t-2 border-black pt-4">
@@ -159,7 +159,7 @@ function AboutPageStory({ eventSlug }: { eventSlug?: string | null }) {
           <SectionBanner>Ranking system</SectionBanner>
           <p className="mt-3 max-w-3xl text-sm leading-relaxed">
             Three events build the board. The fourth is the superfight. Who gets that invitation is confirmed by the
-            house — not points alone.
+            house  not points alone.
           </p>
           <details className="mt-4">
             <summary className="cursor-pointer text-sm font-semibold text-brand-red">Know more</summary>

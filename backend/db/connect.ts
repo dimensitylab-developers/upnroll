@@ -26,7 +26,7 @@ async function resetFailedConnect(slot: ConnectSlot): Promise<void> {
     try {
       await mongoose.disconnect();
     } catch {
-      /* ignore — next connect() still replaces the client */
+      /* ignore  next connect() still replaces the client */
     }
   }
 }

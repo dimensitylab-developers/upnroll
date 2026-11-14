@@ -5,7 +5,7 @@ import { getFighterForAdmin } from "@/server/services/fighterService";
 import { FighterRecord } from "@/features/admin/fighter-record";
 import { PageBackLink } from "@/components/layout/page-back-link";
 
-/** Session/DB-bound route — allow blocking navigation under Cache Components. */
+/** Session/DB-bound route  allow blocking navigation under Cache Components. */
 export const instant = false;
 
 export default async function AdminFighterDetailPage({
@@ -34,7 +34,7 @@ export default async function AdminFighterDetailPage({
         <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-brand-red">Registration sheet</p>
         <h1 className="text-display mt-2 text-3xl font-semibold sm:text-4xl">{name}</h1>
         <p className="mt-2 max-w-2xl text-sm text-white/70">
-          Same sections the fighter fills on profile and event registration — personal, competition, medical, and terms.
+          Same sections the fighter fills on profile and event registration  personal, competition, medical, and terms.
         </p>
       </section>
 

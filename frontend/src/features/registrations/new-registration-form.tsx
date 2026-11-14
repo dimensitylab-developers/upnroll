@@ -31,12 +31,16 @@ export function NewRegistrationForm({
   defaults,
   hasAadhaarImage,
   aadhaarImageVersion,
+  hasParentalConsentImage,
+  parentalConsentImageVersion,
   waiverAcceptedAt,
 }: {
   divisions: DivisionOption[];
   defaults: GrapplerDefaults;
   hasAadhaarImage: boolean;
   aadhaarImageVersion: string;
+  hasParentalConsentImage: boolean;
+  parentalConsentImageVersion: string;
   waiverAcceptedAt: string | null;
 }) {
   const router = useRouter();
@@ -82,6 +86,8 @@ export function NewRegistrationForm({
       defaults={defaults}
       hasAadhaarImage={hasAadhaarImage}
       aadhaarImageVersion={aadhaarImageVersion}
+      hasParentalConsentImage={hasParentalConsentImage}
+      parentalConsentImageVersion={parentalConsentImageVersion}
       waiverAcceptedAt={waiverAcceptedAt}
       submitLabel={navigating ? "Opening payment…" : "Continue to payment"}
       top={
@@ -132,7 +138,7 @@ export function NewRegistrationForm({
                 <SelectContent>
                   {filteredDivisions.map((division) => (
                     <SelectItem key={division.id} value={division.id}>
-                      {division.eventName} — {weightClassLabel(division.name)} ({division.discipline})
+                      {division.eventName}  {weightClassLabel(division.name)} ({division.discipline})
                     </SelectItem>
                   ))}
                 </SelectContent>
@@ -154,7 +160,7 @@ export function NewRegistrationForm({
           <label className="flex items-start gap-2 text-sm">
             <input type="checkbox" className="mt-1" checked={agreement} onChange={(event) => setAgreement(event.target.checked)} />
             <span>
-              Agreement. There is no full refund on cancellation. I may transfer my spot to a friend, or accept a 50% cut when a cancellation is approved. Mouthguard is compulsory — if I forget mine, I will buy one from the mouthguard sponsor on site.
+              Agreement. There is no full refund on cancellation. I may transfer my spot to a friend, or accept a 50% cut when a cancellation is approved. Mouthguard is compulsory  if I forget mine, I will buy one from the mouthguard sponsor on site.
             </span>
           </label>
         </section>

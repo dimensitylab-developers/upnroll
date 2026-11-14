@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 
-// Mocked the same way as requestService.test.ts — this test exercises
+// Mocked the same way as requestService.test.ts  this test exercises
 // updateMatchSchedule's validation logic, not a DB integration test.
 vi.mock("@/server/db/connect", () => ({ connectDB: vi.fn().mockResolvedValue(undefined) }));
 

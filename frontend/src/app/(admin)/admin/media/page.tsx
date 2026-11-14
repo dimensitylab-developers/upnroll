@@ -3,7 +3,7 @@ import { requireActor } from "@/server/auth/session";
 import { listAllMedia } from "@/server/services/mediaService";
 import { CreateMediaForm } from "@/features/media/create-media-form";
 
-/** Session/DB-bound route — allow blocking navigation under Cache Components. */
+/** Session/DB-bound route  allow blocking navigation under Cache Components. */
 export const instant = false;
 
 export const metadata: Metadata = { title: "Media" };

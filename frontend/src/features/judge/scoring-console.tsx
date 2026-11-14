@@ -331,7 +331,7 @@ export function ScoringConsole(props: ConsoleProps) {
         <h2 className="text-display text-lg font-semibold">Finalize</h2>
         <p className="mt-1 text-sm text-muted-foreground">
           {props.provisionalWinnerId
-            ? `Provisional: ${props.provisionalMethod || "points"} — confirm with an official outcome.`
+            ? `Provisional: ${props.provisionalMethod || "points"}  confirm with an official outcome.`
             : "Pick the official outcome when the match ends."}
         </p>
         <div className="mt-3 flex flex-wrap gap-2">

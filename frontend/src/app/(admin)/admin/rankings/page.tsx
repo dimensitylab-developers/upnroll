@@ -8,7 +8,7 @@ import { ManualRankingForm } from "@/features/rankings/manual-ranking-form";
 import { deleteManualRankingAction } from "@/features/rankings/actions";
 import { Table, TableHeader, TableRow, TableHead, TableBody, TableCell } from "@/components/ui/table";
 
-/** Session/DB-bound route — allow blocking navigation under Cache Components. */
+/** Session/DB-bound route  allow blocking navigation under Cache Components. */
 export const instant = false;
 
 export const metadata: Metadata = { title: "Rankings" };

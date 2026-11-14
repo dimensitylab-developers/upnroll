@@ -1,4 +1,4 @@
-# System Inventory — Up 'n Roll (manual QA pass)
+# System Inventory  Up 'n Roll (manual QA pass)
 
 **Date:** 2026-11-12  
 **Branch:** `qa/client-demo-readiness-2026-11-12` @ `eb3c5ed`  
@@ -32,10 +32,10 @@
 
 ## Roles
 
-- **Visitor** — public pages, chatbot FAQ widget  
-- **Fighter** — registration, payment evidence, dashboard, requests  
-- **Admin** — tournament ops, payment verify, brackets, judge credentials, CMS  
-- **Judge** — ephemeral match credentials (not a `User.role`)
+- **Visitor**  public pages, chatbot FAQ widget  
+- **Fighter**  registration, payment evidence, dashboard, requests  
+- **Admin**  tournament ops, payment verify, brackets, judge credentials, CMS  
+- **Judge**  ephemeral match credentials (not a `User.role`)
 
 ## Features confirmed present in code + runtime surface
 
@@ -62,6 +62,6 @@
 
 ## External dependencies (this env)
 
-- Atlas MongoDB (shared `test` DB name — ops risk)  
+- Atlas MongoDB (shared `test` DB name  ops risk)  
 - SMTP + Google OAuth credentials present (treat as staging/shared; do not assume production isolation)  
 - Vercel cron / GitHub Actions outbox tooling documented in `.env.example`

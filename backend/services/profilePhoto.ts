@@ -61,3 +61,36 @@ export async function saveAadhaarImage(actor: Actor, bytes: Buffer, ext: string,
   });
   return storedKey;
 }
+
+/** Photo of a signed parental consent form for athletes under 18. */
+export async function readParentalConsentImage(
+  file: FormDataEntryValue | null
+): Promise<{ error: string } | { empty: true } | { bytes: Buffer; ext: string }> {
+  if (!(file instanceof File) || file.size === 0) return { empty: true };
+  if (file.size > MAX_BYTES) return { error: "Parental consent image must be under 1.5 MB." };
+  const bytes = Buffer.from(await file.arrayBuffer());
+  const detected = detectImageType(bytes);
+  if (!detected) return { error: "Use a JPG, PNG, or WebP photo of the signed parental consent form." };
+  const claimed = file.type === "image/jpg" ? "image/jpeg" : file.type;
+  if (claimed && claimed !== detected) {
+    return { error: "Use a JPG, PNG, or WebP photo of the signed parental consent form." };
+  }
+  return { bytes, ext: EXTENSIONS[detected] };
+}
+
+export async function saveParentalConsentImage(
+  actor: Actor,
+  bytes: Buffer,
+  ext: string,
+  previousKey = ""
+): Promise<string> {
+  assertFighter(actor);
+  const label = `parental-consent/${actor.userId}${ext}`;
+  const storage = getStorageAdapter();
+  if (previousKey && previousKey !== label) await storage.delete(previousKey);
+  const contentType = ext === ".png" ? "image/png" : ext === ".webp" ? "image/webp" : "image/jpeg";
+  const storedKey = await storage.put(label, bytes, contentType, {
+    metadata: { purpose: "parental-consent", ownerUserId: actor.userId },
+  });
+  return storedKey;
+}

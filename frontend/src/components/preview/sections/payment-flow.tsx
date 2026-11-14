@@ -25,7 +25,7 @@ export function PaymentFlow() {
     <Chapter
       id="qr-payment"
       title="QR Payment"
-      subtitle="Manual verification flow per Part E — a submitted screenshot and UTR are claims, not proof of payment. Nothing here is auto-approved."
+      subtitle="Manual verification flow per Part E  a submitted screenshot and UTR are claims, not proof of payment. Nothing here is auto-approved."
     >
       <div className="flex flex-wrap gap-2 mb-6">
         {states.map((s) => (
@@ -38,7 +38,7 @@ export function PaymentFlow() {
       <div className="manga-panel p-8 max-w-xl">
         <div className="flex items-center justify-between mb-4">
           <p className="font-semibold">{previewEvent.name}</p>
-          <Badge variant="outline">Amount: ₹1,500 (fictional — OD-005)</Badge>
+          <Badge variant="outline">Amount: ₹1,500 (fictional  OD-005)</Badge>
         </div>
 
         {state === "AWAITING_SUBMISSION" && (
@@ -46,7 +46,7 @@ export function PaymentFlow() {
             <div className="flex items-center justify-center size-40 mx-auto bg-muted rounded-md border border-dashed border-black/20">
               <QrCode className="size-16 text-muted-foreground" />
             </div>
-            <p className="text-xs text-muted-foreground text-center">Client-supplied QR image placeholder — pending OD-006</p>
+            <p className="text-xs text-muted-foreground text-center">Client-supplied QR image placeholder  pending OD-006</p>
             <p className="text-sm text-muted-foreground">
               Pay ₹1,500 using any UPI app, then enter your transaction reference and upload a screenshot below.
             </p>
@@ -66,7 +66,7 @@ export function PaymentFlow() {
         {state === "PENDING_REVIEW" && (
           <div className="text-center py-6">
             <Clock className="size-10 mx-auto text-brand-gold mb-3" />
-            <p className="font-semibold">Submitted — pending admin review</p>
+            <p className="font-semibold">Submitted  pending admin review</p>
             <p className="text-sm text-muted-foreground mt-1">UTR {utr || "409872165310"} is awaiting manual verification against the organizer&apos;s actual payment records.</p>
           </div>
         )}
@@ -74,7 +74,7 @@ export function PaymentFlow() {
         {state === "APPROVED" && (
           <div className="text-center py-6">
             <CheckCircle2 className="size-10 mx-auto text-brand-cyan mb-3" />
-            <p className="font-semibold">Payment approved — registration confirmed</p>
+            <p className="font-semibold">Payment approved  registration confirmed</p>
             <p className="text-sm text-muted-foreground mt-1">Reviewed by admin · 2026-11-18</p>
           </div>
         )}
@@ -88,7 +88,7 @@ export function PaymentFlow() {
           </div>
         )}
       </div>
-      <FixtureBadge>A screenshot and UTR are unverified claims here — no payment has actually occurred</FixtureBadge>
+      <FixtureBadge>A screenshot and UTR are unverified claims here  no payment has actually occurred</FixtureBadge>
     </Chapter>
   );
 }

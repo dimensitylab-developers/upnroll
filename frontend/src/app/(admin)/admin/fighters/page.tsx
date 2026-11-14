@@ -6,7 +6,7 @@ import { listFightersForAdmin } from "@/server/services/fighterService";
 import { FightersSearch } from "@/features/admin/fighters-search";
 import { AdminEmpty } from "@/features/admin/ui/admin-empty";
 
-/** Session/DB-bound route — allow blocking navigation under Cache Components. */
+/** Session/DB-bound route  allow blocking navigation under Cache Components. */
 export const instant = false;
 
 export const metadata: Metadata = { title: "Fighters" };
@@ -35,7 +35,7 @@ export default async function AdminFightersPage({
         <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-brand-red">Roster</p>
         <h1 className="text-display mt-2 text-3xl font-semibold">Fighters</h1>
         <p className="mt-2 max-w-2xl text-sm text-white/70">
-          Open a name to read the full registration sheet — personal, competition, medical, and terms.
+          Open a name to read the full registration sheet  personal, competition, medical, and terms.
         </p>
         <p className="mt-4 text-display text-4xl font-semibold text-brand-red">{fighters.length}</p>
         <p className="text-xs uppercase tracking-[0.18em] text-white/50">on the books</p>

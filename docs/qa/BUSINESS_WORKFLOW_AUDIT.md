@@ -2,7 +2,7 @@
 
 Superseded for lifecycle depth by `END_TO_END_TEST_EXECUTION_REPORT.md` (run `1794233971816`).
 
-## Workflow A — Fighter registration — FULLY VERIFIED (account) / PARTIAL (UI photo)
+## Workflow A  Fighter registration  FULLY VERIFIED (account) / PARTIAL (UI photo)
 
 | Step | Result |
 |------|--------|
@@ -11,25 +11,25 @@ Superseded for lifecycle depth by `END_TO_END_TEST_EXECUTION_REPORT.md` (run `17
 | Registration + payment states | PASS via isolated lifecycle script + fighter UI CONFIRMED |
 | Admin review | PASS (admin portal + payment approve in lifecycle) |
 
-## Workflow B — Payment — FULLY VERIFIED (DB path)
+## Workflow B  Payment  FULLY VERIFIED (DB path)
 
 Approve / reject / resubmit / duplicate-approve block proven on isolated records.
 
-## Workflow C — Tournament — FULLY VERIFIED (isolated 2-fighter card)
+## Workflow C  Tournament  FULLY VERIFIED (isolated 2-fighter card)
 
 Event → division → confirm → bracket publish → result → public results/rankings.
 
-## Workflow D — Transfer
+## Workflow D  Transfer
 
-NOT TESTED in E2E pass — needs invite token path separately.
+NOT TESTED in E2E pass  needs invite token path separately.
 
-## Workflow E — Public content
+## Workflow E  Public content
 
 | Step | Result |
 |------|--------|
 | Public FAQ/announcements/policies | PASS |
 | Admin content/media | PASS (prior admin audit) |
-| Chatbot | PRESENT — FAQ depth PARTIAL |
+| Chatbot | PRESENT  FAQ depth PARTIAL |
 
 ## Notes
 

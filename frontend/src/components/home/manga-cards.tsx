@@ -102,7 +102,7 @@ export function MangaCards() {
   );
 }
 
-/** Soft manga watermark for empty homepage atmosphere — does not fight the content. */
+/** Soft manga watermark for empty homepage atmosphere  does not fight the content. */
 export function MangaBackdrop({
   src = "/manga/scramble.jpg",
   className = "",

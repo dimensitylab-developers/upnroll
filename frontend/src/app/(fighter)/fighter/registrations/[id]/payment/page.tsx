@@ -7,7 +7,7 @@ import { PaymentForm } from "@/features/payments/payment-form";
 import { QrCode } from "lucide-react";
 import { PageBackLink } from "@/components/layout/page-back-link";
 
-/** Session/DB-bound route — allow blocking navigation under Cache Components. */
+/** Session/DB-bound route  allow blocking navigation under Cache Components. */
 export const instant = false;
 
 export default async function RegistrationPaymentPage({ params }: { params: Promise<{ id: string }> }) {
@@ -41,7 +41,7 @@ export default async function RegistrationPaymentPage({ params }: { params: Prom
       <div className="manga-panel p-5 sm:p-8">
         <div className="mb-4">
           <p className="break-words font-semibold">
-            {event?.name} — {division?.name}
+            {event?.name}  {division?.name}
           </p>
           {fee > 0 && (
             <p className="mt-1 text-sm text-muted-foreground">
@@ -86,14 +86,14 @@ export default async function RegistrationPaymentPage({ params }: { params: Prom
           </>
         ) : registration.status === "PENDING_VERIFICATION" ? (
           <div className="space-y-2">
-            <p className="text-sm font-semibold">Thank you — payment received for review.</p>
+            <p className="text-sm font-semibold">Thank you  payment received for review.</p>
             <p className="text-sm text-muted-foreground">
               An organizer will review your UPI submission before your place is confirmed.
             </p>
           </div>
         ) : registration.status === "CONFIRMED" ? (
           <div className="space-y-2">
-            <p className="text-sm font-semibold text-brand-cyan">Thank you — your place is confirmed.</p>
+            <p className="text-sm font-semibold text-brand-cyan">Thank you  your place is confirmed.</p>
             <p className="text-sm text-muted-foreground">Payment approved. Your registration is locked for this event.</p>
           </div>
         ) : (

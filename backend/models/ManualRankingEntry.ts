@@ -2,7 +2,7 @@ import { Schema, model, models, type InferSchemaType, type Model } from "mongoos
 
 /**
  * Admin-curated public rankings (meeting: manual numbering + Super Fight choice).
- * Lives alongside computed RankingRecord — public board prefers published manual rows when any exist.
+ * Lives alongside computed RankingRecord  public board prefers published manual rows when any exist.
  */
 const manualRankingEntrySchema = new Schema(
   {

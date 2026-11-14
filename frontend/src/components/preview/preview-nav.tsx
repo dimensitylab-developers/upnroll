@@ -33,7 +33,7 @@ export function PreviewNav() {
 
       {/* Mobile top bar + drawer */}
       <div className="lg:hidden fixed top-0 left-0 right-0 z-40 flex items-center justify-between border-b border-black/10 bg-sidebar px-4 py-3">
-        <span className="text-display font-semibold">Up &apos;n Roll — /ui-preview</span>
+        <span className="text-display font-semibold">Up &apos;n Roll  /ui-preview</span>
         <Button variant="ghost" size="icon" aria-label="Open chapter navigation" onClick={() => setOpen(true)}>
           <Menu className="size-5" />
         </Button>

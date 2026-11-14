@@ -4,11 +4,11 @@
 
 | Signal | Classification |
 |--------|----------------|
-| `force-dynamic` incompatible with `cacheComponents` | Defect — fixed (`902a3a1`) |
-| `next-prerender-current-time` in `SiteHeader` | Defect — fixed (`5d9e3e4`) |
-| Webpack pack cache ENOENT rename warnings | Noise / local cache race — not user-facing |
+| `force-dynamic` incompatible with `cacheComponents` | Defect  fixed (`902a3a1`) |
+| `next-prerender-current-time` in `SiteHeader` | Defect  fixed (`5d9e3e4`) |
+| Webpack pack cache ENOENT rename warnings | Noise / local cache race  not user-facing |
 | `ForbiddenError` when fighter hit `/admin` before/during layout race | Expected authz; mitigated (`f951b63`) |
-| `[dev email — not sent]` verification + welcome | Expected console adapter |
+| `[dev email  not sent]` verification + welcome | Expected console adapter |
 | Cold compile durations 5–30s+ | Dev performance, not product 500s |
 
 ## Browser

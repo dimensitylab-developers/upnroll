@@ -64,7 +64,7 @@ export function portalWelcomeLine(fullName: string, role: UserRole): string {
 }
 
 /**
- * Browser-tab identity by role — fighter shows their name, admin shows the desk.
+ * Browser-tab identity by role  fighter shows their name, admin shows the desk.
  * Root metadata template appends `· Up 'n Roll`.
  */
 export function portalTabTitle(fullName: string, role: UserRole): string {

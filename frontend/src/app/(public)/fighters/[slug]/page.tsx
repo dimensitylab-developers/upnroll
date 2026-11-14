@@ -66,7 +66,7 @@ export default async function PublicFighterProfilePage({ params }: { params: Pro
             </Link>
           </div>
           <p className="copy-slab text-sm text-muted-foreground">
-            Public card only — record, academy, belt, division, and photo. Personal and medical details stay private.
+            Public card only  record, academy, belt, division, and photo. Personal and medical details stay private.
           </p>
         </div>
 
@@ -87,7 +87,7 @@ export default async function PublicFighterProfilePage({ params }: { params: Pro
                   <TableCell>
                     {m.competitorAName} vs {m.competitorBName}
                   </TableCell>
-                  <TableCell>{m.winnerName ? `${m.winnerName} — ${m.resultMethod}` : "—"}</TableCell>
+                  <TableCell>{m.winnerName ? `${m.winnerName}  ${m.resultMethod}` : ""}</TableCell>
                 </TableRow>
               ))}
               {history.length === 0 && (

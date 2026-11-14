@@ -1,4 +1,4 @@
-/** Canonical Up 'n Roll public ranking weight bands (kg) — men + women from meeting. */
+/** Canonical Up 'n Roll public ranking weight bands (kg)  men + women from meeting. */
 export const WEIGHT_CLASSES = [
   { id: "women-u65", label: "Women −65 KG", aliases: ["women -65", "women −65", "-65 women", "female -65"] },
   { id: "women-o65", label: "Women +65 KG", aliases: ["women +65", "+65 women", "female +65"] },

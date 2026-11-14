@@ -19,7 +19,7 @@ export function RegistrationFlow() {
   const canAdvance = step === 0 ? !!division : step === 1 ? name.trim().length > 1 : true;
 
   return (
-    <Chapter id="registration" title="Fighter Registration" subtitle="Interactive multi-step form, moves through example stages locally — no registration is actually created.">
+    <Chapter id="registration" title="Fighter Registration" subtitle="Interactive multi-step form, moves through example stages locally  no registration is actually created.">
       <div className="manga-panel p-8 max-w-xl">
         <div className="flex items-center gap-2 mb-6 text-xs text-muted-foreground">
           {steps.map((s, i) => (
@@ -64,7 +64,7 @@ export function RegistrationFlow() {
             <p><span className="text-muted-foreground">Event:</span> {previewEvent.name}</p>
             <p><span className="text-muted-foreground">Division:</span> {division}</p>
             <p><span className="text-muted-foreground">Name:</span> {name}</p>
-            <p className="text-muted-foreground mt-3">Next step after submission: QR payment (Chapter 11) — no payment occurs yet.</p>
+            <p className="text-muted-foreground mt-3">Next step after submission: QR payment (Chapter 11)  no payment occurs yet.</p>
           </div>
         )}
 
@@ -77,7 +77,7 @@ export function RegistrationFlow() {
           )}
         </div>
       </div>
-      <FixtureBadge>Validation feedback is simulated — no registration record is created</FixtureBadge>
+      <FixtureBadge>Validation feedback is simulated  no registration record is created</FixtureBadge>
     </Chapter>
   );
 }

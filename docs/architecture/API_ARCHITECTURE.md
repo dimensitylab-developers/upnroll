@@ -1,4 +1,4 @@
-# API Architecture — Up 'n Roll
+# API Architecture  Up 'n Roll
 
 **Critical distinction:** Product mutations are **Server Actions**, not REST endpoints.  
 The large surface in `docs/api/api-contract.md` is a **proposal** and is **not registered** in this codebase.
@@ -10,7 +10,7 @@ The large surface in `docs/api/api-contract.md` is a **proposal** and is **not r
 | HTTP Route Handlers (`route.ts`) | 7 including sitemap | 🟢 |
 | Server Action modules | 13 files | 🟢 |
 | JSON REST CRUD `/api/v1/events` etc. | 0 implemented | ⚪ proposal |
-| External API client wrappers | 0 | — |
+| External API client wrappers | 0 |  |
 
 ---
 
@@ -19,7 +19,7 @@ The large surface in `docs/api/api-contract.md` is a **proposal** and is **not r
 | Method | URL | Handler | Auth | Calls | DB / storage | Status |
 |--------|-----|---------|------|-------|--------------|--------|
 | `GET` | `/api/health` | `frontend/src/app/api/health/route.ts` | None | `connectDB` + ping | Mongo ping | 🟢 |
-| `GET` | `/api/auth/google` | `.../api/auth/google/route.ts` | None; needs `GOOGLE_CLIENT_*` | Builds OAuth URL + HMAC state | — | 🟡 env-gated |
+| `GET` | `/api/auth/google` | `.../api/auth/google/route.ts` | None; needs `GOOGLE_CLIENT_*` | Builds OAuth URL + HMAC state |  | 🟡 env-gated |
 | `GET` | `/api/auth/google/callback` | `.../callback/route.ts` | OAuth code + state | Token exchange, upsert user/profile, `createSession` | `users`, `fighterprofiles`, `sessions` | 🟡 env-gated |
 | `GET` | `/api/v1/fighter/photo` | `.../fighter/photo/route.ts` | Session + FIGHTER | `getFighterProfile` → storage.get | profile + storage | 🟢 |
 | `GET` | `/api/v1/admin/fighters/[userId]/photo` | `.../admin/fighters/[userId]/photo/route.ts` | `requireActor("ADMIN")` | `FighterProfile.findOne` → storage.get | profile + storage | 🟢 |
@@ -55,17 +55,17 @@ flowchart LR
 
 ## Server Actions (complete mutation surface)
 
-### Auth — `frontend/src/features/auth/actions.ts`
+### Auth  `frontend/src/features/auth/actions.ts`
 
 | Action | Auth | Params (concept) | Service / logic | Writes | Status |
 |--------|------|------------------|-----------------|--------|--------|
 | `registerAction` | Public + rate limit | email, password, profile fields | User + FighterProfile + verification mail | `users`, `fighterprofiles`, `emailverifications` | 🟢 |
 | `loginAction` | Public + rate limit | email, password | password verify + `createSession` | `sessions` | 🟢 |
 | `verifyEmailAction` | Public | code | `verificationMail` + session | verification + `sessions` | 🟢 |
-| `resendCodeAction` | Public | — | `verificationMail` | `emailverifications` | 🟢 |
-| `logoutAction` | Session optional | — | `destroySession` | `sessions` | 🟢 |
+| `resendCodeAction` | Public |  | `verificationMail` | `emailverifications` | 🟢 |
+| `logoutAction` | Session optional |  | `destroySession` | `sessions` | 🟢 |
 
-### Registrations — `features/registrations/actions.ts`
+### Registrations  `features/registrations/actions.ts`
 
 | Action | Auth | Service | Status |
 |--------|------|---------|--------|
@@ -80,7 +80,7 @@ flowchart LR
 | `approvePaymentAction` | `features/admin-payments/actions.ts` | ADMIN | `approvePayment` | 🟢 |
 | `rejectPaymentAction` | `features/admin-payments/actions.ts` | ADMIN | `rejectPayment` | 🟢 |
 
-### Events — `features/events/actions.ts`
+### Events  `features/events/actions.ts`
 
 | Action | Auth | Service | Status |
 |--------|------|---------|--------|
@@ -89,14 +89,14 @@ flowchart LR
 | `updateEventStatusAction` | ADMIN | `updateEventStatus` | 🟢 |
 | `updateEventMatCountAction` | ADMIN | `updateEventMatCount` | 🟢 |
 
-### Brackets — `features/brackets/actions.ts`
+### Brackets  `features/brackets/actions.ts`
 
 | Action | Auth | Service | Status |
 |--------|------|---------|--------|
 | `generateBracketAction` | ADMIN | `generateBracket` | 🟢 |
 | `publishBracketAction` | ADMIN | `publishBracket` | 🟢 |
 
-### Matches — `features/matches/actions.ts`
+### Matches  `features/matches/actions.ts`
 
 | Action | Auth | Service | Status |
 |--------|------|---------|--------|
@@ -104,7 +104,7 @@ flowchart LR
 | `correctResultAction` | ADMIN | `correctMatchResult` | 🟢 |
 | `updateScheduleAction` | ADMIN | `updateMatchSchedule` | 🟢 |
 
-### Requests / transfers — `features/requests/actions.ts`
+### Requests / transfers  `features/requests/actions.ts`
 
 | Action | Auth | Service | Status |
 |--------|------|---------|--------|

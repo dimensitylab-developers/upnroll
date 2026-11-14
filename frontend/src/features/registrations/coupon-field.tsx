@@ -7,7 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
 /**
- * Must not render nested <form> elements — this component sits inside GrapplerForm.
+ * Must not render nested <form> elements  this component sits inside GrapplerForm.
  * Coupon apply/release run via explicit button handlers + server actions.
  */
 export function CouponField({ eventId, disabled }: { eventId: string | null; disabled?: boolean }) {

@@ -10,7 +10,7 @@ import { SignOutButton } from "@/features/auth/sign-out-button";
 import { AdminNav } from "@/features/admin/admin-nav";
 import { BrandMark, BuiltBy, FounderCredit, SiteCopyright } from "@/components/layout/brand";
 
-/** Admin is cookie/session-bound — never try to instant-prerender the portal. */
+/** Admin is cookie/session-bound  never try to instant-prerender the portal. */
 export const instant = false;
 
 export async function generateMetadata(): Promise<Metadata> {

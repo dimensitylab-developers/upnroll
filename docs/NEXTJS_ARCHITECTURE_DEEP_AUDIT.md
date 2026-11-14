@@ -1,4 +1,4 @@
-# Next.js 16 Architecture Deep Audit — Up 'n Roll
+# Next.js 16 Architecture Deep Audit  Up 'n Roll
 
 Audit date: 2026-11-05  
 Scope: architecture discovery and target design for the repository at `d:\upnrol`.  
@@ -56,7 +56,7 @@ Engineering reviews and approves this document. Open decisions OD-001 through OD
 
 ## 2. Existing Repository Context
 
-### Fact — process model
+### Fact  process model
 
 | Path | Role |
 |---|---|
@@ -68,7 +68,7 @@ Engineering reviews and approves this document. Open decisions OD-001 through OD
 
 `frontend/next.config.ts` lines 13–16 set `outputFileTracingRoot` to the repository root and `serverExternalPackages: ["mongoose"]`. That is the correct tracing setup for a sibling `backend/` folder. `output: "standalone"` is not set.
 
-### Fact — what the master audit got right
+### Fact  what the master audit got right
 
 Re-checked and still true:
 
@@ -80,7 +80,7 @@ Re-checked and still true:
 - React Query is mounted and unused (`frontend/src/components/Providers.tsx`, `frontend/src/lib/queryClient.ts`).
 - `frontend/package.json` line 6 runs `ln -sfn` in `predev`. That script is not portable to Windows PowerShell.
 
-### Fact — corrections and additions beyond the master audit
+### Fact  corrections and additions beyond the master audit
 
 These are Next.js-specific and were confirmed in this pass:
 
@@ -220,23 +220,23 @@ Features that should not be added just because they exist: Partial Prerendering 
 | `frontend/src/app/(admin)/admin/layout.tsx` lines 9–11 | Session required, role must be `ADMIN` |
 | `frontend/src/app/(preview)/ui-preview/page.tsx` | `notFound()` outside local dev unless `UI_PREVIEW_ENABLED=true` |
 
-### Finding NX-LAYOUT-01 — P1
+### Finding NX-LAYOUT-01  P1
 
 Root layout client children apply to admin payment review and fighter medical forms. `ChatbotWidget` is fixed-position UI on those screens (`frontend/src/app/layout.tsx` lines 68–70, widget at `chatbot-widget.tsx` lines 32–44). A support widget on a page that displays Aadhaar or payment screenshots is a focus and privacy problem.
 
 Recommendation: render the chatbot only under the public layout. Keep toaster notifications at the root if forms need them.
 
-### Finding NX-LAYOUT-02 — P1
+### Finding NX-LAYOUT-02  P1
 
 `SiteHeader` performs a full public event query and a session lookup on every public page, including pages that already call `listPublicEvents()` (`frontend/src/app/(public)/page.tsx` lines 27–31 and `events/page.tsx`). There is no `cache()` from React around either function, so the same request runs the queries twice.
 
 Recommendation: wrap `getSession` and `listPublicEvents` in `react` `cache()` for per-request deduplication. That is not Cache Components and does not share data across users.
 
-### Finding NX-ROUTE-01 — P2
+### Finding NX-ROUTE-01  P2
 
 Admin subpages (`payments`, `events/[id]`, `matches`, and the rest) do not export `force-dynamic`. They are still dynamic because the admin layout calls `cookies()` via `getSession`. The explicit export on only some routes makes the rendering policy look inconsistent. After Cache Components, the explicit signal should be the absence of `use cache` on private subtrees, not a scatter of `force-dynamic`.
 
-### Finding NX-ROUTE-02 — P1
+### Finding NX-ROUTE-02  P1
 
 `/rankings/demo` is a public route with fictional athlete names (`rankings/demo/page.tsx` lines 10–13) and no `robots` exclusion. It can be indexed and prefetched like any other public page.
 
@@ -290,7 +290,7 @@ Priority is the value of changing the boundary, not a claim that the file is bro
 | `features/events/event-status-form.tsx` | Form | Admin | Client | Keep | P3 |
 | `features/brackets/participant-order-form.tsx` | Reorder UI | Admin | Client | Keep. Generation stays a Server Action | P3 |
 | `features/brackets/publish-bracket-button.tsx` | Form action | Admin | Client | Keep | P3 |
-| `features/brackets/bracket-view.tsx` | None. No `"use client"` | Server-rendered bracket | Server | Keep server. Do not convert for animation | — |
+| `features/brackets/bracket-view.tsx` | None. No `"use client"` | Server-rendered bracket | Server | Keep server. Do not convert for animation |  |
 | `features/matches/match-result-dialog.tsx` | Dialog, form | Admin | Client | Keep | P3 |
 | `features/matches/schedule-match-dialog.tsx` | Dialog, form | Admin | Client | Keep | P3 |
 | `features/rankings/recalculate-button.tsx` | `useActionState` | Admin | Client | Keep | P3 |
@@ -398,7 +398,7 @@ Server Components and Server Actions call `backend/services` directly. Route Han
 | `/admin/content`, `/admin/media` | Full lists | Fine at current size | Uncached admin reads |
 | Photo and screenshot GET | Direct storage read | Photo route queries the model itself | Keep handlers. Move the photo lookup into `fighterService` |
 
-### Query duplication — finding NX-DATA-01 — P1
+### Query duplication  finding NX-DATA-01  P1
 
 In one public homepage request the process can:
 
@@ -412,11 +412,11 @@ In one public homepage request the process can:
 
 None of this is cached across requests, and nothing dedupes within the request.
 
-### Waterfalls — finding NX-DATA-02 — P2
+### Waterfalls  finding NX-DATA-02  P2
 
 Sequential by necessity when the second query needs an id: event then divisions, event then brackets. Avoidable: homepage divisions could be included in a featured-event read model; fighter requests refetch divisions inside a loop; dashboard composition calls services that each query overlapping fighter profiles.
 
-### Transactions — finding NX-DATA-03 — P1
+### Transactions  finding NX-DATA-03  P1
 
 No `startSession` or `withTransaction` exists under `backend/`.
 
@@ -430,7 +430,7 @@ No `startSession` or `withTransaction` exists under `backend/`.
 
 Recommendation: one Mongo session per registration creation, payment decision, and bracket generation. Keep the engines pure and outside the transaction. Capacity still needs a unique constraint or a conditional update, not only a transaction, because two transactions can both count `capacity - 1`.
 
-### Indexes — fact
+### Indexes  fact
 
 Present and relevant: unique email, unique fighter slug, unique event slug, unique session token hash, TTL on `sessions.expiresAt`, partial unique active `(userId, divisionId)`, unique `(bracketId, round, order)`, match `status`, content `(type, publicationState)`, payment `submittedUtr`. `AuditLog` and `MediaAsset` have no query indexes beyond `_id`. Acceptable until there is an audit viewer.
 
@@ -518,7 +518,7 @@ Lifetimes use the documented profiles (`seconds`, `minutes`, `hours`, `days`, `m
 | Homepage marketing shell and path steps | `use cache` on the static sections, or just the static JSX with no IO | `max` | `home` | Deploy-time. Copy is hardcoded today |
 | Homepage event, ranking, FAQ, media slots | `use cache` per slot | `minutes` | `events`, `rankings`, `content:FAQ`, `media` | Update on mutation |
 | Header open-event link | `use cache` | `minutes` | `events` | Must not include the session |
-| Header dashboard / sign-in | Uncached | — | — | Reads `cookies()` |
+| Header dashboard / sign-in | Uncached |  |  | Reads `cookies()` |
 | `/events` | `use cache` | `minutes` | `events` | Event status change uses `updateTag("events")` |
 | `/events/[slug]` | `use cache` | `minutes` | `event:{slug}`, `events` | Same |
 | `/fighters` | `use cache` | `hours` | `fighters` | Profile display-name edits `updateTag` |
@@ -530,10 +530,10 @@ Lifetimes use the documented profiles (`seconds`, `minutes`, `hours`, `days`, `m
 | FAQ | `use cache` | `hours` | `content:FAQ` | Publish uses `updateTag`. Chatbot must call the same cached function or it will stampede the database |
 | Announcements | `use cache` | `hours` | `content:ANNOUNCEMENT` | Publish uses `updateTag` |
 | Policies | `use cache` | `days` | `content:POLICY` | Publish uses `updateTag` |
-| `/rankings/demo` | No shared data cache | — | — | Noindex |
-| Fighter dashboard, matches, registrations, requests, profile, payment | Dynamic, no `use cache` | — | — | Cookies and ownership |
-| Admin dashboard and every admin page | Dynamic, no `use cache` | — | — | Cookies and role |
-| Payment screenshot and profile photo | `Cache-Control: private, no-store` already set on the handlers | — | — | Never tag |
+| `/rankings/demo` | No shared data cache |  |  | Noindex |
+| Fighter dashboard, matches, registrations, requests, profile, payment | Dynamic, no `use cache` |  |  | Cookies and ownership |
+| Admin dashboard and every admin page | Dynamic, no `use cache` |  |  | Cookies and role |
+| Payment screenshot and profile photo | `Cache-Control: private, no-store` already set on the handlers |  |  | Never tag |
 
 Chatbot answers are derived from published FAQs. Cache the FAQ list, not each question, unless question text is normalized and never includes user secrets. Questions are public-intent text. Still rate limit the action. Do not put the raw question in a shared cache key without a length cap; it is an unbounded key.
 
@@ -650,7 +650,7 @@ When Cache Components are introduced, the Suspense map is:
 |---|---|---|
 | Public pages | Header chrome without the session slot, footer | Session slot skeleton |
 | `/` | Hero, static steps, video poster | Separate fallbacks for featured event, rankings, FAQs |
-| `/events/[slug]` | Title is cached with the event, so the whole page can be cached and Suspense is unnecessary | — |
+| `/events/[slug]` | Title is cached with the event, so the whole page can be cached and Suspense is unnecessary |  |
 | `/events/[slug]/brackets` | Event title cached; each division bracket in its own Suspense only if generation is slow | Division skeleton |
 | Fighter and admin | Layout already renders before the page if a segment `loading.tsx` exists | Add `fighter/loading.tsx` at the fighter segment, matching admin |
 
@@ -750,13 +750,13 @@ Password hashing is scrypt with a random salt and `timingSafeEqual` (`backend/au
 
 This is a sound custom session. Do not replace it with a vendor unless OD-012 says to.
 
-### Finding NX-AUTH-01 — P0 design constraint
+### Finding NX-AUTH-01  P0 design constraint
 
 Layouts are not a security boundary for Server Actions. Actions are separate POST endpoints. The ones that call `requireRole("ADMIN")` are safe even if a layout is bypassed. The ones that call only `requireSession()` are safe against anonymous users and unsafe against the wrong role. Services are safe only if every future caller remembers.
 
 Recommendation: `assertActor(actor, role)` inside every mutating service and every admin read that returns PII or payment data. Keep the layout redirects for UX.
 
-### Finding NX-AUTH-02 — P1
+### Finding NX-AUTH-02  P1
 
 `getSession` is not wrapped in `react` `cache()`, so the fighter layout and the fighter page each load the session and the user. That is latency, not an auth bypass.
 
@@ -1277,10 +1277,10 @@ Nothing in this table was applied. Do not delete a file until the usage note is 
 | NX-31 | P3 | Modify | `frontend/src/features/content/schemas.ts` | Zod | Imports Mongoose model | Import `content-types.ts` | Unchanged | None | Low | Client bundle does not contain mongoose |
 | NX-32 | P3 | Modify | `backend/db/connect.ts`, `backend/auth/session.ts`, `frontend/src/lib/config.ts` | Server utilities | No import fence | `import "server-only"` | Unchanged | Add the `server-only` package. That is a dependency change and needs a separate approved PR | None if the package is added cleanly | A client import fails the build |
 | NX-33 | P3 | New | `frontend/src/instrumentation.ts` and `app/api/health/route.ts` | None | No ops hook | Health ping. Instrumentation when a vendor exists | New | OD-012 for the SDK | Health route becomes an oracle if it leaks errors | `GET /api/health` returns 200 when Mongo answers and 503 otherwise, with no URI in the body |
-| NX-34 | P3 | Unchanged | `frontend/src/features/brackets/bracket-view.tsx` | Server-rendered bracket | None | Stay a Server Component | Unchanged | None | — | File has no `"use client"` |
+| NX-34 | P3 | Unchanged | `frontend/src/features/brackets/bracket-view.tsx` | Server-rendered bracket | None | Stay a Server Component | Unchanged | None |  | File has no `"use client"` |
 | NX-35 | P3 | Unchanged | `frontend/src/proxy.ts` | Cookie presence | Comment path is stale | Keep behavior. Fix the comment only if touched | Unchanged | None | Adding DB calls here would slow every portal request | Matcher unchanged. Role tests still live in layouts and actions |
-| NX-36 | P3 | Delete candidate | `frontend/src/lib/queryClient.ts` | Unused client | Dead | Remove with NX-19 | — | NX-19 | Low | `tsc` |
-| NX-37 | P3 | Unchanged until a cleanup PR | `frontend/src/components/ui/*` unused set | shadcn inventory | Bundle noise | Delete as a set with the packages that only they import | — | Analyzer and `tsc` | Hidden sibling imports | `tsc` and `/ui-preview` |
+| NX-36 | P3 | Delete candidate | `frontend/src/lib/queryClient.ts` | Unused client | Dead | Remove with NX-19 |  | NX-19 | Low | `tsc` |
+| NX-37 | P3 | Unchanged until a cleanup PR | `frontend/src/components/ui/*` unused set | shadcn inventory | Bundle noise | Delete as a set with the packages that only they import |  | Analyzer and `tsc` | Hidden sibling imports | `tsc` and `/ui-preview` |
 | NX-38 | P2 | Modify | `frontend/src/app/(fighter)/fighter/requests/page.tsx` | Request UI | Division query per registration | Batch by event id | Unchanged | None | Low | One division query per distinct event |
 | NX-39 | P2 | New | `frontend/src/app/(fighter)/fighter/loading.tsx` | Missing | Fighter navigations fall through to the root loader | Segment loading UI under the fighter layout | New | None | Low | Navigating from dashboard to profile keeps the fighter header |
 | NX-40 | P3 | Modify | `docs/decisions/open-decisions.md` | Decision log | OD-013 still open | Mark OD-013 implemented. Do not close the others | Unchanged | None | None | Log matches `proxy.ts` |
@@ -1337,7 +1337,7 @@ Root `package-lock.json`, root `.next`, and empty directories are cleanup from t
 
 Each phase is independently shippable and leaves the app working. Cache Components are phase 4, not phase 1.
 
-### Phase 0 — Request integrity and install
+### Phase 0  Request integrity and install
 
 - Objective: stop duplicate reads and make the app buildable in CI, without caching across requests.
 - Scope: NX-05, NX-06, NX-16, NX-17, NX-01.
@@ -1348,7 +1348,7 @@ Each phase is independently shippable and leaves the app working. Cache Componen
 - Verification: `npx tsc --noEmit --project frontend/tsconfig.json`, `npx vitest run --config frontend/vitest.config.ts`, `npm run dev` from the repo root on Windows.
 - Rollback: revert the phase commit. No schema change.
 
-### Phase 1 — Security boundaries that do not need a vendor
+### Phase 1  Security boundaries that do not need a vendor
 
 - Objective: projections, service actor, headers, upload response hardening.
 - Scope: NX-02, NX-03, NX-04, NX-07, NX-08, NX-09, NX-10, NX-11, NX-14, NX-15, NX-31.
@@ -1359,7 +1359,7 @@ Each phase is independently shippable and leaves the app working. Cache Componen
 - Verification: new unit tests from section 24, `tsc`, vitest, and a manual admin payment review if a browser is available.
 - Rollback: revert. No data migration.
 
-### Phase 2 — Tournament write atomicity
+### Phase 2  Tournament write atomicity
 
 - Objective: registration, payment decision, and bracket generation commit or roll back together.
 - Scope: NX-12, NX-13.
@@ -1370,7 +1370,7 @@ Each phase is independently shippable and leaves the app working. Cache Componen
 - Verification: integration test against Mongo. If no replica set, the phase stops and records the blocker in section 34.
 - Rollback: revert application code. Incomplete historical rows, if any already exist, need a one-off inspection, not an automatic delete.
 
-### Phase 3 — Streaming shells and client weight
+### Phase 3  Streaming shells and client weight
 
 - Objective: navigation that keeps chrome, and a smaller root client graph.
 - Scope: NX-18, NX-19, NX-36, NX-38, NX-39.
@@ -1381,7 +1381,7 @@ Each phase is independently shippable and leaves the app working. Cache Componen
 - Verification: browser click-through of public nav, fighter nav, and admin payments. `tsc`.
 - Rollback: revert.
 
-### Phase 4 — Public Cache Components
+### Phase 4  Public Cache Components
 
 - Objective: shared public data is cached and invalidated with tags.
 - Scope: NX-20, NX-21, NX-22, NX-23.
@@ -1392,7 +1392,7 @@ Each phase is independently shippable and leaves the app working. Cache Componen
 - Verification: `next build`, then a scripted fetch of `/events` before and after `updateEventStatus`, plus a diff of cache keys if the framework logs them.
 - Rollback: set `cacheComponents` back to false and restore `force-dynamic`. Tags become unused calls and should be removed in the same revert so the build stays valid.
 
-### Phase 5 — Discovery, media, and operations hooks
+### Phase 5  Discovery, media, and operations hooks
 
 - Objective: SEO and media behavior that match the public architecture.
 - Scope: NX-24, NX-25, NX-26, NX-27, NX-33's health route only.
@@ -1402,7 +1402,7 @@ Each phase is independently shippable and leaves the app working. Cache Componen
 - Verification: view source, fetch `/sitemap.xml` and `/robots.txt`.
 - Rollback: revert. Metadata removal has no data impact.
 
-### Phase 6 — Production adapters
+### Phase 6  Production adapters
 
 - Objective: disk and console cannot silently run in production.
 - Scope: NX-28, NX-29, NX-30.
@@ -1412,7 +1412,7 @@ Each phase is independently shippable and leaves the app working. Cache Componen
 - Verification: boot test with `NODE_ENV=production` and `STORAGE_DRIVER=local` expects failure.
 - Rollback: previous image. Objects written to the new store stay there; do not delete them on rollback.
 
-### Phase 7 — Optional folder alignment
+### Phase 7  Optional folder alignment
 
 - Objective: move pure engines under `backend/domain` and services under `backend/application` only if Phase 1's actor work is already merged and the team wants the folders.
 - Scope: relocations with no behavior change.

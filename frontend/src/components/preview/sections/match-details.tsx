@@ -22,7 +22,7 @@ export function MatchDetails() {
           Result method, winner, and bracket advancement will appear here once the match is recorded by an admin.
         </div>
       </div>
-      <FixtureBadge>Fictional in-progress match — no live scoring hardware connected</FixtureBadge>
+      <FixtureBadge>Fictional in-progress match  no live scoring hardware connected</FixtureBadge>
     </Chapter>
   );
 }

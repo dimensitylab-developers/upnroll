@@ -1,4 +1,4 @@
-# Up 'n Roll — Master Engineering Roadmap
+# Up 'n Roll  Master Engineering Roadmap
 
 Status: Phases 0–5 implemented. SMTP is implemented with Nodemailer 10.3.1. GridFS is the preferred private-file architecture. Its implementation design is not approved, and no GridFS code exists. Hosting is not selected. Phase 1 was re-verified on the James merge.
 
@@ -20,7 +20,7 @@ These are approved. Implementation still follows the phase order below.
 | AD-MAIL-3 | SMTP credentials come from server environment variables. They are never sent to a client bundle. No credentials are invented in the repo. |
 | AD-MAIL-4 | `send()` runs only after the related MongoDB transaction commits. It is never called inside a `withTransaction` callback. |
 | AD-FILE-1 | GridFS on the existing Atlas database is the preferred production store for private payment screenshots and fighter profile photos. No object-storage vendor. No second database. Public brand assets, gallery images, and the homepage video stay in the Next.js public directory. |
-| AD-FILE-2 | Section H is `Preferred architecture — implementation design and approval pending.` GridFS is not implemented and is not production-ready. Code waits for a separate implementation design. |
+| AD-FILE-2 | Section H is `Preferred architecture  implementation design and approval pending.` GridFS is not implemented and is not production-ready. Code waits for a separate implementation design. |
 | AD-FILE-3 | Local disk remains the development store. Existing `.local-storage` files stay where they are. No automatic copy is authorized. Production must select storage explicitly. A production boot refusal of local disk stays off until a replacement adapter is implemented and configured. |
 | AD-HOST-1 | No hosting provider or deployment topology is selected. A multi-instance or serverless production deployment must not proceed while private files depend on local disk. GridFS must be implemented and verified first. |
 | AD-APP-1 | Server Components load initial data by calling backend services directly. No internal HTTP hop. No `useEffect` fetch for first paint. React Query is unused and is removed in Phase 3. |
@@ -59,7 +59,7 @@ These are not guessed.
 | 4 Public cache | Implemented. Published public reads use `use cache` with tags. `updateTag` runs in Server Actions after the mutation commits. Admin, fighter, session, payment, and private file routes are outside that cache. Drafts stay out because the cached reads call the public queries. |
 | 5 SEO, media, operations | Implemented. Public pages expose titles from public DTOs. `robots.ts` disallows portals and the demo. Login, register, admin, fighter, demo, and preview are `noindex`. The sitemap lists public paths without a host. Local brand files use `next/image`. The homepage video preloads metadata and has a poster. `GET /api/health` returns `{ ok: true }` or `{ ok: false }`. Responses send nosniff, a referrer policy, frame denial, and a report-only content security policy. Canonical URLs wait on a domain. |
 | 6 SMTP | Implemented. Nodemailer 10.3.1 sends through `EmailAdapter` when a production server is running. Development keeps `ConsoleEmailAdapter`. Missing production SMTP settings throw at startup and at `getEmailAdapter()`. The production build phase does not require those settings. Call sites are unchanged and stay after commit. |
-| 6 GridFS | Preferred architecture. Implementation has not started. Section H is `Preferred architecture — implementation design and approval pending.` The running adapter is still local disk, for development. Production does not refuse local disk, because no replacement adapter exists. |
+| 6 GridFS | Preferred architecture. Implementation has not started. Section H is `Preferred architecture  implementation design and approval pending.` The running adapter is still local disk, for development. Production does not refuse local disk, because no replacement adapter exists. |
 | 7 Boundaries | The import check is implemented. `matchService` must not import `registrationService`. No folders were moved. No circular import was present to remove. |
 
 Phase 0 evidence, run from `frontend/` on 6 Nov 2026: `npx tsc --noEmit` exit 0, `npm test` 139 passed, `npm run build` exit 0 (`next build --webpack`). The dev server was stopped so the build could write `.next`. CI itself has not been executed on GitHub.
@@ -99,17 +99,17 @@ Phase 6 SMTP work does not wait on GridFS. GridFS code does not start until the 
 
 ## C. Implementation matrix
 
-### Phase 0 — Reliability
+### Phase 0  Reliability
 
 Done. `getSession` and `listPublicEvents` are wrapped in React `cache()`. `listPublicSchedule` and `listPublicResults` load only `PUBLIC_EVENT_STATUSES`, the same set as `getEventBySlug`. `predev` no longer calls `ln`. If the repo root already has a real `node_modules`, the script leaves it. If it is missing, the script links `frontend/node_modules` with a Windows junction or a Unix symlink. CI uses `frontend/package-lock.json`, then typecheck, Vitest, and `npm run build`.
 
 Rollback: revert `backend/auth/session.ts`, `backend/services/eventService.ts`, `backend/services/matchService.ts`, `frontend/package.json`, `frontend/vitest.config.ts`, `frontend/scripts/ensure-root-modules.mjs`, and `.github/workflows/ci.yml`.
 
-### Phase 1 — Security
+### Phase 1  Security
 
 Re-verified. Typecheck, the full Vitest suite, and the production webpack build passed. The only code change was the request-decision test double: James's cancellation path reads the event and saves the request, and the stub did not provide either. Service authorization was not changed.
 
-### Phase 2 — Transactional integrity
+### Phase 2  Transactional integrity
 
 Unchanged approval: one helper on the existing mongoose connection, sequential operations, `endSession()` in `finally`, email and files outside the callback.
 
@@ -121,7 +121,7 @@ Transaction tests use the existing Atlas cluster on a separate database, `upnrol
 
 Implemented on 6 Nov 2026. Evidence, from `frontend/`: `npx tsc --noEmit` exit 0, `npm test` 24 files / 147 tests passed, `npm run build` exit 0 (compiled in 21.5s). The dev server was stopped so the build could write `.next`. The occupancy backfill script was not executed. Existing divisions that have no `filledCount` will refuse registration changes until an operator runs `npm run backfill-occupancy` from `frontend/`. Run that before relying on registration in production. Details are in `docs/PHASE_2_COMPLETION_REPORT.md`.
 
-### Phase 3 — Server-first rendering and client performance
+### Phase 3  Server-first rendering and client performance
 
 Objective: initial data from Server Components calling services, Suspense for independent sections, no serial waterfall where the reads are independent, small client leaves, chatbot only on public routes.
 
@@ -142,7 +142,7 @@ No improvement is claimed without those numbers.
 
 Implemented on 6 Nov 2026. The numbers are in `docs/PHASE_3_COMPLETION_REPORT.md`. TTFB and LCP did not improve. Client JavaScript fell from 1,441,780 bytes to 1,417,954 bytes.
 
-### Phase 4 — Public cache
+### Phase 4  Public cache
 
 Unchanged gate and scope. `cacheComponents`, `use cache`, `cacheLife`, `cacheTag`, `updateTag`.
 
@@ -154,13 +154,13 @@ Never cached: sessions, fighter dashboards, admin pages, payments, private files
 
 Implemented on 6 Nov 2026. `cacheComponents` is on. Public reads live in `frontend/src/lib/public-reads.ts` and are tagged `events`, `event:{slug}`, `divisions:{eventId}`, `brackets:{divisionId}`, `schedule`, `schedule:{slug}`, `rankings`, `fighters`, `fighter:{slug}`, `content:{type}`, and `media`. The cached division list exposes name, discipline, and capacity. It does not include occupancy, Aadhaar, or medical fields. Server Actions call `invalidatePublicTags` after a successful commit. The production build lists public routes as partial prerender with a 1 minute revalidate. Private photo routes stay dynamic. `npm test` passed 147 tests and `npm run build` exited 0.
 
-### Phase 5 — SEO, media, operations
+### Phase 5  SEO, media, operations
 
 Implemented on 6 Nov 2026. `generateMetadata` reads the cached public event, bracket, schedule, results, and fighter DTOs. List pages set a title. `robots.ts` disallows `/admin`, `/fighter`, `/api`, `/ui-preview`, and `/rankings/demo`. Login, register, the admin layout, the fighter layout, the seeding demo, and the preview page are `noindex`. `sitemap.xml` lists public paths only. The sitemap namespace URL is the schema identifier; locations have no host. Brand marks use `next/image`. The homepage video uses `preload="metadata"` and `poster="/gallery/grappling-mat.jpg"`. `GET /api/health` pings MongoDB and returns `{ ok: true }` or `{ ok: false }` with no URI. Every response sets `X-Content-Type-Options: nosniff`, `Referrer-Policy: strict-origin-when-cross-origin`, `X-Frame-Options: DENY`, and `Content-Security-Policy-Report-Only`. The policy stays report-only because GSAP and the inline JSON-LD would violate an enforced script policy. Cached public reads return an empty collection, or `NotFoundError` for a single record, when `CI=true`, so the GitHub build can prerender without Atlas. A database error outside CI still fails the build. The open-registration page calls `connection()` before it reads the clock. Production build exit 0. `npm test` passed 147 tests. A production server returned health `200 {"ok":true}`, path-only sitemap locations, the headers above, and the event title `Underground Arena Vol. 4`.
 
 Blocked: `metadataBase`, canonical URLs, absolute sitemap URLs, until a domain is provided.
 
-### Phase 6 — SMTP and GridFS
+### Phase 6  SMTP and GridFS
 
 Two different authorizations.
 
@@ -171,9 +171,9 @@ SMTP is implemented. See `docs/PHASE_6_COMPLETION_REPORT.md`.
 - Payment submit, payment decision, and registration-request decision still call `getEmailAdapter().send()` after the transaction commits. The strings they pass are unchanged.
 - Nodemailer `10.3.1` is the installed release. No Resend package was added. No SMTP values were committed.
 
-GridFS is the preferred production architecture for private screenshots and fighter photos. Implementation has not started. Section H is `Preferred architecture — implementation design and approval pending.` Local disk remains the development store. Existing `.local-storage` files are not copied or deleted. Production must not silently use local disk on ephemeral or multi-instance infrastructure. The boot refusal of local disk stays off until a replacement adapter is implemented and configured. SMTP2GO is the preferred mail provider candidate. Real delivery has not been verified. Production must not fall back to the console adapter.
+GridFS is the preferred production architecture for private screenshots and fighter photos. Implementation has not started. Section H is `Preferred architecture  implementation design and approval pending.` Local disk remains the development store. Existing `.local-storage` files are not copied or deleted. Production must not silently use local disk on ephemeral or multi-instance infrastructure. The boot refusal of local disk stays off until a replacement adapter is implemented and configured. SMTP2GO is the preferred mail provider candidate. Real delivery has not been verified. Production must not fall back to the console adapter.
 
-### Phase 7 — Boundaries
+### Phase 7  Boundaries
 
 No folder migration. `registrationService` imports `recordMatchResult` from `matchService` and passes the outer session, so withdraw does not open a nested transaction. `matchService` does not import `registrationService`. That direction was inspected and is not a cycle.
 
@@ -187,7 +187,7 @@ Phase 0 scope, Phase 2 transactions and `filledCount`, actor authorization, webp
 
 ### Approved direction, implementation still gated
 
-GridFS for private payment screenshots and fighter profile photos, on the existing Atlas database. Status: `Preferred architecture — implementation design and approval pending.` Public brand files stay on Next.js. Local disk stays for development. No automatic migration. No production boot refusal until a replacement adapter is implemented and configured. SMTP2GO is the preferred mail provider candidate. Delivery is not verified.
+GridFS for private payment screenshots and fighter profile photos, on the existing Atlas database. Status: `Preferred architecture  implementation design and approval pending.` Public brand files stay on Next.js. Local disk stays for development. No automatic migration. No production boot refusal until a replacement adapter is implemented and configured. SMTP2GO is the preferred mail provider candidate. Delivery is not verified.
 
 ### Product, still blocked
 
@@ -254,7 +254,7 @@ Each phase runs typecheck, the existing Vitest suite, its new tests, and a produ
 
 ## H. GridFS
 
-Status: `Preferred architecture — implementation design and approval pending.`
+Status: `Preferred architecture  implementation design and approval pending.`
 
 GridFS is not implemented. It is not production-ready. No bucket, adapter, or migration has been written.
 

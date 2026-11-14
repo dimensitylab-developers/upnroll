@@ -1,6 +1,6 @@
 import { Schema, model, models, type InferSchemaType, type Model } from "mongoose";
 
-/** Singleton document — one house contact card for the public site. */
+/** Singleton document  one house contact card for the public site. */
 const siteSettingsSchema = new Schema(
   {
     key: { type: String, required: true, unique: true, default: "default" },

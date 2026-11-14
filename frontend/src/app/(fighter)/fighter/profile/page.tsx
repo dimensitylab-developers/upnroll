@@ -4,7 +4,7 @@ import { getFighterProfile } from "@/server/services/fighterService";
 import { ProfileForm } from "@/features/profile/profile-form";
 import type { GrapplerDefaults } from "@/features/fighters/grappler-form";
 
-/** Session/DB-bound route — allow blocking navigation under Cache Components. */
+/** Session/DB-bound route  allow blocking navigation under Cache Components. */
 export const instant = false;
 
 export const metadata: Metadata = { title: "Profile" };
@@ -30,6 +30,7 @@ export default async function FighterProfilePage() {
     emergencyContactName: profile?.emergencyContactName ?? "",
     emergencyRelationship: profile?.emergencyRelationship ?? "",
     bloodGroup: profile?.bloodGroup ?? "",
+    instagramHandle: profile?.instagramHandle ?? "",
     academy: profile?.academy || profile?.gym || "",
     headCoach: profile?.headCoach ?? "",
     beltRank: profile?.beltRank ?? "",
@@ -46,7 +47,7 @@ export default async function FighterProfilePage() {
   };
 
   return (
-    <div className="manga-panel p-6 sm:p-8 max-w-4xl mx-auto">
+    <div className="manga-panel mx-auto w-full min-w-0 max-w-4xl overflow-visible p-6 sm:p-8">
       <h1 className="text-display text-2xl font-semibold mb-2">Your profile</h1>
       <p className="text-sm text-muted-foreground mb-6">
         Belt, years training, academy, and coach are what the seeding board reads. Aadhaar card image and medical answers stay off public pages. Organizers see the full form in the admin panel.
@@ -57,6 +58,8 @@ export default async function FighterProfilePage() {
         photoVersion={imageVersion}
         hasAadhaarImage={Boolean(profile?.aadhaarImageKey)}
         aadhaarImageVersion={imageVersion}
+        hasParentalConsentImage={Boolean(profile?.parentalConsentImageKey)}
+        parentalConsentImageVersion={imageVersion}
         waiverAcceptedAt={profile?.waiverAcceptedAt ? new Date(profile.waiverAcceptedAt).toISOString() : null}
       />
     </div>

@@ -69,7 +69,7 @@ export function isScoringRulesReady(rules: ScoringRulesConfig | null | undefined
 }
 
 /**
- * Provisional winner from live scores — only when winByHighestScore is enabled.
+ * Provisional winner from live scores  only when winByHighestScore is enabled.
  * Never invents a winner when rules are unconfigured or scores are tied without allowTies.
  */
 export function provisionalWinnerFromScores(input: {

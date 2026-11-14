@@ -129,11 +129,11 @@ export async function processMatchResultNotifyJob(job: OutboxJobDoc & { _id?: un
       try {
         await getEmailAdapter().send({
           to: user.email,
-          subject: `${event?.name ?? "Up 'n Roll"} — match result`,
+          subject: `${event?.name ?? "Up 'n Roll"}  match result`,
           body: `Hi ${nameByUser.get(userId) ?? "fighter"},\n\nYour match result is official: ${match.resultMethod || "recorded"}.\n\nOpen your matches: /fighter/matches\n`,
         });
       } catch {
-        // Delivery failures are retried via outbox status — do not claim inbox arrival.
+        // Delivery failures are retried via outbox status  do not claim inbox arrival.
       }
     }
   }

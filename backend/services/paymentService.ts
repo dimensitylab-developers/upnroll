@@ -126,7 +126,7 @@ export async function submitPayment(
   await getEmailAdapter().send({
     to: user.email,
     subject: "Payment submission received",
-    body: `We received your payment submission (reference ${utr}) for ${event.name}. An organizer will review it manually — this is not yet confirmation of payment.`,
+    body: `We received your payment submission (reference ${utr}) for ${event.name}. An organizer will review it manually  this is not yet confirmation of payment.`,
   });
 
   return submission;
@@ -206,12 +206,12 @@ async function notifyFighterOfPaymentDecision(
   if (!user?.email) return;
 
   const name = profile?.displayName?.trim() || user.email;
-  const card = `${event?.name ?? "your event"} — ${division?.name ?? "your division"}`;
+  const card = `${event?.name ?? "your event"}  ${division?.name ?? "your division"}`;
 
   const message =
     decision === "APPROVED"
       ? {
-          subject: "Registration verified — you're confirmed",
+          subject: "Registration verified  you're confirmed",
           body: [
             greetingLine(name),
             "",
@@ -220,7 +220,7 @@ async function notifyFighterOfPaymentDecision(
           ].join("\n"),
         }
       : {
-          subject: "Payment rejected — action needed",
+          subject: "Payment rejected  action needed",
           body: [
             greetingLine(name),
             "",

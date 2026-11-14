@@ -52,7 +52,7 @@ export function MotionFeedback() {
           <p className="text-sm font-semibold text-muted-foreground mb-3">Live-state pulse (reduced-motion safe)</p>
           <div className="flex items-center gap-2">
             <span className="size-3 rounded-full bg-brand-cyan live-pulse" />
-            <span className="text-sm">Mat 2 — live</span>
+            <span className="text-sm">Mat 2  live</span>
           </div>
         </div>
 
@@ -63,7 +63,7 @@ export function MotionFeedback() {
           </motion.div>
         </div>
       </div>
-      <FixtureBadge>GSAP reserved for longer sequenced reveals (e.g. bracket draw); Framer Motion used here for component-level transitions — not both for the same animation</FixtureBadge>
+      <FixtureBadge>GSAP reserved for longer sequenced reveals (e.g. bracket draw); Framer Motion used here for component-level transitions  not both for the same animation</FixtureBadge>
     </Chapter>
   );
 }

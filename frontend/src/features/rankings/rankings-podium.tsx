@@ -159,7 +159,7 @@ function PodiumSlot({ fighter }: { fighter: PodiumFighter }) {
   );
 }
 
-/** Triangle podium — 2 · 1 · 3 — fight-night stage energy. */
+/** Triangle podium  2 · 1 · 3  fight-night stage energy. */
 export function RankingsPodium({ top }: { top: PodiumFighter[] }) {
   const slots = [1, 2, 3]
     .map((rank) => top.find((fighter) => fighter.rank === rank))

@@ -44,8 +44,8 @@ export default async function PublicResultsPage({ params }: { params: Promise<{ 
               {matches.map((m) => (
                 <TableRow key={String(m._id)}>
                   <TableCell>{m.competitorAName ?? "TBD"} vs {m.competitorBName ?? "TBD"}</TableCell>
-                  <TableCell className="font-medium text-brand-gold">{m.winnerName ?? "—"}</TableCell>
-                  <TableCell>{m.resultMethod || "—"}</TableCell>
+                  <TableCell className="font-medium text-brand-gold">{m.winnerName ?? ""}</TableCell>
+                  <TableCell>{m.resultMethod || ""}</TableCell>
                 </TableRow>
               ))}
               {matches.length === 0 && (

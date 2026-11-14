@@ -1,11 +1,11 @@
 /**
- * Tilted white sponsor tape — large, even logos, clear ratios.
+ * Tilted white sponsor tape  large, even logos, clear ratios.
  */
 
 type Logo = {
   name: string;
   src: string;
-  /** Optical size — height drives scale; width follows the asset ratio. */
+  /** Optical size  height drives scale; width follows the asset ratio. */
   className: string;
 };
 
@@ -68,7 +68,7 @@ function Track({ ariaHidden }: { ariaHidden?: boolean }) {
   );
 }
 
-/** Slightly tilted manga tape — narrower band, logos still clear and broad. */
+/** Slightly tilted manga tape  narrower band, logos still clear and broad. */
 export function HomeMarquee() {
   return (
     <section className="home-marquee relative z-10 py-4 sm:py-5" aria-label="Sponsors">

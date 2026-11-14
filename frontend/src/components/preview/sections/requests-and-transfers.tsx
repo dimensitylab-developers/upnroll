@@ -6,7 +6,7 @@ import { previewRequests } from "@/lib/preview/fixtures";
 
 export function RequestsAndTransfers() {
   return (
-    <Chapter id="requests" title="Cancellations and Transfers" subtitle="Policy specifics (windows, eligibility, fees) are pending client approval — see OD-007. Refunds are manual and off-platform per Part D §8.">
+    <Chapter id="requests" title="Cancellations and Transfers" subtitle="Policy specifics (windows, eligibility, fees) are pending client approval  see OD-007. Refunds are manual and off-platform per Part D §8.">
       <Table>
         <TableHeader>
           <TableRow>
@@ -40,7 +40,7 @@ export function RequestsAndTransfers() {
           ))}
         </TableBody>
       </Table>
-      <FixtureBadge>Refunds, if any, are processed manually off-platform — not shown as automated here</FixtureBadge>
+      <FixtureBadge>Refunds, if any, are processed manually off-platform  not shown as automated here</FixtureBadge>
     </Chapter>
   );
 }

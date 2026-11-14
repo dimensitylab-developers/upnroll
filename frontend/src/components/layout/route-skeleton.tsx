@@ -1,6 +1,6 @@
 /**
  * In-flow loading placeholder for public navigations.
- * Keeps header/footer visible — never covers the shell with a fixed overlay.
+ * Keeps header/footer visible  never covers the shell with a fixed overlay.
  */
 export function RouteSkeleton({ label = "Loading page" }: { label?: string }) {
   return (

@@ -1,4 +1,4 @@
-# Master Repository Audit — Up 'n Roll
+# Master Repository Audit  Up 'n Roll
 
 Audit date: 2026-11-05  
 Scope: repository at `d:\upnrol` (application source, docs, scripts, configuration). Generated trees (`node_modules`, `.next`) were not reviewed file-by-file.  
@@ -13,7 +13,7 @@ This document supersedes stale layout claims in `docs/phases/00-repository-audit
 
 Up 'n Roll is a combat-sports tournament platform: public event and fighter pages, fighter registration and manual payment proof, admin bracket and match operations, rankings, CMS-style content, and a FAQ chatbot. It is **not a frontend-only application**. The Next.js app in `frontend/` is the only HTTP process, and it calls a real server layer in `backend/` (Mongoose models, domain services, session auth, local file storage). There is no separate API server and almost no REST surface. Mutations are Next.js Server Actions.
 
-**Current-state maturity: 3 — Structured Application.** Domain modules, role gates, persistence, and unit tests exist and line up with the product scope matrix. It is not a production candidate. Email is a console logger, files live on local disk, rankings and payment QR are labeled placeholders, there is no CI/CD, auth rate limiting is single-process and spoofable, and Indian national-ID data (Aadhaar) plus medical answers are stored in plaintext.
+**Current-state maturity: 3  Structured Application.** Domain modules, role gates, persistence, and unit tests exist and line up with the product scope matrix. It is not a production candidate. Email is a console logger, files live on local disk, rankings and payment QR are labeled placeholders, there is no CI/CD, auth rate limiting is single-process and spoofable, and Indian national-ID data (Aadhaar) plus medical answers are stored in plaintext.
 
 ### Finding counts
 
@@ -183,7 +183,7 @@ Counts exclude `node_modules` and `.next`. Source inventory was listed from disk
 | `PHASE_1_IMPLEMENTATION_REPORT.md`, `PHASE_2_IMPLEMENTATION_REPORT.md`, `PROJECT_RESCUE_REPORT.md` | Historical reports at repo root | RELOCATE into `docs/phases/` or mark historical |
 | `next-env.d.ts`, `tsconfig.tsbuildinfo`, `.next/` at **repo root** | Leftover from a pre-split Next app | REMOVE CANDIDATE (generated) |
 | `frontend/.next/` | Dev build output. Gitignored | Generated, do not commit |
-| `node_modules/` at repo root | Live install on this Windows machine | INVESTIGATE — expected location is `frontend/node_modules` |
+| `node_modules/` at repo root | Live install on this Windows machine | INVESTIGATE  expected location is `frontend/node_modules` |
 | `.local-storage/` | One payment screenshot JPEG (~144 KB) under `payment-screenshots/`. Gitignored | Runtime data, not source |
 | `.claude/`, `.phase3-shots/` | Empty directories | REMOVE CANDIDATE |
 | `.git/` | Repository metadata | KEEP |
@@ -399,7 +399,7 @@ Today a Server Action is safe only if its author remembers `requireRole`. A page
 
 `FighterProfile` lines 15–33 store `aadhaar`, blood group, allergies, medication, and medical-condition text as normal strings. Public fighter queries must keep using an explicit projection. A `find()` without `select` pulls those fields into process memory (`ranking` and match enrichment were reported to do this and then drop them before render). That is safe only while every caller continues to drop them.
 
-### Flow example — payment
+### Flow example  payment
 
 `Fighter → payment-form.tsx → submitPaymentAction → paymentService.submitPayment → LocalDiskStorageAdapter.put + PaymentSubmission.insert → ConsoleEmailAdapter.send → admin payments page → approvePaymentAction → registration status update`
 
@@ -477,7 +477,7 @@ Mutations are Server Actions (POST). Cookie is `SameSite=Lax`, so a cross-site P
 
 No finding below was exploit-tested against production. “Verified” means the code path was read. Do not read this section as a pentest sign-off.
 
-### SEC-01 — HIGH — National ID and medical data stored in plaintext
+### SEC-01  HIGH  National ID and medical data stored in plaintext
 
 - File: `backend/models/FighterProfile.ts` lines 15–33.
 - What: `aadhaar`, conditions, allergies, medication, and blood group are normal strings.
@@ -485,14 +485,14 @@ No finding below was exploit-tested against production. “Verified” means the
 - Verified: schema inspection. Not verified: Atlas network rules or encryption-at-rest on the cluster.
 - Remediation: application-level encryption with a key not stored in the database, field-level select allowlists in every query, a retention job once OD-011 is decided. Restrict the Atlas user. Rotate the URI if the workspace copy of `.env` has been shared.
 
-### SEC-02 — HIGH — Login rate limit is bypassable and single-process
+### SEC-02  HIGH  Login rate limit is bypassable and single-process
 
 - Files: `backend/http/rateLimit.ts` lines 1–16 and 15–16 (10 tokens / 60s, in-memory `Map`); `backend/http/clientIp.ts` lines 6–10 (first `X-Forwarded-For` hop); `frontend/src/features/auth/actions.ts` (only `register:` and `login:` keys).
 - Attack: send a fresh `X-Forwarded-For` per guess, or hit a second instance. Password guesses are then limited only by scrypt cost.
 - Verified: code inspection. Not executed as an attack.
 - Remediation: ignore forwarded headers unless the connection is from a trusted proxy; put a shared limiter at the edge; apply the same limiter to payment upload and chatbot.
 
-### SEC-03 — HIGH — Local session secret is low entropy
+### SEC-03  HIGH  Local session secret is low entropy
 
 - Files: gitignored `.env` and `frontend/.env.local` (values intentionally omitted). `getConfig()` only checks length ≥ 32.
 - What: the local `SESSION_SECRET` meets the length check and is a human-readable string, not a random 32-byte key. The dev server loads `frontend/.env.local`. Cookie HMAC uses this key (`backend/auth/cookies.ts`).
@@ -500,7 +500,7 @@ No finding below was exploit-tested against production. “Verified” means the
 - Verified: file presence and character class. The value is not reproduced in this document.
 - Remediation: replace with `crypto.randomBytes(32)` output before any shared or production use. Do not reuse the local secret. Confirm `.env` stays gitignored (it matches `.gitignore` lines 33–35).
 
-### SEC-04 — MEDIUM — Draft event schedule leak
+### SEC-04  MEDIUM  Draft event schedule leak
 
 - File: `backend/services/matchService.ts` lines 199–208 versus `eventService.ts` lines 19 and 84–88.
 - `publishBracket` (`bracketService.ts` lines 132–139) does not require the event to be in `PUBLIC_EVENT_STATUSES`.
@@ -508,72 +508,72 @@ No finding below was exploit-tested against production. “Verified” means the
 - Verified: code inspection. Not confirmed with a live draft fixture during this audit (UNVERIFIED at runtime).
 - Remediation: resolve the event with the same status filter as `getEventBySlug` before listing matches. Add a regression test.
 
-### SEC-05 — MEDIUM — Services do not authorize
+### SEC-05  MEDIUM  Services do not authorize
 
 - Evidence: `listPaymentQueue` (`paymentService.ts` lines 159–182) has no session parameter. Admin pages rely on `admin/layout.tsx`.
 - Attack: a new route or action that imports the service and forgets `requireRole` returns the full payment queue. Not an open route today.
 - Remediation: require an admin context argument inside admin reads and writes.
 
-### SEC-06 — MEDIUM — Uploads trust client MIME and responses omit nosniff
+### SEC-06  MEDIUM  Uploads trust client MIME and responses omit nosniff
 
 - Files: `frontend/src/features/payments/file-validation.ts` lines 1–16 (size and `file.type` only); screenshot route sets `Content-Type` from the storage adapter extension map; `next.config.ts` sets no `X-Content-Type-Options`.
 - Attack: a polyglot file labeled `image/jpeg` is stored and served inline to an admin’s browser. Impact depends on the browser sniffing the body. No magic-byte check exists.
 - Remediation: sniff bytes, force `nosniff`, prefer `Content-Disposition: attachment` for payment proofs.
 
-### SEC-07 — MEDIUM — Local disk adapter is not safe for production
+### SEC-07  MEDIUM  Local disk adapter is not safe for production
 
 - File: `backend/storage/local-disk.ts` lines 12–35. `path.join(ROOT, key)` does not reject `..`.
 - Current keys are server-generated (`payment-screenshots/${registrationId}/${Date.now()}-…`). Traversal is latent unless a stored key is poisoned.
 - One real screenshot already exists under `.local-storage/` (gitignored). A deploy that uses this adapter on ephemeral disk loses proofs, and a deploy that uses a shared disk without auth on the folder exposes them if the directory is web-reachable. It is not under `public/`.
 - Remediation: real private storage (OD-012), and reject keys that normalize outside `ROOT`.
 
-### SEC-08 — MEDIUM — No security headers
+### SEC-08  MEDIUM  No security headers
 
 - File: `frontend/next.config.ts`. No `headers()`, no CSP, no `X-Frame-Options` / `frame-ancestors`, no `Referrer-Policy`, no `X-Content-Type-Options`.
 - Remediation: add a baseline header set in Next config. Keep CSP strict enough to block unexpected script hosts. The JSON-LD script is inline and must be accounted for.
 
-### SEC-09 — MEDIUM — Payment queue loads password hashes into memory
+### SEC-09  MEDIUM  Payment queue loads password hashes into memory
 
 - File: `paymentService.ts` lines 165–178. `User.find({ _id: { $in: userIds } })` has no `.select()`.
 - The admin page passes only `p.user?.email` into the client dialog (`admin/payments/page.tsx` lines 35 and 47–52). The hash is not a client prop today. A later edit that spreads `p.user` into a client component would ship `passwordHash` to the browser.
 - Remediation: `.select("email")` (or an explicit DTO) before leaving the service.
 
-### SEC-10 — MEDIUM — No real email, verification, or recovery
+### SEC-10  MEDIUM  No real email, verification, or recovery
 
 - File: `backend/email/console.ts` lines 3–7. Call sites: `paymentService.ts` around lines 75 and 128, `requestService.ts` around line 123.
 - Effect: fighters are not told when a payment is approved. Password reset cannot exist. Logs may print email bodies on the server console.
 - Remediation: after OD-009 and OD-012, implement the adapter and stop logging full bodies.
 
-### SEC-11 — LOW — Email enumeration on register
+### SEC-11  LOW  Email enumeration on register
 
 - `registerAction` returns “An account with this email already exists.” Login uses a generic failure. Remediation: same generic message, or accept enumeration as a product choice and document it.
 
-### SEC-12 — LOW — Body size limit disagrees with the validator
+### SEC-12  LOW  Body size limit disagrees with the validator
 
 - `next.config.ts` lines 8–10: Server Action body limit `3mb`.
 - `file-validation.ts` line 1: screenshots allowed up to 5MB.
 - Effect: a 4MB PNG fails in the framework before the friendly validator runs. Profile photos share the 3MB action limit.
 - Remediation: one constant used by both.
 
-### SEC-13 — LOW — Fighter actions do not require the FIGHTER role
+### SEC-13  LOW  Fighter actions do not require the FIGHTER role
 
 - Actions check `requireSession()` then operate on that user id. An admin session can create a fighter registration for the admin user, who may have no profile.
 - Remediation: `requireRole("FIGHTER")` on fighter mutations, or a dedicated organizer registration tool.
 
-### SEC-14 — LOW — Chatbot has no rate limit
+### SEC-14  LOW  Chatbot has no rate limit
 
 - `frontend/src/features/chatbot/ask-chatbot-action.ts` reads every published FAQ and scores tokens. Data is already public. The cost is database load.
 - Remediation: same limiter as SEC-02, keyed by IP, with a trusted proxy.
 
-### SEC-15 — INFORMATIONAL — CSRF relies on the framework
+### SEC-15  INFORMATIONAL  CSRF relies on the framework
 
 - See section 10. No extra token. Acceptable while all mutations stay on Server Actions and cookies stay `Lax`.
 
-### SEC-16 — INFORMATIONAL — `secure` cookie flag is off in development
+### SEC-16  INFORMATIONAL  `secure` cookie flag is off in development
 
 - Expected. Production mis-set `NODE_ENV` would send the cookie over HTTP. Deployment checklist item, not a code bug by itself.
 
-### SEC-17 — INFORMATIONAL — Audit collection can grow without a TTL
+### SEC-17  INFORMATIONAL  Audit collection can grow without a TTL
 
 - `backend/models/AuditLog.ts` has no TTL and no list UI. `before` / `after` can contain operational data. Retention is OD-011.
 
@@ -923,7 +923,7 @@ Do not add, unless a written requirement appears:
 
 Complexity is relative to this codebase. None of these tasks were started by this audit.
 
-### P0 — Critical
+### P0  Critical
 
 | ID | Problem | Solution | Modules | Depends on | Risk | Acceptance | Size |
 |---|---|---|---|---|---|---|---|
@@ -931,7 +931,7 @@ Complexity is relative to this codebase. None of these tasks were started by thi
 | P0-2 | SEC-01 Aadhaar and medical plaintext | Encrypt those fields or move them to a restricted collection. Force `.select()` allowlists on every `FighterProfile` read | `FighterProfile.ts`, `fighterService.ts`, profile actions | Key management decision | Bad migration corrupts profiles | Public fighter JSON has no Aadhaar key. Database dump of the field is ciphertext. Profile edit still works for the owner | LARGE |
 | P0-3 | SEC-02 auth brute force | Trusted-proxy IP and a limiter that is not a process-local Map. Cover login and register | `rateLimit.ts`, `clientIp.ts`, `auth/actions.ts` | Deploy topology (OD-012) | Lockouts if IP detection is wrong | Test: 11th attempt from one IP within 60s is rejected. Spoofed `X-Forwarded-For` does not reset the bucket when the peer is untrusted | MEDIUM |
 
-### P1 — High
+### P1  High
 
 | ID | Problem | Solution | Modules | Depends on | Risk | Acceptance | Size |
 |---|---|---|---|---|---|---|---|
@@ -945,7 +945,7 @@ Complexity is relative to this codebase. None of these tasks were started by thi
 | P1-8 | Payment QR and UTR | Blocked on OD-005a and OD-006. Do not invent a bank format | payment page, `payments/schemas.ts` | Client artwork and UTR spec | Rejecting valid UTRs | Real QR image from the client. Validator matches the approved pattern | MEDIUM |
 | P1-9 | ENG-02 CI | GitHub Actions: `npm ci --prefix frontend`, `tsc --noEmit`, `vitest run`, `next build` | new `.github/workflows/ci.yml` | P1-7 | Secrets must not be in the workflow | Pull request fails on a type error | SMALL |
 
-### P2 — Medium
+### P2  Medium
 
 | ID | Problem | Solution | Modules | Depends on | Risk | Acceptance | Size |
 |---|---|---|---|---|---|---|---|
@@ -957,7 +957,7 @@ Complexity is relative to this codebase. None of these tasks were started by thi
 | P2-6 | Account recovery | Reset token collection, email link, expiry | auth, email | P1-2 | Token leak via logs | Reset works once, token is single-use, generic response either way | MEDIUM |
 | P2-7 | Ranking formula | Replace `winLossPointsStrategy` only | `rankingEngine.ts` | OD-004 and the metrics PDF | Rewrites public points | Admin page no longer says the formula is a placeholder. Old records recalculate cleanly | SMALL once the formula is known |
 
-### P3 — Optimization
+### P3  Optimization
 
 | ID | Problem | Solution | Acceptance | Size |
 |---|---|---|---|---|
@@ -982,11 +982,11 @@ Recommendations only. This audit did not apply them.
 | Add | `.github/workflows/ci.yml` (P1-9) |
 | Add | `backend/storage` production adapter when OD-012 names a provider |
 | Add | `backend/email` production adapter when OD-009 and OD-012 are closed |
-| Edit | `frontend/package.json` — remove `predev` `ln` |
-| Edit | `frontend/next.config.ts` — headers, one body-size constant |
-| Edit | `backend/services/matchService.ts` — event status filter |
-| Edit | `backend/services/paymentService.ts` — user field projection |
-| Edit | `backend/models/FighterProfile.ts` and readers — PII protection |
+| Edit | `frontend/package.json`  remove `predev` `ln` |
+| Edit | `frontend/next.config.ts`  headers, one body-size constant |
+| Edit | `backend/services/matchService.ts`  event status filter |
+| Edit | `backend/services/paymentService.ts`  user field projection |
+| Edit | `backend/models/FighterProfile.ts` and readers  PII protection |
 | Edit | stale docs listed in section 12 |
 | Delete only after the frontend install exists and CI is green | root `package-lock.json`, root `.next/`, root `next-env.d.ts`, root `tsconfig.tsbuildinfo`, empty `public/`, `.claude/`, `.phase3-shots/` |
 | Delete only as a reviewed set | unused `components/ui/*` and the packages that exist only for them |
@@ -1044,7 +1044,7 @@ Also decide, because the code assumed an answer:
 
 ## 27. Final Engineering Assessment
 
-**Maturity: 3 — Structured Application.**
+**Maturity: 3  Structured Application.**
 
 Evidence for 3, not 2: real Mongo models, session auth, role-gated layouts, Server Actions for every core mutation, a bracket engine with tests, payment state machine, registration uniqueness, audit log writes, and a feature map that matches `docs/product/scope-matrix.md` for the in-scope workflows.
 

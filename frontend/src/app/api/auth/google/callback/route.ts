@@ -8,12 +8,14 @@ import { createSession } from "@/server/auth/session";
 import { writeAuditLog } from "@/server/audit/log";
 import {
   OAUTH_ENTRY_COOKIE,
+  OAUTH_RETURN_COOKIE,
   OAUTH_STATE_COOKIE,
   oauthErrorPath,
   parseOAuthEntry,
   verifyOAuthState,
   type OAuthEntry,
 } from "@/server/auth/oauth-state";
+import { resolveAuthReturnPath } from "@/lib/safe-app-path";
 
 function slugify(name: string): string {
   const base = name
@@ -34,6 +36,7 @@ function clearOAuthCookies(response: NextResponse) {
   };
   response.cookies.set(OAUTH_STATE_COOKIE, "", clear);
   response.cookies.set(OAUTH_ENTRY_COOKIE, "", clear);
+  response.cookies.set(OAUTH_RETURN_COOKIE, "", clear);
 }
 
 function failRedirect(origin: string, entry: OAuthEntry, reason: "failed" | "disabled" = "failed") {
@@ -86,75 +89,83 @@ export async function GET(request: NextRequest) {
     return failRedirect(url.origin, entry, "failed");
   }
 
-  await connectDB();
-  let user = await User.findOne({ email });
-  if (user && user.status !== "ACTIVE") {
-    return failRedirect(url.origin, entry, "disabled");
-  }
-
-  const googleName = profile.name?.trim() || email.split("@")[0] || "Grappler";
-  let createdAccount = false;
-  if (!user) {
-    user = await User.create({
-      email,
-      passwordHash: await hashPassword(randomBytes(32).toString("hex")),
-      role: "FIGHTER",
-      emailVerified: true,
-      emailVerifiedAt: new Date(),
-      displayName: googleName,
-    });
-    createdAccount = true;
-  } else if (user.emailVerified === false) {
-    user.emailVerified = true;
-    user.emailVerifiedAt = new Date();
-    if (!user.displayName?.trim()) user.displayName = googleName;
-    await user.save();
-  } else if (!user.displayName?.trim()) {
-    user.displayName = googleName;
-    await user.save();
-  }
-
-  const existingProfile = await FighterProfile.findOne({ userId: user._id }).lean();
-  let createdProfile = false;
-  let profileId = existingProfile ? String(existingProfile._id) : "";
-  if (!existingProfile) {
-    let slug = slugify(googleName);
-    for (let attempt = 0; attempt < 5; attempt++) {
-      const taken = await FighterProfile.findOne({ slug }).lean();
-      if (!taken) break;
-      slug = slugify(googleName);
+  try {
+    await connectDB();
+    let user = await User.findOne({ email });
+    if (user && user.status !== "ACTIVE") {
+      return failRedirect(url.origin, entry, "disabled");
     }
-    const created = await FighterProfile.create({
-      userId: user._id,
-      displayName: googleName,
-      slug,
-      discipline: "No-Gi",
-    });
-    profileId = String(created._id);
-    createdProfile = true;
-  }
 
-  await createSession(String(user._id));
-  if (createdAccount) {
-    await writeAuditLog({ actorId: String(user._id), action: "USER_REGISTERED", targetType: "User", targetId: String(user._id) });
-  }
-  if (createdProfile) {
+    const googleName = profile.name?.trim() || email.split("@")[0] || "Grappler";
+    let createdAccount = false;
+    if (!user) {
+      user = await User.create({
+        email,
+        passwordHash: await hashPassword(randomBytes(32).toString("hex")),
+        role: "FIGHTER",
+        emailVerified: true,
+        emailVerifiedAt: new Date(),
+        displayName: googleName,
+      });
+      createdAccount = true;
+    } else if (user.emailVerified === false) {
+      user.emailVerified = true;
+      user.emailVerifiedAt = new Date();
+      if (!user.displayName?.trim()) user.displayName = googleName;
+      await user.save();
+    } else if (!user.displayName?.trim()) {
+      user.displayName = googleName;
+      await user.save();
+    }
+
+    const existingProfile = await FighterProfile.findOne({ userId: user._id }).lean();
+    let createdProfile = false;
+    let profileId = existingProfile ? String(existingProfile._id) : "";
+    if (!existingProfile) {
+      let slug = slugify(googleName);
+      for (let attempt = 0; attempt < 5; attempt++) {
+        const taken = await FighterProfile.findOne({ slug }).lean();
+        if (!taken) break;
+        slug = slugify(googleName);
+      }
+      const created = await FighterProfile.create({
+        userId: user._id,
+        displayName: googleName,
+        slug,
+        discipline: "No-Gi",
+      });
+      profileId = String(created._id);
+      createdProfile = true;
+    }
+
+    await createSession(String(user._id));
+    if (createdAccount) {
+      await writeAuditLog({ actorId: String(user._id), action: "USER_REGISTERED", targetType: "User", targetId: String(user._id) });
+    }
+    if (createdProfile) {
+      await writeAuditLog({
+        actorId: String(user._id),
+        action: "FIGHTER_PROFILE_CREATED",
+        targetType: "FighterProfile",
+        targetId: profileId,
+      });
+    }
     await writeAuditLog({
       actorId: String(user._id),
-      action: "FIGHTER_PROFILE_CREATED",
-      targetType: "FighterProfile",
-      targetId: profileId,
+      action: "USER_LOGIN",
+      targetType: "User",
+      targetId: String(user._id),
+      after: { via: "google" },
     });
+    const returnPath = request.cookies.get(OAUTH_RETURN_COOKIE)?.value;
+    const next =
+      user.role === "ADMIN"
+        ? "/admin"
+        : resolveAuthReturnPath(returnPath, { current: "/login", fallback: "/fighter/dashboard" });
+    const response = NextResponse.redirect(new URL(next, url.origin));
+    clearOAuthCookies(response);
+    return response;
+  } catch {
+    return failRedirect(url.origin, entry, "failed");
   }
-  await writeAuditLog({
-    actorId: String(user._id),
-    action: "USER_LOGIN",
-    targetType: "User",
-    targetId: String(user._id),
-    after: { via: "google" },
-  });
-  const next = user.role === "ADMIN" ? "/admin" : "/fighter/dashboard";
-  const response = NextResponse.redirect(new URL(next, url.origin));
-  clearOAuthCookies(response);
-  return response;
 }

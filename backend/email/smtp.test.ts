@@ -38,7 +38,7 @@ describe("smtp adapter", () => {
   it("uses implicit TLS on port 465", async () => {
     const createTransport = vi.fn().mockReturnValue({ sendMail: vi.fn().mockResolvedValue({}) });
     const adapter = createSmtpAdapter({ ...settings, port: 465 }, createTransport);
-    await adapter.send({ to: "fighter@example.com", subject: "Payment approved — registration confirmed", body: "Approved." });
+    await adapter.send({ to: "fighter@example.com", subject: "Payment approved  registration confirmed", body: "Approved." });
     expect(createTransport).toHaveBeenCalledWith(expect.objectContaining({ port: 465, secure: true }));
   });
 });

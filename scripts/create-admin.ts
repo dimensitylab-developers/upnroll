@@ -1,5 +1,5 @@
 /**
- * Local-only admin bootstrap. NOT an HTTP endpoint — per Part M, there is
+ * Local-only admin bootstrap. NOT an HTTP endpoint  per Part M, there is
  * no public admin registration. Run with:
  *   npx tsx --env-file=.env.local scripts/create-admin.ts --email you@example.com --password "..."
  * or pass --email/--password directly with MONGODB_URI/SESSION_SECRET already exported.

@@ -5,7 +5,7 @@ import { usePathname } from "next/navigation";
 import { comicCell, comicCellActive, comicCellIdle } from "./comic-cell";
 import { NavLinkPending } from "./nav-link-pending";
 
-/** Primary destinations — full RSC prefetch in production. */
+/** Primary destinations  full RSC prefetch in production. */
 const PREFETCH_HREFS = new Set(["/events", "/rankings", "/brackets", "/about", "/faq"]);
 
 export function ComicNav({ links }: { links: { href: string; label: string }[] }) {

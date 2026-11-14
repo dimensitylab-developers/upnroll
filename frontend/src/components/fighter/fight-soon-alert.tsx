@@ -18,7 +18,7 @@ export function FightSoonAlert({
       <span className="relative z-10 min-w-0">
         <span className="block text-[10px] font-semibold uppercase tracking-[0.2em] text-brand-red">Be ready</span>
         <span className="block text-sm font-semibold">
-          Your fight is about {minutes} minutes away — check your bracket and warm up.
+          Your fight is about {minutes} minutes away  check your bracket and warm up.
         </span>
       </span>
     </Link>

@@ -1,16 +1,19 @@
 import { NextResponse } from "next/server";
 import {
   OAUTH_ENTRY_COOKIE,
+  OAUTH_RETURN_COOKIE,
   OAUTH_STATE_COOKIE,
   OAUTH_STATE_MAX_AGE_SECONDS,
   issueOAuthState,
   oauthErrorPath,
   parseOAuthEntry,
 } from "@/server/auth/oauth-state";
+import { isSafeAppPath } from "@/lib/safe-app-path";
 
 export async function GET(request: Request) {
   const url = new URL(request.url);
   const entry = parseOAuthEntry(url.searchParams.get("entry"));
+  const returnPath = url.searchParams.get("from");
   const clientId = process.env.GOOGLE_CLIENT_ID;
   const clientSecret = process.env.GOOGLE_CLIENT_SECRET;
   if (!clientId || !clientSecret) {
@@ -37,5 +40,10 @@ export async function GET(request: Request) {
   };
   response.cookies.set(OAUTH_STATE_COOKIE, cookieValue, cookieOpts);
   response.cookies.set(OAUTH_ENTRY_COOKIE, entry, cookieOpts);
+  if (isSafeAppPath(returnPath)) {
+    response.cookies.set(OAUTH_RETURN_COOKIE, returnPath, cookieOpts);
+  } else {
+    response.cookies.set(OAUTH_RETURN_COOKIE, "", { ...cookieOpts, maxAge: 0 });
+  }
   return response;
 }

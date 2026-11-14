@@ -1,4 +1,4 @@
-# Backend Architecture — Up 'n Roll
+# Backend Architecture  Up 'n Roll
 
 Location: `d:\upnrol\backend\`  
 Imported by the Next.js app as `@/server/*` (`frontend/tsconfig.json`).  
@@ -30,7 +30,7 @@ flowchart TB
     regSvc["registrationService.ts"]
     paySvc["paymentService.ts"]
     sm["registrationStateMachine.ts"]
-    pq["paymentQueue.ts — helper only"]
+    pq["paymentQueue.ts  helper only"]
   end
 
   subgraph Tourney["Tournament"]
@@ -103,7 +103,7 @@ flowchart TB
 | Models | `Event`, `Division` |
 | Consumers | Public events pages; admin events; registration eligibility |
 | Status | 🟢 |
-| Partial | `Event.paymentInstructions.qrImageKey` always `""` at create — 🟡 unused storage path |
+| Partial | `Event.paymentInstructions.qrImageKey` always `""` at create  🟡 unused storage path |
 
 ### Registration & Payments
 
@@ -154,7 +154,7 @@ flowchart TB
 | Responsibilities | FAQ/announcement/policy CMS; media URL captions; FAQ keyword match |
 | Services | `contentService`, `mediaService`, `chatbotEngine` |
 | Models | `ContentEntry`, `MediaAsset` |
-| AI | **None** — local matcher only |
+| AI | **None**  local matcher only |
 | Status | 🟢 |
 
 ### File Management

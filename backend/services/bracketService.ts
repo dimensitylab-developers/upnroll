@@ -74,7 +74,7 @@ export async function generateBracket(
 
       const existing = await bindSession(Bracket.findOne({ divisionId }), session);
       if (existing && existing.status === "PUBLISHED") {
-        throw new ConflictError("This bracket is already published. Unpublish is not supported — contact an administrator.");
+        throw new ConflictError("This bracket is already published. Unpublish is not supported  contact an administrator.");
       }
 
       const eligible = await bindSession(
@@ -183,7 +183,7 @@ export async function publishBracket(actor: Actor, bracketId: string) {
     return updated;
   });
 
-  // Reminders only after publish — never from draft edits. Jobs are durable outbox records.
+  // Reminders only after publish  never from draft edits. Jobs are durable outbox records.
   const { scheduleRemindersForPublishedBracket } = await import("./reminderService");
   await scheduleRemindersForPublishedBracket(bracketId);
 

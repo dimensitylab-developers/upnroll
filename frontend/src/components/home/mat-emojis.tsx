@@ -70,7 +70,7 @@ export function EmojiStrip({
   );
 }
 
-/** @deprecated Prefer EmojiStrip / MatEmojis / HeaderStickers — kept for any stray imports. */
+/** @deprecated Prefer EmojiStrip / MatEmojis / HeaderStickers  kept for any stray imports. */
 export function GrapplingEmojiStrip(props: {
   emojis?: GrapplingEmojiName[];
   size?: number;

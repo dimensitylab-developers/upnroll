@@ -1,4 +1,4 @@
-# Database Architecture — Up 'n Roll
+# Database Architecture  Up 'n Roll
 
 | Item | Verified |
 |------|----------|
@@ -6,7 +6,7 @@
 | ODM | Mongoose `^9.3.0` |
 | Connect | `backend/db/connect.ts` via `MONGODB_URI` |
 | Transactions | `backend/db/transaction.ts` |
-| Explicit `collection:` overrides | **None** — Mongoose default pluralization |
+| Explicit `collection:` overrides | **None**  Mongoose default pluralization |
 
 > **Doc drift:** `docs/architecture/data-model.md` uses snake_case names (`fighter_profiles`).  
 > Actual collections below use Mongoose defaults (`fighterprofiles`, etc.).
@@ -31,11 +31,11 @@
 | `registrationrequests` | `RegistrationRequest.ts` | type CANCEL/TRANSFER, registrationId, reason, review, refundPercent | registrationId, userId | 🟢 |
 | `transferinvites` | `TransferInvite.ts` | token, registrationId, fromUserId, claimedByUserId | unique token; registrationId | 🟢 |
 | `contententries` | `ContentEntry.ts` | type FAQ/ANNOUNCEMENT/POLICY, title, body, publicationState, createdBy | `{type,publicationState}` | 🟢 |
-| `mediaassets` | `MediaAsset.ts` | eventId?, caption, externalUrl, publicationState, createdBy | — | 🟢 |
+| `mediaassets` | `MediaAsset.ts` | eventId?, caption, externalUrl, publicationState, createdBy |  | 🟢 |
 | `auditlogs` | `AuditLog.ts` | actorId?, action, targetType, targetId?, before/after | none explicit | 🟢 |
 | `privateFiles.files` / `.chunks` | GridFS bucket | Binary blobs when `STORAGE_DRIVER=gridfs` | GridFS defaults | 🟢 adapter / 🟡 env |
 
-No orphaned models — all 16 are read/written.
+No orphaned models  all 16 are read/written.
 
 ---
 
@@ -174,7 +174,7 @@ flowchart LR
 
 | Doc concept | Code reality |
 |-------------|--------------|
-| `notifications` collection | No model — email/WhatsApp only |
+| `notifications` collection | No model  email/WhatsApp only |
 | `GUEST` role | Not in User enum |
 | Payment revision history array | Not in PaymentSubmission schema |
 | Division weight/age taxonomy | Not modeled yet |

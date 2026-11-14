@@ -32,10 +32,10 @@ export function PaymentReviewDialog({
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Review payment — {fighterLabel}</DialogTitle>
+          <DialogTitle>Review payment  {fighterLabel}</DialogTitle>
           <DialogDescription>
-            Check UTR {utr ?? "—"} against the organizer&apos;s actual bank/UPI records before deciding.
-            {duplicateUtr && " This UTR also appears on another submission — verify carefully."}
+            Check UTR {utr ?? ""} against the organizer&apos;s actual bank/UPI records before deciding.
+            {duplicateUtr && " This UTR also appears on another submission  verify carefully."}
           </DialogDescription>
         </DialogHeader>
 

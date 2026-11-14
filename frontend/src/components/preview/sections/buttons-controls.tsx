@@ -103,7 +103,7 @@ export function ButtonsControls() {
             <Avatar><AvatarFallback>RK</AvatarFallback></Avatar>
             <Tooltip>
               <TooltipTrigger asChild><Button variant="outline" size="sm">Hover me</Button></TooltipTrigger>
-              <TooltipContent>Rank #1 — Lightweight</TooltipContent>
+              <TooltipContent>Rank #1  Lightweight</TooltipContent>
             </Tooltip>
           </div>
           <label className="flex items-center gap-2 border border-dashed border-black/20 rounded-md px-3 py-4 text-sm text-muted-foreground cursor-pointer hover:border-black/40">
@@ -129,7 +129,7 @@ export function ButtonsControls() {
               <DrawerContent>
                 <DrawerHeader>
                   <DrawerTitle>Match details</DrawerTitle>
-                  <DrawerDescription>Round of 16 — Mat 2 — 7:40 PM</DrawerDescription>
+                  <DrawerDescription>Round of 16  Mat 2  7:40 PM</DrawerDescription>
                 </DrawerHeader>
               </DrawerContent>
             </Drawer>
@@ -167,7 +167,7 @@ export function ButtonsControls() {
           <Skeleton className="h-4 w-3/4" />
         </div>
       </div>
-      <FixtureBadge>All interactions above are real local UI state — no backend calls</FixtureBadge>
+      <FixtureBadge>All interactions above are real local UI state  no backend calls</FixtureBadge>
     </Chapter>
   );
 }

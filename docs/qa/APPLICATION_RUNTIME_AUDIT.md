@@ -1,4 +1,4 @@
-# Application Runtime Audit — Up 'n Roll
+# Application Runtime Audit  Up 'n Roll
 
 Date: 2026-11-09  
 Branch: `suraj`  
@@ -9,11 +9,11 @@ Classification: **PARTIALLY VERIFIED**
 
 | Check | Result |
 |-------|--------|
-| Dev server starts | PASS — Ready in ~5–9s |
-| Env loaded | PASS — `.env.local` present (`MONGODB_URI`, `SESSION_SECRET`, SMTP_*). No `GOOGLE_CLIENT_*`, no `ADMIN_SEED_*` |
-| MongoDB | PASS — pages that query Atlas rendered event/fighter data |
+| Dev server starts | PASS  Ready in ~5–9s |
+| Env loaded | PASS  `.env.local` present (`MONGODB_URI`, `SESSION_SECRET`, SMTP_*). No `GOOGLE_CLIENT_*`, no `ADMIN_SEED_*` |
+| MongoDB | PASS  pages that query Atlas rendered event/fighter data |
 | Module resolution | PASS after fix |
-| Initial home compile | FAIL then PASS — see bugs |
+| Initial home compile | FAIL then PASS  see bugs |
 | Hydration | Intermittent Next.js issue badge on auth pages during automation fills; clean on fresh register load |
 | Secrets in reports | Not printed |
 
@@ -49,6 +49,6 @@ Cold compile times dominate; not treated as production SLA failures.
 | Item | Status |
 |------|--------|
 | Google OAuth | `/api/auth/google` → `307` `/login?google=unavailable` |
-| Admin account | No seed credentials in env — admin UI/workflows **BLOCKED** |
+| Admin account | No seed credentials in env  admin UI/workflows **BLOCKED** |
 | Real SMTP | Dev console adapter only |
 | WhatsApp | Explicitly mock (dashboard copy confirms) |

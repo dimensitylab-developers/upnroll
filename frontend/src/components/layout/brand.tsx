@@ -31,7 +31,7 @@ export function FounderCredit({ className = "" }: { className?: string }) {
   );
 }
 
-/** Static year — Cache Components forbids `new Date()` during prerender of static shells. */
+/** Static year  Cache Components forbids `new Date()` during prerender of static shells. */
 const COPYRIGHT_YEAR = 2026;
 
 export function SiteCopyright({ className = "" }: { className?: string }) {
@@ -42,7 +42,7 @@ export function SiteCopyright({ className = "" }: { className?: string }) {
   );
 }
 
-/** Centered Address · India + flag — one baseline, matched sizes. */
+/** Centered Address · India + flag  one baseline, matched sizes. */
 export function FooterAddress({ className = "" }: { className?: string }) {
   return (
     <div className={`flex flex-col items-center justify-center gap-1 ${className}`.trim()}>

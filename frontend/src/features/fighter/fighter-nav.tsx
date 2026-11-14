@@ -8,7 +8,7 @@ import { cn } from "@/lib/utils";
 const LINKS = [
   { href: "/fighter/dashboard", label: "Desk" },
   { href: "/fighter/profile", label: "Profile" },
-  { href: "/fighter/registrations", label: "Cards" },
+  { href: "/fighter/registrations", label: "Events" },
   { href: "/fighter/matches", label: "Matches" },
   { href: "/fighter/requests", label: "Requests" },
   { href: "/fighter/notifications", label: "Alerts" },

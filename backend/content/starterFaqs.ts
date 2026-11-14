@@ -11,7 +11,7 @@ export const STARTER_FAQS: { question: string; answer: string }[] = [
   {
     question: "How do I pay the entry fee?",
     answer:
-      "Pay with the UPI instructions shown for that event, then an admin reviews your payment before your place is confirmed. The fee is the one published on that event — coupons can change the amount when they apply.",
+      "Pay with the UPI instructions shown for that event, then an admin reviews your payment before your place is confirmed. The fee is the one published on that event  coupons can change the amount when they apply.",
   },
   {
     question: "Can I use a coupon or promo code?",
@@ -51,12 +51,12 @@ export const STARTER_FAQS: { question: string; answer: string }[] = [
   {
     question: "Do I need to upload an Aadhaar card?",
     answer:
-      "Yes. Upload a clear copy of your Aadhaar card when you register. Keep the 12-digit number accurate on your profile. Aadhaar stays private — it is not shown on public fighter pages.",
+      "Yes. Upload a clear copy of your Aadhaar card when you register. Keep the 12-digit number accurate on your profile. Aadhaar stays private  it is not shown on public fighter pages.",
   },
   {
     question: "What is the public fighter card?",
     answer:
-      "Each fighter gets a shareable hype card with photo, record, and public profile details — no private ID or medical data. You can open it from your fighter desk and from public rankings or fighter pages.",
+      "Each fighter gets a shareable hype card with photo, record, and public profile details  no private ID or medical data. You can open it from your fighter desk and from public rankings or fighter pages.",
   },
   {
     question: "Who can see my Aadhaar and medical information?",
@@ -96,7 +96,7 @@ export const STARTER_FAQS: { question: string; answer: string }[] = [
   {
     question: "I have an emergency and need a human",
     answer:
-      "If this chat cannot help and you have an urgent event-day issue, ask for a human handoff here and the organizer emergency line will be shared in the reply once the house has published it in FAQ. Day-to-day questions should go to Instagram DM (@up.n.roll) or email — phone numbers are not listed on the public site.",
+      "If this chat cannot help and you have an urgent event-day issue, ask for a human handoff here and the organizer emergency line will be shared in the reply once the house has published it in FAQ. Day-to-day questions should go to Instagram DM (@up.n.roll) or email  phone numbers are not listed on the public site.",
   },
 ];
 

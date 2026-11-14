@@ -10,7 +10,7 @@ import { FighterHypeCard } from "@/features/fighters/fighter-hype-card";
 import { ShareFighterCardButton } from "@/features/fighters/share-fighter-card-button";
 import { Badge } from "@/components/ui/badge";
 
-/** Session/DB-bound route — allow blocking navigation under Cache Components. */
+/** Session/DB-bound route  allow blocking navigation under Cache Components. */
 export const instant = false;
 
 export const metadata: Metadata = { title: "Desk" };
@@ -109,7 +109,7 @@ export default async function FighterDashboardPage() {
             </div>
 
             <div className="p-4 sm:p-5">
-              <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-brand-red">Active card</p>
+              <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-brand-red">Active event</p>
               {openReg ? (
                 <>
                   <p className="text-display mt-3 text-xl font-semibold leading-snug sm:text-2xl">
@@ -129,7 +129,7 @@ export default async function FighterDashboardPage() {
               ) : (
                 <>
                   <p className="mt-3 max-w-sm text-sm leading-relaxed text-muted-foreground">
-                    No active seat on a card. When registration opens, take your division here.
+                    No active seat on an event. When registration opens, take your division here.
                   </p>
                   <Link
                     href="/fighter/registrations/new"
@@ -166,7 +166,7 @@ export default async function FighterDashboardPage() {
                 </div>
                 <div className="min-w-0 space-y-3 sm:pt-1">
                   <p className="text-sm leading-relaxed text-muted-foreground">
-                    Shareable face on rankings — photo, record, academy. No personal details.
+                    Shareable face on rankings  photo, record, academy. No personal details.
                   </p>
                   <div className="flex flex-wrap gap-2">
                     <ShareFighterCardButton slug={publicSlug} displayName={name} />
@@ -219,31 +219,31 @@ export default async function FighterDashboardPage() {
               <dl className="grid grid-cols-2 gap-x-4 gap-y-3 border-t-2 border-black px-4 py-4 text-sm">
                 <div>
                   <dt className="text-[10px] uppercase tracking-[0.16em] text-muted-foreground">Academy</dt>
-                  <dd className="mt-0.5 break-words font-medium">{academy || "—"}</dd>
+                  <dd className="mt-0.5 break-words font-medium">{academy || ""}</dd>
                 </div>
                 <div>
                   <dt className="text-[10px] uppercase tracking-[0.16em] text-muted-foreground">Coach</dt>
-                  <dd className="mt-0.5 break-words font-medium">{data.profile?.headCoach || "—"}</dd>
+                  <dd className="mt-0.5 break-words font-medium">{data.profile?.headCoach || ""}</dd>
                 </div>
                 <div>
                   <dt className="text-[10px] uppercase tracking-[0.16em] text-muted-foreground">City</dt>
-                  <dd className="mt-0.5 break-words font-medium">{data.profile?.cityState || "—"}</dd>
+                  <dd className="mt-0.5 break-words font-medium">{data.profile?.cityState || ""}</dd>
                 </div>
                 <div>
                   <dt className="text-[10px] uppercase tracking-[0.16em] text-muted-foreground">Fit to fight</dt>
                   <dd className="mt-0.5 font-medium">
-                    {data.profile?.medicallyFit ? "Yes" : data.profile?.dateOfBirth ? "No" : "—"}
+                    {data.profile?.medicallyFit ? "Yes" : data.profile?.dateOfBirth ? "No" : ""}
                   </dd>
                 </div>
               </dl>
             </div>
           </DashboardSection>
 
-          <DashboardSection title="Your cards" actionHref="/fighter/registrations" actionLabel="All cards →">
+          <DashboardSection title="Your events" actionHref="/fighter/registrations" actionLabel="All events →">
             <div className="border-2 border-black bg-white">
               {data.registrations.length === 0 ? (
                 <p className="px-4 py-8 text-center text-sm text-muted-foreground">
-                  No cards yet.{" "}
+                  No events yet.{" "}
                   <Link href="/fighter/registrations/new" className="font-semibold text-brand-red underline">
                     Take a seat
                   </Link>

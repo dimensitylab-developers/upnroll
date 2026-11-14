@@ -15,18 +15,22 @@ const fighterProfileSchema = new Schema(
     // Aadhaar number (legacy), Aadhaar card image, medical answers, and the
     // passport photo stay off public pages.
     aadhaar: { type: String, default: "", trim: true },
-    /** Private storage key for Aadhaar card image — never expose on public pages. */
+    /** Private storage key for Aadhaar card image  never expose on public pages. */
     aadhaarImageKey: { type: String, default: "", trim: true },
+    /** Private storage key for signed parental consent (minors under 18). */
+    parentalConsentImageKey: { type: String, default: "", trim: true },
     cityState: { type: String, default: "", trim: true },
     emergencyContactName: { type: String, default: "", trim: true },
     emergencyRelationship: { type: String, default: "", trim: true },
     bloodGroup: { type: String, default: "", trim: true },
+    /** Instagram handle without leading @  required on grappler forms. */
+    instagramHandle: { type: String, default: "", trim: true },
     photoKey: { type: String, default: "", trim: true },
     academy: { type: String, default: "", trim: true },
     headCoach: { type: String, default: "", trim: true },
     beltRank: { type: String, default: "", trim: true },
     yearsTraining: { type: Number, default: 0 },
-    /** Career wins — seeding matrix field for brackets. */
+    /** Career wins  seeding matrix field for brackets. */
     careerWins: { type: Number, default: 0, min: 0 },
     weightDivision: { type: String, default: "", trim: true },
     heardAbout: { type: String, default: "", trim: true },

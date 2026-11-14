@@ -24,7 +24,7 @@ export function AthleteProfileCard({
       }`}
     >
       <div className="flex items-start gap-3">
-        {/* Photo slot — empty until photographs land. */}
+        {/* Photo slot  empty until photographs land. */}
         <div
           className={`flex size-14 shrink-0 items-center justify-center border-2 border-black text-sm font-semibold ${
             athlete.featured ? "bg-brand-red text-white" : "bg-neutral-100 text-black"

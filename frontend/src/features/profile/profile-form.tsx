@@ -14,6 +14,8 @@ export function ProfileForm({
   photoVersion,
   hasAadhaarImage,
   aadhaarImageVersion,
+  hasParentalConsentImage,
+  parentalConsentImageVersion,
   waiverAcceptedAt,
 }: {
   defaults: GrapplerDefaults;
@@ -21,6 +23,8 @@ export function ProfileForm({
   photoVersion: string;
   hasAadhaarImage: boolean;
   aadhaarImageVersion: string;
+  hasParentalConsentImage: boolean;
+  parentalConsentImageVersion: string;
   waiverAcceptedAt: string | null;
 }) {
   const router = useRouter();
@@ -33,7 +37,7 @@ export function ProfileForm({
   const dialogError =
     state.error ||
     (fieldErrorCount > 0
-      ? `Could not save yet — fix ${fieldErrorCount} field${fieldErrorCount === 1 ? "" : "s"} on the form (medical fitness must be Yes, and required grappler details cannot be blank).`
+      ? `Could not save yet  fix ${fieldErrorCount} field${fieldErrorCount === 1 ? "" : "s"} on the form (medical fitness must be Yes, and required grappler details cannot be blank).`
       : undefined);
 
   useEffect(() => {
@@ -61,6 +65,8 @@ export function ProfileForm({
         photoVersion={photoVersion}
         hasAadhaarImage={hasAadhaarImage}
         aadhaarImageVersion={aadhaarImageVersion}
+        hasParentalConsentImage={hasParentalConsentImage}
+        parentalConsentImageVersion={parentalConsentImageVersion}
         waiverAcceptedAt={waiverAcceptedAt}
       />
     </>

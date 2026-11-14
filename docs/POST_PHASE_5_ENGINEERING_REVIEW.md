@@ -1,4 +1,4 @@
-# Up 'n Roll — post Phase 5 engineering review
+# Up 'n Roll  post Phase 5 engineering review
 
 Date: 6 November 2026. Reviewer pass: source inspection of the current checkout. Branch `suraj`. Reference: `docs/MASTER_ENGINEERING_ROADMAP.md`.
 
@@ -48,7 +48,7 @@ Classification: **Verified** for branch, HEAD, the six commits, and the unpushed
 
 ## 3. Phase-by-phase evidence
 
-### Phase 0 — reliability
+### Phase 0  reliability
 
 **Verified.** `getSession` is wrapped in React `cache()` at `backend/auth/session.ts` lines 69–82. `listPublicEvents` is wrapped the same way at `backend/services/eventService.ts` lines 123–126. Both call `connectDB()` inside the cached function, so duplicate callers in one request share one read.
 
@@ -58,7 +58,7 @@ Public event status is `PUBLIC_EVENT_STATUSES`: `REGISTRATION_OPEN`, `REGISTRATI
 
 CI is `.github/workflows/ci.yml`. It checks out the repo, uses Node 22, runs `npm ci` in `frontend/`, runs the predev script, typechecks, runs Vitest, then `npm run build`. The dummy `MONGODB_URI` and `SESSION_SECRET` are set only on the build step (lines 24–27). Workflow execution on GitHub is **Not verified**.
 
-### Phase 1 — authorization and private data
+### Phase 1  authorization and private data
 
 **Verified** for the actor model, public field lists, screenshot validation, path confinement, and the private file routes that were read.
 
@@ -74,7 +74,7 @@ Screenshot validation requires bytes, a 3 MB cap, and PNG, JPEG, or WEBP magic t
 
 `frontend/src/proxy.ts` was not re-read in this pass. The roadmap says it only checks cookie presence. That claim is **Not verified** in this review.
 
-### Phase 2 — transactions and occupancy
+### Phase 2  transactions and occupancy
 
 **Verified** in source for the boundaries below. The Atlas suite was **Not verified** again; this review did not connect.
 
@@ -90,7 +90,7 @@ Ranking recalculation reads the latest `calculationVersion` inside the transacti
 
 `updateMatchSchedule` is not in a transaction. It saves the match, then calls `notifyWhatsApp` (`matchService.ts` lines 173–199). WhatsApp is a console log (`backend/notifications/whatsapp.ts` lines 1–5). It is outside SMTP.
 
-### Phase 3 — rendering
+### Phase 3  rendering
 
 **Verified** for structure. The byte and timing table is **Not verified** in this review.
 
@@ -98,7 +98,7 @@ The homepage renders four `<Suspense>` boundaries around the card, events, ranki
 
 `docs/PHASE_3_COMPLETION_REPORT.md` says TTFB and LCP did not improve and that client JavaScript dropped by 23,826 bytes. This review did not recount `.next/static/chunks` and does not adopt that number as evidence.
 
-### Phase 4 — public cache
+### Phase 4  public cache
 
 **Verified** for the cache boundary that was read. Invalidation call sites were located, not executed.
 
@@ -112,7 +112,7 @@ Sessions, admin pages, fighter pages, payment bytes, and profile photos are not 
 
 Draft exclusion is **Verified** only because the cached functions call `listPublicEvents` and `getEventBySlug`, which filter `PUBLIC_EVENT_STATUSES`. A draft created by an admin still invalidates the `events` tag. The refreshed query does not include the draft.
 
-### Phase 5 — SEO, media, operations
+### Phase 5  SEO, media, operations
 
 **Verified** in source. The live HTTP checks from the implementation session were **Not verified** again. The production server is not running for this review.
 

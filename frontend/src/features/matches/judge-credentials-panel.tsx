@@ -42,7 +42,7 @@ export function JudgeCredentialsPanel({
     <div className="mt-2 w-full min-w-0 space-y-2 border-2 border-black bg-[#f7f4ef] p-3 text-xs shadow-[3px_3px_0_0_#000] sm:max-w-md">
       <p className="font-semibold uppercase tracking-wider">Judge access</p>
       {scheduleWarning && (
-        <p className="text-brand-red">No scheduled time — timed 10-minute reminders will not be enqueued for this match.</p>
+        <p className="text-brand-red">No scheduled time  timed 10-minute reminders will not be enqueued for this match.</p>
       )}
       {meta ? (
         <p className="break-all">

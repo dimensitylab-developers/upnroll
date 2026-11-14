@@ -27,7 +27,7 @@ export function ManualRankingForm() {
         <label className="text-sm">
           Gender
           <select name="gender" className="mt-1 w-full border-2 border-black px-3 py-2">
-            <option value="">—</option>
+            <option value=""></option>
             <option value="FEMALE">Women</option>
             <option value="MALE">Men</option>
           </select>
@@ -35,7 +35,7 @@ export function ManualRankingForm() {
         <label className="text-sm">
           Experience
           <select name="experienceLevel" className="mt-1 w-full border-2 border-black px-3 py-2">
-            <option value="">—</option>
+            <option value=""></option>
             <option value="BEGINNER">Beginner</option>
             <option value="INTERMEDIATE">Intermediate</option>
           </select>

@@ -13,7 +13,7 @@ const initialState: AuthActionState = {};
 const fieldClass =
   "min-h-11 border-2 border-black bg-white text-black caret-black shadow-none focus-visible:ring-0 focus-visible:border-brand-red";
 
-export function LoginForm() {
+export function LoginForm({ from }: { from?: string }) {
   const [email, setEmail] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [gating, setGating] = useState(false);
@@ -29,7 +29,7 @@ export function LoginForm() {
       setGating(false);
       return result;
     } catch (err) {
-      // NEXT_REDIRECT also throws — leave the gate up through navigation.
+      // NEXT_REDIRECT also throws  leave the gate up through navigation.
       throw err;
     }
   }, []);
@@ -41,6 +41,7 @@ export function LoginForm() {
     <>
       {showGate ? <AuthTransitionOverlay mode="in" name={gateName} /> : null}
       <form action={formAction} className="space-y-5" onSubmit={() => setGating(true)}>
+        {from ? <input type="hidden" name="from" value={from} /> : null}
         {state.error && (
           <p className="border-2 border-brand-red bg-brand-red/5 px-3 py-2.5 text-sm text-primary" role="alert">
             {state.error}

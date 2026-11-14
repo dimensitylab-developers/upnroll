@@ -15,7 +15,7 @@ import { NotFoundError, ConflictError, ValidationError } from "@/server/http/err
 import { requireObjectId } from "@/server/validation/objectId";
 import { withTransaction, bindSession, sessionOpts } from "@/server/db/transaction";
 
-/** Large safe alphabet without ambiguous 0/O/1/I/l — cryptographically random. */
+/** Large safe alphabet without ambiguous 0/O/1/I/l  cryptographically random. */
 const CRED_ALPHABET = "ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz23456789";
 
 function randomCredentialPart(length: number): string {
@@ -97,7 +97,7 @@ export async function generateMatchJudgeCredentials(actor: Actor, matchId: strin
       session
     );
 
-    // Password returned once — never persisted in recoverable form.
+    // Password returned once  never persisted in recoverable form.
     return {
       credentialId: String(credential._id),
       matchId,

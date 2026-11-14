@@ -8,7 +8,7 @@ import { AdminEmpty } from "@/features/admin/ui/admin-empty";
 import { AdminSection } from "@/features/admin/ui/admin-section";
 import { AdminStamp } from "@/features/admin/ui/admin-stamp";
 
-/** Session/DB-bound route — allow blocking navigation under Cache Components. */
+/** Session/DB-bound route  allow blocking navigation under Cache Components. */
 export const instant = false;
 
 export const metadata: Metadata = { title: "Events" };

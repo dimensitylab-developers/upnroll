@@ -1,7 +1,7 @@
 import "server-only";
 
 /**
- * Pure, bounded FAQ matcher — no LLM, no third-party API (that would be
+ * Pure, bounded FAQ matcher  no LLM, no third-party API (that would be
  * its own infra decision, OD-012-class, not mine to pick unilaterally).
  * Deterministic keyword-overlap scoring against admin-published FAQ
  * content only. Returns null when there's no confident match, which the

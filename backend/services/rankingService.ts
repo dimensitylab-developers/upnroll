@@ -10,7 +10,7 @@ import { computeRecord, winLossPointsStrategy, type DecidedMatch } from "./ranki
 import { bindSession, sessionOpts, withTransaction } from "@/server/db/transaction";
 import { ConflictError } from "@/server/http/errors";
 
-/** System/outbox path — no interactive admin actor. Still audited. */
+/** System/outbox path  no interactive admin actor. Still audited. */
 export async function recalculateRankingsSystem(systemActorId = "system:outbox") {
   await connectDB();
   return recalculateRankingsInTransaction(systemActorId);

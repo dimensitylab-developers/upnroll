@@ -50,7 +50,7 @@ export default async function PublicSchedulePage({ params }: { params: Promise<{
               {matches.map((m) => (
                 <TableRow key={String(m._id)}>
                   <TableCell>{m.competitorAName ?? "TBD"} vs {m.competitorBName ?? "TBD"}</TableCell>
-                  <TableCell>{m.mat || "—"}</TableCell>
+                  <TableCell>{m.mat || ""}</TableCell>
                   <TableCell>{m.scheduledAt ? new Date(m.scheduledAt as Date).toLocaleString() : "TBA"}</TableCell>
                   <TableCell>
                     <Badge variant="outline">{m.status}</Badge>

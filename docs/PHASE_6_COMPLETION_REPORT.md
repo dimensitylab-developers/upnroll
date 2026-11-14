@@ -56,7 +56,7 @@ From `frontend/` on 7 November 2026:
 
 The transaction tests used Atlas database `upnrol_txn_test` and dropped only that database. The application database was not migrated. The dev server was stopped so the build could write `.next`.
 
-The payment-reject integration test logged `[dev email — not sent]`, which is the console adapter under the test `NODE_ENV`. No message was delivered.
+The payment-reject integration test logged `[dev email  not sent]`, which is the console adapter under the test `NODE_ENV`. No message was delivered.
 
 ## Still required before production mail
 

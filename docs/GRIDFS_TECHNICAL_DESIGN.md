@@ -1,4 +1,4 @@
-# GridFS — technical design
+# GridFS  technical design
 
 Date: 7 November 2026. Status: architecture approved in principle as the basis for an implementation plan. This document does not authorize application code.
 

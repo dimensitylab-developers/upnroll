@@ -84,7 +84,7 @@ async function advanceWinnerIfApplicable(
   session: DbSession
 ) {
   const bracket = await bindSession(Bracket.findById(bracketId), session);
-  if (!bracket || round + 1 >= bracket.roundsCount) return; // final match — nothing downstream
+  if (!bracket || round + 1 >= bracket.roundsCount) return; // final match  nothing downstream
 
   const { round: nextRound, order: nextOrder, slot } = nextSlot(round, order);
   const next = await bindSession(Match.findOne({ bracketId, round: nextRound, order: nextOrder }), session);

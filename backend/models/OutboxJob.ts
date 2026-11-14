@@ -27,7 +27,7 @@ const outboxJobSchema = new Schema(
     attempts: { type: Number, required: true, default: 0, min: 0 },
     maxAttempts: { type: Number, required: true, default: 5, min: 1 },
     lastError: { type: String, default: "" },
-    /** Unique business key — duplicate inserts become no-ops / supersede siblings. */
+    /** Unique business key  duplicate inserts become no-ops / supersede siblings. */
     idempotencyKey: { type: String, required: true },
     payload: { type: Schema.Types.Mixed, required: true, default: {} },
     processingStartedAt: { type: Date, default: null },

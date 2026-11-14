@@ -37,7 +37,7 @@ export function ResponsiveBehavior() {
           </div>
         </div>
       </div>
-      <FixtureBadge>Frame resizes to the real breakpoint width — not a scaled-down screenshot</FixtureBadge>
+      <FixtureBadge>Frame resizes to the real breakpoint width  not a scaled-down screenshot</FixtureBadge>
     </Chapter>
   );
 }

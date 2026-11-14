@@ -74,7 +74,7 @@ const DEMO_FIGHTERS = [
     weightDivision: "Welterweight",
     bloodGroup: "O+",
     hasMedicalCondition: true,
-    medicalConditionDetail: "Old shoulder sprain — cleared to compete",
+    medicalConditionDetail: "Old shoulder sprain  cleared to compete",
   },
   {
     email: "demo.meher@upnroll.local",
@@ -280,7 +280,7 @@ async function seedJamesDashboard(eventId: unknown, opponentUserId: unknown) {
         requestedDivisionId: (
           await Division.findOne({ eventId, name: "Men Intermediate −85 kg" }).select("_id")
         )?._id,
-        reason: "Demo request — checking weight cut options before the card.",
+        reason: "Demo request  checking weight cut options before the card.",
         status: "PENDING",
       },
     },

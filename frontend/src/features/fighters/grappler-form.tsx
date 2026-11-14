@@ -6,8 +6,8 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { SectionBanner } from "@/components/home/section-banner";
-import { ageFromDob } from "./grappler-schema";
-import { WAIVER_CLAUSES, WAIVER_IMPORTANT } from "./waiver";
+import { ageFromDob, isMinorAge } from "./grappler-schema";
+import { PARENTAL_CONSENT_CLAUSES, WAIVER_CLAUSES, WAIVER_IMPORTANT } from "./waiver";
 
 export type GrapplerFormState = {
   error?: string;
@@ -26,6 +26,7 @@ export type GrapplerDefaults = {
   emergencyContactName: string;
   emergencyRelationship: string;
   bloodGroup: string;
+  instagramHandle: string;
   academy: string;
   headCoach: string;
   beltRank: string;
@@ -52,6 +53,8 @@ type GrapplerFormProps = {
   photoVersion?: string;
   hasAadhaarImage?: boolean;
   aadhaarImageVersion?: string;
+  hasParentalConsentImage?: boolean;
+  parentalConsentImageVersion?: string;
   waiverAcceptedAt?: string | null;
   top?: ReactNode;
   bottom?: ReactNode;
@@ -144,6 +147,8 @@ export function GrapplerForm({
   photoVersion = "",
   hasAadhaarImage = false,
   aadhaarImageVersion = "",
+  hasParentalConsentImage = false,
+  parentalConsentImageVersion = "",
   waiverAcceptedAt,
   top,
   bottom,
@@ -152,6 +157,8 @@ export function GrapplerForm({
 }: GrapplerFormProps) {
   const [photoPreviewUrl, setPhotoPreviewUrl] = useState<string | null>(null);
   const [aadhaarPreviewUrl, setAadhaarPreviewUrl] = useState<string | null>(null);
+  const [consentPreviewUrl, setConsentPreviewUrl] = useState<string | null>(null);
+  const [parentalConsentChecked, setParentalConsentChecked] = useState(false);
   const values = defaults;
   const errors = state.fieldErrors;
   const aadhaarRequired = mode === "event" && !hasAadhaarImage;
@@ -163,13 +170,16 @@ export function GrapplerForm({
     return values?.age ?? "";
   })();
   const [age, setAge] = useState(initialAge);
+  const showParentalConsent = isMinorAge(Number(age));
+  const parentalConsentRequired = showParentalConsent && !hasParentalConsentImage;
 
   useEffect(() => {
     return () => {
       if (photoPreviewUrl) URL.revokeObjectURL(photoPreviewUrl);
       if (aadhaarPreviewUrl) URL.revokeObjectURL(aadhaarPreviewUrl);
+      if (consentPreviewUrl) URL.revokeObjectURL(consentPreviewUrl);
     };
-  }, [photoPreviewUrl, aadhaarPreviewUrl]);
+  }, [photoPreviewUrl, aadhaarPreviewUrl, consentPreviewUrl]);
 
   function onPhotoChange(event: ChangeEvent<HTMLInputElement>) {
     const file = event.target.files?.[0];
@@ -187,10 +197,19 @@ export function GrapplerForm({
     });
   }
 
+  function onConsentChange(event: ChangeEvent<HTMLInputElement>) {
+    const file = event.target.files?.[0];
+    setConsentPreviewUrl((current) => {
+      if (current) URL.revokeObjectURL(current);
+      return file ? URL.createObjectURL(file) : null;
+    });
+  }
+
   function onDateOfBirthChange(event: ChangeEvent<HTMLInputElement>) {
     const iso = event.target.value;
     const calculated = ageFromDob(iso);
     setAge(calculated >= 0 ? String(calculated) : "");
+    if (!isMinorAge(calculated)) setParentalConsentChecked(false);
   }
 
   const fieldErrorCount = errors ? Object.values(errors).filter((list) => list && list.length > 0).length : 0;
@@ -202,7 +221,7 @@ export function GrapplerForm({
   }, [fieldErrorCount, errors]);
 
   return (
-    <form id={id} action={formAction} className="space-y-8">
+    <form id={id} action={formAction} className="min-w-0 space-y-8">
       {state.error && <p className="text-sm text-primary">{state.error}</p>}
       {state.success && (
         <p className="border-2 border-black bg-white px-3 py-2 text-sm font-semibold text-brand-cyan shadow-[3px_3px_0_0_#000]">
@@ -273,7 +292,15 @@ export function GrapplerForm({
             <TextField label="City / State" name="cityState" errors={errors} defaultValue={values?.cityState} />
             <TextField label="Emergency contact name" name="emergencyContactName" errors={errors} defaultValue={values?.emergencyContactName} />
             <TextField label="Relationship" name="emergencyRelationship" errors={errors} defaultValue={values?.emergencyRelationship} />
-            <TextField label="Blood group (optional)" name="bloodGroup" required={false} errors={errors} defaultValue={values?.bloodGroup} />
+            <TextField label="Blood group" name="bloodGroup" errors={errors} defaultValue={values?.bloodGroup} />
+            <TextField
+              label="Instagram ID"
+              name="instagramHandle"
+              errors={errors}
+              defaultValue={values?.instagramHandle}
+              hint="Required. Username only (with or without @)."
+              maxLength={60}
+            />
           </div>
           {mode === "profile" && (
             <div>
@@ -390,14 +417,19 @@ export function GrapplerForm({
         </div>
       </section>
 
-      <section className="space-y-4">
+      <section className="min-w-0 space-y-4">
         <SectionBanner>4. Terms and conditions</SectionBanner>
-        <ol className="list-decimal pl-5 space-y-2 text-sm border-2 border-black bg-white p-4">
-          {WAIVER_CLAUSES.map((clause) => (
-            <li key={clause}>{clause}</li>
+        <ol className="w-full min-w-0 space-y-3 overflow-visible border-2 border-black bg-white p-4 text-sm">
+          {WAIVER_CLAUSES.map((clause, index) => (
+            <li key={clause} className="flex gap-2">
+              <span className="w-5 shrink-0 text-right font-semibold tabular-nums">{index + 1}.</span>
+              <span className="min-w-0 flex-1 break-words whitespace-normal leading-relaxed">{clause}</span>
+            </li>
           ))}
         </ol>
-        <p className="border-2 border-black bg-amber-50 px-4 py-3 text-sm">{WAIVER_IMPORTANT}</p>
+        <p className="min-w-0 break-words border-2 border-black bg-amber-50 px-4 py-3 text-sm leading-relaxed">
+          {WAIVER_IMPORTANT}
+        </p>
         <p className="text-display uppercase tracking-wider text-brand-red text-sm">Thank you and see you on the mats!</p>
         <p className="text-sm text-muted-foreground">
           {waiverAcceptedAt
@@ -407,6 +439,69 @@ export function GrapplerForm({
               : "These are the terms that come with a fighter account."}
         </p>
       </section>
+
+      {showParentalConsent && (
+        <section className="min-w-0 space-y-4">
+          <SectionBanner>5. Parental / guardian consent</SectionBanner>
+          <p className="text-sm text-muted-foreground">
+            This athlete is under 18. A parent or legal guardian must read the consent below and upload a signed consent form.
+          </p>
+          <ol className="w-full min-w-0 space-y-3 overflow-visible border-2 border-black bg-white p-4 text-sm">
+            {PARENTAL_CONSENT_CLAUSES.map((clause, index) => (
+              <li key={clause} className="flex gap-2">
+                <span className="w-5 shrink-0 text-right font-semibold tabular-nums">{index + 1}.</span>
+                <span className="min-w-0 flex-1 break-words whitespace-normal leading-relaxed">{clause}</span>
+              </li>
+            ))}
+          </ol>
+          <div className="max-w-md">
+            <Label htmlFor="parentalConsentImage" className="mb-1.5 block">
+              Signed parental consent form
+            </Label>
+            <div className="mb-2 flex aspect-[16/10] w-full items-center justify-center overflow-hidden border-2 border-black bg-white">
+              {consentPreviewUrl || hasParentalConsentImage ? (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img
+                  src={consentPreviewUrl ?? `/api/v1/fighter/parental-consent?v=${parentalConsentImageVersion}`}
+                  alt="Parental consent form"
+                  className="h-full w-full object-contain"
+                />
+              ) : (
+                <span className="px-2 text-center text-[10px] uppercase tracking-wider text-muted-foreground">
+                  Upload signed consent form
+                </span>
+              )}
+            </div>
+            <Input
+              id="parentalConsentImage"
+              name="parentalConsentImage"
+              type="file"
+              accept="image/jpeg,image/png,image/webp"
+              required={parentalConsentRequired}
+              onChange={onConsentChange}
+            />
+            <p className="mt-1 text-xs text-muted-foreground">
+              Clear photo of the signed parental consent form. JPG, PNG, or WebP, under 1.5 MB. Private — organizers only.
+            </p>
+            <FieldError name="parentalConsentImage" errors={errors} />
+          </div>
+          <label className="flex items-start gap-2 text-sm">
+            <input
+              type="checkbox"
+              name="parentalConsent"
+              value="yes"
+              className="mt-1"
+              required={showParentalConsent}
+              checked={parentalConsentChecked}
+              onChange={(event) => setParentalConsentChecked(event.target.checked)}
+            />
+            <span>
+              I am the parent or legal guardian (or I confirm a parent/guardian has signed) and I consent to this athlete competing.
+            </span>
+          </label>
+          <FieldError name="parentalConsent" errors={errors} />
+        </section>
+      )}
 
       {bottom}
 

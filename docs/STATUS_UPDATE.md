@@ -1,4 +1,4 @@
-# Up 'n Roll — status update
+# Up 'n Roll  status update
 
 Date: 6 November 2026. Branch: `suraj`. Not pushed.
 
@@ -23,15 +23,15 @@ The production build is `npm run build` in `frontend/`, which runs `next build -
 
 ## Done
 
-### Phase 0 — reliability
+### Phase 0  reliability
 
 `getSession` and `listPublicEvents` are wrapped in React `cache()`, so one request does not load them twice. Public schedule and results use the same published statuses as the public event query, so drafts stay off those pages. `predev` is a Node script that can create the root `node_modules` link on Windows. CI is `.github/workflows/ci.yml`: Node 22, `npm ci` from `frontend/`, typecheck, Vitest, and the webpack build. GitHub Actions has not been run for this branch yet.
 
-### Phase 1 — security
+### Phase 1  security
 
 Protected services take a readonly actor. The session handed to application code does not include the password hash. Public reads use field allowlists. Payment screenshots are capped at 3 MB and must match PNG, JPEG, or WEBP bytes. Storage keys stay inside the storage root. Private file responses send `nosniff`. `server-only` marks session, service, and storage modules. `frontend/src/proxy.ts` only checks that a session cookie is present before `/fighter` and `/admin`. It is not the authorization check.
 
-### Phase 2 — transactions and occupancy
+### Phase 2  transactions and occupancy
 
 Registration create and withdraw, payment review, bracket generate-and-publish, ranking recalculation, and registration-request decisions each run in one transaction on the existing Mongoose connection. The helper ends the session in `finally`. Email, filesystem writes, cookies, and WhatsApp stay outside the retryable callback. A payment screenshot written before the transaction is deleted if the transaction aborts. A failed email after commit does not delete that file.
 
@@ -41,19 +41,19 @@ Registration create and withdraw, payment review, bracket generate-and-publish, 
 
 Transaction tests use Atlas database `upnrol_txn_test` and drop only that database. They do not download a MongoDB binary and they do not write the application database.
 
-### Phase 3 — rendering
+### Phase 3  rendering
 
 The homepage sends the shell first. The card, events, rankings, and FAQ stream inside Suspense. Division brackets do the same. The support chat is on the public layout only. Sign-in does not render it. `@tanstack/react-query` is removed.
 
 Measured on a warm production server: TTFB and LCP did not improve. Client JavaScript dropped by 23,826 bytes (77 files, 1,441,780 bytes down to 1,417,954 bytes).
 
-### Phase 4 — public cache
+### Phase 4  public cache
 
 `cacheComponents` is on. Published public reads use `use cache`, `cacheLife("minutes")`, and `cacheTag`. Server Actions call `updateTag` after a successful commit, not inside the transaction. Cached division lists expose name, discipline, and capacity. They do not expose occupancy.
 
 Not cached: sessions, fighter and admin data, payments, private files, Aadhaar, and medical fields. Drafts stay out because the cached functions call the existing public queries. Public routes prerender with a 1 minute revalidate and a 1 hour expiry. Private photo and screenshot routes stay dynamic.
 
-### Phase 5 — SEO, media, operations
+### Phase 5  SEO, media, operations
 
 Public event, bracket, schedule, results, and fighter pages set titles from those cached records. List pages set their own titles. `robots.ts` disallows `/admin`, `/fighter`, `/api`, `/ui-preview`, and `/rankings/demo`. Login, register, both portals, the seeding demo, and the preview page are `noindex`.
 

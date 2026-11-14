@@ -18,3 +18,12 @@ export const WAIVER_CLAUSES = [
 
 export const WAIVER_IMPORTANT =
   "All information provided is true and accurate to the best of my knowledge. Providing false information may lead to disqualification.";
+
+/** Shown when the grappler is under 18  parent/guardian must consent and upload a signed form. */
+export const PARENTAL_CONSENT_CLAUSES = [
+  "I am the parent or legal guardian of the athlete named on this registration.",
+  "I give permission for my child to compete in this Up 'n Roll No-Gi event.",
+  "I have read the event rules, risks of grappling sports, and the athlete waiver.",
+  "I accept that the organizers, venue, sponsors, and coaches are not liable for injury or unforeseen events.",
+  "I confirm the information on this form is true, and I will upload a signed parental consent form.",
+] as const;

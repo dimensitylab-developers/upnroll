@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 import Link from "next/link";
 import { connection } from "next/server";
+import { headers } from "next/headers";
 import { DynamicBoundary } from "@/components/dynamic-boundary";
 import { PageLoader } from "@/components/layout/page-loader";
 import { getSession } from "@/server/auth/session";
@@ -9,8 +10,9 @@ import { portalTabTitle, resolveDisplayName } from "@/server/auth/display-name";
 import { SignOutButton } from "@/features/auth/sign-out-button";
 import { FighterNav } from "@/features/fighter/fighter-nav";
 import { BrandMark, BuiltBy, FounderCredit, SiteCopyright } from "@/components/layout/brand";
+import { isSafeAppPath } from "@/lib/safe-app-path";
 
-/** Fighter portal is cookie/session-bound — never try to instant-prerender it. */
+/** Fighter portal is cookie/session-bound  never try to instant-prerender it. */
 export const instant = false;
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -40,7 +42,13 @@ export default function FighterLayout({ children }: { children: React.ReactNode 
 async function FighterShell({ children }: { children: React.ReactNode }) {
   await connection();
   const session = await getSession();
-  if (!session) redirect("/login");
+  if (!session) {
+    const returnPath = (await headers()).get("x-upnroll-return");
+    if (isSafeAppPath(returnPath)) {
+      redirect(`/login?from=${encodeURIComponent(returnPath)}`);
+    }
+    redirect("/login");
+  }
   if (session.user.role !== "FIGHTER") redirect("/admin");
 
   const displayName = await resolveDisplayName(session.user._id, session.user.email);

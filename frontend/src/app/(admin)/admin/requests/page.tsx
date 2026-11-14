@@ -6,7 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { DecideRequestDialog } from "@/features/requests/decide-request-dialog";
 import { AdminStamp } from "@/features/admin/ui/admin-stamp";
 
-/** Session/DB-bound route — allow blocking navigation under Cache Components. */
+/** Session/DB-bound route  allow blocking navigation under Cache Components. */
 export const instant = false;
 
 export const metadata: Metadata = { title: "Requests" };
@@ -49,7 +49,7 @@ export default async function AdminRequestsPage() {
                   </TableCell>
                   <TableCell>
                     {r.status === "PENDING" ? (
-                      <DecideRequestDialog requestId={String(r._id)} summary={`${r.type} — ${r.reason}`} />
+                      <DecideRequestDialog requestId={String(r._id)} summary={`${r.type}  ${r.reason}`} />
                     ) : (
                       <span className="text-xs text-muted-foreground">Decided</span>
                     )}

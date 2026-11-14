@@ -6,7 +6,7 @@ import { Swords, Trophy, Users, LayoutDashboard, CreditCard, FileText } from "lu
 
 export function NavigationSystems() {
   return (
-    <Chapter id="navigation-systems" title="Navigation Systems" subtitle="Public top-nav, admin sidebar, and breadcrumb trail — the three navigation shells the production site reuses across route groups.">
+    <Chapter id="navigation-systems" title="Navigation Systems" subtitle="Public top-nav, admin sidebar, and breadcrumb trail  the three navigation shells the production site reuses across route groups.">
       <div className="space-y-8">
         <div>
           <p className="text-sm font-semibold text-muted-foreground mb-2">Public top navigation</p>
@@ -43,7 +43,7 @@ export function NavigationSystems() {
               ))}
             </div>
             <div className="flex-1 p-4 text-sm text-muted-foreground">
-              Content region — payment verification queue renders here (Chapter 17).
+              Content region  payment verification queue renders here (Chapter 17).
             </div>
           </div>
         </div>

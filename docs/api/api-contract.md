@@ -1,6 +1,6 @@
-# API Contract Proposal — Up 'n Roll
+# API Contract Proposal  Up 'n Roll
 
-Status: **proposal, no handlers implemented.** Phase 1 ships zero API routes — `/ui-preview` uses local fixtures only. This document is the agreed shape for Phase 2+ implementation, replacing the old TechBlitz `/api/*` surface (unversioned, no shared envelope, passcode-only auth — see repository audit §5).
+Status: **proposal, no handlers implemented.** Phase 1 ships zero API routes  `/ui-preview` uses local fixtures only. This document is the agreed shape for Phase 2+ implementation, replacing the old TechBlitz `/api/*` surface (unversioned, no shared envelope, passcode-only auth  see repository audit §5).
 
 ## Conventions
 
@@ -19,7 +19,7 @@ Status: **proposal, no handlers implemented.** Phase 1 ships zero API routes —
 ```
 
 - List endpoints are paginated; filters are explicit query params, not free-form.
-- High-risk mutations (`approve`/`reject`/`generate`/`publish`) are idempotent — repeating the same request must not double-apply the effect.
+- High-risk mutations (`approve`/`reject`/`generate`/`publish`) are idempotent  repeating the same request must not double-apply the effect.
 
 ## Endpoint groups (full list from Part K, carried here for implementation reference)
 
@@ -104,4 +104,4 @@ Every real endpoint built in Phase 2+ must be documented to this level before or
 
 ## Explicit non-duplication rule
 
-Where both a Server Action and a REST handler could perform the same mutation (e.g., payment approval from an admin page vs. a potential external integration), both must call the same `src/server/services/*` function — no duplicated business logic between the two call paths.
+Where both a Server Action and a REST handler could perform the same mutation (e.g., payment approval from an admin page vs. a potential external integration), both must call the same `src/server/services/*` function  no duplicated business logic between the two call paths.

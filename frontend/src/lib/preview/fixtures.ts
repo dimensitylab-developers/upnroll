@@ -1,6 +1,6 @@
 /**
  * Fictional fixture data for /ui-preview only.
- * Nothing here is real client content, a real fighter, or an approved business rule —
+ * Nothing here is real client content, a real fighter, or an approved business rule 
  * see docs/decisions/open-decisions.md for everything still pending client sign-off.
  * Never imported by a production route.
  */
@@ -51,7 +51,7 @@ export const previewDivisions = [
 ];
 
 export const previewBracket = {
-  divisionName: "Welterweight — 16-fighter single elimination",
+  divisionName: "Welterweight  16-fighter single elimination",
   rounds: [
     {
       name: "Round of 16",
@@ -95,7 +95,7 @@ export const previewDashboardScenarios: Record<
   rejected: { label: "Payment rejected", status: "AWAITING_PAYMENT", paymentStatus: "REJECTED", nextAction: "Resubmit payment proof" },
   confirmedUnassigned: { label: "Confirmed, awaiting matchup", status: "CONFIRMED", paymentStatus: "APPROVED", nextAction: "Wait for bracket placement" },
   matchAssigned: { label: "Match assigned", status: "CONFIRMED", paymentStatus: "APPROVED", nextAction: "Prepare for Round of 16, Mat 2, 7:40 PM" },
-  matchInProgress: { label: "Match in progress", status: "CONFIRMED", paymentStatus: "APPROVED", nextAction: "Live — Mat 2" },
+  matchInProgress: { label: "Match in progress", status: "CONFIRMED", paymentStatus: "APPROVED", nextAction: "Live  Mat 2" },
   resultCompleted: { label: "Result completed", status: "CONFIRMED", paymentStatus: "APPROVED", nextAction: "View result and next-round status" },
 };
 
@@ -119,7 +119,7 @@ export const previewPaymentQueue = [
 
 export const previewRequests = [
   { id: "r-1", type: "TRANSFER", fighter: "Devansh Oak", from: "Welterweight", to: "Middleweight", status: "PENDING", reason: "Missed fight-week weight target" },
-  { id: "r-2", type: "CANCELLATION", fighter: "Zaid Momin", from: "Welterweight", to: null, status: "PENDING", reason: "Injury — unable to compete" },
+  { id: "r-2", type: "CANCELLATION", fighter: "Zaid Momin", from: "Welterweight", to: null, status: "PENDING", reason: "Injury  unable to compete" },
   { id: "r-3", type: "TRANSFER", fighter: "Kabir Lotlikar", from: "Welterweight", to: "Welterweight (B)", status: "APPROVED", reason: "Division rebalancing" },
 ];
 
@@ -135,5 +135,5 @@ export const previewChatScript = [
   { role: "user" as const, text: "Can I change my division after paying?" },
   { role: "assistant" as const, text: "Division transfers go through an admin review request after payment. Submit one from your dashboard under \"Requests.\"" },
   { role: "user" as const, text: "Do you offer refunds if I withdraw?" },
-  { role: "assistant" as const, text: "I don't have an approved refund policy to share yet — please contact the event organizer directly for cancellation and refund questions." },
+  { role: "assistant" as const, text: "I don't have an approved refund policy to share yet  please contact the event organizer directly for cancellation and refund questions." },
 ];

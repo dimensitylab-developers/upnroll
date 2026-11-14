@@ -1,4 +1,4 @@
-# Security Remediation Report — Phase 1
+# Security Remediation Report  Phase 1
 
 Date: 2026-11-09  
 Branch: `suraj`  

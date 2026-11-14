@@ -1,4 +1,4 @@
-# GridFS — implementation plan
+# GridFS  implementation plan
 
 Date: 7 November 2026. Basis: `docs/GRIDFS_TECHNICAL_DESIGN.md` (architecture approved in principle).
 

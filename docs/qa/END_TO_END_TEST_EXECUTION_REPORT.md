@@ -1,4 +1,4 @@
-# End-to-End Test Execution Report — Up 'n Roll
+# End-to-End Test Execution Report  Up 'n Roll
 
 **Date:** 2026-11-09  
 **Branch:** `suraj`  
@@ -22,8 +22,8 @@ It is **not** fully production-ready: several product paths remain **NOT IMPLEME
 | Actor | Identifier |
 |-------|------------|
 | Admin | `admin@upnroll.in` (pre-existing) |
-| Fighter A | `e2e.a.1794233342848@test.local` — created via UI register+verify |
-| Fighter B | `e2e.b.1794233971816@test.local` — created by lifecycle script |
+| Fighter A | `e2e.a.1794233342848@test.local`  created via UI register+verify |
+| Fighter B | `e2e.b.1794233971816@test.local`  created by lifecycle script |
 | Event | `e2e-flow-arena-1794233971816` / id `6af1d67408b79ed0c9b9bd2c` |
 | Division | `E2E Lightweight` / id `6af1d67408b79ed0c9b9bd2d` |
 | Winner registration | `6af1d67408b79ed0c9b9bd2e` (Fighter A) |
@@ -33,17 +33,17 @@ It is **not** fully production-ready: several product paths remain **NOT IMPLEME
 
 ## Workflow results
 
-### A. Visitor journey — FULLY VERIFIED
+### A. Visitor journey  FULLY VERIFIED
 
 | Step | Expected | Actual |
 |------|----------|--------|
-| Open `/` unauthenticated | Login/Sign up CTAs | PASS — no Dashboard |
-| `/events` | Open cards listed | PASS — Phase 3 + Underground + later E2E |
+| Open `/` unauthenticated | Login/Sign up CTAs | PASS  no Dashboard |
+| `/events` | Open cards listed | PASS  Phase 3 + Underground + later E2E |
 | Event detail | Venue/date/divisions | PASS for E2E event |
 | `/fighter/dashboard` no session | Redirect login | PASS → `/login` |
 | Public nav / FAQ / rankings routes | Load without 500 | PASS (spot) |
 
-### B. Account creation & authentication — VERIFIED WITH ISSUES
+### B. Account creation & authentication  VERIFIED WITH ISSUES
 
 | Step | Result | Notes |
 |------|--------|-------|
@@ -61,7 +61,7 @@ It is **not** fully production-ready: several product paths remain **NOT IMPLEME
 | Session expiry (30d) | **NOT TESTED** | Would need clock/cookie manipulation |
 | Hydration Issues badge on register fills | KNOWN | Automation artifact / prior BUG-QA-005/007 |
 
-### C. Fighter onboarding & profile — PARTIALLY VERIFIED
+### C. Fighter onboarding & profile  PARTIALLY VERIFIED
 
 | Step | Result | Notes |
 |------|--------|-------|
@@ -71,7 +71,7 @@ It is **not** fully production-ready: several product paths remain **NOT IMPLEME
 | Private photo authz | PARTIAL | Routes exist; photo keys written to `.local-storage`; admin/fighter GET not re-hit this pass |
 | Unauthorized profile edit | CODE-VERIFIED | `updateFighterProfile` asserts FIGHTER + own userId |
 
-### D. Event discovery & registration — FULLY VERIFIED (lifecycle path)
+### D. Event discovery & registration  FULLY VERIFIED (lifecycle path)
 
 | Step | Result | Notes |
 |------|--------|-------|
@@ -82,7 +82,7 @@ It is **not** fully production-ready: several product paths remain **NOT IMPLEME
 | Appears for fighter | PASS | UI: CONFIRMED on `/fighter/registrations` |
 | Appears for admin | PASS | Prior admin portal audit + event exists in DB |
 
-### E. Payment lifecycle — FULLY VERIFIED (DB path) / PARTIAL (UI dialog)
+### E. Payment lifecycle  FULLY VERIFIED (DB path) / PARTIAL (UI dialog)
 
 | Step | Result | Notes |
 |------|--------|-------|
@@ -94,7 +94,7 @@ It is **not** fully production-ready: several product paths remain **NOT IMPLEME
 | Browser PaymentReviewDialog click | PARTIAL | No PENDING_REVIEW left after script; prior admin queue UI PASS empty/decided rows |
 | Real money / bank rails | N/A | Manual UTR+QR model only |
 
-### F. Admin review & management — VERIFIED WITH ISSUES
+### F. Admin review & management  VERIFIED WITH ISSUES
 
 Prior live admin session (`admin@upnroll.in`) + this lifecycle:
 
@@ -106,9 +106,9 @@ Prior live admin session (`admin@upnroll.in`) + this lifecycle:
 | Requests empty | PASS |
 | Rankings recalculate | PASS (prior + script v1) |
 | Content/media | PASS (prior media create) |
-| Event/division/bracket via admin UI forms | PARTIAL — lifecycle used script for isolation speed; admin Events UI verified earlier |
+| Event/division/bracket via admin UI forms | PARTIAL  lifecycle used script for isolation speed; admin Events UI verified earlier |
 
-### G. Tournament creation & bracket lifecycle — FULLY VERIFIED (isolated run)
+### G. Tournament creation & bracket lifecycle  FULLY VERIFIED (isolated run)
 
 | Step | Result |
 |------|--------|
@@ -117,19 +117,19 @@ Prior live admin session (`admin@upnroll.in`) + this lifecycle:
 | Reject generate with &lt;2 | PASS |
 | Generate DRAFT + publish | PASS |
 | Record final COMPLETED | PASS |
-| Public brackets page | PASS — Final for E2E Lightweight |
-| Public results | PASS — Alpha vs Bravo, winner Alpha, SUBMISSION |
-| Fighter matches | PASS — COMPLETED Round 1, Mat 1, winner Alpha |
-| Rankings board | PASS — Alpha & Bravo links present |
-| Regenerate published / unpublish | CODE — blocked by design |
+| Public brackets page | PASS  Final for E2E Lightweight |
+| Public results | PASS  Alpha vs Bravo, winner Alpha, SUBMISSION |
+| Fighter matches | PASS  COMPLETED Round 1, Mat 1, winner Alpha |
+| Rankings board | PASS  Alpha & Bravo links present |
+| Regenerate published / unpublish | CODE  blocked by design |
 | Concurrent bracket gen | Covered by prior integration tests / hardening commit |
 | Multi-round bye ladder | NOT EXERCISED (2-player final only) |
 
-### H. Fighter post-registration — FULLY VERIFIED
+### H. Fighter post-registration  FULLY VERIFIED
 
 Confirmed registration status, completed match with winner method, no unpublished private admin fields on public pages.
 
-### I. Public tournament — FULLY VERIFIED
+### I. Public tournament  FULLY VERIFIED
 
 Event detail, brackets, results, rankings updated after admin/script mutations. DRAFT exclusion verified in code.
 
@@ -169,7 +169,7 @@ Event detail, brackets, results, rankings updated after admin/script mutations. 
 
 ## Responsive
 
-Prior QA spot-checked mobile fighter chrome. This E2E pass prioritized lifecycle correctness over a full viewport matrix. Remaining: formal pass at 375/390/768/1366/1920 — **PARTIAL**.
+Prior QA spot-checked mobile fighter chrome. This E2E pass prioritized lifecycle correctness over a full viewport matrix. Remaining: formal pass at 375/390/768/1366/1920  **PARTIAL**.
 
 ---
 
@@ -180,7 +180,7 @@ Prior QA spot-checked mobile fighter chrome. This E2E pass prioritized lifecycle
 | BUG-QA-007 | AdminNav hydration | Medium | Fixed earlier `29c62e2` |
 | BUG-QA-008 | Soft-click admin event cards | Low | Open |
 | BUG-QA-004 | Home Shuffle hit target | Medium | Open |
-| E2E-GRIDFS | Profile/payment code stores path labels; GridFS `open()` needs `gridfs:` return key | High (prod GridFS) | Open — local disk OK |
+| E2E-GRIDFS | Profile/payment code stores path labels; GridFS `open()` needs `gridfs:` return key | High (prod GridFS) | Open  local disk OK |
 | E2E-RANK-AUTO | Rankings not auto-updated on match result | Product gap | Documented (manual recalc) |
 | E2E-ORPHAN | Failed first script run left extra CONFIRMED reg on `e2e-flow-arena-1794233938974` | Low | Isolated test data |
 

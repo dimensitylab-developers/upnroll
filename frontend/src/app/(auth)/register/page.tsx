@@ -5,9 +5,9 @@ import { RegisterForm } from "@/features/auth/register-form";
 import { GoogleSignInLink } from "@/features/auth/google-sign-in-link";
 import { AuthBackLink } from "@/components/layout/auth-back-link";
 
-export const metadata: Metadata = { title: { absolute: "Sign up — Up 'n Roll" } };
+export const metadata: Metadata = { title: { absolute: "Sign up  Up 'n Roll" } };
 
-/** Register reads searchParams for Google error notes — keep request-bound. */
+/** Register reads searchParams for Google error notes  keep request-bound. */
 export const instant = false;
 
 export default function RegisterPage({

@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 
-// Mock the DB/model layer — this test is about decideRequest's *decision
+// Mock the DB/model layer  this test is about decideRequest's *decision
 // logic* (does the capacity re-check and rollback behave correctly), not a
 // DB integration test. Same mocking style as session.test.ts.
 vi.mock("@/server/db/connect", () => ({ connectDB: vi.fn().mockResolvedValue(undefined) }));
@@ -91,7 +91,7 @@ beforeEach(() => {
   mockDivisionFindOneAndUpdate.mockResolvedValue({ _id: "divNew", capacity: 4, filledCount: 1 });
 });
 
-describe("decideRequest — TRANSFER capacity re-check (M-4 regression)", () => {
+describe("decideRequest  TRANSFER capacity re-check (M-4 regression)", () => {
   it("applies the transfer when the target division still has capacity at approval time", async () => {
     mockRequestFindOneAndUpdate.mockResolvedValue({
       _id: "req1",

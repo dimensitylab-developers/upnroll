@@ -33,7 +33,7 @@ export function ShareFighterCardButton({
       setCopied(true);
       window.setTimeout(() => setCopied(false), 1800);
     } catch {
-      // Ignore clipboard failures — user can still open the public page.
+      // Ignore clipboard failures  user can still open the public page.
     }
   }
 

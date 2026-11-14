@@ -15,7 +15,7 @@ export function RecalculateRankingsButton() {
       {state.message && <p className="text-sm text-brand-cyan mt-2">{state.message}</p>}
       {state.error && <p className="text-sm text-primary mt-2">{state.error}</p>}
       <p className="text-xs text-muted-foreground mt-2">
-        Placeholder points formula (3 per win) pending OD-004 — not an approved ranking methodology.
+        Placeholder points formula (3 per win) pending OD-004  not an approved ranking methodology.
       </p>
     </form>
   );

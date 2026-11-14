@@ -7,7 +7,7 @@ import { previewFighters } from "@/lib/preview/fixtures";
 export function FighterProfile() {
   const fighter = previewFighters[0];
   return (
-    <Chapter id="fighter-profile" title="Fighter Profile" subtitle="Public fields only — no email, phone, date of birth, or payment data is ever rendered here, per Part H privacy constraints.">
+    <Chapter id="fighter-profile" title="Fighter Profile" subtitle="Public fields only  no email, phone, date of birth, or payment data is ever rendered here, per Part H privacy constraints.">
       <div className="manga-panel p-8 mb-6 flex flex-wrap items-center gap-6">
         <Avatar className="size-24"><AvatarFallback className="text-2xl">RK</AvatarFallback></Avatar>
         <div>
@@ -45,7 +45,7 @@ export function FighterProfile() {
           ))}
         </TableBody>
       </Table>
-      <FixtureBadge>Fictional fighter and fight history — no measurements or statistics invented beyond this showroom</FixtureBadge>
+      <FixtureBadge>Fictional fighter and fight history  no measurements or statistics invented beyond this showroom</FixtureBadge>
     </Chapter>
   );
 }

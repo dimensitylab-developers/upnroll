@@ -2,7 +2,7 @@ type DashboardAtmosphereProps = {
   name: string;
 };
 
-/** Quiet mat texture — keeps the desk grounded without competing with content. */
+/** Quiet mat texture  keeps the desk grounded without competing with content. */
 export function DashboardAtmosphere({ name }: DashboardAtmosphereProps) {
   return (
     <div className="pointer-events-none absolute inset-0 overflow-hidden" aria-hidden="true">

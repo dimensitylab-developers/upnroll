@@ -7,7 +7,7 @@ import { MapPin, CalendarDays } from "lucide-react";
 export function PublicPreviews() {
   return (
     <>
-      <Chapter id="homepage" title="Public Homepage" subtitle="Representative composition — hero, featured event, and a results/rankings teaser. Final copy is pending client content.">
+      <Chapter id="homepage" title="Public Homepage" subtitle="Representative composition  hero, featured event, and a results/rankings teaser. Final copy is pending client content.">
         <div className="manga-panel speed-lines p-10 sm:p-16 mb-6 relative overflow-hidden">
           <Badge className="mb-4 bg-brand-cyan/20 text-brand-cyan border-brand-cyan/40">Registration open</Badge>
           <h1 className="text-display text-4xl sm:text-6xl font-semibold leading-tight max-w-2xl">
@@ -30,10 +30,10 @@ export function PublicPreviews() {
             </div>
           ))}
         </div>
-        <FixtureBadge>Event name, copy, and dates are fictional — see OD-005/OD-006</FixtureBadge>
+        <FixtureBadge>Event name, copy, and dates are fictional  see OD-005/OD-006</FixtureBadge>
       </Chapter>
 
-      <Chapter id="events" title="Events" subtitle="Listing card, featured event banner, and division breakdown — the shape reused by UFC-style directory cards (see combat-sports-reference-analysis.md) adapted to the manga panel treatment.">
+      <Chapter id="events" title="Events" subtitle="Listing card, featured event banner, and division breakdown  the shape reused by UFC-style directory cards (see combat-sports-reference-analysis.md) adapted to the manga panel treatment.">
         <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
           {[1, 2, 3, 4].map((i) => (
             <div key={i} className="manga-panel p-4">

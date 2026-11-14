@@ -23,8 +23,8 @@
 
 | Check | Result |
 |-------|--------|
-| Admin login | PASS — `admin@upnroll.in` (prior portal audit) |
-| Admin pages / actions | PASS — see `ADMIN_PORTAL_AUDIT.md` + E2E lifecycle |
+| Admin login | PASS  `admin@upnroll.in` (prior portal audit) |
+| Admin pages / actions | PASS  see `ADMIN_PORTAL_AUDIT.md` + E2E lifecycle |
 
 ## Session
 
@@ -33,7 +33,7 @@
 | Login via verify creates session | PASS |
 | Refresh fighter dashboard | PASS (session retained) |
 | Logout | Not clicked (kept session for subsequent pages) |
-| Google OAuth | BLOCKED — missing `GOOGLE_CLIENT_ID/SECRET` |
+| Google OAuth | BLOCKED  missing `GOOGLE_CLIENT_ID/SECRET` |
 | Session expiration | NOT TESTED |
 
 ## Fixes from this audit

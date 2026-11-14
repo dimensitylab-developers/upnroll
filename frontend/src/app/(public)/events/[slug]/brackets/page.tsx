@@ -29,7 +29,7 @@ export default async function PublicBracketsPage({ params }: { params: Promise<{
       <div className="mx-auto max-w-4xl">
         <PageBackLink href={`/events/${slug}`} label="Back to event" />
         <h1 className="text-display copy-slab mb-6 text-3xl font-semibold break-words sm:mb-8 sm:text-4xl">
-          {event.name} — Brackets
+          {event.name}  Brackets
         </h1>
         <Suspense fallback={<p className="copy-slab text-sm text-muted-foreground">Loading brackets…</p>}>
           <DivisionBrackets eventId={String(event._id)} />

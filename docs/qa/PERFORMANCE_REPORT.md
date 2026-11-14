@@ -1,4 +1,4 @@
-# Performance Report — Lab measurements 2026-11-12
+# Performance Report  Lab measurements 2026-11-12
 
 **Environment:** Windows, `next dev --webpack`, localhost:3000, Atlas MongoDB, GridFS  
 **Network:** Lab LAN; not throttled  

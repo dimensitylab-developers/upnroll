@@ -4,13 +4,14 @@ import { Suspense } from "react";
 import { LoginForm } from "@/features/auth/login-form";
 import { GoogleSignInLink } from "@/features/auth/google-sign-in-link";
 import { AuthBackLink } from "@/components/layout/auth-back-link";
+import { isSafeAppPath } from "@/lib/safe-app-path";
 
 export const metadata: Metadata = {
-  title: { absolute: "Sign in — Up 'n Roll" },
+  title: { absolute: "Sign in  Up 'n Roll" },
   robots: { index: false, follow: false },
 };
 
-/** Login reads searchParams — keep it request-bound under Cache Components. */
+/** Login reads searchParams  keep it request-bound under Cache Components. */
 export const instant = false;
 
 export default function LoginPage({
@@ -23,20 +24,6 @@ export default function LoginPage({
       <Suspense fallback={<AuthBackLink from={undefined} current="/login" fallback="/" />}>
         <LoginChrome searchParams={searchParams} />
       </Suspense>
-      <LoginForm />
-      <div className="relative my-5 text-center">
-        <span className="absolute inset-x-0 top-1/2 h-px bg-black/15" aria-hidden="true" />
-        <span className="relative bg-white px-3 text-[10px] font-semibold uppercase tracking-[0.2em] text-muted-foreground">
-          Or
-        </span>
-      </div>
-      <GoogleSignInLink />
-      <p className="mt-6 text-center text-sm text-muted-foreground">
-        No account?{" "}
-        <Link href="/register?from=%2Flogin" className="font-semibold text-brand-red underline">
-          Register
-        </Link>
-      </p>
     </div>
   );
 }
@@ -46,13 +33,16 @@ async function LoginChrome({
 }: {
   searchParams: Promise<{ google?: string; from?: string }>;
 }) {
-  const { google, from } = await searchParams;
+  const { google, from: rawFrom } = await searchParams;
+  const from = isSafeAppPath(rawFrom) ? rawFrom : undefined;
   const googleNote =
     google === "unavailable"
       ? "Google sign-in is not set up yet. Use your email."
       : google === "failed"
         ? "Google sign-in did not finish. Use your email."
-        : null;
+        : google === "disabled"
+          ? "This account is disabled. Contact the organizers."
+          : null;
 
   return (
     <>
@@ -63,6 +53,20 @@ async function LoginChrome({
       {googleNote && (
         <p className="mb-4 border-2 border-black bg-[#f7f4ef] px-3 py-2 text-sm text-muted-foreground">{googleNote}</p>
       )}
+      <LoginForm from={from} />
+      <div className="relative my-5 text-center">
+        <span className="absolute inset-x-0 top-1/2 h-px bg-black/15" aria-hidden="true" />
+        <span className="relative bg-white px-3 text-[10px] font-semibold uppercase tracking-[0.2em] text-muted-foreground">
+          Or
+        </span>
+      </div>
+      <GoogleSignInLink from={from} />
+      <p className="mt-6 text-center text-sm text-muted-foreground">
+        No account?{" "}
+        <Link href="/register?from=%2Flogin" className="font-semibold text-brand-red underline">
+          Register
+        </Link>
+      </p>
     </>
   );
 }

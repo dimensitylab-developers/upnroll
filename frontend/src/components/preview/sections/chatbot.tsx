@@ -21,7 +21,7 @@ export function Chatbot() {
   };
 
   return (
-    <Chapter id="chatbot" title="Chatbot" subtitle="Scripted demonstration using fictional examples, bounded to approved-FAQ-style answers — including an honest unsupported-question fallback (last message below).">
+    <Chapter id="chatbot" title="Chatbot" subtitle="Scripted demonstration using fictional examples, bounded to approved-FAQ-style answers  including an honest unsupported-question fallback (last message below).">
       <div className="relative h-[420px] max-w-sm">
         {!open && (
           <Button className="rounded-full size-14 p-0" aria-label="Open chat demo" onClick={() => setOpen(true)}>
@@ -31,7 +31,7 @@ export function Chatbot() {
         {open && (
           <div className="manga-panel flex flex-col h-full">
             <div className="flex items-center justify-between px-4 py-3 border-b border-black/10">
-              <span className="font-medium text-sm">Up &apos;n Roll Support — UI demo</span>
+              <span className="font-medium text-sm">Up &apos;n Roll Support  UI demo</span>
               <Button variant="ghost" size="icon" aria-label="Close chat" onClick={() => setOpen(false)}><X className="size-4" /></Button>
             </div>
             <div className="flex-1 overflow-y-auto p-4 space-y-3">
@@ -57,7 +57,7 @@ export function Chatbot() {
           </div>
         )}
       </div>
-      <FixtureBadge>Scripted conversation — not a real chatbot integration</FixtureBadge>
+      <FixtureBadge>Scripted conversation  not a real chatbot integration</FixtureBadge>
     </Chapter>
   );
 }

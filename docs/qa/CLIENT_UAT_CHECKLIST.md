@@ -1,4 +1,4 @@
-# Client UAT Checklist — Up 'n Roll
+# Client UAT Checklist  Up 'n Roll
 
 Non-technical checklist for client sign-off before / after a demo.  
 Mark each item: ☐ Pass · ☐ Fail · ☐ Blocked · ☐ N/A

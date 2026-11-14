@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { Suspense } from "react";
 import { VerifyForm } from "@/features/auth/verify-form";
 
-export const metadata: Metadata = { title: { absolute: "Confirm your email — Up 'n Roll" } };
+export const metadata: Metadata = { title: { absolute: "Confirm your email  Up 'n Roll" } };
 
 export default function VerifyPage({ searchParams }: { searchParams: Promise<{ email?: string }> }) {
   return (

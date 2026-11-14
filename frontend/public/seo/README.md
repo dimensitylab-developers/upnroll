@@ -1,6 +1,6 @@
 # SEO / share images
 
-Swap these files anytime — keep the **same filenames** so metadata keeps working.
+Swap these files anytime  keep the **same filenames** so metadata keeps working.
 
 | File | Use | Size guide |
 | --- | --- | --- |

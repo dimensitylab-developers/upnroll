@@ -22,6 +22,7 @@ export type AdminFighterView = {
   emergencyContactName: string;
   emergencyRelationship: string;
   bloodGroup: string;
+  instagramHandle: string;
   academy: string;
   headCoach: string;
   beltRank: string;
@@ -37,6 +38,7 @@ export type AdminFighterView = {
   medicallyFit: boolean;
   hasPhoto: boolean;
   hasAadhaarImage: boolean;
+  hasParentalConsentImage: boolean;
   waiverAcceptedAt: string | null;
 };
 
@@ -52,6 +54,7 @@ type ProfileForAdmin = {
   emergencyContactName?: string;
   emergencyRelationship?: string;
   bloodGroup?: string;
+  instagramHandle?: string;
   academy?: string;
   gym?: string;
   headCoach?: string;
@@ -68,6 +71,7 @@ type ProfileForAdmin = {
   medicallyFit?: boolean;
   photoKey?: string;
   aadhaarImageKey?: string;
+  parentalConsentImageKey?: string;
   waiverAcceptedAt?: Date | null;
 };
 
@@ -85,6 +89,7 @@ export function toAdminFighterView(profile: ProfileForAdmin, email: string): Adm
     emergencyContactName: profile.emergencyContactName ?? "",
     emergencyRelationship: profile.emergencyRelationship ?? "",
     bloodGroup: profile.bloodGroup ?? "",
+    instagramHandle: profile.instagramHandle ?? "",
     academy: profile.academy || profile.gym || "",
     headCoach: profile.headCoach ?? "",
     beltRank: profile.beltRank ?? "",
@@ -100,6 +105,7 @@ export function toAdminFighterView(profile: ProfileForAdmin, email: string): Adm
     medicallyFit: Boolean(profile.medicallyFit),
     hasPhoto: Boolean(profile.photoKey),
     hasAadhaarImage: Boolean(profile.aadhaarImageKey?.trim()),
+    hasParentalConsentImage: Boolean(profile.parentalConsentImageKey?.trim()),
     waiverAcceptedAt: profile.waiverAcceptedAt ? new Date(profile.waiverAcceptedAt).toISOString() : null,
   };
 }
@@ -116,6 +122,7 @@ export type FighterDetailsInput = {
   emergencyContactName: string;
   emergencyRelationship: string;
   bloodGroup: string;
+  instagramHandle: string;
   academy: string;
   headCoach: string;
   beltRank: string;
@@ -131,6 +138,7 @@ export type FighterDetailsInput = {
   medicallyFit: boolean;
   photoKey?: string;
   aadhaarImageKey?: string;
+  parentalConsentImageKey?: string;
   waiverAcceptedAt?: Date;
   discipline?: string;
 };
@@ -152,6 +160,7 @@ export async function updateFighterProfile(actor: Actor, input: FighterDetailsIn
   profile.emergencyContactName = input.emergencyContactName;
   profile.emergencyRelationship = input.emergencyRelationship;
   profile.bloodGroup = input.bloodGroup;
+  profile.instagramHandle = input.instagramHandle;
   profile.academy = input.academy;
   profile.headCoach = input.headCoach;
   profile.beltRank = input.beltRank;
@@ -167,6 +176,7 @@ export async function updateFighterProfile(actor: Actor, input: FighterDetailsIn
   profile.medicallyFit = input.medicallyFit;
   if (input.photoKey) profile.photoKey = input.photoKey;
   if (input.aadhaarImageKey) profile.aadhaarImageKey = input.aadhaarImageKey;
+  if (input.parentalConsentImageKey) profile.parentalConsentImageKey = input.parentalConsentImageKey;
   if (input.waiverAcceptedAt) profile.waiverAcceptedAt = input.waiverAcceptedAt;
   if (input.discipline) profile.discipline = input.discipline;
   await profile.save();

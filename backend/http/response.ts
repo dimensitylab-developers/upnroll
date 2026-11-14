@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { AppError, toAppError } from "./errors";
 import { logger } from "@/server/observability/logger";
 
-/** Envelope conventions from docs/api/api-contract.md — used by Route Handlers. */
+/** Envelope conventions from docs/api/api-contract.md  used by Route Handlers. */
 
 export function ok<T>(data: T, meta?: Record<string, unknown>) {
   return NextResponse.json({ success: true, data, meta: meta ?? {} });

@@ -3,7 +3,7 @@
 import { useEffect } from "react";
 
 /**
- * Last-resort error boundary — catches errors in the root layout itself,
+ * Last-resort error boundary  catches errors in the root layout itself,
  * so it must render its own <html>/<body> and can't rely on globals.css
  * or any other app-level provider having loaded successfully.
  */

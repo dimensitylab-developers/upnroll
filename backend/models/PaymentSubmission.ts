@@ -13,7 +13,7 @@ const paymentSubmissionSchema = new Schema(
     registrationId: { type: Schema.Types.ObjectId, ref: "Registration", required: true, index: true },
     userId: { type: Schema.Types.ObjectId, ref: "User", required: true, index: true },
     eventId: { type: Schema.Types.ObjectId, ref: "Event", required: true },
-    // Server-derived at creation time from Division/Event — never trust client input (Part E).
+    // Server-derived at creation time from Division/Event  never trust client input (Part E).
     expectedAmountMinorUnits: { type: Number, required: true, min: 0 },
     submittedUtr: { type: String, default: null, index: true },
     screenshotStorageKey: { type: String, default: null },

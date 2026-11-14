@@ -12,7 +12,7 @@ export async function holdAuthGate(ms = AUTH_GATE_MS) {
 
 type AuthTransitionOverlayProps = {
   mode: "in" | "out";
-  /** Full or first name — we shorten to the first word for the shout. */
+  /** Full or first name  we shorten to the first word for the shout. */
   name: string;
 };
 
@@ -22,7 +22,7 @@ function shortName(name: string) {
   return trimmed.split(/\s+/)[0] ?? "Grappler";
 }
 
-/** Full-screen mat gate — portaled to body so parent transforms cannot trap it. */
+/** Full-screen mat gate  portaled to body so parent transforms cannot trap it. */
 export function AuthTransitionOverlay({ mode, name }: AuthTransitionOverlayProps) {
   const [mounted, setMounted] = useState(false);
   const who = shortName(name);

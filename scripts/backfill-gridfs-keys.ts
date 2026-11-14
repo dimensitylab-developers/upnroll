@@ -3,7 +3,7 @@
  * to gridfs:<id> by matching GridFS privateFiles.filename.
  *
  * Only needed after fixing callers that ignored StorageAdapter.put()'s return value.
- * Orphans (path key in Mongo, no GridFS file) are reported — re-upload those.
+ * Orphans (path key in Mongo, no GridFS file) are reported  re-upload those.
  *
  *   npm run backfill-gridfs-keys
  * from frontend/ (loads .env.local).

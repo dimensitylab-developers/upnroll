@@ -1,4 +1,4 @@
-# File Storage Security Report — Phase 3
+# File Storage Security Report  Phase 3
 
 Date: 2026-11-09  
 Branch: `suraj`
@@ -24,7 +24,7 @@ Branch: `suraj`
 
 - Failed GridFS uploads abort/delete the upload stream id (`cleanupFailedUpload`).
 - Payment submit deletes the stored object if the DB transaction fails after `put`.
-- There is still **no scheduled sweeper** for orphans if both abort and delete fail — operators can inspect the `privateFiles` bucket periodically. Documented as remaining Low priority.
+- There is still **no scheduled sweeper** for orphans if both abort and delete fail  operators can inspect the `privateFiles` bucket periodically. Documented as remaining Low priority.
 
 ## Manual verification
 

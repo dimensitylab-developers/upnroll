@@ -228,7 +228,7 @@ export async function openEventPaymentQr(actor: Actor, eventId: string) {
   return getStorageAdapter().open(key);
 }
 
-/** Fighter-facing QR open — caller must already authorize the registration ownership. */
+/** Fighter-facing QR open  caller must already authorize the registration ownership. */
 export async function openEventPaymentQrForPublic(eventId: string) {
   await connectDB();
   const event = await Event.findById(eventId).lean();

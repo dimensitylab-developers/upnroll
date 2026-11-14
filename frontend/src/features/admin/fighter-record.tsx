@@ -3,11 +3,11 @@ import { SectionBanner } from "@/components/home/section-banner";
 import { WAIVER_CLAUSES, WAIVER_IMPORTANT } from "@/features/fighters/waiver";
 
 function shown(value: string) {
-  return value.trim() || "—";
+  return value.trim() || "";
 }
 
 function yesNo(ready: boolean, value: boolean) {
-  if (!ready) return "—";
+  if (!ready) return "";
   return value ? "Yes" : "No";
 }
 
@@ -56,7 +56,7 @@ export function FighterRecord({ fighter }: { fighter: AdminFighterView }) {
           <Line label="Full name (as per ID)" value={name} />
           <Line label="Email" value={shown(fighter.email)} />
           <Line label="Date of birth" value={shown(fighter.dateOfBirth)} />
-          <Line label="Age" value={ready ? String(fighter.age) : "—"} />
+          <Line label="Age" value={ready ? String(fighter.age) : ""} />
           <Line label="Gender" value={shown(fighter.gender)} />
           <Line label="Mobile number" value={shown(fighter.mobile)} />
           <Line label="Nationality" value={shown(fighter.nationality)} />
@@ -64,20 +64,43 @@ export function FighterRecord({ fighter }: { fighter: AdminFighterView }) {
           <Line label="Emergency contact name" value={shown(fighter.emergencyContactName)} />
           <Line label="Relationship" value={shown(fighter.emergencyRelationship)} />
           <Line label="Blood group" value={shown(fighter.bloodGroup)} />
+          <Line
+            label="Instagram"
+            value={fighter.instagramHandle ? `@${fighter.instagramHandle}` : "—"}
+          />
         </dl>
-        <div className="max-w-md border-2 border-black bg-white p-4">
-          <p className="mb-2 text-[10px] uppercase tracking-wider text-muted-foreground">Aadhaar card image (private)</p>
-          <div className="aspect-[16/10] overflow-hidden border-2 border-black bg-white flex items-center justify-center">
-            {fighter.hasAadhaarImage ? (
-              // eslint-disable-next-line @next/next/no-img-element
-              <img
-                src={`/api/v1/admin/fighters/${fighter.userId}/aadhaar`}
-                alt={`${name} Aadhaar card`}
-                className="h-full w-full object-contain"
-              />
-            ) : (
-              <span className="px-2 text-center text-[10px] uppercase tracking-wider text-muted-foreground">No Aadhaar image</span>
-            )}
+        <div className="grid gap-4 md:grid-cols-2">
+          <div className="border-2 border-black bg-white p-4">
+            <p className="mb-2 text-[10px] uppercase tracking-wider text-muted-foreground">Aadhaar card image (private)</p>
+            <div className="flex aspect-[16/10] items-center justify-center overflow-hidden border-2 border-black bg-white">
+              {fighter.hasAadhaarImage ? (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img
+                  src={`/api/v1/admin/fighters/${fighter.userId}/aadhaar`}
+                  alt={`${name} Aadhaar card`}
+                  className="h-full w-full object-contain"
+                />
+              ) : (
+                <span className="px-2 text-center text-[10px] uppercase tracking-wider text-muted-foreground">No Aadhaar image</span>
+              )}
+            </div>
+          </div>
+          <div className="border-2 border-black bg-white p-4">
+            <p className="mb-2 text-[10px] uppercase tracking-wider text-muted-foreground">Parental consent (private)</p>
+            <div className="flex aspect-[16/10] items-center justify-center overflow-hidden border-2 border-black bg-white">
+              {fighter.hasParentalConsentImage ? (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img
+                  src={`/api/v1/admin/fighters/${fighter.userId}/parental-consent`}
+                  alt={`${name} parental consent`}
+                  className="h-full w-full object-contain"
+                />
+              ) : (
+                <span className="px-2 text-center text-[10px] uppercase tracking-wider text-muted-foreground">
+                  {fighter.age > 0 && fighter.age < 18 ? "Missing consent form" : "Not required / none"}
+                </span>
+              )}
+            </div>
           </div>
         </div>
       </section>
@@ -88,7 +111,7 @@ export function FighterRecord({ fighter }: { fighter: AdminFighterView }) {
           <Line label="Academy / team name" value={shown(fighter.academy)} />
           <Line label="Head coach / coach name" value={shown(fighter.headCoach)} />
           <Line label="Belt rank" value={shown(fighter.beltRank)} />
-          <Line label="Years training" value={ready ? String(fighter.yearsTraining) : "—"} />
+          <Line label="Years training" value={ready ? String(fighter.yearsTraining) : ""} />
           <Line label="Weight division" value={shown(fighter.weightDivision)} />
           <Line label="How did you hear about Up ’n Roll?" value={shown(fighter.heardAbout)} />
         </dl>
@@ -106,14 +129,19 @@ export function FighterRecord({ fighter }: { fighter: AdminFighterView }) {
         </dl>
       </section>
 
-      <section className="space-y-4">
+      <section className="min-w-0 space-y-4">
         <SectionBanner>4. Terms and conditions</SectionBanner>
-        <ol className="list-decimal space-y-2 border-2 border-black bg-white p-4 pl-8 text-sm">
-          {WAIVER_CLAUSES.map((clause) => (
-            <li key={clause}>{clause}</li>
+        <ol className="w-full min-w-0 space-y-3 overflow-visible border-2 border-black bg-white p-4 text-sm">
+          {WAIVER_CLAUSES.map((clause, index) => (
+            <li key={clause} className="flex gap-2">
+              <span className="w-5 shrink-0 text-right font-semibold tabular-nums">{index + 1}.</span>
+              <span className="min-w-0 flex-1 break-words whitespace-normal leading-relaxed">{clause}</span>
+            </li>
           ))}
         </ol>
-        <p className="border-2 border-black bg-amber-50 px-4 py-3 text-sm">{WAIVER_IMPORTANT}</p>
+        <p className="min-w-0 break-words border-2 border-black bg-amber-50 px-4 py-3 text-sm leading-relaxed">
+          {WAIVER_IMPORTANT}
+        </p>
         <p className="text-sm text-muted-foreground">
           {fighter.waiverAcceptedAt
             ? `Agreed on ${new Date(fighter.waiverAcceptedAt).toLocaleString("en-IN")}.`

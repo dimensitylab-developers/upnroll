@@ -21,7 +21,7 @@ export function CreateMediaForm() {
       <div>
         <Label htmlFor="externalUrl" className="mb-1.5 block">Media URL</Label>
         <Input id="externalUrl" name="externalUrl" required placeholder="https://..." />
-        <p className="text-xs text-muted-foreground mt-1">External URL only — real storage/CDN pending OD-012.</p>
+        <p className="text-xs text-muted-foreground mt-1">External URL only  real storage/CDN pending OD-012.</p>
       </div>
       <Button type="submit" disabled={pending}>{pending ? "Saving…" : "Add media"}</Button>
     </form>

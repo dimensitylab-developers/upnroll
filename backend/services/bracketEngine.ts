@@ -1,7 +1,7 @@
 import "server-only";
 
 /**
- * Pure single-elimination bracket engine — no DB, no I/O. Kept separate
+ * Pure single-elimination bracket engine  no DB, no I/O. Kept separate
  * from bracketService.ts so the actual tournament-integrity rules are
  * independently unit-testable (Part N: deterministic given a known seed,
  * byes resolved without a manual step, never silently overwrite a played
@@ -49,7 +49,7 @@ export function standardSeedOrder(n: number): number[] {
   return order;
 }
 
-/** mulberry32 PRNG — small, dependency-free, deterministic for a given seed. */
+/** mulberry32 PRNG  small, dependency-free, deterministic for a given seed. */
 function mulberry32(seed: number): () => number {
   let a = seed >>> 0;
   return () => {
@@ -81,7 +81,7 @@ function nextPowerOfTwo(n: number): number {
 /**
  * Builds a full single-elimination bracket from an ordered list of
  * participant ids (index 0 = seed 1). Pads with byes to the next power of
- * two and auto-resolves bye matches immediately — a bye match is created
+ * two and auto-resolves bye matches immediately  a bye match is created
  * already COMPLETED/BYE with the real participant pre-filled as the
  * winner AND pre-filled into its round-1 slot, so no separate admin step
  * is needed to "resolve" a bye.
@@ -158,7 +158,7 @@ export function buildBracket(orderedParticipantIds: string[]): {
   return { roundsCount, matches };
 }
 
-/** Round/order arithmetic for winner advancement — no stored "next match" pointer needed. */
+/** Round/order arithmetic for winner advancement  no stored "next match" pointer needed. */
 export function nextSlot(round: number, order: number): { round: number; order: number; slot: "A" | "B" } {
   return {
     round: round + 1,
@@ -169,10 +169,10 @@ export function nextSlot(round: number, order: number): { round: number; order: 
 
 /**
  * A completed result can only be corrected if the match the old winner
- * advanced into hasn't itself been decided yet — otherwise the correction
+ * advanced into hasn't itself been decided yet  otherwise the correction
  * would silently invalidate a later round's result.
  */
 export function canCorrectResult(nextMatchStatus: MatchStatus | null): boolean {
-  if (nextMatchStatus === null) return true; // final match — nothing downstream
+  if (nextMatchStatus === null) return true; // final match  nothing downstream
   return nextMatchStatus !== "COMPLETED" && nextMatchStatus !== "BYE";
 }

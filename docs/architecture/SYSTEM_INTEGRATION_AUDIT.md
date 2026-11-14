@@ -1,4 +1,4 @@
-# System Integration Audit — Up 'n Roll
+# System Integration Audit  Up 'n Roll
 
 Audit date: **2026-11-09**  
 Method: Full-repo route/action/service/model/import verification (not filename-only).  
@@ -6,7 +6,7 @@ Central map: [SYSTEM_ARCHITECTURE_MAP.md](./SYSTEM_ARCHITECTURE_MAP.md)
 
 ## Verdict
 
-The product core (auth → registration → UTR payment review → brackets/matches → rankings → content) is **wired end-to-end inside one Next.js process**. Gaps are concentrated in: env-gated Google OAuth, mocked WhatsApp, placeholder public pages, aspirational REST docs, and missing hosting/Docker assets — not in orphaned Mongoose models.
+The product core (auth → registration → UTR payment review → brackets/matches → rankings → content) is **wired end-to-end inside one Next.js process**. Gaps are concentrated in: env-gated Google OAuth, mocked WhatsApp, placeholder public pages, aspirational REST docs, and missing hosting/Docker assets  not in orphaned Mongoose models.
 
 ---
 
@@ -30,8 +30,8 @@ The product core (auth → registration → UTR payment review → brackets/matc
 | Item | Finding |
 |------|---------|
 | Full REST `/api/v1` product API | Documented in `docs/api/api-contract.md` as proposal; **zero** matching CRUD route handlers in code. Do not treat as live API. |
-| Older claim “GridFS not implemented” | **False vs current code** — `backend/storage/gridfs.ts` + factory + tests exist. |
-| Older claim “no `backend/` directory / logic in `src/server`” | **Stale** — logic lives in repo-root `backend/` aliased `@/server/*`. |
+| Older claim “GridFS not implemented” | **False vs current code**  `backend/storage/gridfs.ts` + factory + tests exist. |
+| Older claim “no `backend/` directory / logic in `src/server`” | **Stale**  logic lives in repo-root `backend/` aliased `@/server/*`. |
 | `docs/architecture/data-model.md` collection names | Snake_case names do not match Mongoose defaults (`fighterprofiles`, etc.). |
 
 ### 🟡 Partially connected
@@ -44,23 +44,23 @@ The product core (auth → registration → UTR payment review → brackets/matc
 | `/events/held/[slug]` | Static archive; only `no-gi-12-july-2026` verified | Other held slugs 404 |
 | `/ui-preview` | 404 in production unless `UI_PREVIEW_ENABLED=true` | Review-only |
 | `Event.paymentInstructions.qrImageKey` | Field exists; create path always sets `""`; no upload UI/API | QR image storage unused |
-| In-memory rate limit | `backend/http/rateLimit.ts` — not Redis | Multi-instance rate limits not shared |
+| In-memory rate limit | `backend/http/rateLimit.ts`  not Redis | Multi-instance rate limits not shared |
 | Sitemap lists `/fighters` | Page only redirects to `/rankings` | Harmless but odd SEO node |
 
 ### 🟣 Mocked / placeholder integrations
 
 | Item | Module | Behavior |
 |------|--------|----------|
-| WhatsApp | `backend/notifications/whatsapp.ts` | Called from `matchService`; console log only — **not sent** |
+| WhatsApp | `backend/notifications/whatsapp.ts` | Called from `matchService`; console log only  **not sent** |
 | Console email | `backend/email/console.ts` | Dev/test stand-in for SMTP |
-| FAQ chatbot “AI” | `chatbotEngine.ts` | Local keyword matcher — **no LLM provider** |
+| FAQ chatbot “AI” | `chatbotEngine.ts` | Local keyword matcher  **no LLM provider** |
 
 ### ⚪ Unused / unreferenced / placeholder product surfaces
 
 | Item | Notes |
 |------|-------|
-| `/store` | `ComingSoon` — no commerce backend |
-| `/seminars` | `ComingSoon` — no seminar domain |
+| `/store` | `ComingSoon`  no commerce backend |
+| `/seminars` | `ComingSoon`  no seminar domain |
 | `/fighters` page | Redirect-only; not a directory |
 | `/rankings/demo` | Fixture UI, noindex |
 | `components/home/home-live.tsx` | Not imported by current home |
@@ -90,21 +90,21 @@ The product core (auth → registration → UTR payment review → brackets/matc
 
 | Category | Result |
 |----------|--------|
-| Mongoose models | **0 orphans** — all 16 used |
+| Mongoose models | **0 orphans**  all 16 used |
 | HTTP route handlers | All 7 have call sites or operational purpose |
 | Server Action modules | All 13 wired to forms/pages |
-| External SDKs claimed but missing | REST contract & some deploy wording — treat as documentation debt |
+| External SDKs claimed but missing | REST contract & some deploy wording  treat as documentation debt |
 
 ---
 
 ## Incomplete workflows (product)
 
-1. **Store / Seminars** — nav exists; no domain modules.
-2. **WhatsApp fight notices** — call site exists; delivery stubbed.
-3. **Google social login** — implementation present; ops config incomplete.
-4. **Event QR image** — schema field without write path.
-5. **Proposed REST API** — not started in App Router handlers.
-6. **Hosting packaging** — no container/IaC in repo; deploy guide partially stale.
+1. **Store / Seminars**  nav exists; no domain modules.
+2. **WhatsApp fight notices**  call site exists; delivery stubbed.
+3. **Google social login**  implementation present; ops config incomplete.
+4. **Event QR image**  schema field without write path.
+5. **Proposed REST API**  not started in App Router handlers.
+6. **Hosting packaging**  no container/IaC in repo; deploy guide partially stale.
 
 ---
 

@@ -5,7 +5,7 @@ import { listMyRegistrations } from "@/server/services/registrationService";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 
-/** Session/DB-bound route — allow blocking navigation under Cache Components. */
+/** Session/DB-bound route  allow blocking navigation under Cache Components. */
 export const instant = false;
 
 export const metadata: Metadata = { title: "Registrations" };
@@ -30,7 +30,7 @@ export default async function MyRegistrationsPage() {
           <Link key={String(r._id)} href={`/fighter/registrations/${r._id}/payment`} className="block manga-panel p-4">
             <div className="flex items-center justify-between">
               <div>
-                <p className="font-medium">{r.event?.name ?? "Unknown event"} — {r.division?.name ?? "Unknown division"}</p>
+                <p className="font-medium">{r.event?.name ?? "Unknown event"}  {r.division?.name ?? "Unknown division"}</p>
                 <p className="text-xs text-muted-foreground">Registered {new Date(r.createdAt as Date).toLocaleDateString()}</p>
               </div>
               <Badge variant="outline">{r.status.replaceAll("_", " ")}</Badge>

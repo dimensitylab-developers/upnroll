@@ -10,7 +10,7 @@ import { AdminStatCard } from "@/features/admin/ui/admin-stat-card";
 import { AdminTimeline, formatTimelineStamp } from "@/features/admin/ui/admin-timeline";
 import { Badge } from "@/components/ui/badge";
 
-/** Session/DB-bound route — allow blocking navigation under Cache Components. */
+/** Session/DB-bound route  allow blocking navigation under Cache Components. */
 export const instant = false;
 
 export const metadata: Metadata = { title: "Desk" };
@@ -59,8 +59,8 @@ export default async function AdminOverviewPage() {
   const registrationItems = data.recentRegistrations.map((r) => ({
     id: String(r._id),
     title: r.fighterName,
-    meta: `${r.event?.name ?? "Event"} — ${r.division?.name ?? "Division"}${r.status ? ` · ${r.status.replaceAll("_", " ")}` : ""}`,
-    stamp: r.createdAt ? formatTimelineStamp(r.createdAt) : "—",
+    meta: `${r.event?.name ?? "Event"}  ${r.division?.name ?? "Division"}${r.status ? ` · ${r.status.replaceAll("_", " ")}` : ""}`,
+    stamp: r.createdAt ? formatTimelineStamp(r.createdAt) : "",
   }));
 
   return (
@@ -74,7 +74,7 @@ export default async function AdminOverviewPage() {
           {welcome}
         </h1>
         <p className="mt-3 max-w-xl text-sm text-white/70">
-          Watch who signs up, who walks in, and who registers for a card — then keep the house moving.
+          Watch who signs up, who walks in, and who registers for a card  then keep the house moving.
         </p>
         <div className="mt-5 flex flex-col gap-2 sm:mt-6 sm:flex-row sm:flex-wrap sm:gap-3">
           <Link

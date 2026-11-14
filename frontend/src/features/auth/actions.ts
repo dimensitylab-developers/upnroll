@@ -13,6 +13,7 @@ import { getClientIp } from "@/server/http/clientIp";
 import { loginSchema } from "./schemas";
 import { registerSchema } from "@/features/fighters/grappler-schema";
 import { sendVerificationCode, confirmVerificationCode } from "@/server/services/verificationMail";
+import { resolveAuthReturnPath } from "@/lib/safe-app-path";
 
 export type AuthActionState = {
   error?: string;
@@ -73,7 +74,7 @@ export async function registerAction(
     }
 
     const passwordHash = await hashPassword(password);
-    // Public registration only ever creates FIGHTER accounts — see Part M:
+    // Public registration only ever creates FIGHTER accounts  see Part M:
     // admin accounts are created exclusively via scripts/create-admin.ts.
     const user = await User.create({
       email,
@@ -155,7 +156,11 @@ export async function loginAction(
     throw err;
   }
 
-  redirect(role === "ADMIN" ? "/admin" : "/fighter/dashboard");
+  if (role === "ADMIN") {
+    redirect("/admin");
+  }
+  const from = String(formData.get("from") ?? "");
+  redirect(resolveAuthReturnPath(from, { current: "/login", fallback: "/fighter/dashboard" }));
 }
 
 export async function verifyEmailAction(

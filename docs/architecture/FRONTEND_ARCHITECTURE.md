@@ -1,4 +1,4 @@
-# Frontend Architecture — Up 'n Roll
+# Frontend Architecture  Up 'n Roll
 
 Verified from `frontend/src/app/**/page.tsx`, layouts, feature modules, and imports.  
 Alias: `@/*` → `frontend/src/*`; `@/server/*` → `backend/*`.
@@ -9,7 +9,7 @@ Alias: `@/*` → `frontend/src/*`; `@/server/*` → `backend/*`.
 |------|-------|--------|
 | Next.js App Router | 16.1.6 under `frontend/` | 🟢 |
 | React | 19.2.3 | 🟢 |
-| Pages Router | Not present | — |
+| Pages Router | Not present |  |
 | Styling | Tailwind 4 + shadcn/Radix | 🟢 |
 | Middleware | `frontend/src/proxy.ts` (Next 16 proxy) | 🟢 |
 | Data access | Direct `@/server` + Server Actions (no axios client) | 🟢 |
@@ -41,17 +41,17 @@ Alias: `@/*` → `frontend/src/*`; `@/server/*` → `backend/*`.
 | `/events/[slug]/schedule` | `.../schedule/page.tsx` | Table/Badge | `cachedPublicSchedule` | Public | `matches` | 🟢 |
 | `/events/[slug]/results` | `.../results/page.tsx` | Table | `cachedPublicResults` | Public | `matches` | 🟢 |
 | `/events/held/[slug]` | `events/held/[slug]/page.tsx` | `HeldRecord` | Static `HELD_ARCHIVE` only | Public | None (fixture) | 🟡 only one slug |
-| `/fighters` | `fighters/page.tsx` | — | `redirect("/rankings")` | Public | — | ⚪ redirect-only |
+| `/fighters` | `fighters/page.tsx` |  | `redirect("/rankings")` | Public |  | ⚪ redirect-only |
 | `/fighters/[slug]` | `fighters/[slug]/page.tsx` | Table / held-card fallback | `getPublicFighterBySlug` | Public | `fighterprofiles`, `users` | 🟢 |
 | `/rankings` | `rankings/page.tsx` | `AthleteProfileCard` | `listPublicRankings`, fighters, held athletes | Public | `rankingrecords`, profiles | 🟢 |
 | `/rankings/demo` | `rankings/demo/page.tsx` | `RankingDemo` | Fixture UI | Public / noindex | None | ⚪ demo |
 | `/brackets` | `brackets/page.tsx` | `BracketView`, `LiveRefresh` | public events/divisions/brackets/schedule | Public | multiple | 🟢 |
 | `/faq` | `faq/page.tsx` | `FaqBoard` | `listPublished("FAQ")` | Public | `contententries` | 🟢 |
 | `/about` | `about/page.tsx` | `AboutStory` | `listPublicEvents` | Public | `events` | 🟢 |
-| `/announcements` | `announcements/page.tsx` | — | `cachedPublishedContent("ANNOUNCEMENT")` | Public | `contententries` | 🟢 |
-| `/policies` | `policies/page.tsx` | — | `cachedPublishedContent("POLICY")` | Public | `contententries` | 🟢 |
-| `/store` | `store/page.tsx` | `ComingSoon` | None | Public | — | ⚪ |
-| `/seminars` | `seminars/page.tsx` | `ComingSoon` | None | Public | — | ⚪ |
+| `/announcements` | `announcements/page.tsx` |  | `cachedPublishedContent("ANNOUNCEMENT")` | Public | `contententries` | 🟢 |
+| `/policies` | `policies/page.tsx` |  | `cachedPublishedContent("POLICY")` | Public | `contententries` | 🟢 |
+| `/store` | `store/page.tsx` | `ComingSoon` | None | Public |  | ⚪ |
+| `/seminars` | `seminars/page.tsx` | `ComingSoon` | None | Public |  | ⚪ |
 
 ### Auth pages
 
@@ -201,6 +201,6 @@ HMAC + hashed token in `sessions` collection. Not Clerk / NextAuth.
 
 ## Navigation notes (verified)
 
-- Header links: Events, Seminars, Brackets, Rankings, FAQ, About, Store — all resolve; Seminars/Store are placeholders.
-- Footer: Announcements, Policies — not in header.
+- Header links: Events, Seminars, Brackets, Rankings, FAQ, About, Store  all resolve; Seminars/Store are placeholders.
+- Footer: Announcements, Policies  not in header.
 - `/fighters` is not a listing page; sitemap still lists `/fighters`.

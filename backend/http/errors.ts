@@ -56,7 +56,7 @@ function isMongooseValidationError(err: unknown): err is Error & { errors?: Reco
 function storageDriverMessage(err: unknown): string | null {
   if (!(err instanceof Error)) return null;
   if (err.message.includes("STORAGE_DRIVER must be set")) {
-    return "Photo storage is not configured on the server. Your text details may still save — try again without a new photo, or ask an admin to set STORAGE_DRIVER.";
+    return "Photo storage is not configured on the server. Your text details may still save  try again without a new photo, or ask an admin to set STORAGE_DRIVER.";
   }
   return null;
 }

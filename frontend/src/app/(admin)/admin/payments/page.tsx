@@ -7,7 +7,7 @@ import { AlertTriangle } from "lucide-react";
 import { PaymentReviewDialog } from "@/features/admin-payments/payment-review-dialog";
 import { AdminStamp } from "@/features/admin/ui/admin-stamp";
 
-/** Session/DB-bound route — allow blocking navigation under Cache Components. */
+/** Session/DB-bound route  allow blocking navigation under Cache Components. */
 export const instant = false;
 
 export const metadata: Metadata = { title: "Payments" };
@@ -62,9 +62,9 @@ export default async function AdminPaymentsPage() {
                     })}
                   </TableCell>
                   <TableCell className="flex items-center gap-1.5 font-mono text-xs">
-                    {p.submittedUtr ?? "—"}
+                    {p.submittedUtr ?? ""}
                     {p.duplicateUtr && (
-                      <span title="Duplicate UTR — flagged for review">
+                      <span title="Duplicate UTR  flagged for review">
                         <AlertTriangle className="size-3.5 text-brand-gold" />
                       </span>
                     )}

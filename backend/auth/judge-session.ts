@@ -35,7 +35,7 @@ export async function loginJudge(username: string, password: string, userAgent?:
 
   await connectDB();
   const credential = await MatchJudgeCredential.findOne({ username: username.trim() });
-  // Generic error — do not reveal which field failed.
+  // Generic error  do not reveal which field failed.
   if (!credential || credential.status !== "ACTIVE") {
     throw new UnauthorizedError("Invalid username or password.");
   }
@@ -81,7 +81,7 @@ export async function loginJudge(username: string, password: string, userAgent?:
     after: {
       matchId: String(credential.matchId),
       credentialId: String(credential._id),
-      note: "Shared match scoring login — not a verified real-world person",
+      note: "Shared match scoring login  not a verified real-world person",
     },
   });
 

@@ -13,7 +13,7 @@ const tiles = [
 
 export function AdminDashboard() {
   return (
-    <Chapter id="admin-dashboard" title="Admin Dashboard" subtitle="Efficient and information-dense by design — the admin portal does not reuse the public homepage's hero treatment.">
+    <Chapter id="admin-dashboard" title="Admin Dashboard" subtitle="Efficient and information-dense by design  the admin portal does not reuse the public homepage's hero treatment.">
       <p className="text-sm text-muted-foreground mb-4">Active event: <span className="text-foreground font-medium">{previewAdminOverview.activeEvent}</span></p>
       <div className="grid sm:grid-cols-3 lg:grid-cols-4 gap-4">
         {tiles.map((t) => (
@@ -23,7 +23,7 @@ export function AdminDashboard() {
           </div>
         ))}
       </div>
-      <FixtureBadge>Counts are fictional — derived from real queries only once Phase 2+ ships</FixtureBadge>
+      <FixtureBadge>Counts are fictional  derived from real queries only once Phase 2+ ships</FixtureBadge>
     </Chapter>
   );
 }

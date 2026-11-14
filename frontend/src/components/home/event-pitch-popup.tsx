@@ -17,7 +17,7 @@ export function EventPitchPopup() {
     try {
       if (window.localStorage.getItem(STORAGE_KEY) === "1") return;
     } catch {
-      // private mode — still show once this session
+      // private mode  still show once this session
     }
 
     const show = window.setTimeout(() => setOpen(true), 500);
@@ -73,7 +73,7 @@ export function EventPitchPopup() {
           leaving ? "pitch-popup-out" : "pitch-popup-in"
         }`}
       >
-        {/* Ticket tear / cut stamp — not a plain X */}
+        {/* Ticket tear / cut stamp  not a plain X */}
         <button
           type="button"
           onClick={dismiss}

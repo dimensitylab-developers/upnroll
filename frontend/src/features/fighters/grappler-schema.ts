@@ -2,6 +2,10 @@ import { z } from "zod";
 
 const yesNo = z.enum(["yes", "no"]);
 
+function normalizeInstagramHandle(raw: string) {
+  return raw.trim().replace(/^@+/, "").replace(/^instagram\.com\//i, "").replace(/^www\./i, "");
+}
+
 export const grapplerDetailsSchema = z.object({
   displayName: z.string().trim().min(2, "Enter your full name as it appears on your ID.").max(80),
   dateOfBirth: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, "Enter your date of birth."),
@@ -12,7 +16,14 @@ export const grapplerDetailsSchema = z.object({
   cityState: z.string().trim().min(2, "Enter your city and state.").max(80),
   emergencyContactName: z.string().trim().min(2, "Enter an emergency contact.").max(80),
   emergencyRelationship: z.string().trim().min(2, "Enter how you know them.").max(40),
-  bloodGroup: z.string().trim().max(8).optional().default(""),
+  bloodGroup: z.string().trim().min(1, "Enter your blood group.").max(8),
+  instagramHandle: z
+    .string()
+    .trim()
+    .min(1, "Enter your Instagram ID.")
+    .max(60, "Instagram ID is too long.")
+    .transform(normalizeInstagramHandle)
+    .refine((value) => /^[A-Za-z0-9._]{1,30}$/.test(value), "Enter a valid Instagram username."),
   academy: z.string().trim().min(2, "Enter your academy or team.").max(80),
   headCoach: z.string().trim().min(2, "Enter your coach.").max(80),
   beltRank: z.string().trim().min(2, "Enter your belt rank.").max(40),
@@ -54,6 +65,10 @@ export function ageFromDob(iso: string, today = new Date()): number {
   return age;
 }
 
+export function isMinorAge(age: number) {
+  return Number.isFinite(age) && age >= 0 && age < 18;
+}
+
 export function grapplerFieldIssues(
   data: Pick<
     GrapplerDetails,
@@ -64,8 +79,8 @@ export function grapplerFieldIssues(
     | "hasAllergies"
     | "allergiesDetail"
     | "medicallyFit"
-  > & { agree?: string },
-  options?: { requireAgree?: boolean }
+  > & { agree?: string; parentalConsent?: string },
+  options?: { requireAgree?: boolean; requireParentalConsent?: boolean }
 ): Record<string, string[]> {
   const issues: Record<string, string[]> = {};
   const add = (path: string, message: string) => {
@@ -87,6 +102,9 @@ export function grapplerFieldIssues(
   if (options?.requireAgree && data.agree !== "yes") {
     add("agree", "Agree to the terms before creating an account.");
   }
+  if (options?.requireParentalConsent && data.parentalConsent !== "yes") {
+    add("parentalConsent", "A parent or guardian must confirm consent for athletes under 18.");
+  }
   return issues;
 }
 
@@ -102,6 +120,7 @@ export function grapplerFromForm(formData: FormData) {
     emergencyContactName: formData.get("emergencyContactName"),
     emergencyRelationship: formData.get("emergencyRelationship"),
     bloodGroup: formData.get("bloodGroup") ?? "",
+    instagramHandle: formData.get("instagramHandle") ?? "",
     academy: formData.get("academy"),
     headCoach: formData.get("headCoach"),
     beltRank: formData.get("beltRank"),
@@ -129,7 +148,8 @@ export function toProfileFields(data: GrapplerDetails) {
     cityState: data.cityState,
     emergencyContactName: data.emergencyContactName,
     emergencyRelationship: data.emergencyRelationship,
-    bloodGroup: data.bloodGroup ?? "",
+    bloodGroup: data.bloodGroup,
+    instagramHandle: data.instagramHandle,
     academy: data.academy,
     gym: data.academy,
     headCoach: data.headCoach,

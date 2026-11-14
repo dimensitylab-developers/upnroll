@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, beforeAll, beforeEach } from "vitest";
 
-// Mock the DB/model layer — this test is about the auth *decision logic*
+// Mock the DB/model layer  this test is about the auth *decision logic*
 // (does getSession/requireRole correctly accept/reject a given state), not
 // a DB integration test. Cookie signing itself is exercised for real
 // (already covered by cookies.test.ts) to keep this test honest about what
@@ -132,7 +132,7 @@ describe("getSession / requireSession / requireRole", () => {
 
     const { createSession, getSession } = await import("./session");
     const { packCookieValue, SESSION_COOKIE_NAME } = await import("./cookies");
-    // Prior cookie present — createSession must revoke it before issuing a new token.
+    // Prior cookie present  createSession must revoke it before issuing a new token.
     jar.set(SESSION_COOKIE_NAME, packCookieValue("prior-token"));
     await createSession("new-user");
     expect(mockSessionDeleteOne).toHaveBeenCalled();

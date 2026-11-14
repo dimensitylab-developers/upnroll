@@ -3,7 +3,7 @@ import { actorFromSession, getSession } from "@/server/auth/session";
 import { listMatchesForFighter } from "@/server/services/matchService";
 import { Badge } from "@/components/ui/badge";
 
-/** Session/DB-bound route — allow blocking navigation under Cache Components. */
+/** Session/DB-bound route  allow blocking navigation under Cache Components. */
 export const instant = false;
 
 export const metadata: Metadata = { title: "Matches" };
@@ -25,7 +25,7 @@ export default async function FighterMatchesPage() {
               <Badge variant="outline">{m.status}</Badge>
             </div>
             <p className="text-sm text-muted-foreground mt-1">
-              Round {m.round + 1} — {m.competitorAName ?? "TBD"} vs {m.competitorBName ?? "TBD"}
+              Round {m.round + 1}  {m.competitorAName ?? "TBD"} vs {m.competitorBName ?? "TBD"}
             </p>
             <p className="text-xs text-muted-foreground">
               Mat {m.mat || "not assigned yet"}

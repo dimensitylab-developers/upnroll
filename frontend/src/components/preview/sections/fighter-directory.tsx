@@ -20,7 +20,7 @@ export function FighterDirectory() {
   );
 
   return (
-    <Chapter id="fighter-directory" title="Fighter Directory" subtitle="Card pattern adapted from UFC's athlete-directory structure (photo, name, division, record) — see research doc.">
+    <Chapter id="fighter-directory" title="Fighter Directory" subtitle="Card pattern adapted from UFC's athlete-directory structure (photo, name, division, record)  see research doc.">
       <div className="flex flex-wrap gap-3 mb-6">
         <div className="relative w-56">
           <Search className="absolute left-2.5 top-2.5 size-4 text-muted-foreground" />

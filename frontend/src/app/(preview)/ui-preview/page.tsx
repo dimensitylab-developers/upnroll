@@ -24,12 +24,12 @@ import { MotionFeedback } from "@/components/preview/sections/motion-feedback";
 import { ResponsiveBehavior } from "@/components/preview/sections/responsive-behavior";
 
 export const metadata: Metadata = {
-  title: { absolute: "Up 'n Roll — UI Preview Showroom" },
+  title: { absolute: "Up 'n Roll  UI Preview Showroom" },
   robots: { index: false, follow: false },
 };
 
 // `next build`/`next start` always set NODE_ENV=production, including for a
-// staging/review deployment — so NODE_ENV alone can't distinguish "public
+// staging/review deployment  so NODE_ENV alone can't distinguish "public
 // production" from "authorized review." Gate on an explicit opt-in instead.
 // connection() keeps that check on the request, so a production build does not
 // bake in a permanent 404.
@@ -52,7 +52,7 @@ export default async function UiPreviewPage() {
             <p className="text-xs uppercase tracking-widest text-brand-red font-semibold mb-2">Phase 1 deliverable</p>
             <h1 className="text-display text-4xl sm:text-5xl font-semibold">/ui-preview</h1>
             <p className="text-muted-foreground mt-3 max-w-2xl">
-              Interactive design showroom for Up &apos;n Roll — the combat sports tournament platform.
+              Interactive design showroom for Up &apos;n Roll  the combat sports tournament platform.
               Every data point on this page is a clearly-labeled fictional fixture. No production
               database, authentication, or payment processing exists behind this route.
             </p>
@@ -80,7 +80,7 @@ export default async function UiPreviewPage() {
           <ResponsiveBehavior />
 
           <footer className="pt-10 pb-20 text-xs text-muted-foreground">
-            Up &apos;n Roll — DimensityLabs. UI preview build, not for public indexing.
+            Up &apos;n Roll  DimensityLabs. UI preview build, not for public indexing.
           </footer>
         </div>
       </main>

@@ -1,7 +1,7 @@
 /**
  * Production-safe seed for the Jan 2027 No-Gi tournament.
  * Upserts the Superfight Series event + taxonomy divisions + scoring rules.
- * Weight class / experience level are chosen on the registration form only —
+ * Weight class / experience level are chosen on the registration form only 
  * this script keeps the DB grid in sync; public pages no longer list them.
  * Does NOT create demo fighters, registrations, brackets, or matches.
  *
@@ -33,7 +33,7 @@ async function main() {
     { slug: SERIES_SLUG },
     {
       $set: {
-        name: "Up 'n Roll Jiu Jitsu Tournament — No-Gi (#2)",
+        name: "Up 'n Roll Jiu Jitsu Tournament  No-Gi (#2)",
         slug: SERIES_SLUG,
         description:
           "Grapplers only. No-Gi. Pick Beginner or Intermediate, then your weight class on the registration form. Contact: Instagram @up.n.roll · info.upnroll@gmail.com · +91 7738719800.",
@@ -151,7 +151,7 @@ async function main() {
   try {
     await mongoose.disconnect();
   } catch {
-    /* ignore — force exit below */
+    /* ignore  force exit below */
   }
   process.exit(0);
 }

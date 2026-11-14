@@ -36,7 +36,7 @@ export function FighterDashboard() {
           </div>
           <div className="border border-black/10 rounded-md p-4">
             <p className="text-xs text-muted-foreground mb-1">Payment status</p>
-            <Badge variant="outline">{s.paymentStatus ? s.paymentStatus.replaceAll("_", " ") : "—"}</Badge>
+            <Badge variant="outline">{s.paymentStatus ? s.paymentStatus.replaceAll("_", " ") : ""}</Badge>
           </div>
         </div>
 

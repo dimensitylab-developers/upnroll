@@ -1,6 +1,6 @@
 # Deployment Guide
 
-Phase 6. Covers what's actually needed to run a real deployment of the code as it exists today — not a speculative future-state guide.
+Phase 6. Covers what's actually needed to run a real deployment of the code as it exists today  not a speculative future-state guide.
 
 ## Required environment variables
 
@@ -8,9 +8,9 @@ See `.env.example` for the authoritative list. Summary:
 
 | Variable | Required | Notes |
 |---|---|---|
-| `MONGODB_URI` | Yes | Validated at request time by `src/lib/config.ts` (zod) — the app fails fast with a clear error if missing, not a silent crash. |
-| `SESSION_SECRET` | Yes | ≥32 chars, used to HMAC-sign session cookies (`src/server/auth/cookies.ts`). Generate with `node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"`. **Rotating this invalidates every existing session** — expected and fine, not a bug. |
-| `ADMIN_SEED_EMAIL` / `ADMIN_SEED_PASSWORD` | Only for `scripts/create-admin.ts` | Never read by the running app itself — CLI-only, per Part M's "no public admin registration." |
+| `MONGODB_URI` | Yes | Validated at request time by `src/lib/config.ts` (zod)  the app fails fast with a clear error if missing, not a silent crash. |
+| `SESSION_SECRET` | Yes | ≥32 chars, used to HMAC-sign session cookies (`src/server/auth/cookies.ts`). Generate with `node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"`. **Rotating this invalidates every existing session**  expected and fine, not a bug. |
+| `ADMIN_SEED_EMAIL` / `ADMIN_SEED_PASSWORD` | Only for `scripts/create-admin.ts` | Never read by the running app itself  CLI-only, per Part M's "no public admin registration." |
 | `UI_PREVIEW_ENABLED` | Optional | `/ui-preview` is enabled in local dev automatically; in any built (`NODE_ENV=production`) deployment it 404s unless this is explicitly `"true"`. Leave unset in real production; set it only for an authorized review/staging deployment. |
 | `SMTP_HOST`, `SMTP_PORT`, `SMTP_USER`, `SMTP_PASS`, `SMTP_FROM` | Production server | Required when `NODE_ENV=production` and the process is serving, not during `next build`. Missing any one of them prevents startup. Development uses the console adapter and does not send. SMTP2GO is the preferred provider candidate. Credentials are not in the repo. Delivery has not been verified. |
 
@@ -32,15 +32,15 @@ There is no public admin registration (Part M). After the first deploy:
 npx tsx --env-file=.env.local scripts/create-admin.ts --email you@example.com --password "a-real-password"
 ```
 
-Run this against the **same** `MONGODB_URI` the deployed app uses. Re-running it on an existing email promotes that user to `ADMIN` and resets their password — documented behavior, not a surprise (see `scripts/create-admin.ts`).
+Run this against the **same** `MONGODB_URI` the deployed app uses. Re-running it on an existing email promotes that user to `ADMIN` and resets their password  documented behavior, not a surprise (see `scripts/create-admin.ts`).
 
 ## Environment separation
 
 - **Local dev**: `.env`/`.env.local`, `NODE_ENV=development` (implicit via `next dev`). `/ui-preview` always available.
 - **Staging/review**: a separate `MONGODB_URI` (different database, never the production one), `UI_PREVIEW_ENABLED=true` if the showroom still needs to be reviewable, its own `SESSION_SECRET`.
-- **Production**: its own `MONGODB_URI` and `SESSION_SECRET` (never shared with staging — a shared `SESSION_SECRET` would let a staging-issued cookie authenticate against production), `UI_PREVIEW_ENABLED` unset.
+- **Production**: its own `MONGODB_URI` and `SESSION_SECRET` (never shared with staging  a shared `SESSION_SECRET` would let a staging-issued cookie authenticate against production), `UI_PREVIEW_ENABLED` unset.
 
-Nothing in the codebase currently distinguishes staging from production beyond environment variables — there's no separate config file per environment, which is intentional (fewer places for drift) but means **environment variables are the entire boundary**. Treat them accordingly.
+Nothing in the codebase currently distinguishes staging from production beyond environment variables  there's no separate config file per environment, which is intentional (fewer places for drift) but means **environment variables are the entire boundary**. Treat them accordingly.
 
 ## Deployment decision gate
 

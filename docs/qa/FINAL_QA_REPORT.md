@@ -1,10 +1,10 @@
-# Final QA Report — Up 'n Roll Client Demo Readiness
+# Final QA Report  Up 'n Roll Client Demo Readiness
 
 **Date:** 2026-11-12  
 **Branch / commit:** `qa/client-demo-readiness-2026-11-12` @ `eb3c5ed` (from `version1`)  
 **Working tree:** clean (no application code changes retained)  
 **Environment tested:** local `npm run dev` + Atlas MongoDB (DB path `test`) + GridFS + configured SMTP/Google OAuth  
-**Stakeholder constraint:** **Manual testing and reporting only** — no product code fixes in this pass.
+**Stakeholder constraint:** **Manual testing and reporting only**  no product code fixes in this pass.
 
 ---
 
@@ -48,7 +48,7 @@ From `docs/qa/TEST_MATRIX.md` (36 scenarios):
 
 Automated suite (separate): **`npm test` → 43 files, 218 tests PASS** (2026-11-12).
 
-Lint: **FAIL** (9 errors / 7 warnings — pre-existing hooks/`no-img` issues; not treated as demo blockers).
+Lint: **FAIL** (9 errors / 7 warnings  pre-existing hooks/`no-img` issues; not treated as demo blockers).
 
 ---
 
@@ -57,7 +57,7 @@ Lint: **FAIL** (9 errors / 7 warnings — pre-existing hooks/`no-img` issues; no
 | Workflow | Result |
 | --- | --- |
 | Public tournament discovery | PASS |
-| Fighter register → coupon → pay → admin verify → bracket → judge score → rankings | **PARTIAL** — service/unit evidence strong; full browser chain not completed this pass without mutating shared DB with new fixtures |
+| Fighter register → coupon → pay → admin verify → bracket → judge score → rankings | **PARTIAL**  service/unit evidence strong; full browser chain not completed this pass without mutating shared DB with new fixtures |
 | Manual payment never auto-verifies | PASS (design + tests + FAQ copy) |
 | Single-use coupon | PASS in logic/concurrency tests; UI **BLOCKED** |
 | Judge match-scoped access | Negative login PASS; positive path **BLOCKED** |
@@ -108,7 +108,7 @@ See `SECURITY_REVIEW.md`. Portal redirects and Vitest authz look sound. Coupon r
 ## Commands to reproduce checks
 
 ```bash
-# From repo root — automated
+# From repo root  automated
 npm test
 
 # Dev server (already used)
@@ -128,7 +128,7 @@ curl -s -D - -o NUL http://localhost:3000/events/does-not-exist-xyz
 
 Manual UI: follow `CLIENT_DEMO_SCRIPT.md` with private credentials.
 
-Optional prior lifecycle driver (models path; writes to configured DB — use only on isolated demo DB):
+Optional prior lifecycle driver (models path; writes to configured DB  use only on isolated demo DB):
 
 ```bash
 cd frontend && npx tsx --env-file=.env.local ../scripts/e2e-lifecycle-audit.ts
@@ -147,7 +147,7 @@ cd frontend && npx tsx --env-file=.env.local ../scripts/e2e-lifecycle-audit.ts
 | Performance | `docs/qa/PERFORMANCE_REPORT.md` |
 | UAT checklist | `docs/qa/CLIENT_UAT_CHECKLIST.md` |
 | Demo script | `docs/qa/CLIENT_DEMO_SCRIPT.md` |
-| Vitest run | Terminal log 2026-11-12 — 218 passed |
+| Vitest run | Terminal log 2026-11-12  218 passed |
 | Prior E2E pack | `docs/qa/END_TO_END_TEST_EXECUTION_REPORT.md`, `docs/qa/e2e-evidence-*.json` |
 
 ---

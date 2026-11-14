@@ -1,4 +1,4 @@
-# External Integrations — Up 'n Roll
+# External Integrations  Up 'n Roll
 
 Verified call sites under `backend/` and `frontend/`.  
 Legend: 🟢 fully wired · 🟡 partial · 🔴 broken · ⚪ unused · 🔵 external · 🟣 mocked
@@ -70,7 +70,7 @@ flowchart TB
 | Env | `SESSION_SECRET` (≥32 chars) |
 | Status | Fully wired |
 
-### Email — SMTP / Nodemailer 🔵🟡
+### Email  SMTP / Nodemailer 🔵🟡
 
 | Item | Detail |
 |------|--------|
@@ -82,7 +82,7 @@ flowchart TB
 | Vendor | Docs may mention SMTP2GO; code is vendor-agnostic Nodemailer |
 | Status | Fully implemented; operational status depends on env (🟡 until SMTP configured) |
 
-### Email — Console adapter 🟣
+### Email  Console adapter 🟣
 
 | Item | Detail |
 |------|--------|
@@ -100,7 +100,7 @@ flowchart TB
 | `.env.example` | **Omits** `GOOGLE_*` keys |
 | Status | Code complete; configuration partial / undocumented |
 
-### Private file storage — Local disk 🟢
+### Private file storage  Local disk 🟢
 
 | Item | Detail |
 |------|--------|
@@ -109,7 +109,7 @@ flowchart TB
 | Selection | Default in non-production when `STORAGE_DRIVER` unset; or `STORAGE_DRIVER=local` |
 | Status | Fully wired |
 
-### Private file storage — GridFS 🔵🟢
+### Private file storage  GridFS 🔵🟢
 
 | Item | Detail |
 |------|--------|
@@ -125,10 +125,10 @@ flowchart TB
 |------|--------|
 | Module | `backend/notifications/whatsapp.ts` |
 | Caller | `matchService` schedule/result notifications |
-| Behavior | `console.log` only — **nothing delivered** |
+| Behavior | `console.log` only  **nothing delivered** |
 | Status | Mocked / placeholder |
 
-### FAQ Chatbot (local) 🟢 — not an external AI
+### FAQ Chatbot (local) 🟢  not an external AI
 
 | Item | Detail |
 |------|--------|
@@ -165,7 +165,7 @@ flowchart TB
 
 | Node | Path / evidence | Status |
 |------|-----------------|--------|
-| GitHub Actions CI | `.github/workflows/ci.yml` — tsc, vitest, next build | 🟢 |
+| GitHub Actions CI | `.github/workflows/ci.yml`  tsc, vitest, next build | 🟢 |
 | Health check | `GET /api/health` | 🟢 |
 | Admin seed CLI | `scripts/create-admin.ts` + `ADMIN_SEED_*` | 🟢 |
 | Demo seed | `scripts/seed-demo.ts` | 🟢 |

@@ -1,4 +1,4 @@
-# Up 'n Roll — production readiness audit
+# Up 'n Roll  production readiness audit
 
 > **Status note (2026-11-09):** Sections below that claim GridFS is unimplemented are **stale**. GridFS is implemented (`backend/storage/gridfs.ts`, factory driver selection). Prefer [SYSTEM_INTEGRATION_AUDIT.md](./architecture/SYSTEM_INTEGRATION_AUDIT.md) and the 2026-11-09 hardening reports under `docs/security/` / `docs/engineering/` for current storage status. Other hosting/ops blockers in this audit may still apply.
 
@@ -6,7 +6,7 @@ Date: 7 November 2026. Branch `suraj` at `180a3d0`. This pass read the source an
 
 The reported local verification (27 files, 156 tests, typecheck exit 0, production build exit 0) is the implementation session's result. This audit did not re-run those commands. A green local build is not a staging or production deployment.
 
-Decision update, 7 November 2026, documentation only. Atlas and the existing Mongoose connection stay the only database. GridFS is the preferred private-file architecture. Its status is `Preferred architecture — implementation design and approval pending.` It is not implemented. Hosting provider and topology are not selected. SMTP2GO is the preferred mail candidate. Delivery is not verified. No application code changed for this update.
+Decision update, 7 November 2026, documentation only. Atlas and the existing Mongoose connection stay the only database. GridFS is the preferred private-file architecture. Its status is `Preferred architecture  implementation design and approval pending.` It is not implemented. Hosting provider and topology are not selected. SMTP2GO is the preferred mail candidate. Delivery is not verified. No application code changed for this update.
 
 ## 1. Executive assessment
 
@@ -147,7 +147,7 @@ Success prints how many missing counters were set, then each division id and nam
 
 Owner decision, recorded after this audit's first draft: GridFS on the existing Atlas database is the preferred production store for private payment screenshots and fighter profile photos. Public brand assets, gallery images, and the homepage video stay in the Next.js public directory. Authorization stays in services and protected routes. GridFS ids and metadata are not authorization. Uploads stay outside retryable transactions. A failed business transaction deletes the file uploaded just before it. Existing `.local-storage` files are not copied or deleted. No second database and no object-storage vendor.
 
-Status: `Preferred architecture — implementation design and approval pending.` GridFS is not implemented and is not production-ready.
+Status: `Preferred architecture  implementation design and approval pending.` GridFS is not implemented and is not production-ready.
 
 `LocalDiskStorageAdapter` remains the development store. It is not a valid store for more than one instance, for serverless, or for a disk that disappears on deploy. Payment submit writes the file before the transaction and deletes it if the transaction throws. A crash after the write and before the transaction leaves an orphan file. Nothing sweeps orphans. `delete` ignores a missing file. `get` reads the whole buffer.
 

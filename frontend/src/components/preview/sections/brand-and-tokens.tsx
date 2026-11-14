@@ -28,7 +28,7 @@ export function BrandAndTokens() {
       <Chapter
         id="brand-foundation"
         title="Brand Foundation"
-        subtitle="Up 'n Roll — The Underground Arena. Light editorial combat-sports identity, reusing TechBlitz's manga-panel/halftone/speed-lines background structure by direct instruction — Up 'n Roll content and branding only, no hackathon copy or imagery carried over."
+        subtitle="Up 'n Roll  The Underground Arena. Light editorial combat-sports identity, reusing TechBlitz's manga-panel/halftone/speed-lines background structure by direct instruction  Up 'n Roll content and branding only, no hackathon copy or imagery carried over."
       >
         <div className="grid sm:grid-cols-3 gap-4">
           <div className="manga-panel p-6 speed-lines">
@@ -44,13 +44,13 @@ export function BrandAndTokens() {
             <p className="text-sm text-muted-foreground">Jagged-edge comic panel motif</p>
           </div>
         </div>
-        <FixtureBadge>Logo/wordmark shown as styled text — approved brand assets pending (OD-014)</FixtureBadge>
+        <FixtureBadge>Logo/wordmark shown as styled text  approved brand assets pending (OD-014)</FixtureBadge>
       </Chapter>
 
       <Chapter
         id="design-tokens"
         title="Design Tokens"
-        subtitle="All swatches below render the live CSS custom properties defined in src/app/globals.css — not a separately hardcoded palette."
+        subtitle="All swatches below render the live CSS custom properties defined in src/app/globals.css  not a separately hardcoded palette."
       >
         <div className="grid sm:grid-cols-4 gap-4 mb-10">
           {palette.map((p) => (
@@ -69,7 +69,7 @@ export function BrandAndTokens() {
             <h3 className="text-sm font-semibold uppercase tracking-wide text-muted-foreground mb-3">Type scale</h3>
             <div className="space-y-2">
               {typeScale.map((t) => (
-                <p key={t.label} className={t.className}>{t.label} — Up &apos;n Roll</p>
+                <p key={t.label} className={t.className}>{t.label}  Up &apos;n Roll</p>
               ))}
             </div>
           </div>

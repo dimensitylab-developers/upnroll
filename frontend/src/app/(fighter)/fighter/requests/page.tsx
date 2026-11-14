@@ -8,7 +8,7 @@ import { CreateRequestDialog } from "@/features/requests/create-request-dialog";
 import { TeammateTransferButton } from "@/features/requests/teammate-transfer-button";
 import { Badge } from "@/components/ui/badge";
 
-/** Session/DB-bound route — allow blocking navigation under Cache Components. */
+/** Session/DB-bound route  allow blocking navigation under Cache Components. */
 export const instant = false;
 
 export const metadata: Metadata = { title: "Requests" };
@@ -36,7 +36,7 @@ export default async function FighterRequestsPage() {
               return (
                 <div key={String(r._id)} className="manga-panel p-4 flex items-center justify-between">
                   <div>
-                    <p className="font-medium">{r.event?.name} — {r.division?.name}</p>
+                    <p className="font-medium">{r.event?.name}  {r.division?.name}</p>
                     <Badge variant="outline">{r.status.replaceAll("_", " ")}</Badge>
                   </div>
                   <div className="flex flex-col items-end gap-2">

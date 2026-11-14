@@ -5,7 +5,7 @@ export type HomeFaqItem = {
   label: string;
 };
 
-/** Homepage only — a short card of the FAQs athletes ask first. */
+/** Homepage only  a short card of the FAQs athletes ask first. */
 export const HOME_FAQ_PRIORITY = [
   "How do I register for an event?",
   "How do I pay the entry fee?",

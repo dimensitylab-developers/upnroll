@@ -11,7 +11,7 @@ import { AdminStamp } from "@/features/admin/ui/admin-stamp";
 import { Badge } from "@/components/ui/badge";
 import { CONTENT_TYPE_OPTIONS } from "@/features/content/content-types";
 
-/** Session/DB-bound route — allow blocking navigation under Cache Components. */
+/** Session/DB-bound route  allow blocking navigation under Cache Components. */
 export const instant = false;
 
 export const metadata: Metadata = { title: "Content" };

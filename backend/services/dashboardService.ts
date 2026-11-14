@@ -72,7 +72,7 @@ function profileChecklist(profile: Awaited<ReturnType<typeof getFighterProfile>>
   return { checks, done, total: checks.length, percent: Math.round((done / checks.length) * 100) };
 }
 
-/** Composes existing services into the data the fighter dashboard needs — every call is already scoped to `userId`. */
+/** Composes existing services into the data the fighter dashboard needs  every call is already scoped to `userId`. */
 export async function getFighterDashboardData(actor: Actor) {
   assertFighter(actor);
   const [profile, registrations, matches, requests] = await Promise.all([

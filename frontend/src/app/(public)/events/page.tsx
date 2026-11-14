@@ -41,7 +41,7 @@ export default async function PublicEventsPage() {
           <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-brand-red">Events</p>
           <h1 className="text-display mt-2 text-4xl font-semibold leading-[0.95] sm:text-5xl">The next card</h1>
           <p className="copy-slab mt-4 text-base leading-relaxed">
-            The date and the venue. Enter through registration — experience level and weight class are chosen there. Further down is how a fight runs, then the cards already held.
+            The date and the venue. Enter through registration  experience level and weight class are chosen there. Further down is how a fight runs, then the cards already held.
           </p>
         </header>
 

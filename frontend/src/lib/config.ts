@@ -3,7 +3,7 @@ import { ensureMongoDatabaseName, mongoDatabaseNameFromUri } from "@/lib/mongo-u
 
 /**
  * Server-only environment config. Import only from src/server/** or server
- * entry points (route handlers, server actions, layouts) — never from a
+ * entry points (route handlers, server actions, layouts)  never from a
  * Client Component.
  */
 
@@ -23,7 +23,7 @@ let cached: z.infer<typeof envSchema> | null = null;
 function resolveMongoUri(raw: string): string {
   const named = mongoDatabaseNameFromUri(raw);
   if (named) return ensureMongoDatabaseName(raw, named);
-  // Empty path previously opened driver DB "test" — preserve that data plane.
+  // Empty path previously opened driver DB "test"  preserve that data plane.
   return ensureMongoDatabaseName(raw, "test");
 }
 

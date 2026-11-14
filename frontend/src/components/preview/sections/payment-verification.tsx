@@ -20,7 +20,7 @@ export function PaymentVerification() {
   const [queue] = useState(previewPaymentQueue);
 
   return (
-    <Chapter id="payment-verification" title="Payment Verification" subtitle="Admin review queue. Approve/reject here would be idempotent, server-checked, and audit-logged in production — this view simulates the decision UI only.">
+    <Chapter id="payment-verification" title="Payment Verification" subtitle="Admin review queue. Approve/reject here would be idempotent, server-checked, and audit-logged in production  this view simulates the decision UI only.">
       <Table>
         <TableHeader>
           <TableRow>
@@ -41,7 +41,7 @@ export function PaymentVerification() {
               <TableCell className="font-mono text-xs flex items-center gap-1.5">
                 {p.utr}
                 {p.duplicateFlag && (
-                  <span title="Duplicate UTR — flagged for review"><AlertTriangle className="size-3.5 text-brand-gold" /></span>
+                  <span title="Duplicate UTR  flagged for review"><AlertTriangle className="size-3.5 text-brand-gold" /></span>
                 )}
               </TableCell>
               <TableCell><Badge variant={statusVariant[p.status]}>{p.status.replaceAll("_", " ")}</Badge></TableCell>
@@ -51,10 +51,10 @@ export function PaymentVerification() {
                     <DialogTrigger asChild><Button size="sm" variant="outline">Review</Button></DialogTrigger>
                     <DialogContent>
                       <DialogHeader>
-                        <DialogTitle>Review payment — {p.fighter}</DialogTitle>
+                        <DialogTitle>Review payment  {p.fighter}</DialogTitle>
                         <DialogDescription>
                           Check UTR {p.utr} against the organizer&apos;s actual bank/UPI records before deciding.
-                          {p.duplicateFlag && " This UTR also appears on another submission — verify carefully."}
+                          {p.duplicateFlag && " This UTR also appears on another submission  verify carefully."}
                         </DialogDescription>
                       </DialogHeader>
                       <div className="h-32 rounded-md border border-dashed border-black/20 flex items-center justify-center text-xs text-muted-foreground">
@@ -74,7 +74,7 @@ export function PaymentVerification() {
           ))}
         </TableBody>
       </Table>
-      <FixtureBadge>No real approval/rejection is recorded — this is a decision-UI simulation</FixtureBadge>
+      <FixtureBadge>No real approval/rejection is recorded  this is a decision-UI simulation</FixtureBadge>
     </Chapter>
   );
 }

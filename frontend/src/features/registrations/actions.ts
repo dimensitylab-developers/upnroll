@@ -11,13 +11,24 @@ import { Registration } from "@/server/models/Registration";
 import { ACTIVE_REGISTRATION_STATUSES } from "@/server/services/registrationStateMachine";
 import { ConflictError, toAppError } from "@/server/http/errors";
 import { createRegistrationSchema } from "./schemas";
-import { grapplerDetailsSchema, grapplerFieldIssues, grapplerFromForm, toProfileFields } from "@/features/fighters/grappler-schema";
-import { readAadhaarImage, saveAadhaarImage } from "@/server/services/profilePhoto";
+import {
+  grapplerDetailsSchema,
+  grapplerFieldIssues,
+  grapplerFromForm,
+  isMinorAge,
+  toProfileFields,
+} from "@/features/fighters/grappler-schema";
+import {
+  readAadhaarImage,
+  readParentalConsentImage,
+  saveAadhaarImage,
+  saveParentalConsentImage,
+} from "@/server/services/profilePhoto";
 
 export type RegistrationActionState = {
   error?: string;
   fieldErrors?: Record<string, string[] | undefined>;
-  /** Client navigates here — avoid redirect() after updateTag with useActionState. */
+  /** Client navigates here  avoid redirect() after updateTag with useActionState. */
   redirectTo?: string;
 };
 
@@ -56,27 +67,47 @@ export async function createRegistrationAction(
   if (!grapplerParsed.success) {
     return { fieldErrors: grapplerParsed.error.flatten().fieldErrors };
   }
-  const issues = grapplerFieldIssues(grapplerParsed.data);
+  const minor = isMinorAge(grapplerParsed.data.age);
+  const issues = grapplerFieldIssues(
+    { ...grapplerParsed.data, parentalConsent: String(formData.get("parentalConsent") ?? "") },
+    { requireParentalConsent: minor }
+  );
   if (Object.keys(issues).length > 0) return { fieldErrors: issues };
 
   const aadhaar = await readAadhaarImage(formData.get("aadhaarImage"));
   if ("error" in aadhaar) return { error: aadhaar.error };
 
+  const parentalConsent = await readParentalConsentImage(formData.get("parentalConsentImage"));
+  if ("error" in parentalConsent) return { error: parentalConsent.error };
+
   const divisionId = registrationParsed.data.divisionId;
 
   try {
-    const existing = await FighterProfile.findOne({ userId: actor.userId }).select("aadhaarImageKey").lean();
+    const existing = await FighterProfile.findOne({ userId: actor.userId })
+      .select("aadhaarImageKey parentalConsentImageKey")
+      .lean();
     if ("empty" in aadhaar && !existing?.aadhaarImageKey) {
       return { error: "Add an Aadhaar card image.", fieldErrors: { aadhaarImage: ["Add an Aadhaar card image."] } };
+    }
+    if (minor && "empty" in parentalConsent && !existing?.parentalConsentImageKey) {
+      return {
+        error: "Upload a signed parental consent form.",
+        fieldErrors: { parentalConsentImage: ["Upload a signed parental consent form."] },
+      };
     }
     const aadhaarImageKey =
       "bytes" in aadhaar
         ? await saveAadhaarImage(actor, aadhaar.bytes, aadhaar.ext, existing?.aadhaarImageKey ?? "")
         : undefined;
+    const parentalConsentImageKey =
+      "bytes" in parentalConsent
+        ? await saveParentalConsentImage(actor, parentalConsent.bytes, parentalConsent.ext, existing?.parentalConsentImageKey ?? "")
+        : undefined;
 
     await updateFighterProfile(actor, {
       ...toProfileFields(grapplerParsed.data),
       aadhaarImageKey,
+      parentalConsentImageKey,
       waiverAcceptedAt: new Date(),
     });
 

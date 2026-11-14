@@ -13,7 +13,7 @@ import { JudgeCredentialsPanel } from "@/features/matches/judge-credentials-pane
 import { fetchJudgeCredentialMeta } from "@/features/matches/judge-credential-actions";
 import { PageBackLink } from "@/components/layout/page-back-link";
 
-/** Session/DB-bound route — allow blocking navigation under Cache Components. */
+/** Session/DB-bound route  allow blocking navigation under Cache Components. */
 export const instant = false;
 
 const UPCOMING_STATUSES = new Set(["PENDING", "SCHEDULED"]);
@@ -144,7 +144,7 @@ function MatchTable({
                         <ScheduleStatusBadge scheduledAt={m.scheduledAt} mat={m.mat} />
                       </div>
                       <p className="mt-2 text-sm text-muted-foreground">
-                        {m.winnerName ? `${m.winnerName} — ${m.resultMethod}` : "No result yet"}
+                        {m.winnerName ? `${m.winnerName}  ${m.resultMethod}` : "No result yet"}
                       </p>
                       <div className="mt-3">
                         <MatchActions
@@ -182,7 +182,7 @@ function MatchTable({
                             <ScheduleStatusBadge scheduledAt={m.scheduledAt} mat={m.mat} />
                           </TableCell>
                           <TableCell className="text-sm text-muted-foreground">
-                            {m.winnerName ? `${m.winnerName} — ${m.resultMethod}` : "—"}
+                            {m.winnerName ? `${m.winnerName}  ${m.resultMethod}` : ""}
                           </TableCell>
                           <TableCell className="align-top">
                             <MatchActions
@@ -225,7 +225,7 @@ export default async function AdminMatchesPage({ params }: { params: Promise<{ i
   return (
     <div className="mx-auto max-w-6xl px-1 sm:px-6">
       <PageBackLink href={`/admin/events/${id}`} label="Back to event" />
-      <PageHeader title={`Matches — ${event.name}`} />
+      <PageHeader title={`Matches  ${event.name}`} />
       <Tabs defaultValue="upcoming">
         <TabsList className="flex h-auto w-full flex-wrap gap-1">
           <TabsTrigger value="upcoming" className="flex-1 min-w-[8rem]">

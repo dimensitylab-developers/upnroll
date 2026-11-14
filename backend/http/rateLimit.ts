@@ -1,5 +1,5 @@
 /**
- * Minimal in-memory token-bucket rate limiter. Single-instance only — the
+ * Minimal in-memory token-bucket rate limiter. Single-instance only  the
  * bucket map lives in process memory, so this does nothing useful across
  * multiple server instances/processes. A real distributed limiter (Redis-
  * backed, etc.) is an infra decision (OD-012-class), not made here. This

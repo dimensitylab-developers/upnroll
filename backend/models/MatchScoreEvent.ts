@@ -18,7 +18,7 @@ const matchScoreEventSchema = new Schema(
     value: { type: Number, required: true, default: 0 },
     label: { type: String, default: "" },
     actorKind: { type: String, enum: SCORE_ACTOR_KINDS, required: true },
-    /** Judge credential id or admin user id — not a verified real-world person for judge sessions. */
+    /** Judge credential id or admin user id  not a verified real-world person for judge sessions. */
     actorId: { type: Schema.Types.ObjectId, required: true },
     sessionId: { type: Schema.Types.ObjectId, ref: "JudgeSession", default: null },
     sequence: { type: Number, required: true, min: 1 },

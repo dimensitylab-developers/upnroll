@@ -29,7 +29,7 @@ function resolveFeeMinorUnits(
 export type CreateRegistrationOptions = {
   couponId?: string | null;
   reservationIntentId?: string | null;
-  /** Ignored if present — never trusted from the client. Kept only to fail closed on tampering attempts in tests. */
+  /** Ignored if present  never trusted from the client. Kept only to fail closed on tampering attempts in tests. */
   clientAmountMinorUnits?: number | null;
   clientPaymentOptionId?: string | null;
 };
@@ -66,7 +66,7 @@ export async function createRegistration(
         throw new ConflictError("You already have an active registration in this division.");
       }
 
-      // Server-authoritative payment selection — never trust client fee/option.
+      // Server-authoritative payment selection  never trust client fee/option.
       let paymentOption = await getDefaultPaymentOption(String(event._id));
       let couponId: string | null = null;
       let couponCode = "";
@@ -75,7 +75,7 @@ export async function createRegistration(
         if (!options.reservationIntentId) {
           throw new ValidationError("Coupon reservation intent is required.");
         }
-        // Placeholder registration id filled after create — redeem uses conditional update after insert.
+        // Placeholder registration id filled after create  redeem uses conditional update after insert.
         // We redeem after Registration.create below.
       }
 

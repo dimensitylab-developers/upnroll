@@ -15,7 +15,7 @@ export function PaymentForm({ registrationId }: { registrationId: string }) {
     <form action={formAction} className="space-y-4">
       <input type="hidden" name="registrationId" value={registrationId} />
       {state.error && <p className="text-sm text-primary">{state.error}</p>}
-      {state.success && <p className="text-sm text-brand-cyan">Submitted — awaiting admin review.</p>}
+      {state.success && <p className="text-sm text-brand-cyan">Submitted  awaiting admin review.</p>}
       <div>
         <Label htmlFor="utr" className="mb-1.5 block">UTR / transaction reference</Label>
         <Input id="utr" name="utr" required placeholder="e.g. 409872165310" />

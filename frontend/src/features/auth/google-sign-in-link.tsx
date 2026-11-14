@@ -5,9 +5,19 @@ import { AuthTransitionOverlay, holdAuthGate } from "./auth-transition-overlay";
 
 export type GoogleAuthEntry = "login" | "register";
 
-export function GoogleSignInLink({ entry = "login" }: { entry?: GoogleAuthEntry }) {
+export function GoogleSignInLink({
+  entry = "login",
+  from,
+}: {
+  entry?: GoogleAuthEntry;
+  from?: string;
+}) {
   const [pending, setPending] = useState(false);
-  const href = entry === "register" ? "/api/auth/google?entry=register" : "/api/auth/google";
+  const params = new URLSearchParams();
+  if (entry === "register") params.set("entry", "register");
+  if (from) params.set("from", from);
+  const query = params.toString();
+  const href = query ? `/api/auth/google?${query}` : "/api/auth/google";
 
   async function onClick(event: MouseEvent<HTMLAnchorElement>) {
     event.preventDefault();

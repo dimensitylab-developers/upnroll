@@ -1,4 +1,4 @@
-# Database Integrity Report — Phase 2
+# Database Integrity Report  Phase 2
 
 Date: 2026-11-09  
 Branch: `suraj`

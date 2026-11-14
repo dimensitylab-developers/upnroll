@@ -22,7 +22,7 @@ export function ParticipantOrderForm({
   const [order, setOrder] = useState(participants);
   const [state, formAction, pending] = useActionState(generateBracketAction, initialState);
 
-  // Default the seed field imperatively after mount, not during render —
+  // Default the seed field imperatively after mount, not during render 
   // Date.now() is impure and must not run in the render body.
   const seedInputRef = useRef<HTMLInputElement>(null);
   useEffect(() => {

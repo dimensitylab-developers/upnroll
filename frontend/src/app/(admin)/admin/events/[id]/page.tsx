@@ -20,7 +20,7 @@ import { AdminStamp } from "@/features/admin/ui/admin-stamp";
 import { Badge } from "@/components/ui/badge";
 import { PageBackLink } from "@/components/layout/page-back-link";
 
-/** Session/DB-bound route — allow blocking navigation under Cache Components. */
+/** Session/DB-bound route  allow blocking navigation under Cache Components. */
 export const instant = false;
 
 const DOORS = [

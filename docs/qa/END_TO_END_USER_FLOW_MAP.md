@@ -1,4 +1,4 @@
-# End-to-End User Flow Map — Up 'n Roll
+# End-to-End User Flow Map  Up 'n Roll
 
 Evidence date: 2026-11-09 · Branch: `suraj` · Source of truth: codebase + live local run.
 
@@ -10,7 +10,7 @@ This map describes **implemented** journeys only. Gaps are labeled **NOT IMPLEME
 
 | Role | How created | Portal | Core authority |
 |------|-------------|--------|----------------|
-| Visitor (anonymous) | — | Public routes | Read public events, brackets (published), results, rankings, FAQ/content |
+| Visitor (anonymous) |  | Public routes | Read public events, brackets (published), results, rankings, FAQ/content |
 | `FIGHTER` | `/register` → email verify (or Google OAuth when configured) | `/fighter/*` | Own profile, registrations, payments, requests, matches; teammate transfer claim |
 | `ADMIN` | CLI `scripts/create-admin.ts` only | `/admin/*` | Events/divisions, payment review, requests, brackets/matches, rankings recalc, content/media, fighter PII |
 
@@ -35,7 +35,7 @@ Duplicate decide blocked by `findOneAndUpdate({ status: "PENDING_REVIEW" })`.
 
 ### Event
 
-`DRAFT` | `REGISTRATION_OPEN` | `REGISTRATION_CLOSED` | `COMPLETED` — **manual** admin set (no calendar FSM).
+`DRAFT` | `REGISTRATION_OPEN` | `REGISTRATION_CLOSED` | `COMPLETED`  **manual** admin set (no calendar FSM).
 
 ### Bracket
 
@@ -130,7 +130,7 @@ Fighter sees own registrations/matches; public sees published brackets/results/r
 | Payment approved | `CONFIRMED` | Approved row | No payment data |
 | Bracket published | Matches when assigned | Draft+published admin | Published bracket/results |
 | Match completed | Own match result | Matches admin | Public results |
-| Rankings recalculated | — | Admin rankings | Public rankings board |
+| Rankings recalculated |  | Admin rankings | Public rankings board |
 
 ---
 
@@ -142,7 +142,7 @@ Fighter sees own registrations/matches; public sees published brackets/results/r
 | Console/SMTP email | Codes logged in dev; SMTP env-gated |
 | Storage (local/GridFS) | Photos/screenshots; GridFS requires storing returned `gridfs:` keys (see blockers) |
 | Google OAuth | Soft-fail → `/login?google=unavailable` |
-| WhatsApp | Stub only — copy prepared, not sent |
+| WhatsApp | Stub only  copy prepared, not sent |
 
 Recovery: resend verification code; payment resubmit after reject; bracket regenerate while DRAFT; match correction if downstream undecided.
 

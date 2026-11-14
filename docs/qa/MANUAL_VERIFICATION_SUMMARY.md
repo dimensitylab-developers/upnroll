@@ -1,4 +1,4 @@
-# Manual Verification Summary — Runtime Audit
+# Manual Verification Summary  Runtime Audit
 
 **Final classification: PARTIALLY VERIFIED** (E2E lifecycle included)
 

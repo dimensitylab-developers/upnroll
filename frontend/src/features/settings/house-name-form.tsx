@@ -22,7 +22,7 @@ export function HouseNameForm({ defaultName }: { defaultName: string }) {
       {state.error && <p className="text-sm text-primary">{state.error}</p>}
       {state.ok && state.savedName && (
         <p className="text-sm text-brand-cyan">
-          Saved as <span className="font-semibold">{state.savedName}</span> — dashboards will greet you by this name.
+          Saved as <span className="font-semibold">{state.savedName}</span>  dashboards will greet you by this name.
         </p>
       )}
       <div>
