@@ -30,24 +30,27 @@ export function PaymentReviewDialog({
       <DialogTrigger asChild>
         <Button size="sm" variant="outline">Review</Button>
       </DialogTrigger>
-      <DialogContent>
+      <DialogContent className="max-h-[90vh] max-w-2xl overflow-y-auto">
         <DialogHeader>
-          <DialogTitle>Review payment  {fighterLabel}</DialogTitle>
+          <DialogTitle>Review payment — {fighterLabel}</DialogTitle>
           <DialogDescription>
             Check UTR {utr ?? ""} against the organizer&apos;s actual bank/UPI records before deciding.
-            {duplicateUtr && " This UTR also appears on another submission  verify carefully."}
+            {duplicateUtr && " This UTR also appears on another submission — verify carefully."}
           </DialogDescription>
         </DialogHeader>
 
         {hasScreenshot ? (
-          <a
-            href={`/api/v1/admin/payments/${paymentId}/screenshot`}
-            className="text-sm underline"
-          >
-            Download payment screenshot
-          </a>
+          <div className="overflow-hidden border-2 border-black bg-white">
+            {/* Private admin-only proof; served by authenticated screenshot route. */}
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={`/api/v1/admin/payments/${paymentId}/screenshot`}
+              alt={`Payment screenshot for ${fighterLabel}`}
+              className="mx-auto max-h-[50vh] w-full object-contain"
+            />
+          </div>
         ) : (
-          <div className="h-32 rounded-md border border-dashed border-black/20 flex items-center justify-center text-xs text-muted-foreground">
+          <div className="flex h-32 items-center justify-center border border-dashed border-black/20 text-xs text-muted-foreground">
             No screenshot on file
           </div>
         )}

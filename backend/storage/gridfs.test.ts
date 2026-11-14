@@ -119,7 +119,7 @@ describe("GridFSStorageAdapter", () => {
     expect(upload.abort).toHaveBeenCalledTimes(1);
   });
 
-  it("opens by id from the storage key and does not accept a raw filename", async () => {
+  it("opens by id from a gridfs storage key", async () => {
     const id = new ObjectId();
     const key = formatGridFsKey(id);
     mockBucket.find.mockReturnValue({
@@ -137,11 +137,34 @@ describe("GridFSStorageAdapter", () => {
     expect(mockBucket.openDownloadStream).toHaveBeenCalledWith(id);
   });
 
-  it("treats a missing file delete as success", async () => {
+  it("opens by filename when the stored key is a path label", async () => {
     const id = new ObjectId();
-    mockBucket.delete.mockRejectedValue(new Error(`File not found for id ${id}`));
+    mockBucket.find.mockReturnValue({
+      sort: () => ({
+        limit: () => ({
+          toArray: async () => [{ _id: id, length: 3, metadata: { contentType: "image/jpeg" } }],
+        }),
+      }),
+    });
+    const download = Readable.from([Buffer.from("jpg")]);
+    mockBucket.openDownloadStream.mockReturnValue(download);
+
     const adapter = new GridFSStorageAdapter();
-    await expect(adapter.delete(formatGridFsKey(id))).resolves.toBeUndefined();
+    const opened = await adapter.open("profiles/u1.jpg");
+    expect(opened.contentType).toBe("image/jpeg");
+    expect(opened.length).toBe(3);
+    expect(mockBucket.openDownloadStream).toHaveBeenCalledWith(id);
+  });
+
+  it("treats a missing file delete as success", async () => {
+    mockBucket.find.mockReturnValue({
+      limit: () => ({
+        toArray: async () => [],
+      }),
+    });
+    const adapter = new GridFSStorageAdapter();
+    await expect(adapter.delete(formatGridFsKey(new ObjectId()))).resolves.toBeUndefined();
+    expect(mockBucket.delete).not.toHaveBeenCalled();
   });
 
   it("returns a non-HTTP signed url marker", async () => {
