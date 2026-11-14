@@ -1,26 +1,128 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import type { FightingMedia } from "./site-photos";
 import { FightTapePlayer } from "./fight-tape-player";
 
+type Tape = Extract<FightingMedia, { type: "video" }>;
+
+/**
+ * Landscapes stacked left; portrait on the right matched to that stack height (9:16).
+ */
+function TapeStrip({ tapes }: { tapes: Tape[] }) {
+  const landscapes = tapes.filter((tape) => tape.orientation !== "portrait");
+  const portraits = tapes.filter((tape) => tape.orientation === "portrait");
+  const portrait = portraits[0];
+
+  const stackRef = useRef<HTMLUListElement>(null);
+  const [portraitSize, setPortraitSize] = useState<{ height: number; width: number } | null>(null);
+
+  useEffect(() => {
+    const node = stackRef.current;
+    if (!node || !portrait) {
+      setPortraitSize(null);
+      return;
+    }
+
+    const sync = () => {
+      // Only height-match on sm+ side-by-side layout; mobile stays natural stacked.
+      if (!window.matchMedia("(min-width: 640px)").matches) {
+        setPortraitSize(null);
+        return;
+      }
+      const height = Math.round(node.getBoundingClientRect().height);
+      if (height < 8) return;
+      setPortraitSize({ height, width: Math.round((height * 9) / 16) });
+    };
+
+    sync();
+    const ro = new ResizeObserver(sync);
+    ro.observe(node);
+    window.addEventListener("resize", sync);
+    return () => {
+      ro.disconnect();
+      window.removeEventListener("resize", sync);
+    };
+  }, [portrait, landscapes.length]);
+
+  if (tapes.length === 0) return null;
+
+  return (
+    <div className="flex flex-col gap-3 sm:flex-row sm:items-start">
+      {landscapes.length > 0 ? (
+        <ul ref={stackRef} className="flex min-w-0 flex-1 flex-col gap-3">
+          {landscapes.map((tape) => (
+            <li key={tape.src} className="min-w-0">
+              <FightTapePlayer
+                src={tape.src}
+                poster={tape.poster}
+                label=""
+                alt={tape.alt}
+                portrait={false}
+              />
+            </li>
+          ))}
+        </ul>
+      ) : null}
+
+      {portrait ? (
+        <div
+          className="mx-auto w-full max-w-[16rem] shrink-0 sm:mx-0 sm:max-w-none"
+          style={
+            portraitSize
+              ? { width: portraitSize.width, height: portraitSize.height, maxWidth: "100%" }
+              : undefined
+          }
+        >
+          <FightTapePlayer
+            src={portrait.src}
+            poster={portrait.poster}
+            label=""
+            alt={portrait.alt}
+            portrait
+            fill
+          />
+        </div>
+      ) : null}
+
+      {portraits.slice(1).map((tape) => (
+        <div key={tape.src} className="mx-auto w-full max-w-[16rem] sm:hidden">
+          <FightTapePlayer
+            src={tape.src}
+            poster={tape.poster}
+            label=""
+            alt={tape.alt}
+            portrait
+          />
+        </div>
+      ))}
+    </div>
+  );
+}
+
+/**
+ * Home “On the mat”:
+ * 1) Auto-looping still slideshow (object-contain — no crop)
+ * 2) Video strip: landscapes stacked left, portrait height-matched on the right
+ */
 export function FightingGallery({
   photos,
   media,
 }: {
-  photos?: { src: string; alt: string }[];
+  photos?: { src: string; alt: string; orientation?: "portrait" | "landscape" }[];
   media?: FightingMedia[];
 }) {
   const items: FightingMedia[] =
     media ??
-    (photos ?? []).map((photo) => ({ type: "photo" as const, src: photo.src, alt: photo.alt }));
+    (photos ?? []).map((photo) => ({ type: "photo" as const, src: photo.src, alt: photo.alt, orientation: photo.orientation }));
 
   const stills = items.filter((item): item is Extract<FightingMedia, { type: "photo" }> => item.type === "photo");
-  const tapes = items.filter((item): item is Extract<FightingMedia, { type: "video" }> => item.type === "video");
+  const tapes = items.filter((item): item is Tape => item.type === "video");
 
   const [index, setIndex] = useState(0);
   const count = stills.length;
   const active = stills[index] ?? null;
+  const activePortrait = active?.orientation === "portrait";
 
   useEffect(() => {
     if (count < 2) return;
@@ -42,21 +144,30 @@ export function FightingGallery({
   return (
     <div className="space-y-4">
       {active && (
-        <div className="media-glow relative overflow-hidden border-2 border-black bg-black shadow-[10px_10px_0_0_#c8102e]">
-          <div className="relative aspect-[16/10] sm:aspect-[16/9]">
+        <div className="flex justify-center">
+          <div
+            className={`media-glow relative w-full overflow-hidden border-2 border-black bg-white transition-[max-width] duration-500 ease-out ${
+              activePortrait ? "max-w-[min(100%,24rem)] sm:max-w-[min(100%,28rem)]" : "max-w-full"
+            }`}
+          >
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
+              key={active.src}
               src={active.src}
               alt={active.alt}
-              width={960}
-              height={540}
+              width={1280}
+              height={activePortrait ? 1920 : 853}
               decoding="async"
               loading={index === 0 ? "eager" : "lazy"}
               fetchPriority={index === 0 ? "high" : "low"}
-              className="absolute inset-0 h-full w-full object-cover object-center transition-transform duration-300 hover:scale-[1.03]"
+              className="block h-auto w-full"
             />
 
-            <div className="absolute bottom-4 right-4 z-20 flex gap-2">
+            <p className="absolute bottom-3 left-3 z-20 border-2 border-black bg-white px-2 py-1 text-[11px] font-semibold uppercase tracking-[0.18em] text-brand-red shadow-[3px_3px_0_0_#000]">
+              {index + 1}/{count}
+            </p>
+
+            <div className="absolute bottom-3 right-3 z-20 flex gap-2">
               <button
                 type="button"
                 onClick={() => step(-1)}
@@ -73,24 +184,10 @@ export function FightingGallery({
               </button>
             </div>
           </div>
-
-          <div className="flex items-center justify-between gap-3 border-t-2 border-white/20 bg-black px-4 py-2 text-white">
-            <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-brand-red">
-              {index + 1}/{count}
-            </p>
-          </div>
         </div>
       )}
 
-      {tapes.length > 0 && (
-        <ul className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-          {tapes.map((tape) => (
-            <li key={tape.src}>
-              <FightTapePlayer src={tape.src} poster={tape.poster} label="" alt={tape.alt} portrait />
-            </li>
-          ))}
-        </ul>
-      )}
+      <TapeStrip tapes={tapes} />
     </div>
   );
 }

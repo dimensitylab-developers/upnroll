@@ -1,8 +1,8 @@
 import Link from "next/link";
-import { cachedPublicDivisions, cachedPublicEvents, cachedPublishedContent, cachedPublishedMedia, cachedPublicRankings } from "@/lib/public-reads";
+import { cachedPublicDivisions, cachedPublicEvents, cachedPublishedMedia, cachedPublicRankings } from "@/lib/public-reads";
 import { Badge } from "@/components/ui/badge";
 import { HomeGlimpse } from "@/components/home/home-glimpse";
-import { pickHomeFaqs } from "@/components/home/home-faq-data";
+import { getHomeFaqs } from "@/components/home/home-faq-data";
 import { HomeFaqTimeline } from "@/components/home/home-faq-timeline";
 import { SectionBanner } from "@/components/home/section-banner";
 
@@ -147,17 +147,19 @@ export async function HomeRankingsSection() {
   );
 }
 
-export async function HomeFaqSection() {
-  const faqs = await cachedPublishedContent("FAQ");
-  const items = pickHomeFaqs(faqs, 5);
+export function HomeFaqSection() {
+  const items = getHomeFaqs(4);
   if (items.length === 0) return null;
 
   return (
-    <section className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pb-8">
-      <div className="mb-2 flex items-end justify-between gap-4">
-        <SectionBanner>Asked on the mat</SectionBanner>
-        <Link href="/faq" className="mb-6 text-sm font-semibold underline underline-offset-2">
-          Full FAQ
+    <section className="mx-auto max-w-6xl px-4 pb-8 sm:px-6 lg:px-8">
+      <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+        <SectionBanner className="mb-0">Asked on the mat</SectionBanner>
+        <Link
+          href="/faq"
+          className="inline-flex w-fit -skew-x-12 items-center border-2 border-black bg-white px-4 py-2 text-xs font-semibold uppercase tracking-[0.16em] shadow-[3px_3px_0_0_#000] transition-colors hover:bg-brand-red hover:text-white sm:text-[11px]"
+        >
+          <span className="inline-block skew-x-12">Full FAQ →</span>
         </Link>
       </div>
       <HomeFaqTimeline items={items} />

@@ -21,40 +21,78 @@ const DOORS = [
   { href: "/faq", title: "FAQ", body: "Straight answers from the book." },
 ];
 
-function AboutHomeTeaser({ eventSlug }: { eventSlug?: string | null }) {
+function AboutHomeTeaser() {
   return (
-    <div className="relative overflow-hidden border-2 border-black bg-black text-white shadow-[8px_8px_0_0_#c8102e]">
-      <div className="pointer-events-none absolute inset-0 opacity-30">
-        <Image src="/Fighting/003A8193.JPG" alt="" fill className="object-cover object-center" sizes="72rem" />
-        <div className="absolute inset-0 bg-gradient-to-r from-black via-black/85 to-black/40" />
+    <Link
+      href="/about"
+      aria-label="Know more about Up 'n Roll"
+      className="group relative block overflow-hidden border-2 border-black bg-black text-white shadow-[10px_10px_0_0_#c8102e] transition-[transform,box-shadow] duration-300 hover:-translate-y-1 hover:shadow-[14px_14px_0_0_#c8102e]"
+    >
+      <div className="pointer-events-none absolute inset-0">
+        <Image
+          src="/Fighting/003A8013.JPG"
+          alt=""
+          fill
+          className="object-cover object-[center_25%] opacity-45 transition-transform duration-700 group-hover:scale-105"
+          sizes="(max-width: 1024px) 100vw, 72rem"
+        />
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_left,rgba(200,16,46,0.45),transparent_55%),linear-gradient(105deg,rgba(0,0,0,0.92)_0%,rgba(0,0,0,0.72)_48%,rgba(0,0,0,0.35)_100%)]" />
       </div>
-      <div className="relative grid gap-8 p-6 sm:p-8 lg:grid-cols-[1.1fr_0.9fr] lg:items-end">
-        <div>
-          <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-brand-red">About Us</p>
-          <h2 className="text-display mt-2 text-4xl font-semibold leading-[0.95] sm:text-5xl">Up &apos;n Roll</h2>
-          <p className="mt-4 max-w-lg text-sm leading-relaxed text-white/80">
-            No-gi for grapplers everywhere — a real stage, fair brackets, and rankings that lead to the superfight.
-          </p>
-          <div className="mt-6">
-            <FounderCredit className="text-white/70" />
+
+      <div className="relative grid gap-0 lg:grid-cols-[1.15fr_0.85fr]">
+        <div className="flex flex-col justify-between gap-8 p-6 sm:p-8 lg:p-10">
+          <div>
+            <div className="mb-4 flex items-center gap-3">
+              <span className="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-md border-2 border-white bg-white shadow-[3px_3px_0_0_#c8102e]">
+                <BrandMark className="h-8 w-8" />
+              </span>
+              <p className="rounded-sm bg-brand-red px-2.5 py-1 text-[11px] font-semibold uppercase tracking-[0.28em] text-white shadow-[2px_2px_0_0_#000]">
+                About Us
+              </p>
+            </div>
+            <h2 className="text-display max-w-xl text-4xl font-semibold leading-[0.95] sm:text-5xl lg:text-6xl">
+              About Up &apos;n Roll
+            </h2>
+            <p className="mt-5 max-w-lg text-sm leading-relaxed text-white/85 sm:text-base">
+              A no-gi grappling platform built for grapplers everywhere — first time on the mat or chasing the next
+              belt. Real stage. Fair brackets. Rankings that lead to the superfight.
+            </p>
+            <p className="mt-3 max-w-lg text-sm leading-relaxed text-white/65">
+              Three events build the board. The fourth is the superfight. Your effort is always rewarded.
+            </p>
+          </div>
+
+          <div className="flex flex-wrap items-end justify-between gap-4">
+            <FounderCredit className="text-white/60" />
+            <span className="inline-flex -skew-x-12 border-2 border-black bg-brand-red px-5 py-3 text-sm font-semibold uppercase tracking-wider text-white shadow-[5px_5px_0_0_#fff] transition-colors group-hover:bg-white group-hover:text-black group-hover:shadow-[5px_5px_0_0_#c8102e]">
+              <span className="inline-block skew-x-12">Know more →</span>
+            </span>
           </div>
         </div>
-        <div className="flex flex-wrap gap-3">
-          <Link
-            href="/about"
-            className="inline-flex -skew-x-12 border-2 border-black bg-brand-red px-4 py-2.5 text-sm font-semibold uppercase tracking-wider text-white shadow-[4px_4px_0_0_#fff]"
+
+        <div className="relative hidden min-h-[280px] border-t-2 border-black lg:block lg:border-l-2 lg:border-t-0">
+          <div className="absolute inset-4 overflow-hidden border-2 border-white/30 bg-black/40 shadow-[6px_6px_0_0_rgba(200,16,46,0.85)]">
+            <Image
+              src="/Fighting/003A8193.JPG"
+              alt=""
+              fill
+              className="object-cover transition-transform duration-700 group-hover:scale-110"
+              sizes="28rem"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent" />
+            <p className="absolute bottom-4 left-4 right-4 text-display text-2xl font-semibold leading-tight text-white">
+              Come roll with us.
+            </p>
+          </div>
+          <span
+            className="absolute right-6 top-6 rotate-3 border-2 border-black bg-[#F5C518] px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.18em] text-black shadow-[3px_3px_0_0_#000] transition-transform duration-300 group-hover:-rotate-2"
+            aria-hidden="true"
           >
-            <span className="inline-block skew-x-12">Know more</span>
-          </Link>
-          <Link
-            href={eventSlug ? `/events/${eventSlug}` : "/events"}
-            className="inline-flex border-2 border-white/40 px-4 py-2.5 text-sm font-semibold uppercase tracking-wider text-white"
-          >
-            Next event
-          </Link>
+            The house
+          </span>
         </div>
       </div>
-    </div>
+    </Link>
   );
 }
 
@@ -76,8 +114,12 @@ function AboutPageStory({ eventSlug }: { eventSlug?: string | null }) {
 
         <div className="relative mx-auto flex min-h-[48vh] max-w-6xl flex-col justify-end px-4 pb-12 pt-20 sm:px-6 sm:pb-14 lg:px-8">
           <div className="mb-5 flex items-center gap-3">
-            <BrandMark className="h-11 w-11 drop-shadow-[3px_3px_0_rgba(0,0,0,0.6)]" />
-            <p className="text-[11px] font-semibold uppercase tracking-[0.28em] text-brand-red">About Us</p>
+            <span className="inline-flex h-12 w-12 shrink-0 items-center justify-center rounded-md border-2 border-white bg-white shadow-[3px_3px_0_0_#c8102e]">
+              <BrandMark className="h-9 w-9" />
+            </span>
+            <p className="rounded-sm bg-brand-red px-2.5 py-1 text-[11px] font-semibold uppercase tracking-[0.28em] text-white shadow-[2px_2px_0_0_#000]">
+              About Us
+            </p>
           </div>
           <h1 className="text-display max-w-3xl text-4xl font-semibold leading-[0.95] sm:text-6xl">
             About Up &apos;n Roll
@@ -234,5 +276,5 @@ export function AboutStory({
   if (page) {
     return <AboutPageStory eventSlug={eventSlug} />;
   }
-  return <AboutHomeTeaser eventSlug={eventSlug} />;
+  return <AboutHomeTeaser />;
 }

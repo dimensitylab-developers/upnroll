@@ -12,17 +12,6 @@ export function BrandMark({ className = "h-10 w-10" }: { className?: string }) {
   );
 }
 
-function IndianFlag({ className = "h-3 w-4" }: { className?: string }) {
-  return (
-    <svg viewBox="0 0 18 12" className={className} aria-hidden="true">
-      <rect width="18" height="4" fill="#FF9933" />
-      <rect y="4" width="18" height="4" fill="#FFFFFF" />
-      <rect y="8" width="18" height="4" fill="#138808" />
-      <circle cx="9" cy="6" r="1.45" fill="none" stroke="#000080" strokeWidth="0.45" />
-    </svg>
-  );
-}
-
 export function FounderCredit({ className = "" }: { className?: string }) {
   return (
     <address className={`not-italic text-xs text-muted-foreground ${className}`.trim()}>
@@ -42,15 +31,18 @@ export function SiteCopyright({ className = "" }: { className?: string }) {
   );
 }
 
-/** Centered Address · India + flag — one baseline, matched sizes. */
+/** Centered Make in India mark for the footer bar. */
 export function FooterAddress({ className = "" }: { className?: string }) {
   return (
-    <div className={`flex flex-col items-center justify-center gap-1 ${className}`.trim()}>
-      <p className="text-[10px] font-semibold uppercase leading-none tracking-[0.2em] text-brand-red">Address</p>
-      <p className="inline-flex items-center gap-2 leading-none">
-        <span className="text-sm font-semibold tracking-wide text-foreground">India</span>
-        <IndianFlag className="h-3 w-[1.125rem] shrink-0 rounded-[1px] ring-1 ring-black/15" />
-      </p>
+    <div className={`flex items-center justify-center ${className}`.trim()}>
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img
+        src="/make-in-india.png"
+        alt="Make in India"
+        width={720}
+        height={405}
+        className="h-11 w-auto object-contain sm:h-12"
+      />
     </div>
   );
 }

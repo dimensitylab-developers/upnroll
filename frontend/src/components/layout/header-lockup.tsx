@@ -3,11 +3,11 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { BrandMark } from "./brand";
 
 /**
- * Home: keep the lockup mounted and ease it in after the hero wordmark scrolls away.
- * Other routes always show it.
+ * Home: nav starts flush left (no reserved logo gap). When the hero wordmark
+ * scrolls away, the lockup expands and eases in so About/Events/… shift aside.
+ * Other routes always show the lockup.
  */
 export function HeaderLockup() {
   const pathname = usePathname();
@@ -47,18 +47,27 @@ export function HeaderLockup() {
   }, [isHome, pathname]);
 
   return (
-    <Link
-      href="/"
-      aria-label="Up 'n Roll home"
+    <div
+      className={`header-lockup ${revealed ? "header-lockup-in" : "header-lockup-out"}`}
       aria-hidden={isHome && !revealed ? true : undefined}
-      tabIndex={isHome && !revealed ? -1 : undefined}
-      className={`header-lockup flex min-h-11 shrink-0 items-center gap-2 rounded-sm bg-white px-1.5 py-1 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-black ${
-        revealed ? "header-lockup-in" : "header-lockup-out"
-      }`}
     >
-      <BrandMark className="h-8 w-8 shrink-0 sm:h-9 sm:w-9" />
-      {/* eslint-disable-next-line @next/next/no-img-element */}
-      <img src="/logo-wordmark.png" alt="" className="h-7 w-auto sm:h-9" />
-    </Link>
+      <div className="header-lockup-clip">
+        <Link
+          href="/"
+          aria-label="Up 'n Roll home"
+          tabIndex={isHome && !revealed ? -1 : undefined}
+          className="header-lockup-inner flex min-h-12 items-center rounded-sm px-1 py-1 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-black sm:min-h-14"
+        >
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src="/logo-wordmark.png"
+            alt=""
+            width={220}
+            height={60}
+            className="h-10 w-auto object-contain sm:h-12"
+          />
+        </Link>
+      </div>
+    </div>
   );
 }

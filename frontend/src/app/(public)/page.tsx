@@ -19,18 +19,18 @@ export default async function HomePage() {
       <NextEventStrip event={featured} />
       <HomeMarquee />
 
-      <section className="relative mx-auto max-w-6xl px-4 py-10 sm:px-6 sm:py-12 lg:px-8">
+      <section className="relative mx-auto max-w-6xl px-4 pb-12 pt-2 sm:px-6 sm:pb-14 sm:pt-3 lg:px-8">
         <HowYouEnter />
       </section>
 
-      <section className="relative mx-auto max-w-6xl overflow-hidden px-4 pb-14 sm:px-6 lg:px-8">
-        <div className="mb-4">
+      <section className="relative mx-auto max-w-6xl overflow-hidden px-4 pb-14 pt-2 sm:px-6 sm:pb-16 lg:px-8">
+        <div className="mb-5">
           <SectionBanner>On the mat</SectionBanner>
         </div>
         <FightingGallery media={FIGHTING_MEDIA} />
       </section>
 
-      <section id="about-us" className="relative mx-auto max-w-6xl px-4 pb-16 sm:px-6 lg:px-8">
+      <section id="about-us" className="relative mx-auto max-w-6xl px-4 pb-16 pt-2 sm:px-6 lg:px-8">
         <AboutStory eventSlug={featured?.slug} />
       </section>
 

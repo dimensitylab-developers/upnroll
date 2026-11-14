@@ -52,7 +52,8 @@ export function HeroFightTape() {
   return (
     <div className="relative z-20 w-full">
       <div className="relative border-2 border-black bg-white p-1 shadow-[8px_8px_0_0_#c8102e] sm:p-1.5 sm:shadow-[12px_12px_0_0_#c8102e]">
-        <div className="relative aspect-[9/16] overflow-hidden border-2 border-black bg-black">
+        {/* Intrinsic 9:16 frame — full video, no crop / letterbox box */}
+        <div className="relative overflow-hidden border-2 border-black bg-black">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src={HERO_VIDEO.poster}
@@ -61,7 +62,7 @@ export function HeroFightTape() {
             height={960}
             decoding="async"
             fetchPriority="high"
-            className="absolute inset-0 h-full w-full object-contain object-center"
+            className={`block h-auto w-full ${attachSource ? "invisible absolute inset-0" : ""}`}
           />
 
           {attachSource && (
@@ -75,7 +76,7 @@ export function HeroFightTape() {
               width={540}
               height={960}
               poster={HERO_VIDEO.poster}
-              className="absolute inset-0 h-full w-full object-contain object-center"
+              className="block h-auto w-full"
               src={HERO_VIDEO.src}
             >
               Up &apos;n Roll fight footage
