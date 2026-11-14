@@ -2,11 +2,13 @@
 
 import { useEffect, useRef, useState } from "react";
 import { HERO_VIDEO } from "./site-photos";
+import { VideoSoundToggle } from "./video-sound-toggle";
 
 export function HeroFightTape() {
   const videoRef = useRef<HTMLVideoElement>(null);
   const [attachSource, setAttachSource] = useState(false);
   const [preferMotion, setPreferMotion] = useState(true);
+  const [muted, setMuted] = useState(true);
 
   useEffect(() => {
     const media = window.matchMedia("(prefers-reduced-motion: reduce)");
@@ -38,14 +40,14 @@ export function HeroFightTape() {
     if (!attachSource) return;
     const video = videoRef.current;
     if (!video) return;
-    video.muted = true;
+    video.muted = muted;
     const play = video.play();
     if (play && typeof play.catch === "function") {
       play.catch(() => {
         /* Autoplay may be blocked; poster remains visible. */
       });
     }
-  }, [attachSource]);
+  }, [attachSource, muted]);
 
   return (
     <div className="relative z-20 w-full">
@@ -66,7 +68,7 @@ export function HeroFightTape() {
             <video
               ref={videoRef}
               autoPlay
-              muted
+              muted={muted}
               loop
               playsInline
               preload="metadata"
@@ -78,6 +80,12 @@ export function HeroFightTape() {
             >
               Up &apos;n Roll fight footage
             </video>
+          )}
+
+          {attachSource && (
+            <div className="absolute bottom-2 left-2 right-2 z-10 flex justify-start sm:bottom-3 sm:left-3">
+              <VideoSoundToggle videoRef={videoRef} muted={muted} onMutedChange={setMuted} />
+            </div>
           )}
         </div>
       </div>

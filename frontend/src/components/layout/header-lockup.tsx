@@ -6,8 +6,8 @@ import { usePathname } from "next/navigation";
 import { BrandMark } from "./brand";
 
 /**
- * Home: hide the whole brand lockup while the hero wordmark is on screen.
- * After scroll, reveal Up 'n Roll in the sticky header. Other routes always show it.
+ * Home: keep the lockup mounted and ease it in after the hero wordmark scrolls away.
+ * Other routes always show it.
  */
 export function HeaderLockup() {
   const pathname = usePathname();
@@ -46,23 +46,19 @@ export function HeaderLockup() {
     };
   }, [isHome, pathname]);
 
-  if (isHome && !revealed) {
-    return <div className="hidden w-0 shrink-0" aria-hidden="true" />;
-  }
-
   return (
     <Link
       href="/"
       aria-label="Up 'n Roll home"
-      className="flex min-h-11 shrink-0 items-center gap-2 rounded-sm bg-white px-1.5 py-1 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-black"
+      aria-hidden={isHome && !revealed ? true : undefined}
+      tabIndex={isHome && !revealed ? -1 : undefined}
+      className={`header-lockup flex min-h-11 shrink-0 items-center gap-2 rounded-sm bg-white px-1.5 py-1 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-black ${
+        revealed ? "header-lockup-in" : "header-lockup-out"
+      }`}
     >
       <BrandMark className="h-8 w-8 shrink-0 sm:h-9 sm:w-9" />
       {/* eslint-disable-next-line @next/next/no-img-element */}
-      <img
-        src="/logo-wordmark.png"
-        alt=""
-        className="h-7 w-auto sm:h-9"
-      />
+      <img src="/logo-wordmark.png" alt="" className="h-7 w-auto sm:h-9" />
     </Link>
   );
 }

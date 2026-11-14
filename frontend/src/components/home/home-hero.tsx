@@ -10,7 +10,7 @@ export function HomeHero() {
 
       <div className="relative mx-auto grid max-w-6xl items-end gap-6 px-4 py-8 sm:gap-10 sm:px-6 sm:py-12 lg:grid-cols-[1.05fr_0.95fr] lg:gap-6 lg:px-8 lg:py-16">
         <div className="relative z-10 order-1">
-          <p className="mb-4 text-[11px] font-semibold uppercase tracking-[0.22em] text-brand-red sm:mb-5 sm:text-xs">
+          <p className="-rotate-1 mb-5 inline-flex border-2 border-black bg-brand-red px-3 py-1.5 text-[10px] font-semibold uppercase tracking-[0.18em] text-white shadow-[4px_4px_0_0_#000] sm:mb-6 sm:px-4 sm:py-2 sm:text-[11px]">
             Made by an athlete for an athlete
           </p>
 
