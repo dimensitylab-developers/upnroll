@@ -25,7 +25,6 @@ function shuffleOrder(length: number, avoid?: number[]): number[] {
     const j = Math.floor(Math.random() * (i + 1));
     [next[i], next[j]] = [next[j]!, next[i]!];
   }
-  // avoid identical shuffle when possible
   if (avoid && next.every((value, index) => value === avoid[index]) && length > 1) {
     [next[0], next[1]] = [next[1]!, next[0]!];
   }
@@ -57,29 +56,9 @@ export function HappyStack({ photos }: { photos: { src: string; alt: string }[] 
     setLifted(null);
   }
 
-  function liftCard(photoIndex: number) {
-    setLifted((current) => (current === photoIndex ? null : photoIndex));
-  }
-
-  function swapWithNeighbor(photoIndex: number) {
-    setOrder((current) => {
-      const at = current.indexOf(photoIndex);
-      if (at < 0) return current;
-      const withIndex = at % 2 === 0 ? Math.min(at + 1, current.length - 1) : at - 1;
-      if (withIndex === at) return current;
-      const next = [...current];
-      [next[at], next[withIndex]] = [next[withIndex]!, next[at]!];
-      return next;
-    });
-    setLifted(photoIndex);
-  }
-
   return (
     <div>
-      <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
-        <p className="copy-slab max-w-xl text-sm">
-          Polaroids on the board. Tap to lift, double-tap to swap, or shuffle the whole frame.
-        </p>
+      <div className="mb-4 flex flex-wrap items-center justify-end gap-3">
         <button
           type="button"
           onClick={shuffleBoard}
@@ -90,8 +69,6 @@ export function HappyStack({ photos }: { photos: { src: string; alt: string }[] 
       </div>
 
       <div className="relative overflow-hidden border-2 border-black bg-[#f4f1ea] p-3 shadow-[8px_8px_0_0_#000] sm:p-5">
-        <div className="pointer-events-none absolute inset-0 opacity-[0.07]" aria-hidden="true" style={{ backgroundImage: "radial-gradient(#000 1px, transparent 1px)", backgroundSize: "10px 10px" }} />
-
         <ul className="relative grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-3 lg:gap-5">
           {layout.map(({ photoIndex, tilt, nudge, slot }) => {
             const photo = photos[photoIndex]!;
@@ -100,19 +77,15 @@ export function HappyStack({ photos }: { photos: { src: string; alt: string }[] 
               <li key={`${photo.src}-${slot}`} className="min-w-0">
                 <button
                   type="button"
-                  onClick={() => liftCard(photoIndex)}
-                  onDoubleClick={(event) => {
-                    event.preventDefault();
-                    swapWithNeighbor(photoIndex);
-                  }}
+                  onClick={() => setLifted((current) => (current === photoIndex ? null : photoIndex))}
                   aria-pressed={isLifted}
-                  aria-label={`Happy moment ${photoIndex + 1}. ${isLifted ? "Lifted." : "Tap to lift."}`}
-                  className={`group relative w-full border-2 border-black bg-white p-2 text-left shadow-[5px_5px_0_0_#000] transition-all duration-300 ease-out hover:-translate-y-1 hover:shadow-[8px_8px_0_0_#c8102e] ${
-                    isLifted ? "z-20 shadow-[10px_10px_0_0_#c8102e] ring-2 ring-brand-red" : "z-0"
+                  aria-label={`Celebration ${photoIndex + 1}`}
+                  className={`group relative w-full border-2 border-black bg-white p-2 text-left shadow-[5px_5px_0_0_#000] transition-all duration-300 ease-out hover:-translate-y-2 hover:scale-[1.03] hover:shadow-[10px_10px_0_0_#c8102e] ${
+                    isLifted ? "z-20 -translate-y-2 scale-[1.04] shadow-[10px_10px_0_0_#c8102e] ring-2 ring-brand-red" : "z-0"
                   }`}
                   style={{
                     transform: isLifted
-                      ? `translate(${nudge.x * 0.2}px, ${nudge.y * 0.2 - 8}px) rotate(0deg) scale(1.04)`
+                      ? undefined
                       : `translate(${nudge.x}px, ${nudge.y}px) rotate(${tilt}deg)`,
                   }}
                 >
@@ -125,13 +98,10 @@ export function HappyStack({ photos }: { photos: { src: string; alt: string }[] 
                       height={450}
                       loading="lazy"
                       decoding="async"
-                      className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.03]"
+                      className="h-full w-full object-cover"
                       draggable={false}
                     />
                   </div>
-                  <p className="mt-2 text-center text-[10px] font-semibold uppercase tracking-[0.16em] text-muted-foreground">
-                    Moment {String(photoIndex + 1).padStart(2, "0")}
-                  </p>
                 </button>
               </li>
             );

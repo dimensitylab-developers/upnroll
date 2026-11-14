@@ -34,6 +34,7 @@ export default async function NewRegistrationPage() {
     headCoach: profile?.headCoach ?? "",
     beltRank: profile?.beltRank ?? "",
     yearsTraining: profile?.yearsTraining ? String(profile.yearsTraining) : "",
+    careerWins: profile?.careerWins != null ? String(profile.careerWins) : "0",
     weightDivision: profile?.weightDivision ?? "",
     heardAbout: profile?.heardAbout ?? "",
     hasMedicalCondition: profile ? yesNo(Boolean(profile.hasMedicalCondition)) : "",
@@ -42,6 +43,7 @@ export default async function NewRegistrationPage() {
     allergiesDetail: profile?.allergiesDetail ?? "",
     takingMedication: profile ? yesNo(Boolean(profile.takingMedication)) : "",
     medicallyFit: profile?.medicallyFit ? "yes" : "",
+    hasAadhaarUpload: Boolean(profile?.aadhaarKey),
   };
 
   return (

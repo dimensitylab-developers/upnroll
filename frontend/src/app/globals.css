@@ -441,6 +441,30 @@
   .chatbot-float {
     animation: chatbot-float 2.6s ease-in-out 0.5s infinite;
   }
+
+  .media-glow {
+    box-shadow:
+      10px 10px 0 0 #c8102e,
+      0 0 0 1px rgba(200, 16, 46, 0.08),
+      -18px 0 40px -28px rgba(200, 16, 46, 0.45),
+      18px 0 40px -28px rgba(200, 16, 46, 0.35);
+  }
+
+  .fight-soon-pulse {
+    position: relative;
+  }
+  .fight-soon-pulse::before {
+    content: "";
+    position: absolute;
+    inset: -4px;
+    border-radius: 9999px;
+    background: radial-gradient(circle, rgba(200, 16, 46, 0.55) 0%, rgba(200, 16, 46, 0.05) 70%, transparent 100%);
+    animation: fight-soon-glow 1.6s ease-in-out infinite;
+  }
+  @keyframes fight-soon-glow {
+    0%, 100% { opacity: 0.55; transform: scale(0.92); }
+    50% { opacity: 1; transform: scale(1.08); }
+  }
   @keyframes chatbot-pop {
     0% { opacity: 0; transform: translateY(10px) scale(0.7); }
     100% { opacity: 1; transform: translateY(0) scale(1); }

@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { connection } from "next/server";
 import { cachedPublicFighters, cachedPublicRankings } from "@/lib/public-reads";
+import { listPublishedManualRankings } from "@/server/services/manualRankingService";
 import { listHeldCardAthletes } from "@/data/held-card-athletes";
 import { FighterHypeCard } from "@/features/fighters/fighter-hype-card";
 import {
@@ -48,10 +49,11 @@ export default async function PublicRankingsPage({
   await connection();
   const { cardsPage: cardsPageParam } = await searchParams;
 
-  const [rankings, liveFighters, roster] = await Promise.all([
+  const [rankings, liveFighters, roster, manual] = await Promise.all([
     cachedPublicRankings(),
     cachedPublicFighters(),
     Promise.resolve(listHeldCardAthletes()),
+    listPublishedManualRankings(),
   ]);
   const liveBySlug = new Map(liveFighters.map((fighter) => [fighter.slug, fighter]));
   const rankingBySlug = new Map(
@@ -124,16 +126,41 @@ export default async function PublicRankingsPage({
     });
   }
 
-  for (const band of WEIGHT_CLASSES) {
-    byClass[band.id].sort((a, b) => {
-      if (b.points !== a.points) return b.points - a.points;
-      if (b.wins !== a.wins) return b.wins - a.wins;
-      return a.displayName.localeCompare(b.displayName);
-    });
-    byClass[band.id] = byClass[band.id].map((fighter, index) => ({
-      ...fighter,
-      rank: index + 1,
-    }));
+  if (manual.length > 0) {
+    for (const band of WEIGHT_CLASSES) byClass[band.id] = [];
+    for (const entry of manual) {
+      const weightHint = [entry.gender === "FEMALE" ? "women" : "", entry.weightBand].filter(Boolean).join(" ");
+      const weightClassId =
+        resolveWeightClassId(weightHint) ||
+        resolveWeightClassId(entry.weightBand) ||
+        ("u55" as WeightClassId);
+      byClass[weightClassId].push({
+        rank: entry.rank,
+        displayName: entry.displayName,
+        slug: entry.slug || null,
+        wins: 0,
+        losses: 0,
+        points: 0,
+        hasPhoto: Boolean(entry.photoUrl),
+        academy: entry.gym || "",
+        weightClassId,
+      });
+    }
+    for (const band of WEIGHT_CLASSES) {
+      byClass[band.id].sort((a, b) => a.rank - b.rank || a.displayName.localeCompare(b.displayName));
+    }
+  } else {
+    for (const band of WEIGHT_CLASSES) {
+      byClass[band.id].sort((a, b) => {
+        if (b.points !== a.points) return b.points - a.points;
+        if (b.wins !== a.wins) return b.wins - a.wins;
+        return a.displayName.localeCompare(b.displayName);
+      });
+      byClass[band.id] = byClass[band.id].map((fighter, index) => ({
+        ...fighter,
+        rank: index + 1,
+      }));
+    }
   }
 
   const cardsTotalPages = Math.max(1, Math.ceil(profileCards.length / CARDS_PAGE_SIZE));
@@ -150,8 +177,8 @@ export default async function PublicRankingsPage({
               Rankings
             </h1>
             <p className="copy-slab mt-3 max-w-xl text-sm">
-              Weight-class board with a top seat and contenders under each. Photos drop into the frame
-              when fighters upload them. 3 points per win.
+              Top seat shows #1 with a photo when available. The list under each class starts at #2.
+              Order follows brackets and house numbering. Who gets a Super Fight is decided manually.
             </p>
           </div>
           <p className="text-sm">

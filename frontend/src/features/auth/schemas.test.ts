@@ -31,6 +31,7 @@ function validGrappler(overrides: Record<string, unknown> = {}) {
     headCoach: "Suketu Bhuva",
     beltRank: "Blue",
     yearsTraining: 4,
+    careerWins: 2,
     weightDivision: "Lightweight",
     heardAbout: "Instagram",
     hasMedicalCondition: "no",

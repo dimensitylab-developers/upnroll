@@ -117,7 +117,7 @@ function DivisionColumn({
               key={fighter.slug ?? `${fighter.weightClassId}-${fighter.rank}`}
               className="flex items-baseline gap-3 border-b border-black/5 py-2.5"
             >
-              <span className="w-5 shrink-0 text-sm font-semibold tabular-nums">{index + 1}</span>
+              <span className="w-5 shrink-0 text-sm font-semibold tabular-nums">{index + 2}</span>
               <div className="min-w-0 flex-1">
                 {fighter.slug ? (
                   <Link
@@ -144,7 +144,7 @@ export function RankingsDivisionBoard({
   byClass: Record<WeightClassId, DivisionRankedFighter[]>;
 }) {
   return (
-    <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
+    <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
       {WEIGHT_CLASSES.map((band) => (
         <DivisionColumn key={band.id} label={band.label} fighters={byClass[band.id] ?? []} />
       ))}

@@ -170,12 +170,12 @@ export function ChatbotWidget() {
 
       {!open && (
         <div className="group relative mt-4">
-          <span className="pointer-events-none absolute bottom-3 right-[calc(100%+0.45rem)] whitespace-nowrap rounded-full bg-white px-2.5 py-1 text-xs opacity-0 shadow-[0_6px_16px_rgba(0,0,0,0.12)] transition-opacity duration-200 group-hover:opacity-100 group-focus-within:opacity-100">
+          <span className="pointer-events-none absolute bottom-3 right-[calc(100%+0.45rem)] whitespace-nowrap rounded-full border border-black/15 bg-black px-3 py-1.5 text-xs font-medium text-white opacity-0 shadow-[0_6px_16px_rgba(0,0,0,0.2)] transition-opacity duration-200 group-hover:opacity-100 group-focus-within:opacity-100">
             Hi, how can I help you?
           </span>
           <button
             type="button"
-            className="chatbot-float"
+            className="chatbot-float ring-2 ring-transparent transition-[box-shadow,transform] duration-200 group-hover:scale-105 group-hover:ring-brand-red group-hover:ring-offset-2 group-focus-within:scale-105 group-focus-within:ring-brand-red group-focus-within:ring-offset-2"
             aria-label="Open support chat"
             aria-expanded={false}
             onClick={() => setOpen(true)}

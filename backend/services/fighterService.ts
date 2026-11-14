@@ -27,6 +27,7 @@ export type AdminFighterView = {
   headCoach: string;
   beltRank: string;
   yearsTraining: number;
+  careerWins: number;
   weightDivision: string;
   heardAbout: string;
   hasMedicalCondition: boolean;
@@ -36,6 +37,7 @@ export type AdminFighterView = {
   takingMedication: boolean;
   medicallyFit: boolean;
   hasPhoto: boolean;
+  hasAadhaarUpload: boolean;
   waiverAcceptedAt: string | null;
 };
 
@@ -57,6 +59,7 @@ type ProfileForAdmin = {
   headCoach?: string;
   beltRank?: string;
   yearsTraining?: number;
+  careerWins?: number;
   weightDivision?: string;
   heardAbout?: string;
   hasMedicalCondition?: boolean;
@@ -66,6 +69,7 @@ type ProfileForAdmin = {
   takingMedication?: boolean;
   medicallyFit?: boolean;
   photoKey?: string;
+  aadhaarKey?: string;
   waiverAcceptedAt?: Date | null;
 };
 
@@ -88,6 +92,7 @@ export function toAdminFighterView(profile: ProfileForAdmin, email: string): Adm
     headCoach: profile.headCoach ?? "",
     beltRank: profile.beltRank ?? "",
     yearsTraining: profile.yearsTraining ?? 0,
+    careerWins: profile.careerWins ?? 0,
     weightDivision: profile.weightDivision ?? "",
     heardAbout: profile.heardAbout ?? "",
     hasMedicalCondition: Boolean(profile.hasMedicalCondition),
@@ -97,6 +102,7 @@ export function toAdminFighterView(profile: ProfileForAdmin, email: string): Adm
     takingMedication: Boolean(profile.takingMedication),
     medicallyFit: Boolean(profile.medicallyFit),
     hasPhoto: Boolean(profile.photoKey),
+    hasAadhaarUpload: Boolean(profile.aadhaarKey),
     waiverAcceptedAt: profile.waiverAcceptedAt ? new Date(profile.waiverAcceptedAt).toISOString() : null,
   };
 }
@@ -118,6 +124,7 @@ export type FighterDetailsInput = {
   headCoach: string;
   beltRank: string;
   yearsTraining: number;
+  careerWins: number;
   weightDivision: string;
   heardAbout: string;
   hasMedicalCondition: boolean;
@@ -127,6 +134,7 @@ export type FighterDetailsInput = {
   takingMedication: boolean;
   medicallyFit: boolean;
   photoKey?: string;
+  aadhaarKey?: string;
   waiverAcceptedAt?: Date;
   discipline?: string;
 };
@@ -153,6 +161,7 @@ export async function updateFighterProfile(actor: Actor, input: FighterDetailsIn
   profile.headCoach = input.headCoach;
   profile.beltRank = input.beltRank;
   profile.yearsTraining = input.yearsTraining;
+  profile.careerWins = input.careerWins;
   profile.weightDivision = input.weightDivision;
   profile.heardAbout = input.heardAbout;
   profile.hasMedicalCondition = input.hasMedicalCondition;
@@ -162,6 +171,7 @@ export async function updateFighterProfile(actor: Actor, input: FighterDetailsIn
   profile.takingMedication = input.takingMedication;
   profile.medicallyFit = input.medicallyFit;
   if (input.photoKey) profile.photoKey = input.photoKey;
+  if (input.aadhaarKey) profile.aadhaarKey = input.aadhaarKey;
   if (input.waiverAcceptedAt) profile.waiverAcceptedAt = input.waiverAcceptedAt;
   if (input.discipline) profile.discipline = input.discipline;
   await profile.save();

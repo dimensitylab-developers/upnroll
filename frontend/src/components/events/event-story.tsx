@@ -2,7 +2,7 @@ const STOPS = [
   {
     n: "01",
     title: "Enter",
-    body: "Sign up, pick an open division, pay by the organizer’s QR, and wait for admin confirmation.",
+    body: "Sign up, choose a weight class / division, pay with the UPI instructions, and wait for admin confirmation.",
   },
   {
     n: "02",

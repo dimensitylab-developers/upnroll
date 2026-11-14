@@ -333,6 +333,43 @@ export async function createDivision(actor: Actor, input: CreateDivisionInput) {
   return division;
 }
 
+/** Seeds the approved Road to Super Fight weight × experience grid (idempotent by name). */
+export async function seedRoadToSuperFightDivisions(actor: Actor, eventId: string, capacity = 64) {
+  assertAdmin(actor);
+  await connectDB();
+  const event = await Event.findById(eventId);
+  if (!event) throw new NotFoundError("Event not found.");
+
+  const { roadToSuperFightDivisionSeeds } = await import("@/server/services/divisionTaxonomy");
+  const seeds = roadToSuperFightDivisionSeeds();
+  const created: string[] = [];
+  for (const seed of seeds) {
+    const existing = await Division.findOne({ eventId: event._id, name: seed.name }).select("_id").lean();
+    if (existing) continue;
+    const division = await Division.create({
+      eventId: event._id,
+      name: seed.name,
+      discipline: seed.discipline,
+      capacity,
+      filledCount: 0,
+      gender: seed.gender,
+      experienceLevel: seed.experienceLevel,
+      weightBand: seed.weightBand,
+      weightMinKg: seed.weightMinKg,
+      weightMaxKg: seed.weightMaxKg,
+    });
+    created.push(String(division._id));
+    await writeAuditLog({
+      actorId: actor.userId,
+      action: "DIVISION_CREATED",
+      targetType: "Division",
+      targetId: String(division._id),
+      after: { seeded: true, name: seed.name },
+    });
+  }
+  return { createdCount: created.length, created };
+}
+
 export async function setDivisionCapacity(actor: Actor, divisionId: string, capacity: number) {
   assertAdmin(actor);
   await connectDB();

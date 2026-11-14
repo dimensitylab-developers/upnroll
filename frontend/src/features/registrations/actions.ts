@@ -13,6 +13,7 @@ import { ConflictError, toAppError } from "@/server/http/errors";
 import { createRegistrationSchema } from "./schemas";
 import { grapplerDetailsSchema, grapplerFieldIssues, grapplerFromForm, toProfileFields } from "@/features/fighters/grappler-schema";
 import { readProfilePhoto, saveProfilePhoto } from "@/server/services/profilePhoto";
+import { readAadhaarImage, saveAadhaarImage } from "@/server/services/aadhaarUpload";
 
 export type RegistrationActionState = {
   error?: string;
@@ -61,21 +62,30 @@ export async function createRegistrationAction(
 
   const photo = await readProfilePhoto(formData.get("photo"));
   if ("error" in photo) return { error: photo.error };
+  const aadhaarImage = await readAadhaarImage(formData.get("aadhaarImage"));
+  if ("error" in aadhaarImage) return { error: aadhaarImage.error };
 
   const divisionId = registrationParsed.data.divisionId;
 
   try {
-    const existing = await FighterProfile.findOne({ userId: actor.userId }).select("photoKey").lean();
+    const existing = await FighterProfile.findOne({ userId: actor.userId }).select("photoKey aadhaarKey").lean();
     if ("empty" in photo && !existing?.photoKey) {
-      return { error: "Add a passport size photograph." };
+      return { error: "Add a photograph." };
+    }
+    if ("empty" in aadhaarImage && !existing?.aadhaarKey) {
+      return { error: "Upload a copy of your Aadhaar card." };
     }
     const photoKey = "bytes" in photo
       ? await saveProfilePhoto(actor, photo.bytes, photo.ext, existing?.photoKey ?? "")
+      : undefined;
+    const aadhaarKey = "bytes" in aadhaarImage
+      ? await saveAadhaarImage(actor, aadhaarImage.bytes, aadhaarImage.ext, existing?.aadhaarKey ?? "")
       : undefined;
 
     await updateFighterProfile(actor, {
       ...toProfileFields(grapplerParsed.data),
       photoKey,
+      aadhaarKey,
       waiverAcceptedAt: new Date(),
     });
 

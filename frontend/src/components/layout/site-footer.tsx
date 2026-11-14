@@ -1,18 +1,18 @@
 import Link from "next/link";
-import { BuiltBy, FounderCredit, SiteCopyright } from "./brand";
+import { BuiltBy, D3Credit, FounderCredit, SiteCopyright } from "./brand";
 import type { SiteContact } from "./site-contact";
 import { SITE_CONTACT } from "./site-contact";
 
 const EXPLORE = [
+  { href: "/about", label: "About Us" },
   { href: "/events", label: "Events" },
   { href: "/brackets", label: "Brackets" },
   { href: "/rankings", label: "Rankings" },
-  { href: "/seminars", label: "Seminars" },
 ] as const;
 
 const HOUSE = [
-  { href: "/about", label: "About Us" },
   { href: "/faq", label: "FAQ" },
+  { href: "/seminars", label: "Seminars" },
   { href: "/store", label: "Store" },
   { href: "/announcements", label: "Announcements" },
   { href: "/policies", label: "Policies" },
@@ -31,7 +31,6 @@ function FooterHeading({ children }: { children: string }) {
 
 export function SiteFooter({ contact = SITE_CONTACT }: { contact?: SiteContact }) {
   const hasEmail = Boolean(contact.email);
-  const hasPhone = Boolean(contact.phoneDisplay && contact.phoneTel);
 
   return (
     <footer className="border-t-2 border-black bg-[#efeae2]">
@@ -39,7 +38,7 @@ export function SiteFooter({ contact = SITE_CONTACT }: { contact?: SiteContact }
         <div className="mx-auto flex max-w-6xl flex-col gap-6 px-4 py-8 sm:px-6 lg:flex-row lg:items-end lg:justify-between lg:px-8 lg:py-10">
           <div className="max-w-xl">
             <p className="-rotate-1 mb-4 inline-flex border-2 border-black bg-brand-red px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.22em] text-white shadow-[3px_3px_0_0_#fff]">
-              Up &apos;n Roll · India
+              Up &apos;n Roll · D3 Spectator
             </p>
             <Link
               href="/"
@@ -52,7 +51,7 @@ export function SiteFooter({ contact = SITE_CONTACT }: { contact?: SiteContact }
               <img src="/logo-wordmark.png" alt="Up 'n Roll" className="h-12 w-auto sm:h-14" />
             </Link>
             <p className="mt-5 max-w-md text-sm leading-relaxed text-white/75">
-              Real cards. Public brackets. Built for grapplers who show up.
+              Made by an athlete for an athlete. Real fights. Real pay. Real rankings.
             </p>
           </div>
 
@@ -69,7 +68,7 @@ export function SiteFooter({ contact = SITE_CONTACT }: { contact?: SiteContact }
               href="/events"
               className="inline-flex border-2 border-white px-5 py-3 text-sm font-semibold uppercase tracking-wider text-white"
             >
-              Next card
+              Next event
             </Link>
           </div>
         </div>
@@ -119,25 +118,27 @@ export function SiteFooter({ contact = SITE_CONTACT }: { contact?: SiteContact }
             >
               <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-brand-red">Instagram</p>
               <p className="text-display mt-2 text-xl font-semibold">@{contact.instagramHandle}</p>
-              <p className="mt-1 text-sm text-muted-foreground">DM for cards and day-of questions</p>
+              <p className="mt-1 text-sm text-muted-foreground">DM for queries</p>
             </a>
 
-            <div className="border-2 border-black bg-black p-4 text-white shadow-[5px_5px_0_0_#c8102e]">
-              <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-brand-red">Venue city</p>
-              <p className="text-display mt-2 text-xl font-semibold">{contact.city}</p>
-              <p className="mt-1 text-sm text-white/65">No-Gi · Road to Super Fight</p>
+            <div className="border-2 border-black bg-black p-4 text-center text-white shadow-[5px_5px_0_0_#c8102e]">
+              <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-brand-red">Address</p>
+              <p className="text-display mt-2 inline-flex items-center justify-center gap-2 text-xl font-semibold">
+                <span>India</span>
+                <svg viewBox="0 0 18 12" className="h-4 w-6 rounded-[1px]" aria-hidden="true">
+                  <rect width="18" height="4" fill="#FF9933" />
+                  <rect y="4" width="18" height="4" fill="#FFFFFF" />
+                  <rect y="8" width="18" height="4" fill="#138808" />
+                  <circle cx="9" cy="6" r="1.45" fill="none" stroke="#000080" strokeWidth="0.45" />
+                </svg>
+              </p>
               {hasEmail && (
                 <a href={`mailto:${contact.email}`} className="mt-3 block text-sm text-white/85 underline">
                   {contact.email}
                 </a>
               )}
-              {hasPhone && (
-                <a href={`tel:${contact.phoneTel}`} className="mt-1 block text-sm text-white/85 underline">
-                  {contact.phoneDisplay}
-                </a>
-              )}
-              {!hasEmail && !hasPhone && (
-                <p className="mt-3 text-sm text-white/55">DM Instagram for cards and day-of questions.</p>
+              {!hasEmail && (
+                <p className="mt-3 text-sm text-white/55">DM Instagram for queries.</p>
               )}
             </div>
           </div>
@@ -145,9 +146,10 @@ export function SiteFooter({ contact = SITE_CONTACT }: { contact?: SiteContact }
       </div>
 
       <div className="border-t-2 border-black bg-white">
-        <div className="mx-auto flex max-w-6xl flex-col gap-3 px-4 py-4 sm:flex-row sm:items-center sm:justify-between sm:px-6 lg:px-8">
-          <div className="flex flex-col gap-2 sm:flex-row sm:flex-wrap sm:items-center sm:gap-x-4 sm:gap-y-1">
+        <div className="mx-auto flex max-w-6xl flex-col items-center gap-3 px-4 py-4 text-center sm:flex-row sm:items-center sm:justify-between sm:text-left sm:px-6 lg:px-8">
+          <div className="flex flex-col items-center gap-2 sm:items-start sm:gap-y-1">
             <SiteCopyright />
+            <D3Credit />
             <FounderCredit />
           </div>
           <BuiltBy />

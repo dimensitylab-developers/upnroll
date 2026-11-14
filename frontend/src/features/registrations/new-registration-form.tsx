@@ -95,7 +95,9 @@ export function NewRegistrationForm({
           </label>
           <label className="flex items-start gap-2 text-sm">
             <input type="checkbox" className="mt-1" checked={agreement} onChange={(event) => setAgreement(event.target.checked)} />
-            <span>Agreement. I agree to the cancellation rule: a cancellation one month before the event is a 50% refund. Inside that month there is no refund.</span>
+            <span>
+              Agreement. There is no full refund on cancellation. I may transfer my spot to a friend, or accept a 50% cut when a cancellation is approved. Mouthguard is compulsory — if I forget mine, I will buy one from the mouthguard sponsor on site.
+            </span>
           </label>
         </section>
       }

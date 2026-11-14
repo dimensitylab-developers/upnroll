@@ -6,6 +6,7 @@ import { requireActor } from "@/server/auth/session";
 import {
   createEvent,
   createDivision,
+  seedRoadToSuperFightDivisions,
   updateEventStatus,
   updateEventMatCount,
   updateEventDetails,
@@ -80,6 +81,24 @@ export async function createDivisionAction(_prevState: EventActionState, formDat
 
   revalidatePath(`/admin/events/${parsed.data.eventId}/divisions`);
   return {};
+}
+
+export async function seedRoadToSuperFightDivisionsAction(
+  _prevState: EventActionState,
+  formData: FormData
+): Promise<EventActionState> {
+  const actor = await requireActor("ADMIN");
+  const eventId = String(formData.get("eventId") ?? "");
+  if (!eventId) return { error: "Missing event." };
+  try {
+    const result = await seedRoadToSuperFightDivisions(actor, eventId);
+    invalidatePublicTags(["events", `divisions:${eventId}`]);
+    revalidatePath(`/admin/events/${eventId}/divisions`);
+    if (result.createdCount === 0) return { error: "All Road to Super Fight divisions are already seeded." };
+    return {};
+  } catch (err) {
+    return { error: toAppError(err).message };
+  }
 }
 
 export async function updateEventStatusAction(_prevState: EventActionState, formData: FormData): Promise<EventActionState> {

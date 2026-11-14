@@ -1,7 +1,7 @@
 /** English clauses from the grappler registration sheet. */
 export const WAIVER_CLAUSES = [
   "I understand this is a No-Gi only event.",
-  "I will wear approved attire (rashguard + shorts/spats, no pockets/zippers).",
+  "I will wear approved attire (rashguard + shorts/spats, no pockets/zippers) and a compulsory mouthguard. If I forget my mouthguard, I must buy one from the mouthguard sponsor on site.",
   "I agree to follow all referee decisions and I accept the rules and scoring system.",
   "The organizers reserve the right to merge divisions and also to make athletes who train under the same coach compete.",
   "I am medically fit to compete.",
@@ -12,7 +12,7 @@ export const WAIVER_CLAUSES = [
   "The grappler agrees they take the fight by their own choice, and no gym owner, coach, or event organiser has forced them to compete.",
   "The organizer holds the full right to merge divisions.",
   "If the organisers give out rashguards or gear, I have no problem wearing them and competing.",
-  "No refund will be initiated on the day of the event, before the fight, or after the fight.",
+  "There is no full refund on cancellation. I may transfer my spot to a friend, or accept a 50% cut when a cancellation is approved. No refund will be initiated on the day of the event, before the fight, or after the fight.",
   "I have read and understood the rules, the regulations, and this waiver, and I agree to abide by them.",
 ] as const;
 

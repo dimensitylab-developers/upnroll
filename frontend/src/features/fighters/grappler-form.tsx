@@ -31,8 +31,10 @@ export type GrapplerDefaults = {
   headCoach: string;
   beltRank: string;
   yearsTraining: string;
+  careerWins: string;
   weightDivision: string;
   heardAbout: string;
+  hasAadhaarUpload?: boolean;
   hasMedicalCondition: string;
   medicalConditionDetail: string;
   hasAllergies: string;
@@ -265,13 +267,31 @@ export function GrapplerForm({
               defaultValue={values?.aadhaar}
               hint="Kept off public pages. Organizers see it in the admin panel."
             />
+            {mode === "event" && (
+              <div>
+                <Label htmlFor="aadhaarImage" className="mb-1.5 block">
+                  Aadhaar card copy (upload)
+                </Label>
+                <Input
+                  id="aadhaarImage"
+                  name="aadhaarImage"
+                  type="file"
+                  accept="image/jpeg,image/png,image/webp"
+                  required={!values?.hasAadhaarUpload}
+                />
+                <p className="mt-1 text-xs text-muted-foreground">
+                  Upload a clear photo of your Aadhaar card. JPG, PNG, or WebP under 2 MB.
+                  {values?.hasAadhaarUpload ? " A copy is already on file — upload again only to replace it." : ""}
+                </p>
+              </div>
+            )}
             <TextField label="City / State" name="cityState" errors={errors} defaultValue={values?.cityState} />
             <TextField label="Emergency contact name" name="emergencyContactName" errors={errors} defaultValue={values?.emergencyContactName} />
             <TextField label="Relationship" name="emergencyRelationship" errors={errors} defaultValue={values?.emergencyRelationship} />
             <TextField label="Blood group (optional)" name="bloodGroup" required={false} errors={errors} defaultValue={values?.bloodGroup} />
           </div>
           <div>
-            <Label htmlFor="photo" className="mb-1.5 block">Passport size photograph</Label>
+            <Label htmlFor="photo" className="mb-1.5 block">Photograph</Label>
             <div className="border-2 border-black bg-white w-full aspect-[3/4] mb-2 overflow-hidden flex items-center justify-center">
               {previewUrl || hasPhoto ? (
                 // Chosen file shows immediately. Saved photos stay on the signed-in fighter's route.
@@ -298,6 +318,7 @@ export function GrapplerForm({
           <TextField label="Head coach / coach name" name="headCoach" errors={errors} defaultValue={values?.headCoach} />
           <TextField label="Belt rank" name="beltRank" errors={errors} defaultValue={values?.beltRank} />
           <TextField label="Years training" name="yearsTraining" type="number" min={0} max={60} step="0.5" errors={errors} defaultValue={values?.yearsTraining} />
+          <TextField label="Wins" name="careerWins" type="number" min={0} max={500} step="1" errors={errors} defaultValue={values?.careerWins ?? "0"} />
           <TextField label="Weight division" name="weightDivision" errors={errors} defaultValue={values?.weightDivision} />
           <TextField label="How did you hear about Up ’n Roll?" name="heardAbout" errors={errors} defaultValue={values?.heardAbout} />
         </div>

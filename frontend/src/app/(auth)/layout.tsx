@@ -41,8 +41,8 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
               </div>
               <div>
                 <div className="checker-strip h-2 border-y border-white/30" aria-hidden="true" />
-                <p className="mt-4 text-[10px] font-semibold uppercase tracking-[0.24em] text-brand-red">
-                  Earn your role
+                <p className="mt-4 text-[10px] font-semibold uppercase tracking-[0.18em] text-white/70">
+                  Made by an athlete for an athlete
                 </p>
               </div>
             </div>
