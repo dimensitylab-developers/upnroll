@@ -12,14 +12,14 @@ export function NextEventStrip({ event }: { event: NextEvent }) {
 
   return (
     <section className="border-b-2 border-black bg-[#f7f6f4]">
-      <div className="mx-auto flex max-w-6xl flex-col items-stretch gap-3 px-4 py-5 sm:flex-row sm:items-center sm:justify-between sm:px-6 lg:px-8">
-        <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
+      <div className="mx-auto flex max-w-6xl flex-col gap-4 px-4 py-4 sm:flex-row sm:items-center sm:gap-6 sm:px-6 sm:py-5 lg:px-8">
+        <div className="flex min-w-0 flex-wrap items-baseline gap-x-3 gap-y-1">
           <span className="text-[11px] font-semibold uppercase tracking-[0.2em] text-brand-red">Next event</span>
           <span className="text-display text-xl font-semibold sm:text-2xl">{NEXT_EVENT_LABEL}</span>
         </div>
         <Link
           href={href}
-          className="inline-flex min-h-11 w-full items-center justify-center border-2 border-black bg-brand-red px-5 py-2.5 text-xs font-semibold uppercase tracking-wider text-white shadow-[4px_4px_0_0_#000] sm:w-auto"
+          className="inline-flex min-h-11 shrink-0 items-center justify-center border-2 border-black bg-brand-red px-6 py-2.5 text-sm font-semibold uppercase tracking-wider text-white shadow-[4px_4px_0_0_#000] transition-transform hover:-translate-y-0.5 hover:shadow-[5px_5px_0_0_#000] sm:ml-auto"
         >
           Register
         </Link>

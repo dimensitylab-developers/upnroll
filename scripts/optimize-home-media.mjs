@@ -104,13 +104,11 @@ function optimizeHero(ffmpeg) {
     throw new Error(`Hero master missing: ${master}`);
   }
 
-  // Short display-sized H.264 loop with audio kept for the sound toggle; faststart for progressive play.
+  // Full master at display size — keep entire clip (no -t truncate), audio for sound toggle.
   run(ffmpeg, [
     "-y",
     "-i",
     master,
-    "-t",
-    "8",
     "-vf",
     "scale='min(540,iw)':-2",
     "-c:v",

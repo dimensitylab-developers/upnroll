@@ -1,8 +1,8 @@
 import Link from "next/link";
-import { cachedPublicEvents, cachedPublishedContent, cachedPublishedMedia, cachedPublicRankings } from "@/lib/public-reads";
+import { cachedPublicDivisions, cachedPublicEvents, cachedPublishedMedia, cachedPublicRankings } from "@/lib/public-reads";
 import { Badge } from "@/components/ui/badge";
 import { HomeGlimpse } from "@/components/home/home-glimpse";
-import { pickHomeFaqs } from "@/components/home/home-faq-data";
+import { getHomeFaqs } from "@/components/home/home-faq-data";
 import { HomeFaqTimeline } from "@/components/home/home-faq-timeline";
 import { SectionBanner } from "@/components/home/section-banner";
 
@@ -53,6 +53,7 @@ export async function HomeEventsSection() {
   const events = await cachedPublicEvents();
   const featuredEvent = events.find((event) => event.status === "REGISTRATION_OPEN") ?? events[0] ?? null;
   const upcoming = events.filter((event) => event._id !== featuredEvent?._id).slice(0, 3);
+  const divisions = featuredEvent ? await cachedPublicDivisions(featuredEvent._id) : [];
 
   return (
     <>
@@ -70,12 +71,20 @@ export async function HomeEventsSection() {
               {new Date(featuredEvent.startDate).toLocaleDateString(undefined, { dateStyle: "long" })}
               {featuredEvent.venue ? ` · ${featuredEvent.venue}` : ""}
             </p>
-            {featuredEvent.status === "REGISTRATION_OPEN" && (
-              <div className="mt-4">
-                <Link href="/fighter/registrations/new" className="text-sm font-semibold text-brand-red underline">
-                  Register to compete
-                </Link>
-              </div>
+            <div className="mt-4 flex flex-wrap gap-4 text-sm">
+              <Link href={`/events/${featuredEvent.slug}/brackets`} className="underline">Brackets</Link>
+              <Link href={`/events/${featuredEvent.slug}/schedule`} className="underline">Schedule</Link>
+              <Link href={`/events/${featuredEvent.slug}/results`} className="underline">Results</Link>
+            </div>
+            {divisions.length > 0 && (
+              <ul className="mt-6 grid sm:grid-cols-2 gap-3">
+                {divisions.map((division) => (
+                  <li key={String(division._id)} className="bg-card border-2 border-black rounded-md p-4">
+                    <p className="font-semibold">{division.name}</p>
+                    <p className="text-sm text-muted-foreground">{division.discipline} · {division.capacity} spots</p>
+                  </li>
+                ))}
+              </ul>
             )}
           </div>
         </section>
@@ -138,17 +147,19 @@ export async function HomeRankingsSection() {
   );
 }
 
-export async function HomeFaqSection() {
-  const faqs = await cachedPublishedContent("FAQ");
-  const items = pickHomeFaqs(faqs, 5);
+export function HomeFaqSection() {
+  const items = getHomeFaqs(4);
   if (items.length === 0) return null;
 
   return (
-    <section className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pb-8">
-      <div className="mb-2 flex items-end justify-between gap-4">
-        <SectionBanner>Asked on the mat</SectionBanner>
-        <Link href="/faq" className="mb-6 text-sm font-semibold underline underline-offset-2">
-          Full FAQ
+    <section className="mx-auto max-w-6xl px-4 pb-8 sm:px-6 lg:px-8">
+      <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+        <SectionBanner className="mb-0">Asked on the mat</SectionBanner>
+        <Link
+          href="/faq"
+          className="inline-flex w-fit -skew-x-12 items-center border-2 border-black bg-white px-4 py-2 text-xs font-semibold uppercase tracking-[0.16em] shadow-[3px_3px_0_0_#000] transition-colors hover:bg-brand-red hover:text-white sm:text-[11px]"
+        >
+          <span className="inline-block skew-x-12">Full FAQ →</span>
         </Link>
       </div>
       <HomeFaqTimeline items={items} />

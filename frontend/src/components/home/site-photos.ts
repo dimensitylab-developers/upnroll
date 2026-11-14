@@ -2,11 +2,12 @@
  * Optimized WebP/display paths live under /Fighting/opt and /happy/opt.
  * Source masters remain in /Fighting and /happy (offline conversion only).
  */
-function fightingStill(file: string) {
+function fightingStill(file: string, orientation: "landscape" | "portrait" = "landscape") {
   const base = file.replace(/\.JPG$/i, "");
   return {
     src: `/Fighting/opt/${base}.webp`,
     alt: "Grappling on the mat" as const,
+    orientation,
   };
 }
 
@@ -18,38 +19,65 @@ function happyStill(file: string) {
   };
 }
 
+/** Selected mat stills for the home slideshow. */
 export const FIGHTING_PHOTOS = [
-  "003A7748.JPG",
-  "003A7835.JPG",
-  "003A7962.JPG",
-  "003A8013.JPG",
-  "003A8057.JPG",
-  "003A8191.JPG",
-  "003A8193.JPG",
-  "003A8259.JPG",
-  "003A8278.JPG",
-].map(fightingStill);
+  fightingStill("003A7748.JPG"),
+  fightingStill("003A7835.JPG"),
+  fightingStill("003A7962.JPG"),
+  fightingStill("003A8013.JPG"),
+  fightingStill("003A8057.JPG"),
+  fightingStill("003A8191.JPG"),
+  fightingStill("003A8193.JPG"),
+  fightingStill("003A8259.JPG", "portrait"),
+  fightingStill("003A8278.JPG", "portrait"),
+];
 
+/**
+ * Home fight tapes — native ratios only (no forced crop).
+ * 8164 + 8185 are landscape masters; mat-portrait is vertical.
+ */
 export const FIGHTING_VIDEOS = [
   {
     src: "/Fighting/003A8164.MP4",
-    poster: "/Fighting/opt/003A8191.webp",
+    poster: "/Fighting/opt/tape-8164-poster.jpg",
     alt: "Fight tape from the mat",
+    orientation: "landscape" as const,
   },
   {
     src: "/Fighting/003A8185.MP4",
-    poster: "/Fighting/opt/003A8193.webp",
+    poster: "/Fighting/opt/tape-8185-poster.jpg",
     alt: "Fight tape from the mat",
+    orientation: "landscape" as const,
+  },
+  {
+    src: "/Videos/mat-portrait.mp4",
+    poster: "/Videos/mat-portrait-poster.jpg",
+    alt: "Fight tape from the mat",
+    orientation: "portrait" as const,
   },
 ];
 
-export type FightingMedia =
-  | { type: "photo"; src: string; alt: string }
-  | { type: "video"; src: string; poster: string; alt: string };
+export type FightingVideo = (typeof FIGHTING_VIDEOS)[number];
 
+export type FightingMedia =
+  | {
+      type: "photo";
+      src: string;
+      alt: string;
+      orientation?: "portrait" | "landscape";
+    }
+  | {
+      type: "video";
+      src: string;
+      poster: string;
+      alt: string;
+      orientation?: "portrait" | "landscape";
+    };
+
+/** Slideshow stills first, then the three fight tapes. */
 export const FIGHTING_MEDIA: FightingMedia[] = [
-  ...FIGHTING_VIDEOS.map((video) => ({ type: "video" as const, ...video })),
   ...FIGHTING_PHOTOS.map((photo) => ({ type: "photo" as const, ...photo })),
+  ...FIGHTING_VIDEOS.map((video) => ({ type: "video" as const, ...video })),
 ];
 
 export const HAPPY_PHOTOS = [

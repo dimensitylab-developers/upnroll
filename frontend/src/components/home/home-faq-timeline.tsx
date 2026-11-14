@@ -119,7 +119,7 @@ export function HomeFaqTimeline({ items }: { items: HomeFaqItem[] }) {
             href="/faq"
             className="inline-flex -skew-x-12 items-center border-2 border-black bg-black px-5 py-2.5 text-display text-sm font-semibold uppercase tracking-wider text-white shadow-[4px_4px_0_0_var(--color-brand-red)] transition-colors hover:bg-brand-red"
           >
-            <span className="inline-block skew-x-12">All fighter FAQs →</span>
+            <span className="inline-block skew-x-12">See every FAQ →</span>
           </Link>
         </div>
       </div>

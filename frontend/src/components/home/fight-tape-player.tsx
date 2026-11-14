@@ -9,17 +9,19 @@ export function FightTapePlayer({
   label,
   alt,
   portrait = false,
+  /** Fill a sized parent (e.g. height-matched portrait column). */
+  fill = false,
 }: {
   src: string;
   poster: string;
   label: string;
   alt: string;
   portrait?: boolean;
+  fill?: boolean;
 }) {
   const videoRef = useRef<HTMLVideoElement>(null);
   const [muted, setMuted] = useState(true);
   const [started, setStarted] = useState(false);
-  const aspect = portrait ? "aspect-[9/16]" : "aspect-[16/9]";
 
   function startPlayback() {
     setStarted(true);
@@ -32,25 +34,31 @@ export function FightTapePlayer({
     });
   }
 
+  const mediaClass = fill ? "absolute inset-0 h-full w-full object-contain object-center" : "block h-auto w-full";
+
   return (
-    <article className="media-glow overflow-hidden border-2 border-black bg-white shadow-[5px_5px_0_0_#000] transition-transform duration-200 hover:-translate-y-1 hover:shadow-[8px_8px_0_0_#c8102e]">
-      <div className={`relative ${aspect} overflow-hidden bg-neutral-900`}>
+    <article
+      className={`media-glow overflow-hidden border-2 border-black bg-white shadow-[5px_5px_0_0_#000] transition-transform duration-200 hover:-translate-y-1 hover:shadow-[8px_8px_0_0_#c8102e] ${
+        fill ? "flex h-full min-h-0 flex-col" : ""
+      }`}
+    >
+      <div className={`relative overflow-hidden bg-neutral-950 ${fill ? "min-h-0 flex-1" : ""}`}>
         {!started ? (
           <button
             type="button"
             onClick={startPlayback}
-            className="group absolute inset-0 z-10 block w-full"
+            className={`group relative block w-full ${fill ? "h-full" : ""}`}
             aria-label={label ? `Play ${label}` : `Play video: ${alt}`}
           >
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src={poster}
               alt={alt}
-              width={portrait ? 360 : 640}
-              height={portrait ? 640 : 360}
+              width={portrait ? 576 : 1280}
+              height={portrait ? 992 : 720}
               loading="lazy"
               decoding="async"
-              className="h-full w-full object-cover"
+              className={mediaClass}
             />
             <span className="absolute inset-0 flex items-center justify-center bg-black/35">
               <span className="border-2 border-black bg-brand-red px-4 py-2 text-xs font-semibold uppercase tracking-wider text-white shadow-[4px_4px_0_0_#000] transition-transform group-hover:scale-105">
@@ -62,7 +70,7 @@ export function FightTapePlayer({
           <>
             <video
               ref={videoRef}
-              className="h-full w-full object-cover"
+              className={mediaClass}
               src={src}
               poster={poster}
               muted={muted}

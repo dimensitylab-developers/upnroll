@@ -79,7 +79,70 @@ export function roadToSuperFightDivisionSeeds(): TaxonomySeed[] {
   return seeds;
 }
 
+/** Public Superfight / card rules board — mirrors the posted event sheet. */
 export const EVENT_POINTS_RULES = {
+  advanced: {
+    title: "Advanced division",
+    subtitle: "Blue & Purple Belts",
+    scoringTitle: "Scoring system (active in final 3 minutes)",
+    points: [
+      { label: "Takedown", detail: "2 points" },
+      { label: "Sweep", detail: "2 points" },
+      { label: "Knee on belly", detail: "2 points" },
+      { label: "Mount", detail: "2 points" },
+      { label: "Guard pass", detail: "3 points" },
+      { label: "Back control", detail: "3 points" },
+    ],
+  },
+  beginner: {
+    title: "Beginner division",
+    permittedTitle: "Permitted submissions",
+    permitted: [
+      "All Standard Chokes",
+      "Armbar",
+      "Kimura",
+      "Americana",
+      "Omoplata",
+      "Straight Foot Lock (Straight Ankle Lock)",
+    ],
+    prohibitedTitle: "Prohibited techniques",
+    prohibited: [
+      "Heel Hooks",
+      "Toe Holds",
+      "Knee Bars",
+      "Calf Slicers",
+      "Flying Submissions",
+      "Jumping Guard",
+      "Neck Cranks",
+      "Spine Cranks",
+      "Twisters",
+      "Slams",
+    ],
+  },
+  penalties: {
+    title: "Penalties (−1 point each)",
+    items: [
+      "Deliberately leaving the competition area",
+      "Unsportsmanlike conduct",
+      "Failure to follow referee instructions",
+      "Pulling guard without attacking",
+      "Stalling or lack of engagement",
+    ],
+    warning:
+      "A penalty point may be awarded for the above. Repeated violations may result in disqualification.",
+  },
+  general: {
+    title: "General",
+    items: [
+      "Rashguard & Grappling Shorts are mandatory",
+      "No zippers, pockets or hard objects",
+    ],
+  },
+  acknowledgement: {
+    title: "Competitor acknowledgement",
+    body: "By registering for the event, all competitors acknowledge that they have read, understood and agree to abide by the above rules and regulations. Participants accept all risks associated with combat sports.",
+  },
+  /** Kept for older call sites that only need a flat points list. */
   points: [
     { label: "Takedown", detail: "2 points" },
     { label: "Sweep", detail: "2 points" },

@@ -89,16 +89,26 @@ export const STARTER_FAQS: { question: string; answer: string }[] = [
       "Up ’n Roll Superfight is the featured card series on this site. Open registration, brackets, schedule, and results for that event live under Events when the card is published.",
   },
   {
-    question: "How do I contact Up ’n Roll?",
-    answer:
-      "Email the house or message @up.n.roll on Instagram (DM for queries). Phone numbers are not published on the site. This assistant only answers from the published FAQ.",
-  },
-  {
     question: "I have an emergency and need a human",
     answer:
       "If this chat cannot help and you have an urgent event-day issue, ask for a human handoff here and the organizer emergency line will be shared in the reply once the house has published it in FAQ. Day-to-day questions should go to Instagram DM (@up.n.roll) or email  phone numbers are not listed on the public site.",
   },
 ];
+
+/** Stable public FAQ list (not DB-dependent — survives empty Mongo / redeploy). */
+export type PublicFaqItem = {
+  id: string;
+  question: string;
+  answer: string;
+};
+
+export function getPublicFaqs(): PublicFaqItem[] {
+  return STARTER_FAQS.map((faq, index) => ({
+    id: `starter-faq-${index + 1}`,
+    question: faq.question,
+    answer: faq.answer,
+  }));
+}
 
 /** Short prompts shown in the chat. Each one is written to hit one FAQ above. */
 export const CHAT_PROMPTS = [

@@ -1,11 +1,11 @@
 /**
- * Tilted white sponsor tape  large, even logos, clear ratios.
+ * Full-bleed sponsor tape — edge to edge, full red lining, no end caps.
  */
 
 type Logo = {
   name: string;
   src: string;
-  /** Optical size  height drives scale; width follows the asset ratio. */
+  /** Optical size — height drives scale; width follows the asset ratio. */
   className: string;
 };
 
@@ -68,26 +68,34 @@ function Track({ ariaHidden }: { ariaHidden?: boolean }) {
   );
 }
 
-/** Slightly tilted manga tape  narrower band, logos still clear and broad. */
+/** Edge-to-edge sponsor tape with a complete red lining under the full width. */
 export function HomeMarquee() {
   return (
-    <section className="home-marquee relative z-10 py-4 sm:py-5" aria-label="Sponsors">
+    <section className="home-marquee relative z-10 w-full overflow-x-clip py-8 sm:py-10" aria-label="Sponsors">
       <p className="sr-only">Up &apos;n Roll sponsors</p>
-      <div className="relative overflow-hidden">
-        <div className="origin-center -rotate-1 border-y-2 border-black bg-white shadow-[0_4px_0_0_#c8102e] sm:-rotate-[1.25deg]">
-          <div className="relative overflow-hidden">
+
+      {/* Room for tilt so the lining stays fully visible */}
+      <div className="relative w-full py-3 sm:py-4">
+        <div className="relative w-[110%] origin-center -translate-x-[5%] -rotate-1 sm:-rotate-[1.15deg]">
+          {/* Full red lining — continuous under the whole tape */}
+          <div className="absolute inset-x-0 -bottom-2.5 top-2.5 bg-brand-red sm:-bottom-3 sm:top-3" aria-hidden="true" />
+
+          <div className="relative border-y-[3px] border-black bg-white">
             <div
-              className="pointer-events-none absolute inset-y-0 left-0 z-10 w-10 bg-gradient-to-r from-white to-transparent sm:w-16"
+              className="pointer-events-none absolute inset-x-0 top-1.5 border-t border-dashed border-black/20"
               aria-hidden="true"
             />
             <div
-              className="pointer-events-none absolute inset-y-0 right-0 z-10 w-10 bg-gradient-to-l from-white to-transparent sm:w-16"
+              className="pointer-events-none absolute inset-x-0 bottom-1.5 border-b border-dashed border-black/20"
               aria-hidden="true"
             />
-            <div className="home-marquee-row overflow-hidden py-1 sm:py-1.5">
-              <div className="home-marquee-track flex w-max will-change-transform">
-                <Track />
-                <Track ariaHidden />
+
+            <div className="relative overflow-hidden">
+              <div className="home-marquee-row overflow-hidden py-2 sm:py-2.5">
+                <div className="home-marquee-track flex w-max will-change-transform">
+                  <Track />
+                  <Track ariaHidden />
+                </div>
               </div>
             </div>
           </div>
