@@ -8,6 +8,7 @@ import { Event } from "@/server/models/Event";
 import { Division } from "@/server/models/Division";
 import { User } from "@/server/models/User";
 import { getEmailAdapter } from "@/server/email/console";
+import { simpleEmail } from "@/server/email/templates/simple";
 import { assertFighter, assertAdmin, type Actor } from "@/server/auth/actor";
 import { NotFoundError } from "@/server/http/errors";
 import type { OutboxJobDoc } from "@/server/models/OutboxJob";
@@ -127,11 +128,16 @@ export async function processMatchResultNotifyJob(job: OutboxJobDoc & { _id?: un
     const user = await User.findById(userId).select("email").lean();
     if (user?.email) {
       try {
-        await getEmailAdapter().send({
-          to: user.email,
-          subject: `${event?.name ?? "Up 'n Roll"}  match result`,
-          body: `Hi ${nameByUser.get(userId) ?? "fighter"},\n\nYour match result is official: ${match.resultMethod || "recorded"}.\n\nOpen your matches: /fighter/matches\n`,
+        const resultMail = simpleEmail({
+          subject: `${event?.name ?? "Up 'n Roll"} — match result`,
+          badge: "MATCH RESULT",
+          headline: "Your result is official.",
+          greeting: `Hi ${nameByUser.get(userId) ?? "fighter"},`,
+          paragraphs: [`Your match result is official: ${match.resultMethod || "recorded"}.`],
+          cta: { label: "Open your matches", href: "/fighter/matches" },
+          preheader: `Match result: ${match.resultMethod || "recorded"}.`,
         });
+        await getEmailAdapter().send({ to: user.email, ...resultMail });
       } catch {
         // Delivery failures are retried via outbox status  do not claim inbox arrival.
       }
@@ -194,11 +200,15 @@ export async function createInAppAndEmailReminder(input: {
   });
   const user = await User.findById(input.userId).select("email").lean();
   if (user?.email) {
-    await getEmailAdapter().send({
-      to: user.email,
+    const reminderMail = simpleEmail({
       subject: input.emailSubject,
-      body: input.emailBody,
+      badge: "MATCH REMINDER",
+      headline: input.title,
+      paragraphs: [input.emailBody],
+      cta: { label: "Open your matches", href: "/fighter/matches" },
+      preheader: input.body,
     });
+    await getEmailAdapter().send({ to: user.email, ...reminderMail });
   }
 }
 

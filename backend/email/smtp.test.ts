@@ -35,6 +35,27 @@ describe("smtp adapter", () => {
     });
   });
 
+  it("forwards html when provided", async () => {
+    const sendMail = vi.fn().mockResolvedValue({});
+    const createTransport = vi.fn().mockReturnValue({ sendMail });
+    const adapter = createSmtpAdapter(settings, createTransport);
+
+    await adapter.send({
+      to: "fighter@example.com",
+      subject: "Registration verified — you're confirmed",
+      body: "Confirmed.",
+      html: "<p>Confirmed.</p>",
+    });
+
+    expect(sendMail).toHaveBeenCalledWith({
+      from: "events@example.com",
+      to: "fighter@example.com",
+      subject: "Registration verified — you're confirmed",
+      text: "Confirmed.",
+      html: "<p>Confirmed.</p>",
+    });
+  });
+
   it("uses implicit TLS on port 465", async () => {
     const createTransport = vi.fn().mockReturnValue({ sendMail: vi.fn().mockResolvedValue({}) });
     const adapter = createSmtpAdapter({ ...settings, port: 465 }, createTransport);

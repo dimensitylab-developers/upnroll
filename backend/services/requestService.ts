@@ -7,6 +7,7 @@ import { Event } from "@/server/models/Event";
 import { RegistrationRequest } from "@/server/models/RegistrationRequest";
 import { User } from "@/server/models/User";
 import { getEmailAdapter } from "@/server/email/console";
+import { simpleEmail } from "@/server/email/templates/simple";
 import { writeAuditLog } from "@/server/audit/log";
 import { isActiveRegistration } from "./registrationStateMachine";
 import { claimSeat, releaseSeat } from "./divisionOccupancy";
@@ -134,13 +135,21 @@ export async function decideRequest(actor: Actor, requestId: string, decision: "
 
   const user = await User.findById(updated.userId);
   if (user) {
-    await getEmailAdapter().send({
-      to: user.email,
-      subject: `${updated.type === "CANCELLATION" ? "Cancellation" : "Transfer"} request ${decision === "APPROVED" ? "approved" : "rejected"}`,
-      body: decision === "APPROVED"
-        ? `Your ${updated.type.toLowerCase()} request has been approved.${updated.type === "CANCELLATION" ? ` Refund: ${updated.refundPercent ?? 0}%.` : ""}${note ? ` Note: ${note}` : ""}`
-        : `Your ${updated.type.toLowerCase()} request was rejected. Reason: ${note || "No reason provided."}`,
+    const kind = updated.type === "CANCELLATION" ? "Cancellation" : "Transfer";
+    const approved = decision === "APPROVED";
+    const subject = `${kind} request ${approved ? "approved" : "rejected"}`;
+    const bodyText = approved
+      ? `Your ${updated.type.toLowerCase()} request has been approved.${updated.type === "CANCELLATION" ? ` Refund: ${updated.refundPercent ?? 0}%.` : ""}${note ? ` Note: ${note}` : ""}`
+      : `Your ${updated.type.toLowerCase()} request was rejected. Reason: ${note || "No reason provided."}`;
+    const requestMail = simpleEmail({
+      subject,
+      badge: approved ? "REQUEST APPROVED" : "REQUEST REJECTED",
+      headline: approved ? "Your request was approved." : "Your request was not approved.",
+      paragraphs: [bodyText],
+      cta: { label: "Open fighter dashboard", href: "/fighter" },
+      preheader: bodyText,
     });
+    await getEmailAdapter().send({ to: user.email, ...requestMail });
   }
 
   return updated;

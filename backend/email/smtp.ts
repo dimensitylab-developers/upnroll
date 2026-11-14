@@ -4,7 +4,13 @@ import type { EmailAdapter } from "./types";
 import type { SmtpSettings } from "./smtp-config";
 
 type MailSender = {
-  sendMail(message: { from: string; to: string; subject: string; text: string }): Promise<unknown>;
+  sendMail(message: {
+    from: string;
+    to: string;
+    subject: string;
+    text: string;
+    html?: string;
+  }): Promise<unknown>;
 };
 
 export type TransportFactory = (options: {
@@ -38,6 +44,7 @@ export function createSmtpAdapter(settings: SmtpSettings, createTransport: Trans
         to: input.to,
         subject: input.subject,
         text: input.body,
+        ...(input.html ? { html: input.html } : {}),
       });
     },
   };

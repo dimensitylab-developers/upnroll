@@ -9,6 +9,7 @@ import { Registration } from "@/server/models/Registration";
 import { FighterProfile } from "@/server/models/FighterProfile";
 import { User } from "@/server/models/User";
 import { getEmailAdapter } from "@/server/email/console";
+import { simpleEmail } from "@/server/email/templates/simple";
 import { Event } from "@/server/models/Event";
 import { PUBLIC_EVENT_STATUSES } from "./eventService";
 import { Division } from "@/server/models/Division";
@@ -247,6 +248,14 @@ export async function updateMatchSchedule(
     const profiles = await FighterProfile.find({ userId: { $in: registrations.map((r) => r.userId) } }).lean();
     const when = new Date(match.scheduledAt).toLocaleString("en-IN", { dateStyle: "medium", timeStyle: "short" });
     const body = `Your match is on mat ${match.mat || "TBD"} at ${when}. Warm up 10 to 15 minutes before you are called.`;
+    const boutMail = simpleEmail({
+      subject: "Your bout is scheduled",
+      badge: "BOUT SCHEDULED",
+      headline: "You're on the card.",
+      paragraphs: [body],
+      cta: { label: "View your matches", href: "/fighter/matches" },
+      preheader: body,
+    });
     const users = registrations.length
       ? await User.find({ _id: { $in: registrations.map((registration) => registration.userId) } }).select("email").lean()
       : [];
@@ -254,7 +263,7 @@ export async function updateMatchSchedule(
       ...profiles.map((profile) => notifyWhatsApp({ to: profile.mobile ?? "", body })),
       ...users
         .filter((user) => user.email)
-        .map((user) => getEmailAdapter().send({ to: user.email, subject: "Your bout is scheduled", body })),
+        .map((user) => getEmailAdapter().send({ to: user.email, ...boutMail })),
     ]);
     void reminder;
   }

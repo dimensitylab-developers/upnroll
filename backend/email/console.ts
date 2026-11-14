@@ -5,8 +5,9 @@ import { createSmtpAdapter } from "./smtp";
 
 /** Dev fallback EmailAdapter: logs instead of sending. No email is actually delivered. */
 export class ConsoleEmailAdapter implements EmailAdapter {
-  async send(input: { to: string; subject: string; body: string }): Promise<void> {
+  async send(input: { to: string; subject: string; body: string; html?: string }): Promise<void> {
     console.log(`[dev email  not sent] to=${input.to} subject="${input.subject}"\n${input.body}`);
+    if (input.html) console.log(`[dev email html]\n${input.html}`);
   }
 }
 
