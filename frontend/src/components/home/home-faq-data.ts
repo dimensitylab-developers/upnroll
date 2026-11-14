@@ -7,7 +7,7 @@ export type HomeFaqItem = {
   label: string;
 };
 
-/** Homepage — short set athletes ask first (no contact FAQ). */
+/** Homepage: short set athletes ask first (no contact FAQ). */
 export const HOME_FAQ_PRIORITY = [
   "How do I register for an event?",
   "How do I pay the entry fee?",
@@ -15,7 +15,7 @@ export const HOME_FAQ_PRIORITY = [
   "What should I wear?",
 ] as const;
 
-/** Hardcoded FAQs for home — never depends on Mongo content. */
+/** Hardcoded FAQs for home: never depends on Mongo content. */
 export function getHomeFaqs(limit = 4): HomeFaqItem[] {
   const faqs = getPublicFaqs();
   const byTitle = new Map(faqs.map((faq) => [faq.question, faq]));

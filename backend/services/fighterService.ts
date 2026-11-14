@@ -205,7 +205,7 @@ export async function countFighters(actor: Actor) {
   return FighterProfile.countDocuments();
 }
 
-/** Public hype-card fields only — never aadhaar, medical, mobile, or other PII. */
+/** Public hype-card fields only: never aadhaar, medical, mobile, or other PII. */
 const PUBLIC_FIGHTER_FIELDS =
   "displayName slug gym academy discipline beltRank weightDivision photoKey userId";
 
@@ -344,7 +344,7 @@ export async function getPublicFighterBySlug(slug: string) {
   };
 }
 
-/** Open a public passport photo by slug — only if the fighter published a photo key. */
+/** Open a public passport photo by slug: only if the fighter published a photo key. */
 export async function getPublicFighterPhotoKeyBySlug(slug: string): Promise<string> {
   await connectDB();
   const profile = await FighterProfile.findOne({ slug }).select("photoKey").lean();

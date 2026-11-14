@@ -77,7 +77,7 @@ export async function createCoupon(
   if (!option || !option.active) throw new ValidationError("Payment option is not available.");
 
   const code = normalizeCode(input.code || generateCouponCode());
-  if (code.length < 4 || code.length > 32) throw new ValidationError("Coupon code must be 4–32 characters.");
+  if (code.length < 4 || code.length > 32) throw new ValidationError("Coupon code must be 4-32 characters.");
 
   try {
     const coupon = await Coupon.create({

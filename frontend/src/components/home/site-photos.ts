@@ -33,7 +33,7 @@ export const FIGHTING_PHOTOS = [
 ];
 
 /**
- * Home fight tapes — native ratios only (no forced crop).
+ * Home fight tapes: native ratios only (no forced crop).
  * 8164 + 8185 are landscape masters; mat-portrait is vertical.
  */
 export const FIGHTING_VIDEOS = [
@@ -84,7 +84,6 @@ export const HAPPY_PHOTOS = [
   "003A7763.JPG",
   "003A7764.JPG",
   "003A7879.JPG",
-  "003A8114.JPG",
   "003A8181.JPG",
   "003A8291.JPG",
   "003A8295.JPG",

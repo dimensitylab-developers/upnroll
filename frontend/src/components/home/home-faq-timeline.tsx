@@ -45,8 +45,9 @@ export function HomeFaqTimeline({ items }: { items: HomeFaqItem[] }) {
         </div>
 
         <ol className="relative mx-auto max-w-3xl list-none space-y-6 sm:space-y-7">
+          {/* Spine sits in the center gutter; cards stay clear of it on sm+. */}
           <span
-            className="pointer-events-none absolute top-4 bottom-4 left-5 w-[3px] bg-black sm:left-1/2 sm:-translate-x-1/2"
+            className="pointer-events-none absolute top-4 bottom-4 left-5 z-0 w-[3px] bg-black sm:left-1/2 sm:-translate-x-1/2"
             aria-hidden="true"
           />
 
@@ -60,14 +61,21 @@ export function HomeFaqTimeline({ items }: { items: HomeFaqItem[] }) {
                 key={item.id}
                 className={cn(
                   "home-faq-rise group/item relative z-10",
-                  flip ? "sm:ml-auto sm:mr-0 sm:w-[min(100%,28rem)]" : "sm:mr-auto sm:w-[min(100%,28rem)]"
+                  // Keep each card under half-width so the center nodes never sit on the copy.
+                  flip
+                    ? "sm:ml-auto sm:mr-0 sm:w-[calc(50%-1.75rem)]"
+                    : "sm:mr-auto sm:ml-0 sm:w-[calc(50%-1.75rem)]"
                 )}
                 style={{ animationDelay: `${0.06 + index * 0.07}s` }}
               >
                 <span
                   className={cn(
-                    "absolute top-8 z-20 h-4 w-4 rounded-full border-[2.5px] border-black transition-colors duration-200",
-                    "left-[12px] sm:left-1/2 sm:-translate-x-1/2",
+                    "pointer-events-none absolute top-8 z-20 h-4 w-4 rounded-full border-[2.5px] border-black shadow-[0_0_0_3px_#fff] transition-colors duration-200",
+                    // Mobile: left rail. Desktop: inner edge facing the center spine (not mid-card).
+                    "left-[12px]",
+                    flip
+                      ? "sm:left-0 sm:right-auto sm:-translate-x-1/2"
+                      : "sm:left-auto sm:right-0 sm:translate-x-1/2",
                     open ? "bg-brand-red" : "bg-white group-hover/item:bg-brand-red"
                   )}
                   aria-hidden="true"
@@ -79,7 +87,7 @@ export function HomeFaqTimeline({ items }: { items: HomeFaqItem[] }) {
                     aria-expanded={open}
                     onClick={() => setOpenId(open ? null : item.id)}
                     className={cn(
-                      "group relative w-full border-[3px] border-black bg-white px-4 py-4 text-left shadow-[5px_5px_0_0_#000] outline-none transition-[box-shadow,background-color] duration-200 sm:px-5 sm:py-5",
+                      "group relative z-10 w-full border-[3px] border-black bg-white px-4 py-4 text-left shadow-[5px_5px_0_0_#000] outline-none transition-[box-shadow,background-color] duration-200 sm:px-5 sm:py-5",
                       "hover:shadow-[7px_7px_0_0_var(--color-brand-red)] focus-visible:shadow-[7px_7px_0_0_var(--color-brand-red)]",
                       open && "bg-[#fff8f6] shadow-[7px_7px_0_0_var(--color-brand-red)]"
                     )}

@@ -20,7 +20,7 @@ export function FounderCredit({ className = "" }: { className?: string }) {
   );
 }
 
-/** Static year — Cache Components forbids `new Date()` during prerender of static shells. */
+/** Static year: Cache Components forbids `new Date()` during prerender of static shells. */
 const COPYRIGHT_YEAR = 2026;
 
 export function SiteCopyright({ className = "" }: { className?: string }) {

@@ -14,8 +14,8 @@ export const HELD_ARCHIVE: Record<string, HeldRecordData> = {
     ],
     rounds: [
       { label: "6:00", detail: "Each match was six minutes." },
-      { label: "0:00–3:00", detail: "The first half had no points." },
-      { label: "3:00–6:00", detail: "Points counted only in the second half." },
+      { label: "0:00-3:00", detail: "The first half had no points." },
+      { label: "3:00-6:00", detail: "Points counted only in the second half." },
       { label: "Anytime", detail: "A submission counted for the whole match." },
     ],
     scoringNote: "Points counted only in the last three minutes. Back control needed hooks or a body triangle.",
