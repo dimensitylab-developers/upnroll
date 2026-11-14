@@ -61,7 +61,7 @@ export async function updateProfileAction(_prevState: ProfileActionState, formDa
       const mapped = toAppError(err);
       if (mapped.code === "STORAGE_MISCONFIGURED") {
         return {
-          error: `${mapped.message} Tip: clear the Aadhaar image field and save your details first.`,
+          error: `${mapped.message} Tip: clear the identity proof field and save your details first.`,
         };
       }
       return { error: mapped.message };

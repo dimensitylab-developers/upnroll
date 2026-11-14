@@ -17,8 +17,14 @@ export const grapplerDetailsSchema = z.object({
   headCoach: z.string().trim().min(2, "Enter your coach.").max(80),
   beltRank: z.string().trim().min(2, "Enter your belt rank.").max(40),
   yearsTraining: z.coerce.number().min(0, "Enter years training.").max(60),
-  careerWins: z.coerce.number().int().min(0, "Enter your wins.").max(500),
+  pastRecord: z.string().trim().min(1, "Enter your past record.").max(120),
   weightDivision: z.string().trim().min(1, "Enter your weight division.").max(40),
+  instagramHandle: z
+    .string()
+    .trim()
+    .min(2, "Enter your Instagram handle.")
+    .max(40)
+    .regex(/^@?[A-Za-z0-9._]+$/, "Use a valid Instagram handle."),
   heardAbout: z.string().trim().min(2, "Tell us how you heard about Up ’n Roll.").max(120),
   hasMedicalCondition: yesNo,
   medicalConditionDetail: z.string().trim().max(300).optional().default(""),
@@ -106,8 +112,9 @@ export function grapplerFromForm(formData: FormData) {
     headCoach: formData.get("headCoach"),
     beltRank: formData.get("beltRank"),
     yearsTraining: formData.get("yearsTraining"),
-    careerWins: formData.get("careerWins"),
+    pastRecord: formData.get("pastRecord"),
     weightDivision: formData.get("weightDivision"),
+    instagramHandle: formData.get("instagramHandle"),
     heardAbout: formData.get("heardAbout"),
     hasMedicalCondition: formData.get("hasMedicalCondition"),
     medicalConditionDetail: formData.get("medicalConditionDetail") ?? "",
@@ -118,7 +125,15 @@ export function grapplerFromForm(formData: FormData) {
   };
 }
 
+/** Prefer an explicit win count when the past-record text starts with a number. */
+function careerWinsFromPastRecord(pastRecord: string): number {
+  const match = pastRecord.trim().match(/^(\d{1,3})\b/);
+  if (!match) return 0;
+  return Math.min(500, Number(match[1]));
+}
+
 export function toProfileFields(data: GrapplerDetails) {
+  const handle = data.instagramHandle.replace(/^@/, "").trim();
   return {
     displayName: data.displayName,
     dateOfBirth: data.dateOfBirth,
@@ -135,8 +150,10 @@ export function toProfileFields(data: GrapplerDetails) {
     headCoach: data.headCoach,
     beltRank: data.beltRank,
     yearsTraining: data.yearsTraining,
-    careerWins: data.careerWins,
+    pastRecord: data.pastRecord,
+    careerWins: careerWinsFromPastRecord(data.pastRecord),
     weightDivision: data.weightDivision,
+    instagramHandle: handle,
     heardAbout: data.heardAbout,
     hasMedicalCondition: data.hasMedicalCondition === "yes",
     medicalConditionDetail: data.hasMedicalCondition === "yes" ? (data.medicalConditionDetail ?? "") : "",

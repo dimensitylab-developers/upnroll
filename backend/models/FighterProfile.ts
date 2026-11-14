@@ -26,9 +26,13 @@ const fighterProfileSchema = new Schema(
     headCoach: { type: String, default: "", trim: true },
     beltRank: { type: String, default: "", trim: true },
     yearsTraining: { type: Number, default: 0 },
-    /** Career wins — seeding matrix field for brackets. */
+    /** Free-text past competition record shown on the grappler form. */
+    pastRecord: { type: String, default: "", trim: true },
+    /** Career wins — seeding matrix field for brackets (derived from pastRecord when possible). */
     careerWins: { type: Number, default: 0, min: 0 },
     weightDivision: { type: String, default: "", trim: true },
+    /** Public Instagram handle without leading @. */
+    instagramHandle: { type: String, default: "", trim: true },
     heardAbout: { type: String, default: "", trim: true },
     hasMedicalCondition: { type: Boolean, default: false },
     medicalConditionDetail: { type: String, default: "", trim: true },

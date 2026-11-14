@@ -26,8 +26,10 @@ export type AdminFighterView = {
   headCoach: string;
   beltRank: string;
   yearsTraining: number;
+  pastRecord: string;
   careerWins: number;
   weightDivision: string;
+  instagramHandle: string;
   heardAbout: string;
   hasMedicalCondition: boolean;
   medicalConditionDetail: string;
@@ -57,8 +59,10 @@ type ProfileForAdmin = {
   headCoach?: string;
   beltRank?: string;
   yearsTraining?: number;
+  pastRecord?: string;
   careerWins?: number;
   weightDivision?: string;
+  instagramHandle?: string;
   heardAbout?: string;
   hasMedicalCondition?: boolean;
   medicalConditionDetail?: string;
@@ -89,8 +93,10 @@ export function toAdminFighterView(profile: ProfileForAdmin, email: string): Adm
     headCoach: profile.headCoach ?? "",
     beltRank: profile.beltRank ?? "",
     yearsTraining: profile.yearsTraining ?? 0,
+    pastRecord: profile.pastRecord ?? "",
     careerWins: profile.careerWins ?? 0,
     weightDivision: profile.weightDivision ?? "",
+    instagramHandle: profile.instagramHandle ?? "",
     heardAbout: profile.heardAbout ?? "",
     hasMedicalCondition: Boolean(profile.hasMedicalCondition),
     medicalConditionDetail: profile.medicalConditionDetail ?? "",
@@ -120,8 +126,10 @@ export type FighterDetailsInput = {
   headCoach: string;
   beltRank: string;
   yearsTraining: number;
+  pastRecord: string;
   careerWins: number;
   weightDivision: string;
+  instagramHandle: string;
   heardAbout: string;
   hasMedicalCondition: boolean;
   medicalConditionDetail: string;
@@ -156,8 +164,10 @@ export async function updateFighterProfile(actor: Actor, input: FighterDetailsIn
   profile.headCoach = input.headCoach;
   profile.beltRank = input.beltRank;
   profile.yearsTraining = input.yearsTraining;
+  profile.pastRecord = input.pastRecord;
   profile.careerWins = input.careerWins;
   profile.weightDivision = input.weightDivision;
+  profile.instagramHandle = input.instagramHandle;
   profile.heardAbout = input.heardAbout;
   profile.hasMedicalCondition = input.hasMedicalCondition;
   profile.medicalConditionDetail = input.medicalConditionDetail;

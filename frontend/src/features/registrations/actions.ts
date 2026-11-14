@@ -67,7 +67,7 @@ export async function createRegistrationAction(
   try {
     const existing = await FighterProfile.findOne({ userId: actor.userId }).select("aadhaarImageKey").lean();
     if ("empty" in aadhaar && !existing?.aadhaarImageKey) {
-      return { error: "Add an Aadhaar card image.", fieldErrors: { aadhaarImage: ["Add an Aadhaar card image."] } };
+      return { error: "Add an identity proof image.", fieldErrors: { aadhaarImage: ["Add an identity proof image."] } };
     }
     const aadhaarImageKey =
       "bytes" in aadhaar

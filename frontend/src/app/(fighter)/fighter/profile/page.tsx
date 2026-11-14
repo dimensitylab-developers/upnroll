@@ -34,8 +34,9 @@ export default async function FighterProfilePage() {
     headCoach: profile?.headCoach ?? "",
     beltRank: profile?.beltRank ?? "",
     yearsTraining: ready ? String(profile?.yearsTraining ?? 0) : "",
-    careerWins: ready ? String(profile?.careerWins ?? 0) : "0",
+    pastRecord: profile?.pastRecord ?? "",
     weightDivision: profile?.weightDivision ?? "",
+    instagramHandle: profile?.instagramHandle ?? "",
     heardAbout: profile?.heardAbout ?? "",
     hasMedicalCondition: yesNo(profile?.hasMedicalCondition, ready),
     medicalConditionDetail: profile?.medicalConditionDetail ?? "",
@@ -49,7 +50,7 @@ export default async function FighterProfilePage() {
     <div className="manga-panel p-6 sm:p-8 max-w-4xl mx-auto">
       <h1 className="text-display text-2xl font-semibold mb-2">Your profile</h1>
       <p className="text-sm text-muted-foreground mb-6">
-        Belt, years training, academy, and coach are what the seeding board reads. Aadhaar card image and medical answers stay off public pages. Organizers see the full form in the admin panel.
+        Belt, years training, academy, and coach are what the seeding board reads. Identity proof and medical answers stay off public pages. Organizers see the full form in the admin panel.
       </p>
       <ProfileForm
         defaults={defaults}

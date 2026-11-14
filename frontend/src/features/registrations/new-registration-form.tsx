@@ -1,9 +1,10 @@
 "use client";
 
-import { useActionState, useEffect, useState } from "react";
+import { useActionState, useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { createRegistrationAction, type RegistrationActionState } from "./actions";
 import { GrapplerForm, type GrapplerDefaults } from "@/features/fighters/grappler-form";
+import { divisionGenderCode } from "@/features/fighters/weight-bands";
 import { Label } from "@/components/ui/label";
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/select";
 import { SectionBanner } from "@/components/home/section-banner";
@@ -15,6 +16,7 @@ type DivisionOption = {
   name: string;
   discipline: string;
   eventName: string;
+  gender: string;
 };
 
 const initialState: RegistrationActionState = {};
@@ -37,7 +39,21 @@ export function NewRegistrationForm({
   const [divisionId, setDivisionId] = useState("");
   const [consent, setConsent] = useState(false);
   const [agreement, setAgreement] = useState(false);
-  const selectedDivision = divisions.find((d) => d.id === divisionId) ?? null;
+  const [gender, setGender] = useState(defaults.gender ?? "");
+
+  const visibleDivisions = useMemo(() => {
+    const code = divisionGenderCode(gender);
+    if (!code) return divisions;
+    return divisions.filter((division) => !division.gender || division.gender === code);
+  }, [divisions, gender]);
+
+  const selectedDivision = visibleDivisions.find((d) => d.id === divisionId) ?? null;
+
+  useEffect(() => {
+    if (divisionId && !visibleDivisions.some((d) => d.id === divisionId)) {
+      setDivisionId("");
+    }
+  }, [divisionId, visibleDivisions]);
 
   useEffect(() => {
     if (state.redirectTo) router.push(state.redirectTo);
@@ -62,6 +78,7 @@ export function NewRegistrationForm({
       aadhaarImageVersion={aadhaarImageVersion}
       waiverAcceptedAt={waiverAcceptedAt}
       submitLabel={navigating ? "Opening payment…" : "Continue to payment"}
+      onGenderChange={setGender}
       top={
         <section className="space-y-4">
           <SectionBanner>The card</SectionBanner>
@@ -70,16 +87,19 @@ export function NewRegistrationForm({
             <input type="hidden" name="divisionId" value={divisionId} />
             <Select value={divisionId} onValueChange={setDivisionId}>
               <SelectTrigger id="divisionId" aria-label="Division">
-                <SelectValue placeholder="Select a division" />
+                <SelectValue placeholder={gender ? "Select a division" : "Select gender on the form first"} />
               </SelectTrigger>
               <SelectContent>
-                {divisions.map((division) => (
+                {visibleDivisions.map((division) => (
                   <SelectItem key={division.id} value={division.id}>
-                    {division.eventName} — {division.name} ({division.discipline})
+                    {division.name} ({division.discipline})
                   </SelectItem>
                 ))}
               </SelectContent>
             </Select>
+            {gender && visibleDivisions.length === 0 && (
+              <p className="mt-1 text-xs text-muted-foreground">No open divisions match this gender yet.</p>
+            )}
           </div>
           <CouponField eventId={selectedDivision?.eventId ?? null} disabled={pending || navigating} />
         </section>
@@ -96,7 +116,7 @@ export function NewRegistrationForm({
           <label className="flex items-start gap-2 text-sm">
             <input type="checkbox" className="mt-1" checked={agreement} onChange={(event) => setAgreement(event.target.checked)} />
             <span>
-              Agreement. There is no full refund on cancellation. I may transfer my spot to a friend, or accept a 50% cut when a cancellation is approved. Mouthguard is compulsory — if I forget mine, I will buy one from the mouthguard sponsor on site.
+              Agreement. There is no full refund on cancellation. I may transfer my spot to a friend, or accept a 50% cut when a cancellation is approved. Mouthguard is compulsory — I bring my own.
             </span>
           </label>
         </section>

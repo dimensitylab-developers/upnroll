@@ -34,8 +34,9 @@ export default async function NewRegistrationPage() {
     headCoach: profile?.headCoach ?? "",
     beltRank: profile?.beltRank ?? "",
     yearsTraining: profile?.yearsTraining ? String(profile.yearsTraining) : "",
-    careerWins: profile?.careerWins != null ? String(profile.careerWins) : "0",
+    pastRecord: profile?.pastRecord ?? "",
     weightDivision: profile?.weightDivision ?? "",
+    instagramHandle: profile?.instagramHandle ?? "",
     heardAbout: profile?.heardAbout ?? "",
     hasMedicalCondition: profile ? yesNo(Boolean(profile.hasMedicalCondition)) : "",
     medicalConditionDetail: profile?.medicalConditionDetail ?? "",
@@ -49,7 +50,7 @@ export default async function NewRegistrationPage() {
     <div className="mx-auto max-w-3xl manga-panel p-6 sm:p-8">
       <h1 className="mb-2 text-display text-2xl font-semibold">Register for an event</h1>
       <p className="mb-6 text-sm text-muted-foreground">
-        Fill the grappler form for this card, upload your Aadhaar card image, pick a division, then continue to payment.
+        Fill the grappler form for this card, upload your identity proof image, pick a division, then continue to payment.
       </p>
       <NewRegistrationForm
         divisions={divisions.map((division) => ({
@@ -58,6 +59,7 @@ export default async function NewRegistrationPage() {
           name: division.name,
           discipline: division.discipline,
           eventName: division.event?.name ?? "Unknown event",
+          gender: division.gender ?? "",
         }))}
         defaults={defaults}
         hasAadhaarImage={Boolean(profile?.aadhaarImageKey)}

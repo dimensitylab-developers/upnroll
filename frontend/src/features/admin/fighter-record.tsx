@@ -66,17 +66,17 @@ export function FighterRecord({ fighter }: { fighter: AdminFighterView }) {
           <Line label="Blood group" value={shown(fighter.bloodGroup)} />
         </dl>
         <div className="max-w-md border-2 border-black bg-white p-4">
-          <p className="mb-2 text-[10px] uppercase tracking-wider text-muted-foreground">Aadhaar card image (private)</p>
+          <p className="mb-2 text-[10px] uppercase tracking-wider text-muted-foreground">Identity proof (private)</p>
           <div className="aspect-[16/10] overflow-hidden border-2 border-black bg-white flex items-center justify-center">
             {fighter.hasAadhaarImage ? (
               // eslint-disable-next-line @next/next/no-img-element
               <img
                 src={`/api/v1/admin/fighters/${fighter.userId}/aadhaar`}
-                alt={`${name} Aadhaar card`}
+                alt={`${name} identity proof`}
                 className="h-full w-full object-contain"
               />
             ) : (
-              <span className="px-2 text-center text-[10px] uppercase tracking-wider text-muted-foreground">No Aadhaar image</span>
+              <span className="px-2 text-center text-[10px] uppercase tracking-wider text-muted-foreground">No identity proof yet</span>
             )}
           </div>
         </div>
@@ -89,7 +89,9 @@ export function FighterRecord({ fighter }: { fighter: AdminFighterView }) {
           <Line label="Head coach / coach name" value={shown(fighter.headCoach)} />
           <Line label="Belt rank" value={shown(fighter.beltRank)} />
           <Line label="Years training" value={ready ? String(fighter.yearsTraining) : "—"} />
+          <Line label="Past record" value={shown(fighter.pastRecord)} />
           <Line label="Weight division" value={shown(fighter.weightDivision)} />
+          <Line label="Instagram" value={fighter.instagramHandle ? `@${fighter.instagramHandle}` : "—"} />
           <Line label="How did you hear about Up ’n Roll?" value={shown(fighter.heardAbout)} />
         </dl>
       </section>
