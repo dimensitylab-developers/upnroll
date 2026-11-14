@@ -1,6 +1,6 @@
 import Link from "next/link";
 
-/** Locked client date for the next open card. */
+/** Locked client date for the next upcoming event. */
 const NEXT_EVENT_LABEL = "23 January 2027";
 
 type NextEvent = {

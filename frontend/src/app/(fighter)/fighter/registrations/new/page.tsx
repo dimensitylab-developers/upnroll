@@ -50,7 +50,7 @@ export default async function NewRegistrationPage() {
     <div className="mx-auto w-full min-w-0 max-w-3xl manga-panel overflow-visible p-6 sm:p-8">
       <h1 className="mb-2 text-display text-2xl font-semibold">Register for an event</h1>
       <p className="mb-6 text-sm text-muted-foreground">
-        Fill the grappler form for this card, upload your identity proof image, choose Beginner or Intermediate then your weight class, and continue to payment.
+        Complete your grappler details, upload identity proof, choose Beginner or Intermediate and a weight class that matches your gender, then continue to payment.
       </p>
       <NewRegistrationForm
         divisions={divisions.map((division) => ({
@@ -63,7 +63,7 @@ export default async function NewRegistrationPage() {
             division.experienceLevel === "BEGINNER" || division.experienceLevel === "INTERMEDIATE"
               ? division.experienceLevel
               : "",
-          gender: division.gender ?? "",
+          gender: division.gender === "MALE" || division.gender === "FEMALE" ? division.gender : "",
         }))}
         defaults={defaults}
         hasAadhaarImage={Boolean(profile?.aadhaarImageKey)}

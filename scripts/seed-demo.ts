@@ -1,5 +1,5 @@
 /**
- * Local fixture. Publishes the Superfight Series, seeds demo fighters,
+ * Local fixture. Publishes Up 'n Roll Superfight, seeds demo fighters,
  * and builds a full “James Lewis” fighter dashboard demo (profile + card + matches).
  * Run with: npm run seed-demo
  */
@@ -364,10 +364,10 @@ async function main() {
   const event = await Event.findOneAndUpdate(
     { slug: SERIES_SLUG },
     {
-      name: "Up 'n Roll Superfight Series",
+      name: "Up 'n Roll Superfight",
       slug: SERIES_SLUG,
       description: "Road to Super Fight.",
-      venue: "Up 'n Roll mats",
+      venue: "Event venue",
       startDate: new Date("2027-01-23T10:00:00+05:30"),
       registrationOpensAt: new Date("2026-11-07T00:00:00+05:30"),
       registrationClosesAt: new Date("2027-01-22T23:59:00+05:30"),

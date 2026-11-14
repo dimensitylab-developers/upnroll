@@ -153,14 +153,8 @@ export function HomeFaqSection() {
 
   return (
     <section className="mx-auto max-w-6xl px-4 pb-8 sm:px-6 lg:px-8">
-      <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-        <SectionBanner className="mb-0">Asked on the mat</SectionBanner>
-        <Link
-          href="/faq"
-          className="inline-flex w-fit -skew-x-12 items-center border-2 border-black bg-white px-4 py-2 text-xs font-semibold uppercase tracking-[0.16em] shadow-[3px_3px_0_0_#000] transition-colors hover:bg-brand-red hover:text-white sm:text-[11px]"
-        >
-          <span className="inline-block skew-x-12">Full FAQ →</span>
-        </Link>
+      <div className="mb-6">
+        <SectionBanner className="mb-0">FAQs</SectionBanner>
       </div>
       <HomeFaqTimeline items={items} />
     </section>

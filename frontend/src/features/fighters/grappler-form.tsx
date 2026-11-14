@@ -119,6 +119,7 @@ function Choice({
   errors?: GrapplerFormState["fieldErrors"];
   onChange?: (value: string) => void;
 }) {
+  const controlled = typeof onChange === "function";
   return (
     <fieldset>
       <legend className="text-sm font-medium mb-1.5">{legend}</legend>
@@ -130,8 +131,9 @@ function Choice({
               name={name}
               value={option.value}
               required
-              defaultChecked={value === option.value}
-              onChange={() => onChange?.(option.value)}
+              {...(controlled
+                ? { checked: value === option.value, onChange: () => onChange(option.value) }
+                : { defaultChecked: value === option.value })}
             />
             {option.label}
           </label>
@@ -293,7 +295,7 @@ export function GrapplerForm({
             <Choice
               legend="Gender"
               name="gender"
-              value={values?.gender}
+              value={gender}
               errors={errors}
               onChange={(next) => {
                 setGender(next);
@@ -407,7 +409,27 @@ export function GrapplerForm({
         <div className="grid sm:grid-cols-2 gap-4">
           <TextField label="Academy / team name" name="academy" errors={errors} defaultValue={values?.academy} />
           <TextField label="Head coach / coach name" name="headCoach" errors={errors} defaultValue={values?.headCoach} />
-          <TextField label="Belt rank" name="beltRank" errors={errors} defaultValue={values?.beltRank} />
+          <div>
+            <Label htmlFor="beltRank" className="mb-1.5 block">
+              Belt rank
+            </Label>
+            <select
+              id="beltRank"
+              name="beltRank"
+              required
+              defaultValue={values?.beltRank || ""}
+              className="flex h-10 w-full border-2 border-black bg-white px-3 text-sm"
+            >
+              <option value="" disabled>
+                Select belt
+              </option>
+              <option value="White">White (Beginner)</option>
+              <option value="Blue">Blue (Intermediate)</option>
+              <option value="Purple">Purple (Intermediate)</option>
+            </select>
+            <p className="mt-1 text-xs text-muted-foreground">Beginner divisions: white only. Intermediate: blue or purple.</p>
+            <FieldError name="beltRank" errors={errors} />
+          </div>
           <TextField label="Years training" name="yearsTraining" type="number" min={0} max={60} step="0.5" errors={errors} defaultValue={values?.yearsTraining} />
           <TextField
             label="Past record"

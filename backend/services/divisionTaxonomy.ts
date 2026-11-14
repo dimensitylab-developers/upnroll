@@ -81,8 +81,9 @@ export function roadToSuperFightDivisionSeeds(): TaxonomySeed[] {
 
 /** Public Superfight / card rules board: mirrors the posted event sheet. */
 export const EVENT_POINTS_RULES = {
+  /** Intermediate (blue & purple). Key `advanced` kept for older call sites. */
   advanced: {
-    title: "Advanced division",
+    title: "Intermediate division",
     subtitle: "Blue & Purple Belts",
     scoringTitle: "Scoring system (active in final 3 minutes)",
     points: [

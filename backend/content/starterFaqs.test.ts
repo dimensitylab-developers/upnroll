@@ -27,7 +27,7 @@ describe("starter FAQs", () => {
       "Compulsory: rashguard",
       "free link",
       "Rankings follow bracket results",
-      "Instagram DM",
+      "Instagram (@up.n.roll)",
     ];
     CHAT_PROMPTS.forEach((prompt, index) => {
       expect(matchFaq(prompt, faqs)?.answer).toContain(expected[index]);

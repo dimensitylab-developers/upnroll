@@ -1,6 +1,6 @@
 /**
  * Production-safe seed for the Jan 2027 No-Gi tournament.
- * Upserts the Superfight Series event + taxonomy divisions + scoring rules.
+ * Upserts the Up 'n Roll Superfight event + taxonomy divisions + scoring rules.
  * Weight class / experience level are chosen on the registration form only 
  * this script keeps the DB grid in sync; public pages no longer list them.
  * Does NOT create demo fighters, registrations, brackets, or matches.

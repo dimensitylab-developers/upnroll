@@ -87,7 +87,10 @@ export async function createRegistrationAction(
       .select("aadhaarImageKey parentalConsentImageKey")
       .lean();
     if ("empty" in aadhaar && !existing?.aadhaarImageKey) {
-      return { error: "Add an identity proof image.", fieldErrors: { aadhaarImage: ["Add an identity proof image."] } };
+      return {
+        error: "Add an identity proof image.",
+        fieldErrors: { aadhaarImage: ["Add an identity proof image."] },
+      };
     }
     if (minor && "empty" in parentalConsent && !existing?.parentalConsentImageKey) {
       return {

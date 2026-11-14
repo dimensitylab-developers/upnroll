@@ -80,7 +80,7 @@ export function NewRegistrationForm({
   }, [divisionId, filteredDivisions]);
 
   if (divisions.length === 0) {
-    return <p className="text-sm text-muted-foreground">No open cards are available for registration right now.</p>;
+    return <p className="text-sm text-muted-foreground">No events are open for registration right now.</p>;
   }
 
   const navigating = Boolean(state.redirectTo);
@@ -103,7 +103,7 @@ export function NewRegistrationForm({
       onGenderChange={setGender}
       top={
         <section className="space-y-4">
-          <SectionBanner>The card</SectionBanner>
+          <SectionBanner>Event entry</SectionBanner>
           <div className="grid max-w-md gap-4">
             {hasTaxonomy && (
               <div>
@@ -121,8 +121,8 @@ export function NewRegistrationForm({
                     <SelectValue placeholder="Select Beginner or Intermediate" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="BEGINNER">Beginner</SelectItem>
-                    <SelectItem value="INTERMEDIATE">Intermediate</SelectItem>
+                    <SelectItem value="BEGINNER">Beginner (white belts)</SelectItem>
+                    <SelectItem value="INTERMEDIATE">Intermediate (blue & purple)</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
@@ -142,18 +142,23 @@ export function NewRegistrationForm({
                     placeholder={
                       hasTaxonomy && !experienceLevel
                         ? "Choose experience level first"
-                        : "Select a weight class"
+                        : !gender
+                          ? "Set gender in personal information below"
+                          : "Select a weight class"
                     }
                   />
                 </SelectTrigger>
                 <SelectContent>
                   {filteredDivisions.map((division) => (
                     <SelectItem key={division.id} value={division.id}>
-                      {weightClassLabel(division.name)} ({division.discipline})
+                      {division.eventName} — {weightClassLabel(division.name)} ({division.discipline})
                     </SelectItem>
                   ))}
                 </SelectContent>
               </Select>
+              <p className="mt-1 text-xs text-muted-foreground">
+                Weight classes follow your gender and experience level. Beginner is white belt only; Intermediate is blue or purple.
+              </p>
               {gender && filteredDivisions.length === 0 && experienceLevel && (
                 <p className="mt-1 text-xs text-muted-foreground">No open divisions match this gender and level yet.</p>
               )}
@@ -174,7 +179,7 @@ export function NewRegistrationForm({
           <label className="flex items-start gap-2 text-sm">
             <input type="checkbox" className="mt-1" checked={agreement} onChange={(event) => setAgreement(event.target.checked)} />
             <span>
-              Agreement. There is no full refund on cancellation. I may transfer my spot to a friend, or accept a 50% cut when a cancellation is approved. Mouthguard is compulsory; I bring my own.
+              Agreement. There is no full refund on cancellation. I may transfer my spot to a friend, or accept a 50% refund when cancellation is approved one month or more before the event. Mouthguard is compulsory; I bring my own.
             </span>
           </label>
         </section>

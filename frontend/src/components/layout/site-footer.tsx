@@ -80,7 +80,7 @@ export function SiteFooter({ contact = SITE_CONTACT }: { contact?: SiteContact }
               </div>
 
               <div>
-                <FooterHeading>More</FooterHeading>
+                <FooterHeading>Find us</FooterHeading>
                 <ul className="space-y-1.5">
                   {HOUSE.map((link) => (
                     <li key={link.href}>

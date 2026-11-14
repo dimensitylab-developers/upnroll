@@ -20,7 +20,7 @@ export default function PublicFaqPage() {
               aria-hidden="true"
             />
             <span className="bg-black px-5 py-2.5 text-display text-3xl font-semibold uppercase tracking-wide text-white transition-colors duration-200 group-hover:bg-brand-red group-focus-visible:bg-brand-red sm:px-7 sm:text-4xl">
-              <span className="inline-block skew-x-12">Grappler&apos;s FAQ</span>
+              <span className="inline-block skew-x-12">Grappler FAQ</span>
             </span>
             <span
               className="w-6 bg-black transition-colors duration-200 group-hover:bg-brand-red group-focus-visible:bg-brand-red sm:w-10"

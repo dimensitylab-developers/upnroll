@@ -6,7 +6,7 @@ export const STARTER_FAQS: { question: string; answer: string }[] = [
   {
     question: "How do I register for an event?",
     answer:
-      "Create a grappler account with your details and upload a clear identity proof image. Sign in, choose a weight class / division, tick both Consent and Agreement, then continue to payment.",
+      "Create a grappler account with your details and upload identity proof. Sign in, choose Beginner or Intermediate and a weight class that matches your gender, tick both Consent and Agreement, then continue to payment.",
   },
   {
     question: "How do I pay the entry fee?",
@@ -21,7 +21,7 @@ export const STARTER_FAQS: { question: string; answer: string }[] = [
   {
     question: "What is the cancellation refund if I cancel?",
     answer:
-      "There is no full refund when you cancel. You can transfer your spot to a friend, or a 50% cut may apply when a cancellation is approved. The organizer handles money off-platform. Prefer transfer to a friend whenever possible.",
+      "There is no full refund when you cancel. You can transfer your spot to a friend, or a 50% refund may apply when cancellation is approved one month or more before the event. The organizer handles money off-platform. Prefer transfer to a friend whenever possible.",
   },
   {
     question: "Can I transfer my spot to a teammate?",
@@ -66,7 +66,7 @@ export const STARTER_FAQS: { question: string; answer: string }[] = [
   {
     question: "How do rankings work?",
     answer:
-      "Rankings follow bracket results: athletes who go further place higher. Early exits place lower. When two athletes lose with no points, the faster loss places lower. Athletes who skip a recent event can drop versus recent participants. Who gets a Super Fight is decided manually by the house.",
+      "Rankings follow bracket results: athletes who go further place higher. Early exits place lower. When two athletes lose with no points, the faster loss places lower. Athletes who skip a recent event can drop versus recent participants. Who gets a Super Fight is decided manually by the organisers.",
   },
   {
     question: "How does live judge scoring work?",
@@ -86,12 +86,12 @@ export const STARTER_FAQS: { question: string; answer: string }[] = [
   {
     question: "What is Up ’n Roll Superfight?",
     answer:
-      "Up ’n Roll Superfight is the featured card series on this site. Open registration, brackets, schedule, and results for that event live under Events when the card is published.",
+      "Up ’n Roll Superfight is the featured card on this site. Open registration, brackets, schedule, and results for that event live under Events when the card is published.",
   },
   {
     question: "I have an emergency and need a human",
     answer:
-      "If this chat cannot help and you have an urgent event-day issue, ask for a human handoff here and the organizer emergency line will be shared in the reply once the house has published it in FAQ. Day-to-day questions should go to Instagram DM (@up.n.roll) or email. Phone numbers are not listed on the public site.",
+      "If this chat cannot help and you have an urgent event-day issue, ask for a human handoff here and the organizer emergency line will be shared in the reply once it has been published in FAQ. Day-to-day questions should go to Instagram (@up.n.roll) or email. Phone numbers are not listed on the public site.",
   },
 ];
 

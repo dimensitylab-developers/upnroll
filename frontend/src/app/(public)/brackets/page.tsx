@@ -46,7 +46,7 @@ export default async function LiveBracketsPage() {
         </div>
         <h1 className="text-display text-4xl font-semibold">Brackets</h1>
         <p className="copy-slab mt-2 max-w-2xl text-sm">
-          Live board for the open card. Wins, losses, and every published bracket refresh as matches finish.
+          Live board for this event. Wins, losses, and every published bracket refresh as matches finish.
         </p>
 
         {!focus && (
