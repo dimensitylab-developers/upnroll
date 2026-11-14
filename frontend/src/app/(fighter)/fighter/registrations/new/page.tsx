@@ -4,7 +4,7 @@ import { getFighterProfile } from "@/server/services/fighterService";
 import { NewRegistrationForm } from "@/features/registrations/new-registration-form";
 import type { GrapplerDefaults } from "@/features/fighters/grappler-form";
 
-/** Session/DB-bound route  allow blocking navigation under Cache Components. */
+/** Session/DB-bound route; allow blocking navigation under Cache Components. */
 export const instant = false;
 
 function yesNo(value: boolean | undefined) {
@@ -35,7 +35,7 @@ export default async function NewRegistrationPage() {
     headCoach: profile?.headCoach ?? "",
     beltRank: profile?.beltRank ?? "",
     yearsTraining: profile?.yearsTraining ? String(profile.yearsTraining) : "",
-    careerWins: profile?.careerWins != null ? String(profile.careerWins) : "0",
+    pastRecord: profile?.pastRecord ?? "",
     weightDivision: profile?.weightDivision ?? "",
     heardAbout: profile?.heardAbout ?? "",
     hasMedicalCondition: profile ? yesNo(Boolean(profile.hasMedicalCondition)) : "",

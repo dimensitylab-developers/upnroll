@@ -32,7 +32,7 @@ export function SiteFooter({ contact = SITE_CONTACT }: { contact?: SiteContact }
 
   return (
     <footer className="relative overflow-hidden text-white">
-      {/* Soft dark field + glow — not a flat black slab */}
+      {/* Soft dark field + glow (not a flat black slab) */}
       <div className="absolute inset-0 bg-[radial-gradient(120%_80%_at_10%_-10%,rgba(200,16,46,0.35),transparent_55%),radial-gradient(90%_70%_at_90%_20%,rgba(255,255,255,0.08),transparent_50%),linear-gradient(180deg,#0a0a0a_0%,#141414_55%,#0b0b0b_100%)]" />
       <div
         className="pointer-events-none absolute -left-24 top-8 h-56 w-56 rounded-full bg-brand-red/25 blur-3xl"
@@ -47,9 +47,6 @@ export function SiteFooter({ contact = SITE_CONTACT }: { contact?: SiteContact }
         <div className="rounded-[2rem] border border-white/20 bg-white/[0.08] p-6 shadow-[inset_0_1px_0_0_rgba(255,255,255,0.18),0_24px_80px_-32px_rgba(0,0,0,0.85)] backdrop-blur-2xl sm:p-8 lg:rounded-[2.5rem] lg:p-10">
           <div className="grid gap-10 lg:grid-cols-[minmax(0,1.15fr)_minmax(0,1.35fr)] lg:gap-12">
             <div>
-              <p className="mb-4 inline-flex rounded-full border border-white/25 bg-white/10 px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.22em] text-white/90 backdrop-blur-md">
-                Up &apos;n Roll · D3 Spectator
-              </p>
               <Link
                 href="/"
                 aria-label="Up 'n Roll home"

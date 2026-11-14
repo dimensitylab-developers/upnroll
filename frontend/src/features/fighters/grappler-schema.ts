@@ -28,7 +28,7 @@ export const grapplerDetailsSchema = z.object({
   headCoach: z.string().trim().min(2, "Enter your coach.").max(80),
   beltRank: z.enum(["White", "Blue", "Purple"], { message: "Select White, Blue, or Purple." }),
   yearsTraining: z.coerce.number().min(0, "Enter years training.").max(60),
-  careerWins: z.coerce.number().int().min(0, "Enter your past record.").max(500),
+  pastRecord: z.string().trim().min(1, "Enter your past record.").max(120),
   weightDivision: z.string().trim().min(1, "Enter your weight division.").max(40),
   heardAbout: z.string().trim().min(2, "Tell us how you heard about Up ’n Roll.").max(120),
   hasMedicalCondition: yesNo,
@@ -146,7 +146,7 @@ export function grapplerFromForm(formData: FormData) {
     headCoach: formData.get("headCoach"),
     beltRank: formData.get("beltRank"),
     yearsTraining: formData.get("yearsTraining"),
-    careerWins: formData.get("careerWins"),
+    pastRecord: formData.get("pastRecord"),
     weightDivision: formData.get("weightDivision"),
     heardAbout: formData.get("heardAbout"),
     hasMedicalCondition: formData.get("hasMedicalCondition"),
@@ -156,6 +156,13 @@ export function grapplerFromForm(formData: FormData) {
     takingMedication: formData.get("takingMedication"),
     medicallyFit: formData.get("medicallyFit"),
   };
+}
+
+/** Prefer an explicit win count when the past-record text starts with a number. */
+function careerWinsFromPastRecord(pastRecord: string): number {
+  const match = pastRecord.trim().match(/^(\d{1,3})\b/);
+  if (!match) return 0;
+  return Math.min(500, Number(match[1]));
 }
 
 export function toProfileFields(data: GrapplerDetails) {
@@ -176,7 +183,8 @@ export function toProfileFields(data: GrapplerDetails) {
     headCoach: data.headCoach,
     beltRank: data.beltRank,
     yearsTraining: data.yearsTraining,
-    careerWins: data.careerWins,
+    pastRecord: data.pastRecord,
+    careerWins: careerWinsFromPastRecord(data.pastRecord),
     weightDivision: data.weightDivision,
     heardAbout: data.heardAbout,
     hasMedicalCondition: data.hasMedicalCondition === "yes",

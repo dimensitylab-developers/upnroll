@@ -1,8 +1,8 @@
 /** Canonical Up 'n Roll public ranking weight bands (kg)  men + women from meeting. */
 export const WEIGHT_CLASSES = [
-  { id: "women-u65", label: "Women −65 KG", aliases: ["women -65", "women −65", "-65 women", "female -65"] },
+  { id: "women-u65", label: "Women -65 KG", aliases: ["women -65", "women -65", "-65 women", "female -65"] },
   { id: "women-o65", label: "Women +65 KG", aliases: ["women +65", "+65 women", "female +65"] },
-  { id: "u55", label: "Men −55 KG", aliases: ["-55 kgs", "-55 kgs (open)", "-55 kg", "-55", "men -55"] },
+  { id: "u55", label: "Men -55 KG", aliases: ["-55 kgs", "-55 kgs (open)", "-55 kg", "-55", "men -55"] },
   { id: "55-65", label: "Men 55-65 KG", aliases: ["55 - 65 kgs", "55-65 kgs", "55 – 65 kgs", "55-65 kg", "55–65 kg"] },
   { id: "65-75", label: "Men 65-75 KG", aliases: ["65 -75 kgs", "65-75 kgs", "65 - 75 kgs", "65–75 kg", "-70 kgs", "-70 kg"] },
   { id: "75-85", label: "Men 75-85 KG", aliases: ["75 -85 kgs", "75-85 kgs", "75 - 85 kgs", "75–85 kg"] },
@@ -17,7 +17,7 @@ function normalizeKey(raw: string) {
     .toLowerCase()
     .replace(/kgss?/g, "kg")
     .replace(/\s+/g, " ")
-    .replace(/–|−/g, "-");
+    .replace(/–|-/g, "-");
 }
 
 /** Map free-text weight labels onto a canonical class id. */

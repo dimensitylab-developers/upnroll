@@ -27,6 +27,7 @@ export type AdminFighterView = {
   headCoach: string;
   beltRank: string;
   yearsTraining: number;
+  pastRecord: string;
   careerWins: number;
   weightDivision: string;
   heardAbout: string;
@@ -60,6 +61,7 @@ type ProfileForAdmin = {
   headCoach?: string;
   beltRank?: string;
   yearsTraining?: number;
+  pastRecord?: string;
   careerWins?: number;
   weightDivision?: string;
   heardAbout?: string;
@@ -94,6 +96,7 @@ export function toAdminFighterView(profile: ProfileForAdmin, email: string): Adm
     headCoach: profile.headCoach ?? "",
     beltRank: profile.beltRank ?? "",
     yearsTraining: profile.yearsTraining ?? 0,
+    pastRecord: profile.pastRecord ?? "",
     careerWins: profile.careerWins ?? 0,
     weightDivision: profile.weightDivision ?? "",
     heardAbout: profile.heardAbout ?? "",
@@ -127,6 +130,7 @@ export type FighterDetailsInput = {
   headCoach: string;
   beltRank: string;
   yearsTraining: number;
+  pastRecord: string;
   careerWins: number;
   weightDivision: string;
   heardAbout: string;
@@ -165,6 +169,7 @@ export async function updateFighterProfile(actor: Actor, input: FighterDetailsIn
   profile.headCoach = input.headCoach;
   profile.beltRank = input.beltRank;
   profile.yearsTraining = input.yearsTraining;
+  profile.pastRecord = input.pastRecord;
   profile.careerWins = input.careerWins;
   profile.weightDivision = input.weightDivision;
   profile.heardAbout = input.heardAbout;
@@ -200,7 +205,7 @@ export async function countFighters(actor: Actor) {
   return FighterProfile.countDocuments();
 }
 
-/** Public hype-card fields only — never aadhaar, medical, mobile, or other PII. */
+/** Public hype-card fields only: never aadhaar, medical, mobile, or other PII. */
 const PUBLIC_FIGHTER_FIELDS =
   "displayName slug gym academy discipline beltRank weightDivision photoKey userId";
 
@@ -339,7 +344,7 @@ export async function getPublicFighterBySlug(slug: string) {
   };
 }
 
-/** Open a public passport photo by slug — only if the fighter published a photo key. */
+/** Open a public passport photo by slug: only if the fighter published a photo key. */
 export async function getPublicFighterPhotoKeyBySlug(slug: string): Promise<string> {
   await connectDB();
   const profile = await FighterProfile.findOne({ slug }).select("photoKey").lean();

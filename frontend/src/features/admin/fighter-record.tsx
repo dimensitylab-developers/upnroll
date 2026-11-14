@@ -66,7 +66,7 @@ export function FighterRecord({ fighter }: { fighter: AdminFighterView }) {
           <Line label="Blood group" value={shown(fighter.bloodGroup)} />
           <Line
             label="Instagram"
-            value={fighter.instagramHandle ? `@${fighter.instagramHandle}` : "—"}
+            value={fighter.instagramHandle ? `@${fighter.instagramHandle}` : "-"}
           />
         </dl>
         <div className="grid gap-4 md:grid-cols-2">
@@ -81,7 +81,7 @@ export function FighterRecord({ fighter }: { fighter: AdminFighterView }) {
                   className="h-full w-full object-contain"
                 />
               ) : (
-                <span className="px-2 text-center text-[10px] uppercase tracking-wider text-muted-foreground">No identity proof</span>
+                <span className="px-2 text-center text-[10px] uppercase tracking-wider text-muted-foreground">No identity proof yet</span>
               )}
             </div>
           </div>
@@ -112,6 +112,7 @@ export function FighterRecord({ fighter }: { fighter: AdminFighterView }) {
           <Line label="Head coach / coach name" value={shown(fighter.headCoach)} />
           <Line label="Belt rank" value={shown(fighter.beltRank)} />
           <Line label="Years training" value={ready ? String(fighter.yearsTraining) : ""} />
+          <Line label="Past record" value={shown(fighter.pastRecord)} />
           <Line label="Weight division" value={shown(fighter.weightDivision)} />
           <Line label="How did you hear about Up ’n Roll?" value={shown(fighter.heardAbout)} />
         </dl>

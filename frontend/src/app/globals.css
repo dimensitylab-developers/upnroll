@@ -8,7 +8,7 @@
   Up 'n Roll brand tokens.
   Light editorial manga palette, carried over from the TechBlitz visual
   structure (halftone dots, hard black panel shadows, jagged comic edges)
-  per direct instruction — background/structure technique reused, all
+  per direct instruction: background/structure technique reused, all
   TechBlitz content/copy excluded. See docs/phases/00-repository-audit.md.
   Near-white surfaces, near-black type, red fight-night accent, cyan
   reserved for live/in-progress states, muted gold reserved for
@@ -198,7 +198,7 @@
     right: 23px;
   }
 
-  /* Speed lines — subtle black diagonal texture, used sparingly behind hero/CTA panels */
+  /* Speed lines: subtle black diagonal texture, used sparingly behind hero/CTA panels */
   .speed-lines {
     background: repeating-linear-gradient(
       100deg,
@@ -241,9 +241,9 @@
     background-position: 0 0, 0 6px, 6px -6px, -6px 0;
   }
 
-  /* Homepage fight-card ticker — dual opposing loops; pause on hover to read */
+  /* Homepage fight-card ticker: dual opposing loops; pause on hover to read */
   .home-marquee-track {
-    animation: home-marquee-scroll 48s linear infinite;
+    animation: home-marquee-scroll 28s linear infinite;
   }
   .home-marquee-track-reverse {
     animation-name: home-marquee-scroll-reverse;
@@ -326,7 +326,7 @@
     transition: margin 520ms cubic-bezier(0.22, 1, 0.36, 1);
   }
 
-  /* Fighter desk identity — quiet entrance */
+  /* Fighter desk identity: quiet entrance */
   .desk-identity {
     animation: desk-identity-in 0.45s cubic-bezier(0.2, 0.9, 0.2, 1.05) both;
   }
@@ -345,7 +345,7 @@
     }
   }
 
-  /* Rankings podium — staggered rise onto the stage */
+  /* Rankings podium: staggered rise onto the stage */
   .podium-slot {
     animation: podium-rise 0.55s cubic-bezier(0.2, 0.9, 0.2, 1.08) both;
   }
@@ -357,7 +357,7 @@
     100% { opacity: 1; transform: translateY(0); }
   }
 
-  /* Homepage FAQ — staggered comic cards onto the rail */
+  /* Homepage FAQ: staggered comic cards onto the rail */
   .home-faq-rise {
     animation: home-faq-rise 0.5s cubic-bezier(0.2, 0.9, 0.2, 1.08) both;
   }

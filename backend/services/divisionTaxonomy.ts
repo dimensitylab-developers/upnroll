@@ -19,16 +19,16 @@ export type TaxonomySeed = {
 };
 
 const WOMEN_BANDS: TaxonomyBand[] = [
-  { weightBand: "-55", weightMinKg: null, weightMaxKg: 55, label: "−55 kg" },
-  { weightBand: "55-65", weightMinKg: 55, weightMaxKg: 65, label: "55–65 kg" },
+  { weightBand: "-55", weightMinKg: null, weightMaxKg: 55, label: "-55 kg" },
+  { weightBand: "55-65", weightMinKg: 55, weightMaxKg: 65, label: "55-65 kg" },
   { weightBand: "+65", weightMinKg: 65, weightMaxKg: null, label: "+65 kg" },
 ];
 
 const MEN_BANDS: TaxonomyBand[] = [
-  { weightBand: "-55", weightMinKg: null, weightMaxKg: 55, label: "−55 kg" },
-  { weightBand: "55-65", weightMinKg: 55, weightMaxKg: 65, label: "55–65 kg" },
-  { weightBand: "65-75", weightMinKg: 65, weightMaxKg: 75, label: "65–75 kg" },
-  { weightBand: "75-85", weightMinKg: 75, weightMaxKg: 85, label: "75–85 kg" },
+  { weightBand: "-55", weightMinKg: null, weightMaxKg: 55, label: "-55 kg" },
+  { weightBand: "55-65", weightMinKg: 55, weightMaxKg: 65, label: "55-65 kg" },
+  { weightBand: "65-75", weightMinKg: 65, weightMaxKg: 75, label: "65-75 kg" },
+  { weightBand: "75-85", weightMinKg: 75, weightMaxKg: 85, label: "75-85 kg" },
   { weightBand: "+85", weightMinKg: 85, weightMaxKg: null, label: "+85 kg" },
 ];
 
@@ -79,7 +79,7 @@ export function roadToSuperFightDivisionSeeds(): TaxonomySeed[] {
   return seeds;
 }
 
-/** Public Superfight / card rules board — mirrors the posted event sheet. */
+/** Public Superfight / card rules board: mirrors the posted event sheet. */
 export const EVENT_POINTS_RULES = {
   /** Intermediate (blue & purple). Key `advanced` kept for older call sites. */
   advanced: {
@@ -121,7 +121,7 @@ export const EVENT_POINTS_RULES = {
     ],
   },
   penalties: {
-    title: "Penalties (−1 point each)",
+    title: "Penalties (-1 point each)",
     items: [
       "Deliberately leaving the competition area",
       "Unsportsmanlike conduct",

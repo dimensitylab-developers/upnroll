@@ -1,13 +1,14 @@
 /** English clauses from the grappler registration sheet. */
 export const WAIVER_CLAUSES = [
   "I understand this is a No-Gi only event.",
-  "I will wear approved attire (rashguard + shorts/spats, no pockets/zippers) and a compulsory mouthguard.",
+  "I will wear approved attire (rashguard + shorts/spats, no pockets/zippers) and a compulsory mouthguard. I bring my own mouthguard.",
   "I agree to follow all referee decisions and I accept the rules and scoring system.",
   "The organizers reserve the right to merge divisions and also to make athletes who train under the same coach compete.",
   "I am medically fit to compete.",
-  "I understand the risks of grappling sports, including injuries, which may occur before, during, or after training and the fight.",
-  "The organiser, organisation, venue, athlete’s gym, coaches, and sponsors are not responsible or liable for damage, injury, or an unforeseen event before, during, or after training or the fight.",
-  "I allow my photo and video to be captured and used by the organizers for promotion.",
+  "I understand the risks of grappling sports, including injuries, which may occur while training for the event, or before, during, or after the event.",
+  "The organizers are not liable for any damage, injury, or unforeseen event before, during, or after the event.",
+  "I allow my photo and video to be used by the organizers for promotion.",
+  "The grappler agrees that the organiser, organisation, venue owners, sponsors, coaches, gym owners, and gyms where the grapplers train are not responsible or liable for damage, injury, or an unforeseen event on the day, while training, while competing, or after the event.",
   "The grappler agrees they take the fight by their own choice, and no gym owner, coach, or event organiser has forced them to compete.",
   "The organizer holds the full right to merge divisions.",
   "If the organisers give out rashguards or gear, I have no problem wearing them and competing.",

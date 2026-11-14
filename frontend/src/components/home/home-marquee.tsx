@@ -1,11 +1,11 @@
 /**
- * Full-bleed sponsor tape — edge to edge, full red lining, no end caps.
+ * Full-bleed sponsor tape: edge to edge, full red lining, no end caps.
  */
 
 type Logo = {
   name: string;
   src: string;
-  /** Optical size — height drives scale; width follows the asset ratio. */
+  /** Optical size: height drives scale; width follows the asset ratio. */
   className: string;
 };
 
@@ -77,7 +77,7 @@ export function HomeMarquee() {
       {/* Room for tilt so the lining stays fully visible */}
       <div className="relative w-full py-3 sm:py-4">
         <div className="relative w-[110%] origin-center -translate-x-[5%] -rotate-1 sm:-rotate-[1.15deg]">
-          {/* Full red lining — continuous under the whole tape */}
+          {/* Full red lining: continuous under the whole tape */}
           <div className="absolute inset-x-0 -bottom-2.5 top-2.5 bg-brand-red sm:-bottom-3 sm:top-3" aria-hidden="true" />
 
           <div className="relative border-y-[3px] border-black bg-white">

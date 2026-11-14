@@ -104,7 +104,7 @@ function optimizeHero(ffmpeg) {
     throw new Error(`Hero master missing: ${master}`);
   }
 
-  // Full master at display size — keep entire clip (no -t truncate), audio for sound toggle.
+  // Full master at display size: keep entire clip (no -t truncate), audio for sound toggle.
   run(ffmpeg, [
     "-y",
     "-i",

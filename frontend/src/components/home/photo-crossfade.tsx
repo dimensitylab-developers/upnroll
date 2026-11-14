@@ -102,7 +102,7 @@ function TapeStrip({ tapes }: { tapes: Tape[] }) {
 
 /**
  * Home “On the mat”:
- * 1) Auto-looping still slideshow (object-contain — no crop)
+ * 1) Auto-looping still slideshow (object-contain: no crop)
  * 2) Video strip: landscapes stacked left, portrait height-matched on the right
  */
 export function FightingGallery({

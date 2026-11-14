@@ -11,7 +11,7 @@ export const STARTER_FAQS: { question: string; answer: string }[] = [
   {
     question: "How do I pay the entry fee?",
     answer:
-      "Pay with the UPI instructions shown for that event, then an admin reviews your payment before your place is confirmed. The fee is the one published on that event — coupons can change the amount when they apply.",
+      "Pay with the UPI instructions shown for that event, then an admin reviews your payment before your place is confirmed. The fee is the one published on that event. Coupons can change the amount when they apply.",
   },
   {
     question: "Can I use a coupon or promo code?",
@@ -31,7 +31,7 @@ export const STARTER_FAQS: { question: string; answer: string }[] = [
   {
     question: "What should I wear?",
     answer:
-      "Compulsory: rashguard and shorts with no zippers or pockets, and a mouthguard. Mouthguard is mandatory. If the organizers give you a rashguard or other gear, you compete in it.",
+      "Compulsory: rashguard and shorts with no zippers or pockets, and a mouthguard. Mouthguard is mandatory; bring your own. If the organizers give you a rashguard or other gear, you compete in it.",
   },
   {
     question: "Which mat is my match on?",
@@ -51,12 +51,12 @@ export const STARTER_FAQS: { question: string; answer: string }[] = [
   {
     question: "Do I need to upload identity proof?",
     answer:
-      "Yes. Upload a clear identity proof image when you register. Identity proof stays private — it is not shown on public grappler pages.",
+      "Yes. Upload a clear photo of your government identity proof when you register. Identity proof stays private and is not shown on public grappler pages.",
   },
   {
     question: "What is the public grappler card?",
     answer:
-      "Each grappler gets a shareable hype card with photo, record, and public profile details — no private ID or medical data. You can open it from your grappler desk and from public rankings or grappler pages.",
+      "Each grappler gets a shareable hype card with photo, record, and public profile details (no private ID or medical data). You can open it from your grappler desk and from public rankings or grappler pages.",
   },
   {
     question: "Who can see my identity proof and medical information?",
@@ -91,11 +91,11 @@ export const STARTER_FAQS: { question: string; answer: string }[] = [
   {
     question: "I have an emergency and need a human",
     answer:
-      "If this chat cannot help and you have an urgent event-day issue, ask for a human handoff here and the organizer emergency line will be shared in the reply once it has been published in FAQ. Day-to-day questions should go to Instagram (@up.n.roll) or email — phone numbers are not listed on the public site.",
+      "If this chat cannot help and you have an urgent event-day issue, ask for a human handoff here and the organizer emergency line will be shared in the reply once it has been published in FAQ. Day-to-day questions should go to Instagram (@up.n.roll) or email. Phone numbers are not listed on the public site.",
   },
 ];
 
-/** Stable public FAQ list (not DB-dependent — survives empty Mongo / redeploy). */
+/** Stable public FAQ list (not DB-dependent; survives empty Mongo / redeploy). */
 export type PublicFaqItem = {
   id: string;
   question: string;

@@ -54,7 +54,7 @@ export function SuperfightLanding({
 
   return (
     <main className="route-enter relative isolate overflow-hidden text-white">
-      {/* Atmosphere only — banner photo, no second hero graphic */}
+      {/* Atmosphere only: banner photo, no second hero graphic */}
       <div className="pointer-events-none absolute inset-0 -z-10" aria-hidden="true">
         <Image
           src={BANNER}
@@ -127,7 +127,7 @@ export function SuperfightLanding({
           </div>
         </section>
 
-        {/* Full event rules board — from the posted sheet */}
+        {/* Full event rules board: from the posted sheet */}
         <section className="mt-10 space-y-6 sm:mt-12">
           {/* Advanced + scoring */}
           <div className="overflow-hidden border-2 border-white/20 bg-black/80 p-5 shadow-[8px_8px_0_0_rgba(200,16,46,0.55)] backdrop-blur-md sm:p-7">
@@ -153,7 +153,7 @@ export function SuperfightLanding({
             </div>
           </div>
 
-          {/* Beginner — permitted / prohibited */}
+          {/* Beginner: permitted / prohibited */}
           <div className="overflow-hidden border-2 border-white/20 bg-black/80 p-5 shadow-[8px_8px_0_0_rgba(200,16,46,0.55)] backdrop-blur-md sm:p-7">
             <EventBanner>{RULES.beginner.title}</EventBanner>
             <div className="mt-6 grid gap-6 lg:grid-cols-2">
@@ -199,7 +199,7 @@ export function SuperfightLanding({
               {RULES.penalties.items.map((item) => (
                 <li key={item} className="flex items-center justify-between gap-4 px-4 py-3">
                   <p className="text-sm text-white">{item}</p>
-                  <p className="shrink-0 text-sm font-semibold text-brand-red">−1</p>
+                  <p className="shrink-0 text-sm font-semibold text-brand-red">-1</p>
                 </li>
               ))}
             </ul>

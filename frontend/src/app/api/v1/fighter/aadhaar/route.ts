@@ -8,7 +8,7 @@ export async function GET(request: Request) {
   try {
     const actor = await requireActor("FIGHTER");
     const profile = await getFighterProfile(actor);
-    if (!profile?.aadhaarImageKey) return new NextResponse("No Aadhaar image yet.", { status: 404 });
+    if (!profile?.aadhaarImageKey) return new NextResponse("No identity proof image yet.", { status: 404 });
 
     const { stream, contentType, length } = await getStorageAdapter().open(profile.aadhaarImageKey);
     const headers: Record<string, string> = {
@@ -23,6 +23,6 @@ export async function GET(request: Request) {
 
     return new NextResponse(toWebFileStream(stream, request.signal), { headers });
   } catch {
-    return new NextResponse("Aadhaar image is missing.", { status: 404 });
+    return new NextResponse("Identity proof image is missing.", { status: 404 });
   }
 }

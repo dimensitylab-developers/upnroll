@@ -1,10 +1,10 @@
 "use client";
 
-import { useActionState, useEffect, useState } from "react";
+import { useActionState, useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { createRegistrationAction, type RegistrationActionState } from "./actions";
 import { GrapplerForm, type GrapplerDefaults } from "@/features/fighters/grappler-form";
-import { formGenderToDivisionGender } from "@/features/fighters/grappler-schema";
+import { divisionGenderCode } from "@/features/fighters/weight-bands";
 import { Label } from "@/components/ui/label";
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/select";
 import { SectionBanner } from "@/components/home/section-banner";
@@ -19,7 +19,7 @@ type DivisionOption = {
   discipline: string;
   eventName: string;
   experienceLevel: "" | ExperienceLevel;
-  gender: "" | "MALE" | "FEMALE";
+  gender: string;
 };
 
 const initialState: RegistrationActionState = {};
@@ -48,24 +48,25 @@ export function NewRegistrationForm({
   const router = useRouter();
   const [state, formAction, pending] = useActionState(createRegistrationAction, initialState);
   const [experienceLevel, setExperienceLevel] = useState<ExperienceLevel | "">("");
-  const [formGender, setFormGender] = useState(defaults.gender || "");
   const [divisionId, setDivisionId] = useState("");
   const [consent, setConsent] = useState(false);
   const [agreement, setAgreement] = useState(false);
+  const [gender, setGender] = useState(defaults.gender ?? "");
 
   const hasTaxonomy = divisions.some((d) => d.experienceLevel === "BEGINNER" || d.experienceLevel === "INTERMEDIATE");
-  const divisionGender = formGenderToDivisionGender(formGender);
-  const filteredDivisions = !hasTaxonomy
-    ? divisions
-    : experienceLevel
-      ? divisions.filter((d) => {
-          const experienceOk = d.experienceLevel === experienceLevel || d.experienceLevel === "";
-          const genderOk =
-            !d.gender || !divisionGender || d.gender === divisionGender;
-          return experienceOk && genderOk;
-        })
-      : [];
-  const selectedDivision = divisions.find((d) => d.id === divisionId) ?? null;
+
+  const filteredDivisions = useMemo(() => {
+    const code = divisionGenderCode(gender);
+    const byGender = !code
+      ? divisions
+      : divisions.filter((division) => !division.gender || division.gender === code);
+
+    if (!hasTaxonomy) return byGender;
+    if (!experienceLevel) return [];
+    return byGender.filter((d) => d.experienceLevel === experienceLevel || d.experienceLevel === "");
+  }, [divisions, experienceLevel, gender, hasTaxonomy]);
+
+  const selectedDivision = filteredDivisions.find((d) => d.id === divisionId) ?? null;
 
   useEffect(() => {
     if (state.redirectTo) router.push(state.redirectTo);
@@ -83,7 +84,6 @@ export function NewRegistrationForm({
   }
 
   const navigating = Boolean(state.redirectTo);
-  const formDefaults = { ...defaults, gender: formGender || defaults.gender };
 
   return (
     <GrapplerForm
@@ -93,17 +93,14 @@ export function NewRegistrationForm({
       formAction={formAction}
       pending={pending || navigating}
       submitDisabled={!divisionId || !consent || !agreement || navigating}
-      defaults={formDefaults}
-      onGenderChange={(gender) => {
-        setFormGender(gender);
-        setDivisionId("");
-      }}
+      defaults={defaults}
       hasAadhaarImage={hasAadhaarImage}
       aadhaarImageVersion={aadhaarImageVersion}
       hasParentalConsentImage={hasParentalConsentImage}
       parentalConsentImageVersion={parentalConsentImageVersion}
       waiverAcceptedAt={waiverAcceptedAt}
       submitLabel={navigating ? "Opening payment…" : "Continue to payment"}
+      onGenderChange={setGender}
       top={
         <section className="space-y-4">
           <SectionBanner>Event entry</SectionBanner>
@@ -145,7 +142,7 @@ export function NewRegistrationForm({
                     placeholder={
                       hasTaxonomy && !experienceLevel
                         ? "Choose experience level first"
-                        : !formGender
+                        : !gender
                           ? "Set gender in personal information below"
                           : "Select a weight class"
                     }
@@ -162,6 +159,9 @@ export function NewRegistrationForm({
               <p className="mt-1 text-xs text-muted-foreground">
                 Weight classes follow your gender and experience level. Beginner is white belt only; Intermediate is blue or purple.
               </p>
+              {gender && filteredDivisions.length === 0 && experienceLevel && (
+                <p className="mt-1 text-xs text-muted-foreground">No open divisions match this gender and level yet.</p>
+              )}
             </div>
           </div>
           <CouponField eventId={selectedDivision?.eventId ?? null} disabled={pending || navigating} />
@@ -179,7 +179,7 @@ export function NewRegistrationForm({
           <label className="flex items-start gap-2 text-sm">
             <input type="checkbox" className="mt-1" checked={agreement} onChange={(event) => setAgreement(event.target.checked)} />
             <span>
-              Agreement. There is no full refund on cancellation. I may transfer my spot to a friend, or accept a 50% refund when cancellation is approved one month or more before the event. Mouthguard is compulsory.
+              Agreement. There is no full refund on cancellation. I may transfer my spot to a friend, or accept a 50% refund when cancellation is approved one month or more before the event. Mouthguard is compulsory; I bring my own.
             </span>
           </label>
         </section>
