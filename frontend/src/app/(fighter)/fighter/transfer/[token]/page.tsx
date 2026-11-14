@@ -1,34 +1,84 @@
-"use client";
-
-import { useActionState } from "react";
-import { useParams } from "next/navigation";
+import { requireActor } from "@/server/auth/session";
+import { getFighterProfile } from "@/server/services/fighterService";
+import { peekTeammateTransfer } from "@/server/services/teammateTransfer";
+import { toAppError } from "@/server/http/errors";
+import { ClaimTransferForm } from "@/features/requests/claim-transfer-form";
+import type { GrapplerDefaults } from "@/features/fighters/grappler-form";
 import Link from "next/link";
-import { claimTeammateTransferAction, type RequestActionState } from "@/features/requests/actions";
-import { Button } from "@/components/ui/button";
 
-const initialState: RequestActionState = {};
+/** Session/DB-bound route — never instant-prerender. */
+export const instant = false;
 
-export default function ClaimTransferPage() {
-  const params = useParams<{ token: string }>();
-  const [state, formAction, pending] = useActionState(claimTeammateTransferAction, initialState);
+function yesNo(value: boolean | undefined) {
+  return value ? "yes" : "no";
+}
+
+export default async function ClaimTransferPage({ params }: { params: Promise<{ token: string }> }) {
+  const actor = await requireActor("FIGHTER");
+  const { token } = await params;
+
+  let seat: Awaited<ReturnType<typeof peekTeammateTransfer>>;
+  try {
+    seat = await peekTeammateTransfer(token);
+  } catch (err) {
+    return (
+      <div className="manga-panel mx-auto max-w-lg space-y-3 p-8">
+        <h1 className="text-display text-2xl font-semibold">Transfer link</h1>
+        <p className="text-sm text-primary">{toAppError(err).message}</p>
+        <Link href="/fighter/dashboard" className="text-sm font-semibold underline">
+          Back to dashboard
+        </Link>
+      </div>
+    );
+  }
+
+  const profile = await getFighterProfile(actor);
+  const imageVersion = profile?.updatedAt ? String(new Date(profile.updatedAt).getTime()) : "0";
+  const defaults: GrapplerDefaults = {
+    displayName: profile?.displayName ?? "",
+    dateOfBirth: profile?.dateOfBirth ?? "",
+    age: profile?.age ? String(profile.age) : "",
+    gender: profile?.gender ?? "",
+    mobile: profile?.mobile ?? "",
+    nationality: profile?.nationality ?? "",
+    cityState: profile?.cityState ?? "",
+    emergencyContactName: profile?.emergencyContactName ?? "",
+    emergencyRelationship: profile?.emergencyRelationship ?? "",
+    bloodGroup: profile?.bloodGroup ?? "",
+    instagramHandle: profile?.instagramHandle ?? "",
+    academy: profile?.academy ?? "",
+    headCoach: profile?.headCoach ?? "",
+    beltRank: profile?.beltRank ?? "",
+    yearsTraining: profile?.yearsTraining ? String(profile.yearsTraining) : "",
+    pastRecord: profile?.pastRecord ?? "",
+    weightDivision: profile?.weightDivision ?? "",
+    heardAbout: profile?.heardAbout ?? "",
+    hasMedicalCondition: profile ? yesNo(Boolean(profile.hasMedicalCondition)) : "",
+    medicalConditionDetail: profile?.medicalConditionDetail ?? "",
+    hasAllergies: profile ? yesNo(Boolean(profile.hasAllergies)) : "",
+    allergiesDetail: profile?.allergiesDetail ?? "",
+    takingMedication: profile ? yesNo(Boolean(profile.takingMedication)) : "",
+    medicallyFit: profile?.medicallyFit ? "yes" : "",
+  };
 
   return (
-    <div className="manga-panel p-8 max-w-lg mx-auto space-y-4">
-      <h1 className="text-display text-2xl font-semibold">Take a teammate&apos;s spot</h1>
-      <p className="text-sm text-muted-foreground">
-        This is free. You replace them in the same division and the same bracket spot. They are no longer on the card.
+    <div className="mx-auto w-full min-w-0 max-w-3xl manga-panel overflow-visible p-6 sm:p-8">
+      <h1 className="mb-2 text-display text-2xl font-semibold">Take a teammate&apos;s spot</h1>
+      <p className="mb-6 text-sm text-muted-foreground">
+        Fill the grappler form for this seat — identity proof, medical answers, and waiver — then confirm. Your teammate
+        leaves the card when you finish.
       </p>
-      {state.success ? (
-        <p className="text-sm">
-          The spot is yours. <Link href="/fighter/dashboard" className="underline">Go to your dashboard</Link>.
-        </p>
-      ) : (
-        <form action={formAction} className="space-y-3">
-          <input type="hidden" name="token" value={params.token} />
-          {state.error && <p className="text-sm text-primary">{state.error}</p>}
-          <Button type="submit" disabled={pending}>{pending ? "Taking the spot…" : "Take this spot"}</Button>
-        </form>
-      )}
+      <ClaimTransferForm
+        token={token}
+        eventName={seat.eventName}
+        divisionName={seat.divisionName}
+        defaults={defaults}
+        hasAadhaarImage={Boolean(profile?.aadhaarImageKey)}
+        aadhaarImageVersion={imageVersion}
+        hasParentalConsentImage={Boolean(profile?.parentalConsentImageKey)}
+        parentalConsentImageVersion={imageVersion}
+        waiverAcceptedAt={profile?.waiverAcceptedAt ? new Date(profile.waiverAcceptedAt).toISOString() : null}
+      />
     </div>
   );
 }

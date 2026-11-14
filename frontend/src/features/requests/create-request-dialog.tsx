@@ -59,7 +59,7 @@ export function CreateRequestDialog({
           <Textarea name="reason" placeholder="Reason for this request" required />
 
           <p className="text-xs text-muted-foreground">
-            There is no full refund on cancellation. You may transfer your spot to a friend, or accept a 50% cut when a cancellation is approved. Prefer a teammate transfer whenever possible; it is free and keeps the same bracket spot.
+            There is no full refund on cancellation. You may give your spot to a friend with a free transfer link (they fill the grappler form), or accept a 50% cut when a cancellation is approved. Prefer a teammate transfer whenever possible.
           </p>
 
           <DialogFooter>

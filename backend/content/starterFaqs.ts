@@ -26,7 +26,7 @@ export const STARTER_FAQS: { question: string; answer: string }[] = [
   {
     question: "Can I transfer my spot to a teammate?",
     answer:
-      "Yes. From your requests page you can make a free link and give your bracket spot to a friend. They sign in, open the link, and fill their details to take your place. A move into a different division is a separate request that an admin decides.",
+      "Yes. From your requests page you can make a free link and give your bracket spot to a friend. They sign in, open the link, and complete the full grappler registration form (identity proof, medical answers, and waiver) before the spot moves. Their gender and belt must match the division. A move into a different division is a separate request that an admin decides.",
   },
   {
     question: "What should I wear?",

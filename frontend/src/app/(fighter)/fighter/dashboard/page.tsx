@@ -34,9 +34,7 @@ export default async function FighterDashboardPage() {
   const openReg = data.registrations.find((r) =>
     ["AWAITING_PAYMENT", "PENDING_VERIFICATION", "CONFIRMED"].includes(r.status)
   );
-  const missing = data.profileHealth.checks.filter((c) => !c.done);
   const hasPhoto = Boolean(data.profile?.photoKey);
-  const sheetReady = data.profileHealth.percent >= 100;
   const publicSlug = data.profile?.slug?.trim() || "";
 
   return (
@@ -53,9 +51,7 @@ export default async function FighterDashboardPage() {
           weightDivision={data.profile?.weightDivision}
           wins={data.record.wins}
           losses={data.record.losses}
-          sheetPercent={data.profileHealth.percent}
           hasPhoto={hasPhoto}
-          sheetReady={sheetReady}
         />
 
         {data.alerts.length > 0 && (
@@ -143,184 +139,43 @@ export default async function FighterDashboardPage() {
           </div>
         </DashboardSection>
 
-        <div className="grid gap-8 lg:grid-cols-2 lg:gap-10">
-          {publicSlug ? (
-            <DashboardSection eyebrow="Public" title="Playing card">
-              <div className="flex flex-col gap-4 sm:flex-row sm:items-start">
-                <div className="mx-auto shrink-0 sm:mx-0 [&_.fighter-playing-card]:scale-[0.88] [&_.fighter-playing-card]:origin-top">
-                  <FighterHypeCard
-                    fighter={{
-                      displayName: name,
-                      slug: publicSlug,
-                      gym: data.profile?.gym || "",
-                      academy,
-                      discipline: data.profile?.discipline || "",
-                      beltRank: data.profile?.beltRank || "",
-                      weightDivision: data.profile?.weightDivision || "",
-                      hasPhoto,
-                      wins: data.record.wins,
-                      losses: data.record.losses,
-                    }}
+        {publicSlug ? (
+          <DashboardSection eyebrow="Public" title="Playing card">
+            <div className="flex flex-col gap-4 sm:flex-row sm:items-start">
+              <div className="mx-auto shrink-0 sm:mx-0 [&_.fighter-playing-card]:origin-top [&_.fighter-playing-card]:scale-[0.88]">
+                <FighterHypeCard
+                  fighter={{
+                    displayName: name,
+                    slug: publicSlug,
+                    gym: data.profile?.gym || "",
+                    academy,
+                    discipline: data.profile?.discipline || "",
+                    beltRank: data.profile?.beltRank || "",
+                    weightDivision: data.profile?.weightDivision || "",
+                    hasPhoto,
+                    wins: data.record.wins,
+                    losses: data.record.losses,
+                  }}
+                  href={`/fighters/${publicSlug}`}
+                />
+              </div>
+              <div className="min-w-0 space-y-3 sm:pt-1">
+                <p className="text-sm leading-relaxed text-muted-foreground">
+                  Shareable face on rankings — photo, record, academy. No personal details.
+                </p>
+                <div className="flex flex-wrap gap-2">
+                  <ShareFighterCardButton slug={publicSlug} displayName={name} />
+                  <Link
                     href={`/fighters/${publicSlug}`}
-                  />
-                </div>
-                <div className="min-w-0 space-y-3 sm:pt-1">
-                  <p className="text-sm leading-relaxed text-muted-foreground">
-                    Shareable face on rankings  photo, record, academy. No personal details.
-                  </p>
-                  <div className="flex flex-wrap gap-2">
-                    <ShareFighterCardButton slug={publicSlug} displayName={name} />
-                    <Link
-                      href={`/fighters/${publicSlug}`}
-                      className="inline-flex min-h-10 items-center border-2 border-black bg-white px-3 text-xs font-semibold uppercase tracking-[0.14em] shadow-[3px_3px_0_0_#000]"
-                    >
-                      Public page →
-                    </Link>
-                  </div>
-                </div>
-              </div>
-            </DashboardSection>
-          ) : null}
-
-          <DashboardSection title="Sheet readiness" actionHref="/fighter/profile" actionLabel="Edit sheet →">
-            <div className="border-2 border-black bg-white">
-              <div className="flex items-end justify-between gap-3 border-b-2 border-black px-4 py-3">
-                <div>
-                  <p className="text-display text-3xl font-semibold leading-none">{data.profileHealth.percent}%</p>
-                  <p className="mt-1 text-xs text-muted-foreground">
-                    {data.profileHealth.done}/{data.profileHealth.total} locked in
-                  </p>
-                </div>
-                <p
-                  className={`text-[10px] font-semibold uppercase tracking-[0.16em] ${
-                    missing.length ? "text-brand-red" : "text-muted-foreground"
-                  }`}
-                >
-                  {missing.length ? `${missing.length} open` : "Ready"}
-                </p>
-              </div>
-              <div className="h-2 bg-[#efeae2]">
-                <div className="h-full bg-brand-red transition-[width] duration-500" style={{ width: `${data.profileHealth.percent}%` }} />
-              </div>
-              <ul className="divide-y divide-black/10">
-                {data.profileHealth.checks.map((check) => (
-                  <li key={check.id} className="flex items-center justify-between gap-3 px-4 py-2.5 text-sm">
-                    <span className={check.done ? "text-foreground" : "text-muted-foreground"}>{check.label}</span>
-                    <span
-                      className={`text-[10px] font-semibold uppercase tracking-[0.16em] ${
-                        check.done ? "text-black/50" : "text-brand-red"
-                      }`}
-                    >
-                      {check.done ? "In" : "Need"}
-                    </span>
-                  </li>
-                ))}
-              </ul>
-              <dl className="grid grid-cols-2 gap-x-4 gap-y-3 border-t-2 border-black px-4 py-4 text-sm">
-                <div>
-                  <dt className="text-[10px] uppercase tracking-[0.16em] text-muted-foreground">Academy</dt>
-                  <dd className="mt-0.5 break-words font-medium">{academy || ""}</dd>
-                </div>
-                <div>
-                  <dt className="text-[10px] uppercase tracking-[0.16em] text-muted-foreground">Coach</dt>
-                  <dd className="mt-0.5 break-words font-medium">{data.profile?.headCoach || ""}</dd>
-                </div>
-                <div>
-                  <dt className="text-[10px] uppercase tracking-[0.16em] text-muted-foreground">City</dt>
-                  <dd className="mt-0.5 break-words font-medium">{data.profile?.cityState || ""}</dd>
-                </div>
-                <div>
-                  <dt className="text-[10px] uppercase tracking-[0.16em] text-muted-foreground">Fit to fight</dt>
-                  <dd className="mt-0.5 font-medium">
-                    {data.profile?.medicallyFit ? "Yes" : data.profile?.dateOfBirth ? "No" : ""}
-                  </dd>
-                </div>
-              </dl>
-            </div>
-          </DashboardSection>
-
-          <DashboardSection title="Your events" actionHref="/fighter/registrations" actionLabel="All events →">
-            <div className="border-2 border-black bg-white">
-              {data.registrations.length === 0 ? (
-                <p className="px-4 py-8 text-center text-sm text-muted-foreground">
-                  No events yet.{" "}
-                  <Link href="/fighter/registrations/new" className="font-semibold text-brand-red underline">
-                    Take a seat
+                    className="inline-flex min-h-10 items-center border-2 border-black bg-white px-3 text-xs font-semibold uppercase tracking-[0.14em] shadow-[3px_3px_0_0_#000]"
+                  >
+                    Public page →
                   </Link>
-                </p>
-              ) : (
-                <ul className="divide-y divide-black/10">
-                  {data.registrations.slice(0, 5).map((r) => (
-                    <li key={String(r._id)}>
-                      <Link
-                        href={`/fighter/registrations/${r._id}/payment`}
-                        className="flex flex-col gap-2 px-4 py-3 transition hover:bg-[#f7f4ef] sm:flex-row sm:items-center sm:justify-between"
-                      >
-                        <span className="min-w-0">
-                          <span className="block break-words font-medium">{r.event?.name ?? "Unknown event"}</span>
-                          <span className="text-xs text-muted-foreground">{r.division?.name ?? "Unknown division"}</span>
-                        </span>
-                        <Badge variant="outline" className="w-fit shrink-0">
-                          {statusLabel(r.status)}
-                        </Badge>
-                      </Link>
-                    </li>
-                  ))}
-                </ul>
-              )}
+                </div>
+              </div>
             </div>
           </DashboardSection>
-
-          <DashboardSection title="Recent results" actionHref="/fighter/matches" actionLabel="All matches →">
-            <div className="border-2 border-black bg-white">
-              {data.recentResults.length === 0 ? (
-                <p className="px-4 py-8 text-center text-sm text-muted-foreground">Results land here after the bout.</p>
-              ) : (
-                <ul className="divide-y divide-black/10">
-                  {data.recentResults.slice(0, 5).map((m) => (
-                    <li
-                      key={String(m._id)}
-                      className="flex flex-col gap-2 px-4 py-3 sm:flex-row sm:items-center sm:justify-between"
-                    >
-                      <span className="min-w-0">
-                        <span className="block break-words font-medium">
-                          {m.competitorAName ?? "TBD"} vs {m.competitorBName ?? "TBD"}
-                        </span>
-                        {m.resultMethod ? <span className="text-xs text-muted-foreground">{m.resultMethod}</span> : null}
-                      </span>
-                      <Badge
-                        variant={m.outcome === "WIN" ? "default" : m.outcome === "LOSS" ? "destructive" : "outline"}
-                        className="w-fit shrink-0"
-                      >
-                        {m.outcome ?? "BYE"}
-                      </Badge>
-                    </li>
-                  ))}
-                </ul>
-              )}
-            </div>
-          </DashboardSection>
-
-          <DashboardSection title="Open requests" actionHref="/fighter/requests" actionLabel="All requests →">
-            <div className="border-2 border-black bg-white">
-              {data.pendingRequests.length === 0 ? (
-                <p className="px-4 py-8 text-center text-sm text-muted-foreground">No open cancel or transfer asks.</p>
-              ) : (
-                <ul className="divide-y divide-black/10">
-                  {data.pendingRequests.map((r) => (
-                    <li key={String(r._id)} className="px-4 py-3">
-                      <div className="flex items-center justify-between gap-2">
-                        <p className="font-medium">{r.type}</p>
-                        <Badge variant="secondary">Pending</Badge>
-                      </div>
-                      <p className="mt-1 break-words text-xs text-muted-foreground">{r.reason}</p>
-                    </li>
-                  ))}
-                </ul>
-              )}
-            </div>
-          </DashboardSection>
-        </div>
+        ) : null}
       </div>
     </div>
   );

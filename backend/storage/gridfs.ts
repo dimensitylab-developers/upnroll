@@ -45,6 +45,21 @@ async function cleanupFailedUpload(
   }
 }
 
+/**
+ * Resolve a GridFS file by `gridfs:<ObjectId>` or, for legacy/mis-stored keys,
+ * by upload filename (e.g. `profiles/<userId>.jpg`).
+ */
+async function findGridFsFile(activeBucket: GridFSBucket, key: string) {
+  if (isGridFsKey(key)) {
+    const id = parseGridFsKey(key);
+    const files = await activeBucket.find({ _id: id }).limit(1).toArray();
+    return files[0] ?? null;
+  }
+  // Filename label from put() — used when photoKey was saved as the path instead of gridfs:id.
+  const files = await activeBucket.find({ filename: key }).sort({ uploadDate: -1 }).limit(1).toArray();
+  return files[0] ?? null;
+}
+
 export class GridFSStorageAdapter implements StorageAdapter {
   async put(
     key: string,
@@ -73,10 +88,8 @@ export class GridFSStorageAdapter implements StorageAdapter {
   }
 
   async open(key: string): Promise<StorageOpenResult> {
-    const id = parseGridFsKey(key);
     const activeBucket = await getBucket();
-    const files = await activeBucket.find({ _id: id }).limit(1).toArray();
-    const file = files[0];
+    const file = await findGridFsFile(activeBucket, key);
     if (!file) {
       throw new NotFoundError("Stored file not found.");
     }
@@ -85,7 +98,7 @@ export class GridFSStorageAdapter implements StorageAdapter {
         ? file.metadata.contentType
         : "application/octet-stream";
     return {
-      stream: activeBucket.openDownloadStream(id),
+      stream: activeBucket.openDownloadStream(file._id),
       contentType,
       length: file.length,
     };
@@ -122,10 +135,11 @@ export class GridFSStorageAdapter implements StorageAdapter {
   }
 
   async delete(key: string): Promise<void> {
-    const id = parseGridFsKey(key);
     const activeBucket = await getBucket();
+    const file = await findGridFsFile(activeBucket, key);
+    if (!file) return;
     try {
-      await activeBucket.delete(id);
+      await activeBucket.delete(file._id);
     } catch (err) {
       const message = err instanceof Error ? err.message : "";
       // Driver throws when the file document is missing; match local-disk quiet delete.
