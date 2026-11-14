@@ -104,31 +104,26 @@ export default async function PublicEventDetailPage({ params }: { params: Promis
               })
             : null
         }
-        matCount={event.matCount ?? 1}
-        divisions={divisions.map((division) => ({
-          id: String(division._id),
-          name: division.name,
-          discipline: division.discipline,
-          capacity: division.capacity,
-        }))}
       />
     );
   }
+
+  const venue = event.venue || "Venue to be announced";
+  const mapsHref = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(venue)}`;
 
   return (
     <main className="route-enter min-h-screen bg-background halftone-bg px-4 py-10 sm:py-16">
       <div className="mx-auto max-w-2xl">
         <PageBackLink href="/events" label="Back to events" />
-        <Badge variant="outline" className="mb-3">
-          {event.status.replaceAll("_", " ")}
-        </Badge>
-        <h1 className="text-display mb-2 text-3xl font-semibold break-words sm:text-4xl">{event.name}</h1>
-        {event.description === "Road to Super Fight." && (
-          <p className="copy-slab mb-2">Road to Super Fight</p>
-        )}
-        <p className="copy-slab mb-6 text-muted-foreground">
+        <p className="mb-2 text-[11px] font-semibold uppercase tracking-[0.22em] text-brand-red">Upcoming event</p>
+        <h1 className="text-display mb-2 text-3xl font-semibold break-words sm:text-4xl">
           {new Date(event.startDate).toLocaleDateString("en-IN", { day: "numeric", month: "long", year: "numeric" })}
-          {` · ${event.venue || "Venue to be announced"}`}
+        </h1>
+        <p className="copy-slab mb-2 text-muted-foreground">{event.name}</p>
+        <p className="mb-6">
+          <a href={mapsHref} target="_blank" rel="noreferrer" className="text-sm font-semibold text-brand-red underline">
+            {venue}
+          </a>
         </p>
 
         {announcementBoard && (
@@ -137,30 +132,21 @@ export default async function PublicEventDetailPage({ params }: { params: Promis
 
         <div className="mb-8 flex flex-wrap gap-x-4 gap-y-2">
           {event.status === "REGISTRATION_OPEN" && (
-            <Link href="/register?from=%2Fevents" className="min-h-11 inline-flex items-center text-sm font-semibold text-brand-red">
-              Register
+            <Link href="/fighter/registrations/new" className="min-h-11 inline-flex items-center text-sm font-semibold text-brand-red">
+              Register now
             </Link>
           )}
           <Link href={`/events/${slug}/brackets`} className="min-h-11 inline-flex items-center text-sm underline">
             Brackets
           </Link>
-          <Link href={`/events/${slug}/schedule`} className="min-h-11 inline-flex items-center text-sm underline">
-            Schedule
-          </Link>
-          <Link href={`/events/${slug}/results`} className="min-h-11 inline-flex items-center text-sm underline">
-            Results
-          </Link>
         </div>
 
-        <h2 className="text-display mb-3 text-xl font-semibold">Divisions</h2>
-        <div className="grid gap-3 sm:grid-cols-2">
-          {divisions.map((d) => (
-            <div key={String(d._id)} className="manga-panel p-4">
-              <p className="font-medium">{d.name}</p>
-              <p className="text-sm text-muted-foreground">{d.discipline}</p>
-            </div>
-          ))}
-        </div>
+        <Badge variant="outline" className="mb-3">
+          {event.status.replaceAll("_", " ")}
+        </Badge>
+        <p className="copy-slab text-sm text-muted-foreground">
+          Weight classes and experience levels are chosen on the registration form.
+        </p>
       </div>
     </main>
   );

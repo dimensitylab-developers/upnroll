@@ -34,6 +34,7 @@ export default async function FighterProfilePage() {
     headCoach: profile?.headCoach ?? "",
     beltRank: profile?.beltRank ?? "",
     yearsTraining: ready ? String(profile?.yearsTraining ?? 0) : "",
+    careerWins: ready ? String(profile?.careerWins ?? 0) : "0",
     weightDivision: profile?.weightDivision ?? "",
     heardAbout: profile?.heardAbout ?? "",
     hasMedicalCondition: yesNo(profile?.hasMedicalCondition, ready),

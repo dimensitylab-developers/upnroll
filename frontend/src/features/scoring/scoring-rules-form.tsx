@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import type { ScoringRulesConfig } from "@/server/services/tournamentRules";
 import { emptyScoringRules } from "@/server/services/tournamentRules";
+import { ALLOWED_SUBMISSIONS } from "@/server/content/allowedSubmissions";
 
 export function ScoringRulesForm({ eventId, rules }: { eventId: string; rules: ScoringRulesConfig | null | undefined }) {
   const initial = rules ?? emptyScoringRules();
@@ -23,6 +24,19 @@ export function ScoringRulesForm({ eventId, rules }: { eventId: string; rules: S
           Configure point buttons, penalties, and final outcomes before judges can score. Set{" "}
           <code className="text-xs">configured</code> to true when ready.
         </p>
+      </div>
+      <div className="border-2 border-black bg-[#f7f6f4] p-4">
+        <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-brand-red">Allowed submissions</p>
+        <p className="mt-1 text-sm text-muted-foreground">
+          When a match ends by submission, pick from this list (and the belt rules for the event).
+        </p>
+        <ul className="mt-3 grid gap-1 sm:grid-cols-2">
+          {ALLOWED_SUBMISSIONS.map((item) => (
+            <li key={item} className="text-sm">
+              {item}
+            </li>
+          ))}
+        </ul>
       </div>
       <details className="border-2 border-dashed border-black/40 px-3 py-2 text-sm">
         <summary className="cursor-pointer font-semibold">Example structure</summary>

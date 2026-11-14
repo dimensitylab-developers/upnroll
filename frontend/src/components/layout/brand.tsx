@@ -25,12 +25,14 @@ function IndianFlag({ className = "h-3 w-4" }: { className?: string }) {
 
 export function FounderCredit({ className = "" }: { className?: string }) {
   return (
-    <address className={`not-italic inline-flex flex-wrap items-center gap-x-1.5 text-xs text-muted-foreground ${className}`.trim()}>
+    <address
+      className={`not-italic inline-flex flex-wrap items-center justify-center gap-x-1.5 text-xs text-muted-foreground ${className}`.trim()}
+    >
       <span>Founded by Suketu Bhuva</span>
       <span aria-hidden="true">·</span>
       <span className="inline-flex items-center gap-1">
-        <IndianFlag className="h-3 w-4 rounded-[1px] ring-1 ring-white/20" />
         <span>India</span>
+        <IndianFlag className="h-3 w-4 rounded-[1px] ring-1 ring-black/10" />
       </span>
     </address>
   );
@@ -42,7 +44,15 @@ const COPYRIGHT_YEAR = 2026;
 export function SiteCopyright({ className = "" }: { className?: string }) {
   return (
     <p className={`text-[11px] leading-none text-muted-foreground ${className}`.trim()}>
-      © {COPYRIGHT_YEAR} Up &apos;n Roll. All rights reserved.
+      © {COPYRIGHT_YEAR} Up &apos;n Roll · D3 Spectator. All rights reserved.
+    </p>
+  );
+}
+
+export function D3Credit({ className = "" }: { className?: string }) {
+  return (
+    <p className={`text-[11px] leading-none text-muted-foreground ${className}`.trim()}>
+      A D3 Spectator brand
     </p>
   );
 }

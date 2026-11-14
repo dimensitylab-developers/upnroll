@@ -10,12 +10,12 @@ import { comicCell, comicCellActive, comicCellIdle } from "./comic-cell";
 import { MobileNavToggle } from "./mobile-nav-toggle";
 
 const NAV_LINKS = [
+  { href: "/about", label: "About Us" },
   { href: "/events", label: "Events" },
-  { href: "/seminars", label: "Seminars" },
   { href: "/brackets", label: "Brackets" },
   { href: "/rankings", label: "Rankings" },
   { href: "/faq", label: "FAQ" },
-  { href: "/about", label: "About Us" },
+  { href: "/seminars", label: "Seminars" },
   { href: "/store", label: "Store" },
 ];
 
@@ -48,7 +48,7 @@ function NextCardFallback() {
   return (
     <div className="border-t-2 border-black bg-black text-white" aria-hidden="true">
       <div className="mx-auto max-w-6xl px-4 py-1.5 sm:px-6 lg:px-8">
-        <p className="text-xs text-white/40 sm:text-sm">Next card</p>
+        <p className="text-xs text-white/40 sm:text-sm">Next event</p>
       </div>
     </div>
   );
@@ -111,16 +111,11 @@ async function HeaderNextCard() {
     <div className="border-t-2 border-black bg-black text-white">
       <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-x-4 gap-y-1 px-4 py-1.5 text-xs sm:px-6 sm:py-2 sm:text-sm lg:px-8">
         <p className="min-w-0">
-          <span className="font-semibold text-brand-red">Next card</span>{" "}
-          <span className="break-words">
-            {openEvent.name}
-            {openEvent.slug === "up-n-roll-superfight-series" ? " · Road to Super Fight" : ""}
-            {" · "}
-            {formatCardDate(openEvent.startDate)}
-          </span>
+          <span className="font-semibold text-brand-red">Next event</span>{" "}
+          <span className="break-words">{formatCardDate(openEvent.startDate)}</span>
         </p>
-        <Link href="/register?from=%2F" className="shrink-0 font-semibold text-brand-red">
-          Sign up
+        <Link href={`/events/${openEvent.slug}`} className="shrink-0 font-semibold text-brand-red">
+          Register
         </Link>
       </div>
     </div>

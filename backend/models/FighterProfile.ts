@@ -15,6 +15,7 @@ const fighterProfileSchema = new Schema(
     // Aadhaar number (legacy), Aadhaar card image, medical answers, and the
     // passport photo stay off public pages.
     aadhaar: { type: String, default: "", trim: true },
+    /** Private storage key for Aadhaar card image — never expose on public pages. */
     aadhaarImageKey: { type: String, default: "", trim: true },
     cityState: { type: String, default: "", trim: true },
     emergencyContactName: { type: String, default: "", trim: true },
@@ -25,6 +26,8 @@ const fighterProfileSchema = new Schema(
     headCoach: { type: String, default: "", trim: true },
     beltRank: { type: String, default: "", trim: true },
     yearsTraining: { type: Number, default: 0 },
+    /** Career wins — seeding matrix field for brackets. */
+    careerWins: { type: Number, default: 0, min: 0 },
     weightDivision: { type: String, default: "", trim: true },
     heardAbout: { type: String, default: "", trim: true },
     hasMedicalCondition: { type: Boolean, default: false },

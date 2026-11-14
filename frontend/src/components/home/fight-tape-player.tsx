@@ -8,15 +8,18 @@ export function FightTapePlayer({
   poster,
   label,
   alt,
+  portrait = false,
 }: {
   src: string;
   poster: string;
   label: string;
   alt: string;
+  portrait?: boolean;
 }) {
   const videoRef = useRef<HTMLVideoElement>(null);
   const [muted, setMuted] = useState(true);
   const [started, setStarted] = useState(false);
+  const aspect = portrait ? "aspect-[9/16]" : "aspect-[16/9]";
 
   function startPlayback() {
     setStarted(true);
@@ -30,21 +33,21 @@ export function FightTapePlayer({
   }
 
   return (
-    <article className="overflow-hidden border-2 border-black bg-white shadow-[5px_5px_0_0_#000]">
-      <div className="relative aspect-[16/9] overflow-hidden bg-neutral-900">
+    <article className="media-glow overflow-hidden border-2 border-black bg-white shadow-[5px_5px_0_0_#000] transition-transform duration-200 hover:-translate-y-1 hover:shadow-[8px_8px_0_0_#c8102e]">
+      <div className={`relative ${aspect} overflow-hidden bg-neutral-900`}>
         {!started ? (
           <button
             type="button"
             onClick={startPlayback}
             className="group absolute inset-0 z-10 block w-full"
-            aria-label={`Play ${label}`}
+            aria-label={label ? `Play ${label}` : `Play video: ${alt}`}
           >
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src={poster}
               alt={alt}
-              width={640}
-              height={360}
+              width={portrait ? 360 : 640}
+              height={portrait ? 640 : 360}
               loading="lazy"
               decoding="async"
               className="h-full w-full object-cover"
@@ -76,7 +79,7 @@ export function FightTapePlayer({
           </>
         )}
       </div>
-      <p className="px-3 py-2 text-xs font-semibold uppercase tracking-wider">{label}</p>
+      {label ? <p className="px-3 py-2 text-xs font-semibold uppercase tracking-wider">{label}</p> : null}
     </article>
   );
 }

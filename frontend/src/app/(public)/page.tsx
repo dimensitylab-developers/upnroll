@@ -1,62 +1,33 @@
 import { AboutStory } from "@/components/home/about-story";
 import { FightingGallery } from "@/components/home/photo-crossfade";
-import { HappyStack } from "@/components/home/happy-stack";
 import { HomeHero } from "@/components/home/home-hero";
-import { EventPitchPopup } from "@/components/home/event-pitch-popup";
 import { HomeFaqSection } from "@/components/home/home-live";
 import { HomeMarquee } from "@/components/home/home-marquee";
-import { EmojiStrip, MatEmojis } from "@/components/home/mat-emojis";
-import { FIGHTING_MEDIA, HAPPY_PHOTOS } from "@/components/home/site-photos";
-import { MangaBackdrop, MangaCards } from "@/components/home/manga-cards";
+import { HowYouEnter } from "@/components/home/how-you-enter";
+import { NextEventStrip } from "@/components/home/next-event-strip";
+import { FIGHTING_MEDIA } from "@/components/home/site-photos";
 import { SectionBanner } from "@/components/home/section-banner";
 import { cachedPublicEvents } from "@/lib/public-reads";
 
 export default async function HomePage() {
-  // Published event list is cross-request cached; mutations invalidate the "events" tag.
   const events = await cachedPublicEvents();
   const featured = events.find((event) => event.status === "REGISTRATION_OPEN") ?? events[0] ?? null;
 
   return (
     <main className="route-enter relative">
-      <EventPitchPopup />
-      <MangaBackdrop className="top-[28rem] hidden min-h-[80vh] lg:block" />
       <HomeHero />
       <HomeMarquee />
+      <NextEventStrip event={featured} />
 
-      <section className="relative mx-auto max-w-6xl overflow-hidden px-4 py-14 sm:px-6 lg:px-8">
-        <MatEmojis className="absolute inset-0 opacity-35" />
-        <div className="relative mb-8 flex flex-wrap items-end justify-between gap-4">
-          <div>
-            <SectionBanner>On the mat</SectionBanner>
-            <p className="copy-slab mt-3 max-w-xl text-sm">
-              Manga panels from the fight tape: slam, clinch, lock, sweep, choke.
-            </p>
-          </div>
-          <EmojiStrip
-            className="justify-end"
-            size={38}
-            emojis={["double-leg-takedown", "armbar", "hip-throw", "rear-naked-choke"]}
-          />
-        </div>
-        <div className="relative">
-          <MangaCards />
-        </div>
+      <section className="relative mx-auto max-w-6xl px-4 py-10 sm:px-6 sm:py-12 lg:px-8">
+        <HowYouEnter />
       </section>
 
       <section className="relative mx-auto max-w-6xl overflow-hidden px-4 pb-14 sm:px-6 lg:px-8">
-        <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
-          <SectionBanner>Fighting</SectionBanner>
-          <EmojiStrip size={30} emojis={["knee-slice", "mount", "clinch-collar-tie", "triangle-choke"]} />
+        <div className="mb-4">
+          <SectionBanner>On the mat</SectionBanner>
         </div>
         <FightingGallery media={FIGHTING_MEDIA} />
-      </section>
-
-      <section className="relative mx-auto max-w-6xl overflow-hidden px-4 pb-14 sm:px-6 lg:px-8">
-        <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
-          <SectionBanner>Happy moments</SectionBanner>
-          <EmojiStrip size={30} emojis={["hip-throw", "armbar", "double-leg-takedown", "rear-naked-choke"]} />
-        </div>
-        <HappyStack photos={HAPPY_PHOTOS} />
       </section>
 
       <section id="about-us" className="relative mx-auto max-w-6xl px-4 pb-16 sm:px-6 lg:px-8">

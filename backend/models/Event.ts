@@ -80,6 +80,8 @@ const eventSchema = new Schema(
     },
     paymentOptions: { type: [paymentOptionSchema], default: [] },
     scoringRules: { type: scoringRulesSchema, default: () => ({ configured: false }) },
+    /** Optional Google Calendar / Sheets / external schedule link. */
+    scheduleExternalUrl: { type: String, default: "", trim: true },
   },
   { timestamps: true }
 );

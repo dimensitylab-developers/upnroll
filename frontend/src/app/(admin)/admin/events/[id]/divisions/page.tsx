@@ -3,6 +3,7 @@ import { requireActor } from "@/server/auth/session";
 import { NotFoundError } from "@/server/http/errors";
 import { getEventForAdmin, listDivisionsForEvent } from "@/server/services/eventService";
 import { CreateDivisionForm } from "@/features/events/create-division-form";
+import { SeedDivisionsButton } from "@/features/events/seed-divisions-button";
 import { PageBackLink } from "@/components/layout/page-back-link";
 
 /** Session/DB-bound route — allow blocking navigation under Cache Components. */
@@ -25,7 +26,12 @@ export default async function AdminDivisionsPage({ params }: { params: Promise<{
       <PageBackLink href={`/admin/events/${id}`} label="Back to event" />
       <div className="manga-panel p-5 sm:p-8">
         <h1 className="text-display mb-1 text-2xl font-semibold break-words">Divisions — {event.name}</h1>
-        <p className="text-sm text-muted-foreground mb-6">Discipline/weight-class taxonomy pending client approval (OD-001/OD-002) — enter freely for now.</p>
+        <p className="mb-4 text-sm text-muted-foreground">
+          Use the seed for the approved Road to Super Fight grid (women ±65 and men bands × beginner/intermediate), or add a custom division below.
+        </p>
+        <div className="mb-6">
+          <SeedDivisionsButton eventId={id} />
+        </div>
         <CreateDivisionForm eventId={id} />
       </div>
 

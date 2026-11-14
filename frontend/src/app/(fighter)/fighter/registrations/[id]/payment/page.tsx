@@ -79,17 +79,23 @@ export default async function RegistrationPaymentPage({ params }: { params: Prom
             </div>
             <p className="mb-6 text-center text-xs text-muted-foreground">
               {hasQr
-                ? "Scan the QR, pay the entry fee, then submit your UTR and screenshot below."
-                : "Organizers have not uploaded a payment QR yet. You can still submit a UTR once you have paid by the house instructions."}
+                ? "Follow the UPI / QR instructions, pay the entry fee, then submit your UTR and screenshot below."
+                : "Organizers have not uploaded a payment QR yet. You can still submit a UTR once you have paid by the house UPI instructions."}
             </p>
             <PaymentForm registrationId={String(registration._id)} />
           </>
         ) : registration.status === "PENDING_VERIFICATION" ? (
-          <p className="text-sm text-muted-foreground">
-            Your payment submission is pending manual review by an organizer. This is not yet confirmation of payment.
-          </p>
+          <div className="space-y-2">
+            <p className="text-sm font-semibold">Thank you — payment received for review.</p>
+            <p className="text-sm text-muted-foreground">
+              An organizer will review your UPI submission before your place is confirmed.
+            </p>
+          </div>
         ) : registration.status === "CONFIRMED" ? (
-          <p className="text-sm text-brand-cyan">Payment approved — your registration is confirmed.</p>
+          <div className="space-y-2">
+            <p className="text-sm font-semibold text-brand-cyan">Thank you — your place is confirmed.</p>
+            <p className="text-sm text-muted-foreground">Payment approved. Your registration is locked for this event.</p>
+          </div>
         ) : (
           <p className="text-sm text-muted-foreground">No action available for this registration&apos;s current status.</p>
         )}

@@ -26,6 +26,7 @@ export type AdminFighterView = {
   headCoach: string;
   beltRank: string;
   yearsTraining: number;
+  careerWins: number;
   weightDivision: string;
   heardAbout: string;
   hasMedicalCondition: boolean;
@@ -56,6 +57,7 @@ type ProfileForAdmin = {
   headCoach?: string;
   beltRank?: string;
   yearsTraining?: number;
+  careerWins?: number;
   weightDivision?: string;
   heardAbout?: string;
   hasMedicalCondition?: boolean;
@@ -87,6 +89,7 @@ export function toAdminFighterView(profile: ProfileForAdmin, email: string): Adm
     headCoach: profile.headCoach ?? "",
     beltRank: profile.beltRank ?? "",
     yearsTraining: profile.yearsTraining ?? 0,
+    careerWins: profile.careerWins ?? 0,
     weightDivision: profile.weightDivision ?? "",
     heardAbout: profile.heardAbout ?? "",
     hasMedicalCondition: Boolean(profile.hasMedicalCondition),
@@ -117,6 +120,7 @@ export type FighterDetailsInput = {
   headCoach: string;
   beltRank: string;
   yearsTraining: number;
+  careerWins: number;
   weightDivision: string;
   heardAbout: string;
   hasMedicalCondition: boolean;
@@ -152,6 +156,7 @@ export async function updateFighterProfile(actor: Actor, input: FighterDetailsIn
   profile.headCoach = input.headCoach;
   profile.beltRank = input.beltRank;
   profile.yearsTraining = input.yearsTraining;
+  profile.careerWins = input.careerWins;
   profile.weightDivision = input.weightDivision;
   profile.heardAbout = input.heardAbout;
   profile.hasMedicalCondition = input.hasMedicalCondition;

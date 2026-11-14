@@ -30,6 +30,7 @@ export type GrapplerDefaults = {
   headCoach: string;
   beltRank: string;
   yearsTraining: string;
+  careerWins: string;
   weightDivision: string;
   heardAbout: string;
   hasMedicalCondition: string;
@@ -363,6 +364,7 @@ export function GrapplerForm({
           <TextField label="Head coach / coach name" name="headCoach" errors={errors} defaultValue={values?.headCoach} />
           <TextField label="Belt rank" name="beltRank" errors={errors} defaultValue={values?.beltRank} />
           <TextField label="Years training" name="yearsTraining" type="number" min={0} max={60} step="0.5" errors={errors} defaultValue={values?.yearsTraining} />
+          <TextField label="Wins" name="careerWins" type="number" min={0} max={500} step="1" errors={errors} defaultValue={values?.careerWins ?? "0"} />
           <TextField label="Weight division" name="weightDivision" errors={errors} defaultValue={values?.weightDivision} />
           <TextField label="How did you hear about Up ’n Roll?" name="heardAbout" errors={errors} defaultValue={values?.heardAbout} />
         </div>

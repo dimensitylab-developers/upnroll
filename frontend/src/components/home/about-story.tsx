@@ -1,14 +1,16 @@
 import Image from "next/image";
 import Link from "next/link";
 import { BrandMark, FounderCredit } from "@/components/layout/brand";
+import { HappyStack } from "@/components/home/happy-stack";
 import { EmojiStrip, MatEmojis } from "@/components/home/mat-emojis";
 import { SectionBanner } from "@/components/home/section-banner";
+import { HAPPY_PHOTOS } from "@/components/home/site-photos";
 import { GrapplingEmoji } from "@/components/ui/grappling-emoji";
 
 const PATH_STEPS = [
   { n: "01", title: "Create an account", body: "Register as a grappler and sign in." },
-  { n: "02", title: "Choose a division", body: "Pick the open card and the division you fight in." },
-  { n: "03", title: "Follow the bracket", body: "Once you are in, track every round through to the final." },
+  { n: "02", title: "Choose a division / weight class", body: "Pick the division and weight class you fight in." },
+  { n: "03", title: "Follow the bracket", body: "On fight day, track every round through to the finals." },
 ];
 
 const NIGHT = [
@@ -21,6 +23,7 @@ const NIGHT = [
 const HOUSE = [
   { title: "Kit", body: "Rashguard and grappling shorts." },
   { title: "Gear", body: "No zippers, pockets, or hard objects." },
+  { title: "Mouthguard", body: "Compulsory. Buy from the sponsor on site if you forget yours." },
   { title: "Referee", body: "Decisions are final." },
   { title: "Safety", body: "Athlete safety first, always." },
   { title: "Divisions", body: "Small groups may merge." },
@@ -51,57 +54,39 @@ function HeadlineStack({ tone = "dark" }: { tone?: "dark" | "light" }) {
 
 function AboutHomeTeaser({ eventSlug }: { eventSlug?: string | null }) {
   return (
-    <div>
-      <div className="relative overflow-hidden border-2 border-black bg-black text-white shadow-[8px_8px_0_0_#c8102e]">
-        <div className="pointer-events-none absolute inset-0 opacity-30">
-          <Image src="/Fighting/003A8193.JPG" alt="" fill className="object-cover object-center" sizes="72rem" />
-          <div className="absolute inset-0 bg-gradient-to-r from-black via-black/85 to-black/40" />
-        </div>
-        <div className="relative grid gap-8 p-6 sm:p-8 lg:grid-cols-[1.1fr_0.9fr] lg:items-end">
-          <div>
-            <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-brand-red">About Us</p>
-            <h2 className="text-display mt-2 text-5xl font-semibold leading-[0.95]">Earn your role.</h2>
-            <div className="mt-6">
-              <HeadlineStack tone="light" />
-            </div>
-            <div className="mt-6">
-              <FounderCredit className="text-white/70" />
-            </div>
+    <div className="relative overflow-hidden border-2 border-black bg-black text-white shadow-[8px_8px_0_0_#c8102e]">
+      <div className="pointer-events-none absolute inset-0 opacity-30">
+        <Image src="/Fighting/003A8193.JPG" alt="" fill className="object-cover object-center" sizes="72rem" />
+        <div className="absolute inset-0 bg-gradient-to-r from-black via-black/85 to-black/40" />
+      </div>
+      <div className="relative grid gap-8 p-6 sm:p-8 lg:grid-cols-[1.1fr_0.9fr] lg:items-end">
+        <div>
+          <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-brand-red">About Us</p>
+          <h2 className="text-display mt-2 text-4xl font-semibold leading-[0.95] sm:text-5xl">Up &apos;n Roll</h2>
+          <p className="mt-4 max-w-md text-sm leading-relaxed text-white/80">
+            Made by an athlete for an athlete. Indian Brazilian Jiu-Jitsu with public brackets, results, and rankings.
+          </p>
+          <div className="mt-6">
+            <FounderCredit className="text-white/70" />
           </div>
-          <div className="space-y-4">
-            <p className="max-w-sm text-sm leading-relaxed text-white/80">
-              Up &apos;n Roll runs the card in India. You bring the fight. Brackets, results, and rankings stay public.
-            </p>
-            <div className="flex flex-wrap gap-3">
-              <Link
-                href="/about"
-                className="inline-flex -skew-x-12 border-2 border-black bg-brand-red px-4 py-2.5 text-sm font-semibold uppercase tracking-wider text-white shadow-[4px_4px_0_0_#fff]"
-              >
-                <span className="inline-block skew-x-12">Full story</span>
-              </Link>
-              <Link
-                href={eventSlug ? `/events/${eventSlug}` : "/events"}
-                className="inline-flex border-2 border-white/40 px-4 py-2.5 text-sm font-semibold uppercase tracking-wider text-white"
-              >
-                Next card
-              </Link>
-            </div>
+        </div>
+        <div className="space-y-4">
+          <div className="flex flex-wrap gap-3">
+            <Link
+              href="/about"
+              className="inline-flex -skew-x-12 border-2 border-black bg-brand-red px-4 py-2.5 text-sm font-semibold uppercase tracking-wider text-white shadow-[4px_4px_0_0_#fff]"
+            >
+              <span className="inline-block skew-x-12">Know more</span>
+            </Link>
+            <Link
+              href={eventSlug ? `/events/${eventSlug}` : "/events"}
+              className="inline-flex border-2 border-white/40 px-4 py-2.5 text-sm font-semibold uppercase tracking-wider text-white"
+            >
+              Next event
+            </Link>
           </div>
         </div>
       </div>
-
-      <section className="mt-10">
-        <SectionBanner>How you enter</SectionBanner>
-        <ol className="grid gap-3 sm:grid-cols-3">
-          {PATH_STEPS.map((step) => (
-            <li key={step.n} className="border-2 border-black bg-white p-4 shadow-[5px_5px_0_0_#000]">
-              <p className="text-display text-3xl font-semibold text-brand-red">{step.n}</p>
-              <p className="mt-2 font-semibold">{step.title}</p>
-              <p className="mt-1 text-sm">{step.body}</p>
-            </li>
-          ))}
-        </ol>
-      </section>
     </div>
   );
 }
@@ -132,7 +117,7 @@ function AboutPageStory({ eventSlug }: { eventSlug?: string | null }) {
 
           <h1 className="sr-only">About Up &apos;n Roll</h1>
           <p className="-rotate-1 mb-5 inline-flex w-fit border-2 border-black bg-brand-red px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.2em] text-white shadow-[4px_4px_0_0_#fff]">
-            Earn your role
+            Made by an athlete for an athlete
           </p>
 
           <div className="max-w-2xl">
@@ -140,7 +125,7 @@ function AboutPageStory({ eventSlug }: { eventSlug?: string | null }) {
           </div>
 
           <p className="mt-6 max-w-md text-sm leading-relaxed text-white/80 sm:text-base">
-            Indian Brazilian Jiu-Jitsu. Real cards. Public brackets. Built for grapplers who show up.
+            Up &apos;n Roll is a Brazilian Jiu-Jitsu platform for athletes who want a real night: enter a division, get called to the mat, leave a result that stays public.
           </p>
 
           <div className="mt-8 flex flex-wrap items-center gap-4">
@@ -154,7 +139,7 @@ function AboutPageStory({ eventSlug }: { eventSlug?: string | null }) {
               href={eventSlug ? `/events/${eventSlug}` : "/events"}
               className="inline-flex border-2 border-white px-5 py-3 text-sm font-semibold uppercase tracking-wider text-white"
             >
-              See the next card
+              See the next event
             </Link>
           </div>
 
@@ -165,6 +150,26 @@ function AboutPageStory({ eventSlug }: { eventSlug?: string | null }) {
       </section>
 
       <div className="mx-auto max-w-6xl space-y-16 px-4 py-14 sm:px-6 lg:px-8">
+        <section>
+          <SectionBanner>Celebrations</SectionBanner>
+          <HappyStack photos={HAPPY_PHOTOS} />
+        </section>
+
+        <section className="border-2 border-black bg-white p-6 shadow-[8px_8px_0_0_#000] sm:p-8">
+          <SectionBanner>Ranking system</SectionBanner>
+          <p className="mt-3 max-w-3xl text-sm leading-relaxed">
+            Rankings follow the brackets. Athletes who go further place higher. Early exits place lower. When two athletes lose with no points, the faster loss places lower. Skipping a recent event can drop you versus athletes who showed up. Who receives a Super Fight is decided manually by the house.
+          </p>
+          <details className="mt-4">
+            <summary className="cursor-pointer text-sm font-semibold text-brand-red">Know more</summary>
+            <div className="mt-3 space-y-2 text-sm leading-relaxed text-muted-foreground">
+              <p>Featured #1 is shown with a photo. The list under the podium starts at #2 so the winner is not numbered twice.</p>
+              <p>Order updates as bracket results are entered. Cross-event ranking compares recent participation so returning athletes stay visible on the board.</p>
+              <p>The Super Fight invitation is not automatic from points alone — the house chooses who advances to that slot.</p>
+            </div>
+          </details>
+        </section>
+
         {/* Who */}
         <section className="grid items-stretch gap-6 lg:grid-cols-[1.05fr_0.95fr]">
           <div className="relative min-h-[280px] overflow-hidden border-2 border-black bg-black shadow-[8px_8px_0_0_#000]">

@@ -10,6 +10,12 @@ const divisionSchema = new Schema(
     filledCount: { type: Number, min: 0 },
     // Overrides Event.paymentInstructions.feeMinorUnits when set; null means "use event default".
     feeMinorUnitsOverride: { type: Number, default: null },
+    /** Structured taxonomy for Road to Super Fight registration (optional for legacy divisions). */
+    gender: { type: String, enum: ["", "MALE", "FEMALE"], default: "" },
+    experienceLevel: { type: String, enum: ["", "BEGINNER", "INTERMEDIATE"], default: "" },
+    weightBand: { type: String, default: "", trim: true },
+    weightMinKg: { type: Number, default: null },
+    weightMaxKg: { type: Number, default: null },
   },
   { timestamps: true }
 );
