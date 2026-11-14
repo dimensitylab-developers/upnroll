@@ -49,7 +49,7 @@ export default async function NewRegistrationPage() {
     <div className="mx-auto max-w-3xl manga-panel p-6 sm:p-8">
       <h1 className="mb-2 text-display text-2xl font-semibold">Register for an event</h1>
       <p className="mb-6 text-sm text-muted-foreground">
-        Fill the grappler form for this card, upload your Aadhaar card image, pick a division, then continue to payment.
+        Fill the grappler form for this card, upload your Aadhaar card image, choose Beginner or Intermediate then your weight class, and continue to payment.
       </p>
       <NewRegistrationForm
         divisions={divisions.map((division) => ({
@@ -58,6 +58,10 @@ export default async function NewRegistrationPage() {
           name: division.name,
           discipline: division.discipline,
           eventName: division.event?.name ?? "Unknown event",
+          experienceLevel:
+            division.experienceLevel === "BEGINNER" || division.experienceLevel === "INTERMEDIATE"
+              ? division.experienceLevel
+              : "",
         }))}
         defaults={defaults}
         hasAadhaarImage={Boolean(profile?.aadhaarImageKey)}

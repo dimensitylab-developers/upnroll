@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { cachedPublicDivisions, cachedPublicEvents, cachedPublishedContent, cachedPublishedMedia, cachedPublicRankings } from "@/lib/public-reads";
+import { cachedPublicEvents, cachedPublishedContent, cachedPublishedMedia, cachedPublicRankings } from "@/lib/public-reads";
 import { Badge } from "@/components/ui/badge";
 import { HomeGlimpse } from "@/components/home/home-glimpse";
 import { pickHomeFaqs } from "@/components/home/home-faq-data";
@@ -53,7 +53,6 @@ export async function HomeEventsSection() {
   const events = await cachedPublicEvents();
   const featuredEvent = events.find((event) => event.status === "REGISTRATION_OPEN") ?? events[0] ?? null;
   const upcoming = events.filter((event) => event._id !== featuredEvent?._id).slice(0, 3);
-  const divisions = featuredEvent ? await cachedPublicDivisions(featuredEvent._id) : [];
 
   return (
     <>
@@ -71,20 +70,12 @@ export async function HomeEventsSection() {
               {new Date(featuredEvent.startDate).toLocaleDateString(undefined, { dateStyle: "long" })}
               {featuredEvent.venue ? ` · ${featuredEvent.venue}` : ""}
             </p>
-            <div className="mt-4 flex flex-wrap gap-4 text-sm">
-              <Link href={`/events/${featuredEvent.slug}/brackets`} className="underline">Brackets</Link>
-              <Link href={`/events/${featuredEvent.slug}/schedule`} className="underline">Schedule</Link>
-              <Link href={`/events/${featuredEvent.slug}/results`} className="underline">Results</Link>
-            </div>
-            {divisions.length > 0 && (
-              <ul className="mt-6 grid sm:grid-cols-2 gap-3">
-                {divisions.map((division) => (
-                  <li key={String(division._id)} className="bg-card border-2 border-black rounded-md p-4">
-                    <p className="font-semibold">{division.name}</p>
-                    <p className="text-sm text-muted-foreground">{division.discipline} · {division.capacity} spots</p>
-                  </li>
-                ))}
-              </ul>
+            {featuredEvent.status === "REGISTRATION_OPEN" && (
+              <div className="mt-4">
+                <Link href="/fighter/registrations/new" className="text-sm font-semibold text-brand-red underline">
+                  Register to compete
+                </Link>
+              </div>
             )}
           </div>
         </section>

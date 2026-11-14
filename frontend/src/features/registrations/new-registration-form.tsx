@@ -9,15 +9,22 @@ import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@
 import { SectionBanner } from "@/components/home/section-banner";
 import { CouponField } from "./coupon-field";
 
+type ExperienceLevel = "BEGINNER" | "INTERMEDIATE";
+
 type DivisionOption = {
   id: string;
   eventId: string;
   name: string;
   discipline: string;
   eventName: string;
+  experienceLevel: "" | ExperienceLevel;
 };
 
 const initialState: RegistrationActionState = {};
+
+function weightClassLabel(name: string) {
+  return name.replace(/\s*·\s*(Beginner|Intermediate)\s*$/i, "").trim() || name;
+}
 
 export function NewRegistrationForm({
   divisions,
@@ -34,17 +41,32 @@ export function NewRegistrationForm({
 }) {
   const router = useRouter();
   const [state, formAction, pending] = useActionState(createRegistrationAction, initialState);
+  const [experienceLevel, setExperienceLevel] = useState<ExperienceLevel | "">("");
   const [divisionId, setDivisionId] = useState("");
   const [consent, setConsent] = useState(false);
   const [agreement, setAgreement] = useState(false);
+
+  const hasTaxonomy = divisions.some((d) => d.experienceLevel === "BEGINNER" || d.experienceLevel === "INTERMEDIATE");
+  const filteredDivisions = !hasTaxonomy
+    ? divisions
+    : experienceLevel
+      ? divisions.filter((d) => d.experienceLevel === experienceLevel || d.experienceLevel === "")
+      : [];
   const selectedDivision = divisions.find((d) => d.id === divisionId) ?? null;
 
   useEffect(() => {
     if (state.redirectTo) router.push(state.redirectTo);
   }, [state.redirectTo, router]);
 
+  useEffect(() => {
+    if (!divisionId) return;
+    if (!filteredDivisions.some((d) => d.id === divisionId)) {
+      setDivisionId("");
+    }
+  }, [divisionId, filteredDivisions]);
+
   if (divisions.length === 0) {
-    return <p className="text-sm text-muted-foreground">No divisions are currently open for registration.</p>;
+    return <p className="text-sm text-muted-foreground">No open cards are available for registration right now.</p>;
   }
 
   const navigating = Boolean(state.redirectTo);
@@ -65,21 +87,57 @@ export function NewRegistrationForm({
       top={
         <section className="space-y-4">
           <SectionBanner>The card</SectionBanner>
-          <div className="max-w-md">
-            <Label htmlFor="divisionId" className="mb-1.5 block">Division</Label>
-            <input type="hidden" name="divisionId" value={divisionId} />
-            <Select value={divisionId} onValueChange={setDivisionId}>
-              <SelectTrigger id="divisionId" aria-label="Division">
-                <SelectValue placeholder="Select a division" />
-              </SelectTrigger>
-              <SelectContent>
-                {divisions.map((division) => (
-                  <SelectItem key={division.id} value={division.id}>
-                    {division.eventName} — {division.name} ({division.discipline})
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+          <div className="grid max-w-md gap-4">
+            {hasTaxonomy && (
+              <div>
+                <Label htmlFor="experienceLevel" className="mb-1.5 block">
+                  Experience level
+                </Label>
+                <Select
+                  value={experienceLevel}
+                  onValueChange={(value) => {
+                    setExperienceLevel(value as ExperienceLevel);
+                    setDivisionId("");
+                  }}
+                >
+                  <SelectTrigger id="experienceLevel" aria-label="Experience level">
+                    <SelectValue placeholder="Select Beginner or Intermediate" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="BEGINNER">Beginner</SelectItem>
+                    <SelectItem value="INTERMEDIATE">Intermediate</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            )}
+            <div>
+              <Label htmlFor="divisionId" className="mb-1.5 block">
+                Weight class
+              </Label>
+              <input type="hidden" name="divisionId" value={divisionId} />
+              <Select
+                value={divisionId}
+                onValueChange={setDivisionId}
+                disabled={hasTaxonomy && !experienceLevel}
+              >
+                <SelectTrigger id="divisionId" aria-label="Weight class">
+                  <SelectValue
+                    placeholder={
+                      hasTaxonomy && !experienceLevel
+                        ? "Choose experience level first"
+                        : "Select a weight class"
+                    }
+                  />
+                </SelectTrigger>
+                <SelectContent>
+                  {filteredDivisions.map((division) => (
+                    <SelectItem key={division.id} value={division.id}>
+                      {division.eventName} — {weightClassLabel(division.name)} ({division.discipline})
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
           </div>
           <CouponField eventId={selectedDivision?.eventId ?? null} disabled={pending || navigating} />
         </section>

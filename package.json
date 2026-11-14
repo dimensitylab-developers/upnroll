@@ -8,8 +8,11 @@
     "start": "npm run start --prefix frontend",
     "lint": "npm run lint --prefix frontend",
     "test": "npm run test --prefix frontend",
-    "create-admin": "npm run create-admin --prefix frontend",
-    "seed-demo": "npm run seed-demo --prefix frontend",
-    "backfill-gridfs-keys": "npm run backfill-gridfs-keys --prefix frontend"
+    "create-admin": "npm run create-admin --prefix frontend --",
+    "create-admin:prod": "npm run create-admin:prod --prefix frontend --",
+    "seed-demo": "npm run seed-demo --prefix frontend --",
+    "seed-event": "npm run seed-event --prefix frontend --",
+    "seed-event:prod": "npm run seed-event:prod --prefix frontend --",
+    "backfill-gridfs-keys": "npm run backfill-gridfs-keys --prefix frontend --"
   }
 }

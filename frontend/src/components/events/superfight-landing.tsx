@@ -10,7 +10,6 @@ function mapsUrl(venue: string) {
 }
 
 export function SuperfightLanding({
-  slug,
   name,
   dateLabel,
   weekdayLabel,
@@ -19,7 +18,6 @@ export function SuperfightLanding({
   canRegister,
   registerUntil,
 }: {
-  slug: string;
   name: string;
   dateLabel: string;
   weekdayLabel: string;
@@ -27,8 +25,6 @@ export function SuperfightLanding({
   status: string;
   canRegister: boolean;
   registerUntil: string | null;
-  matCount?: number;
-  divisions?: unknown[];
 }) {
   const place = venue || "Navnit Gujarat Samaj Mumbai";
 
@@ -83,7 +79,7 @@ export function SuperfightLanding({
           <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-brand-red">Register</p>
           <h2 className="text-display mt-2 text-3xl font-semibold leading-tight sm:text-4xl">{name}</h2>
           <p className="mt-4 max-w-xl text-sm leading-relaxed">
-            Create a grappler account, upload your Aadhaar card copy, choose a weight class / division on the registration form, then continue to UPI payment.
+            Create a grappler account, upload your Aadhaar card copy, pick Beginner or Intermediate then your weight class on the registration form, and continue to UPI payment.
           </p>
           <div className="mt-8 flex flex-wrap gap-3">
             {canRegister && (
@@ -94,12 +90,6 @@ export function SuperfightLanding({
                 <span className="inline-block skew-x-12">Register now</span>
               </Link>
             )}
-            <Link
-              href={`/events/${slug}/brackets`}
-              className="inline-flex border-2 border-black bg-white px-5 py-3 text-sm font-semibold uppercase tracking-wider shadow-[5px_5px_0_0_#000]"
-            >
-              Brackets
-            </Link>
           </div>
         </section>
 

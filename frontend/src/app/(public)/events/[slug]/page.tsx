@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { connection } from "next/server";
 import {
   cachedPublicDivisions,
   cachedPublicEvent,
@@ -20,6 +21,8 @@ function isVideo(url: string) {
 const SUPERFIGHT_SLUG = "up-n-roll-superfight-series";
 
 export default async function PublicEventDetailPage({ params }: { params: Promise<{ slug: string }> }) {
+  // cacheComponents: Date formatting + live announcement board need request time.
+  await connection();
   const { slug } = await params;
   let event;
   try {
@@ -88,7 +91,6 @@ export default async function PublicEventDetailPage({ params }: { params: Promis
     const start = new Date(event.startDate);
     return (
       <SuperfightLanding
-        slug={slug}
         name={event.name}
         dateLabel={start.toLocaleDateString("en-IN", { day: "numeric", month: "long", year: "numeric" })}
         weekdayLabel={start.toLocaleDateString("en-IN", { weekday: "long" })}
@@ -136,16 +138,13 @@ export default async function PublicEventDetailPage({ params }: { params: Promis
               Register now
             </Link>
           )}
-          <Link href={`/events/${slug}/brackets`} className="min-h-11 inline-flex items-center text-sm underline">
-            Brackets
-          </Link>
         </div>
 
         <Badge variant="outline" className="mb-3">
           {event.status.replaceAll("_", " ")}
         </Badge>
         <p className="copy-slab text-sm text-muted-foreground">
-          Weight classes and experience levels are chosen on the registration form.
+          Experience level and weight class are chosen on the registration form.
         </p>
       </div>
     </main>

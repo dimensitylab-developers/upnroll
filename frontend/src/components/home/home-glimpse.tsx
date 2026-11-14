@@ -13,7 +13,7 @@ const HOUSE_RULES = [
   { title: "Gear", body: "No zippers, pockets, or hard objects." },
   { title: "Referee", body: "Referee decisions are final." },
   { title: "Safety", body: "Athlete safety comes first at all times." },
-  { title: "Divisions", body: "Organizers may merge divisions." },
+  { title: "Merging", body: "Organizers may merge weight classes when needed." },
 ];
 
 const NIGHT = [
@@ -34,11 +34,9 @@ export function HomeGlimpse({
 }) {
   const spots = [
     { href: "/events", title: "Events", body: "The card, the date, and the venue for what is coming up." },
-    { href: "/brackets", title: "Brackets", body: "Live board: who is on the mat, who won, and every published bracket." },
     { href: "/rankings", title: "Rankings", body: "The points board and every public grappler profile." },
     { href: "/seminars", title: "Seminars", body: "Classes and camps, listed when a date is set." },
     { href: "/store", title: "Store", body: "Manga grappling shirts. Opening soon." },
-    { href: eventSlug ? `/events/${eventSlug}/results` : "/events", title: "Results", body: "Who won, once the match is over." },
     { href: "/faq", title: "FAQ assistant", body: "Questions answered from the published FAQ." },
   ];
   return (
@@ -73,8 +71,8 @@ export function HomeGlimpse({
           Registering means you have read the rules, you agree to them, and you accept the risks of combat sports.
         </p>
         <p className="copy-slab mt-3 inline-block text-sm">
-          Each event publishes its own format, divisions, and scoring on the{" "}
-          <Link href="/events" className="underline">events page</Link>.
+          Each event publishes its own format and scoring on the{" "}
+          <Link href="/events" className="underline">events page</Link>. Experience level and weight class are chosen when you register.
         </p>
       </section>
 

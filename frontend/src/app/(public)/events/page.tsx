@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { cachedPublicDivisions, cachedPublicEvents } from "@/lib/public-reads";
+import { cachedPublicEvents } from "@/lib/public-reads";
 import { SectionBanner } from "@/components/home/section-banner";
 import { EventPoster } from "@/components/events/event-poster";
 import { EventStory } from "@/components/events/event-story";
@@ -11,8 +11,8 @@ function formatDate(value: Date | string) {
 
 function statusLine(status: string) {
   if (status === "REGISTRATION_OPEN") return "Registration is open. You can put your name on this card.";
-  if (status === "REGISTRATION_CLOSED") return "Registration is closed. The card is set, and you can still follow the brackets.";
-  if (status === "COMPLETED") return "This card is finished. The date stays here. The results stay up.";
+  if (status === "REGISTRATION_CLOSED") return "Registration is closed. The card is set.";
+  if (status === "COMPLETED") return "This card is finished. The date stays here.";
   return status.replaceAll("_", " ");
 }
 
@@ -23,7 +23,6 @@ export default async function PublicEventsPage() {
   const finished = events.filter((event) => event.status === "COMPLETED");
   const featuredEvent = coming[0] ?? null;
   const later = coming.slice(1);
-  const featuredDivisions = featuredEvent ? await cachedPublicDivisions(featuredEvent._id) : [];
 
   const heldCards = [
     ...HELD_COVERS.map((card) => ({ ...card, href: `/events/held/${card.slug}` })),
@@ -42,7 +41,7 @@ export default async function PublicEventsPage() {
           <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-brand-red">Events</p>
           <h1 className="text-display mt-2 text-4xl font-semibold leading-[0.95] sm:text-5xl">The next card</h1>
           <p className="copy-slab mt-4 text-base leading-relaxed">
-            The date, the divisions, and where to follow the brackets. Further down is how a fight runs, then the cards already held.
+            The date and the venue. Enter through registration — experience level and weight class are chosen there. Further down is how a fight runs, then the cards already held.
           </p>
         </header>
 
@@ -58,14 +57,7 @@ export default async function PublicEventsPage() {
                 venue={featuredEvent.venue || ""}
                 statusLine={statusLine(featuredEvent.status)}
                 registerUntil={featuredEvent.status === "REGISTRATION_OPEN" ? formatDate(featuredEvent.registrationClosesAt) : null}
-                matCount={featuredEvent.matCount ?? 1}
                 canRegister={featuredEvent.status === "REGISTRATION_OPEN"}
-                divisions={featuredDivisions.map((division) => ({
-                  id: String(division._id),
-                  name: division.name,
-                  discipline: division.discipline,
-                  capacity: division.capacity,
-                }))}
               />
               {later.map((event) => (
                 <Link key={String(event._id)} href={`/events/${event.slug}`} className="block border-2 border-black bg-white px-5 py-4 shadow-[4px_4px_0_0_#000] transition-colors active:bg-brand-red/10">
@@ -81,7 +73,7 @@ export default async function PublicEventsPage() {
             </div>
           ) : (
             <p className="copy-slab max-w-xl text-sm leading-relaxed">
-              No card is open yet. When one is announced, the date, the divisions, the mats, and how to enter will show here.
+              No card is open yet. When one is announced, the date, the venue, and how to enter will show here.
             </p>
           )}
         </section>

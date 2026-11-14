@@ -19,7 +19,8 @@ export type TaxonomySeed = {
 };
 
 const WOMEN_BANDS: TaxonomyBand[] = [
-  { weightBand: "-65", weightMinKg: null, weightMaxKg: 65, label: "−65 kg" },
+  { weightBand: "-55", weightMinKg: null, weightMaxKg: 55, label: "−55 kg" },
+  { weightBand: "55-65", weightMinKg: 55, weightMaxKg: 65, label: "55–65 kg" },
   { weightBand: "+65", weightMinKg: 65, weightMaxKg: null, label: "+65 kg" },
 ];
 
@@ -83,10 +84,42 @@ export const EVENT_POINTS_RULES = {
     { label: "Takedown", detail: "2 points" },
     { label: "Sweep", detail: "2 points" },
     { label: "Knee on belly", detail: "2 points" },
+    { label: "Mount", detail: "2 points" },
     { label: "Guard pass", detail: "3 points" },
-    { label: "Mount", detail: "4 points" },
-    { label: "Back control", detail: "4 points" },
+    { label: "Back control", detail: "3 points" },
   ],
   endings: ["Submission", "Points", "Disqualification", "Referee stoppage", "Withdrawal"],
-  note: "Submission finishes are allowed per the belt and experience rules posted for the event. The referee decision is final.",
+  note:
+    "6-minute matches: first 3 minutes no points, final 3 minutes scoring. Submissions valid throughout. Referee decision is final.",
 } as const;
+
+/** No-Gi tournament scoring config seeded onto the Jan 2027 event. */
+export function noGiTournamentScoringRules() {
+  return {
+    configured: true,
+    winByHighestScore: true,
+    allowTies: false,
+    points: [
+      { code: "TAKEDOWN", label: "Takedown", points: 2 },
+      { code: "SWEEP", label: "Sweep", points: 2 },
+      { code: "KNEE_ON_BELLY", label: "Knee on belly", points: 2 },
+      { code: "MOUNT", label: "Mount", points: 2 },
+      { code: "GUARD_PASS", label: "Guard pass", points: 3 },
+      { code: "BACK_CONTROL", label: "Back control", points: 3 },
+    ],
+    penalties: [
+      { code: "LEAVE_AREA", label: "Deliberately leaving the competition area", pointsAgainst: 1 },
+      { code: "UNSPORTSMANLIKE", label: "Unsportsmanlike conduct", pointsAgainst: 1 },
+      { code: "REF_INSTRUCTIONS", label: "Failure to follow referee instructions", pointsAgainst: 1 },
+      { code: "PULL_GUARD", label: "Pulling guard without attacking", pointsAgainst: 1 },
+      { code: "STALLING", label: "Stalling or lack of engagement", pointsAgainst: 1 },
+    ],
+    outcomes: [
+      { code: "SUBMISSION", label: "Submission", requiresExplicitWinner: true },
+      { code: "POINTS", label: "Points", requiresExplicitWinner: false },
+      { code: "DQ", label: "Opponent disqualification", requiresExplicitWinner: true },
+      { code: "REF_STOPPAGE", label: "Referee stoppage", requiresExplicitWinner: true },
+      { code: "WITHDRAWAL", label: "Opponent withdrawal", requiresExplicitWinner: true },
+    ],
+  } as const;
+}

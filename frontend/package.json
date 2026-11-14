@@ -11,7 +11,10 @@
     "lint": "eslint",
     "test": "vitest run",
     "create-admin": "tsx --env-file=.env.local ../scripts/create-admin.ts",
+    "create-admin:prod": "tsx --env-file=.env.service ../scripts/create-admin.ts",
     "seed-demo": "tsx --env-file=.env.local ../scripts/seed-demo.ts",
+    "seed-event": "tsx --env-file=.env.local ../scripts/seed-event.ts",
+    "seed-event:prod": "tsx --env-file=.env.service ../scripts/seed-event.ts",
     "backfill-occupancy": "tsx --env-file=.env.local ../scripts/backfill-division-occupancy.ts",
     "backfill-gridfs-keys": "tsx --env-file=.env.local ../scripts/backfill-gridfs-keys.ts"
   },
