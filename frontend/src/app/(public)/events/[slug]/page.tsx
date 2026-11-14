@@ -91,6 +91,7 @@ export default async function PublicEventDetailPage({ params }: { params: Promis
     const start = new Date(event.startDate);
     return (
       <SuperfightLanding
+        slug={slug}
         name={event.name}
         dateLabel={start.toLocaleDateString("en-IN", { day: "numeric", month: "long", year: "numeric" })}
         weekdayLabel={start.toLocaleDateString("en-IN", { weekday: "long" })}
