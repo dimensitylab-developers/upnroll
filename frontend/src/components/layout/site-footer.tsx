@@ -32,7 +32,7 @@ export function SiteFooter({ contact = SITE_CONTACT }: { contact?: SiteContact }
 
   return (
     <footer className="relative overflow-hidden text-white">
-      {/* Soft dark field + glow — not a flat black slab */}
+      {/* Soft dark field + glow (not a flat black slab) */}
       <div className="absolute inset-0 bg-[radial-gradient(120%_80%_at_10%_-10%,rgba(200,16,46,0.35),transparent_55%),radial-gradient(90%_70%_at_90%_20%,rgba(255,255,255,0.08),transparent_50%),linear-gradient(180deg,#0a0a0a_0%,#141414_55%,#0b0b0b_100%)]" />
       <div
         className="pointer-events-none absolute -left-24 top-8 h-56 w-56 rounded-full bg-brand-red/25 blur-3xl"
@@ -48,7 +48,7 @@ export function SiteFooter({ contact = SITE_CONTACT }: { contact?: SiteContact }
           <div className="grid gap-10 lg:grid-cols-[minmax(0,1.15fr)_minmax(0,1.35fr)] lg:gap-12">
             <div>
               <p className="mb-4 inline-flex rounded-full border border-white/25 bg-white/10 px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.22em] text-white/90 backdrop-blur-md">
-                Up &apos;n Roll · D3 Spectator
+                Up &apos;n Roll
               </p>
               <Link
                 href="/"
@@ -83,7 +83,7 @@ export function SiteFooter({ contact = SITE_CONTACT }: { contact?: SiteContact }
               </div>
 
               <div>
-                <FooterHeading>The house</FooterHeading>
+                <FooterHeading>More</FooterHeading>
                 <ul className="space-y-1.5">
                   {HOUSE.map((link) => (
                     <li key={link.href}>
@@ -111,7 +111,6 @@ export function SiteFooter({ contact = SITE_CONTACT }: { contact?: SiteContact }
                     <Instagram className="h-5 w-5 shrink-0 text-brand-red" aria-hidden="true" strokeWidth={2.25} />
                     <span>@{contact.instagramHandle}</span>
                   </p>
-                  <p className="mt-1 text-sm text-neutral-600">DM for queries</p>
                   {hasEmail && <p className="mt-2 text-sm text-neutral-600">{contact.email}</p>}
                 </a>
               </div>

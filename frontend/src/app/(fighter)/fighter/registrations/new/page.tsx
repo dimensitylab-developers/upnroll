@@ -4,7 +4,7 @@ import { getFighterProfile } from "@/server/services/fighterService";
 import { NewRegistrationForm } from "@/features/registrations/new-registration-form";
 import type { GrapplerDefaults } from "@/features/fighters/grappler-form";
 
-/** Session/DB-bound route  allow blocking navigation under Cache Components. */
+/** Session/DB-bound route; allow blocking navigation under Cache Components. */
 export const instant = false;
 
 function yesNo(value: boolean | undefined) {
@@ -35,7 +35,7 @@ export default async function NewRegistrationPage() {
     headCoach: profile?.headCoach ?? "",
     beltRank: profile?.beltRank ?? "",
     yearsTraining: profile?.yearsTraining ? String(profile.yearsTraining) : "",
-    careerWins: profile?.careerWins != null ? String(profile.careerWins) : "0",
+    pastRecord: profile?.pastRecord ?? "",
     weightDivision: profile?.weightDivision ?? "",
     heardAbout: profile?.heardAbout ?? "",
     hasMedicalCondition: profile ? yesNo(Boolean(profile.hasMedicalCondition)) : "",
@@ -50,7 +50,7 @@ export default async function NewRegistrationPage() {
     <div className="mx-auto w-full min-w-0 max-w-3xl manga-panel overflow-visible p-6 sm:p-8">
       <h1 className="mb-2 text-display text-2xl font-semibold">Register for an event</h1>
       <p className="mb-6 text-sm text-muted-foreground">
-        Fill the grappler form for this card, upload your Aadhaar card image, choose Beginner or Intermediate then your weight class, and continue to payment.
+        Fill the grappler form for this card, upload your identity proof image, choose Beginner or Intermediate then your weight class, and continue to payment.
       </p>
       <NewRegistrationForm
         divisions={divisions.map((division) => ({
@@ -63,6 +63,7 @@ export default async function NewRegistrationPage() {
             division.experienceLevel === "BEGINNER" || division.experienceLevel === "INTERMEDIATE"
               ? division.experienceLevel
               : "",
+          gender: division.gender ?? "",
         }))}
         defaults={defaults}
         hasAadhaarImage={Boolean(profile?.aadhaarImageKey)}

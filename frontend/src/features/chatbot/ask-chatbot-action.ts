@@ -4,7 +4,7 @@ import { getPublicFaqs } from "@/server/content/starterFaqs";
 import { matchFaq } from "@/server/services/chatbotEngine";
 
 const FALLBACK_MESSAGE =
-  "I don't have an approved answer for that yet. Please check the FAQ page or message @up.n.roll on Instagram (DM for queries).";
+  "I don't have an approved answer for that yet. Please check the FAQ page or message @up.n.roll on Instagram.";
 
 export async function askChatbotAction(question: string): Promise<{ answer: string; matched: boolean }> {
   const trimmed = question.trim();

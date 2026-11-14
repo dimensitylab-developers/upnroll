@@ -1,9 +1,10 @@
 "use client";
 
-import { useActionState, useEffect, useState } from "react";
+import { useActionState, useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { createRegistrationAction, type RegistrationActionState } from "./actions";
 import { GrapplerForm, type GrapplerDefaults } from "@/features/fighters/grappler-form";
+import { divisionGenderCode } from "@/features/fighters/weight-bands";
 import { Label } from "@/components/ui/label";
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/select";
 import { SectionBanner } from "@/components/home/section-banner";
@@ -18,6 +19,7 @@ type DivisionOption = {
   discipline: string;
   eventName: string;
   experienceLevel: "" | ExperienceLevel;
+  gender: string;
 };
 
 const initialState: RegistrationActionState = {};
@@ -49,14 +51,22 @@ export function NewRegistrationForm({
   const [divisionId, setDivisionId] = useState("");
   const [consent, setConsent] = useState(false);
   const [agreement, setAgreement] = useState(false);
+  const [gender, setGender] = useState(defaults.gender ?? "");
 
   const hasTaxonomy = divisions.some((d) => d.experienceLevel === "BEGINNER" || d.experienceLevel === "INTERMEDIATE");
-  const filteredDivisions = !hasTaxonomy
-    ? divisions
-    : experienceLevel
-      ? divisions.filter((d) => d.experienceLevel === experienceLevel || d.experienceLevel === "")
-      : [];
-  const selectedDivision = divisions.find((d) => d.id === divisionId) ?? null;
+
+  const filteredDivisions = useMemo(() => {
+    const code = divisionGenderCode(gender);
+    const byGender = !code
+      ? divisions
+      : divisions.filter((division) => !division.gender || division.gender === code);
+
+    if (!hasTaxonomy) return byGender;
+    if (!experienceLevel) return [];
+    return byGender.filter((d) => d.experienceLevel === experienceLevel || d.experienceLevel === "");
+  }, [divisions, experienceLevel, gender, hasTaxonomy]);
+
+  const selectedDivision = filteredDivisions.find((d) => d.id === divisionId) ?? null;
 
   useEffect(() => {
     if (state.redirectTo) router.push(state.redirectTo);
@@ -90,6 +100,7 @@ export function NewRegistrationForm({
       parentalConsentImageVersion={parentalConsentImageVersion}
       waiverAcceptedAt={waiverAcceptedAt}
       submitLabel={navigating ? "Opening payment…" : "Continue to payment"}
+      onGenderChange={setGender}
       top={
         <section className="space-y-4">
           <SectionBanner>The card</SectionBanner>
@@ -138,11 +149,14 @@ export function NewRegistrationForm({
                 <SelectContent>
                   {filteredDivisions.map((division) => (
                     <SelectItem key={division.id} value={division.id}>
-                      {division.eventName}  {weightClassLabel(division.name)} ({division.discipline})
+                      {weightClassLabel(division.name)} ({division.discipline})
                     </SelectItem>
                   ))}
                 </SelectContent>
               </Select>
+              {gender && filteredDivisions.length === 0 && experienceLevel && (
+                <p className="mt-1 text-xs text-muted-foreground">No open divisions match this gender and level yet.</p>
+              )}
             </div>
           </div>
           <CouponField eventId={selectedDivision?.eventId ?? null} disabled={pending || navigating} />
@@ -160,7 +174,7 @@ export function NewRegistrationForm({
           <label className="flex items-start gap-2 text-sm">
             <input type="checkbox" className="mt-1" checked={agreement} onChange={(event) => setAgreement(event.target.checked)} />
             <span>
-              Agreement. There is no full refund on cancellation. I may transfer my spot to a friend, or accept a 50% cut when a cancellation is approved. Mouthguard is compulsory  if I forget mine, I will buy one from the mouthguard sponsor on site.
+              Agreement. There is no full refund on cancellation. I may transfer my spot to a friend, or accept a 50% cut when a cancellation is approved. Mouthguard is compulsory; I bring my own.
             </span>
           </label>
         </section>

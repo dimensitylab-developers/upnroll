@@ -14,7 +14,7 @@ export async function GET(request: Request, { params }: { params: Promise<{ user
     requireObjectId(userId, "user");
     await connectDB();
     const profile = await FighterProfile.findOne({ userId }).select("aadhaarImageKey").lean();
-    if (!profile?.aadhaarImageKey) return new NextResponse("No Aadhaar image yet.", { status: 404 });
+    if (!profile?.aadhaarImageKey) return new NextResponse("No identity proof image yet.", { status: 404 });
 
     const { stream, contentType, length } = await getStorageAdapter().open(profile.aadhaarImageKey);
     const headers: Record<string, string> = {

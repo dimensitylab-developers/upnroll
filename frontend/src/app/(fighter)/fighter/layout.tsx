@@ -18,7 +18,7 @@ export const instant = false;
 export async function generateMetadata(): Promise<Metadata> {
   const session = await getSession();
   if (!session || session.user.role !== "FIGHTER") {
-    return { robots: { index: false, follow: false }, title: "Fighter" };
+    return { robots: { index: false, follow: false }, title: "Grappler" };
   }
   const displayName = await resolveDisplayName(session.user._id, session.user.email);
   const who = portalTabTitle(displayName, "FIGHTER");
@@ -60,10 +60,10 @@ async function FighterShell({ children }: { children: React.ReactNode }) {
           <Link
             href="/fighter/dashboard"
             className="flex shrink-0 items-center gap-2 text-display text-sm font-semibold"
-            aria-label="Fighter home"
+            aria-label="Grappler home"
           >
             <BrandMark className="h-7 w-7" />
-            <span className="hidden sm:inline">Fighter</span>
+            <span className="hidden sm:inline">Grappler</span>
           </Link>
           <div className="min-w-0 flex-1">
             <FighterNav />
