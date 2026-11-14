@@ -41,12 +41,12 @@ export async function readAadhaarImage(
   file: FormDataEntryValue | null
 ): Promise<{ error: string } | { empty: true } | { bytes: Buffer; ext: string }> {
   if (!(file instanceof File) || file.size === 0) return { empty: true };
-  if (file.size > MAX_BYTES) return { error: "Aadhaar card image must be under 1.5 MB." };
+  if (file.size > MAX_BYTES) return { error: "Identity proof image must be under 1.5 MB." };
   const bytes = Buffer.from(await file.arrayBuffer());
   const detected = detectImageType(bytes);
-  if (!detected) return { error: "Use a JPG, PNG, or WebP Aadhaar card image." };
+  if (!detected) return { error: "Use a JPG, PNG, or WebP identity proof image." };
   const claimed = file.type === "image/jpg" ? "image/jpeg" : file.type;
-  if (claimed && claimed !== detected) return { error: "Use a JPG, PNG, or WebP Aadhaar card image." };
+  if (claimed && claimed !== detected) return { error: "Use a JPG, PNG, or WebP identity proof image." };
   return { bytes, ext: EXTENSIONS[detected] };
 }
 

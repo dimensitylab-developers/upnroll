@@ -29,7 +29,7 @@ export function FighterNav() {
   return (
     <nav
       className="flex gap-1 overflow-x-auto [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
-      aria-label="Fighter sections"
+      aria-label="Grappler sections"
     >
       {LINKS.map((link) => {
         const active = hydrated && pathname.startsWith(link.href);

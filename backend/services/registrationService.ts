@@ -18,6 +18,7 @@ import { NotFoundError, ConflictError, ValidationError } from "@/server/http/err
 import { requireObjectId } from "@/server/validation/objectId";
 import { getDefaultPaymentOption, getPaymentOption } from "./paymentOptionService";
 import { redeemReservedCouponInSession } from "./couponService";
+import { assertDivisionEligibility } from "./registrationEligibility";
 
 function resolveFeeMinorUnits(
   event: { paymentInstructions?: { feeMinorUnits: number } | null },
@@ -65,6 +66,9 @@ export async function createRegistration(
       if (existing && isActiveRegistration(existing.status as RegistrationDoc["status"])) {
         throw new ConflictError("You already have an active registration in this division.");
       }
+
+      const profile = await bindSession(FighterProfile.findOne({ userId }), session);
+      assertDivisionEligibility(division, profile);
 
       // Server-authoritative payment selection  never trust client fee/option.
       let paymentOption = await getDefaultPaymentOption(String(event._id));

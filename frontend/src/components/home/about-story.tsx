@@ -81,15 +81,9 @@ function AboutHomeTeaser() {
             />
             <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent" />
             <p className="absolute bottom-4 left-4 right-4 text-display text-2xl font-semibold leading-tight text-white">
-              Come roll with us.
+              About Up &apos;n Roll
             </p>
           </div>
-          <span
-            className="absolute right-6 top-6 rotate-3 border-2 border-black bg-[#F5C518] px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.18em] text-black shadow-[3px_3px_0_0_#000] transition-transform duration-300 group-hover:-rotate-2"
-            aria-hidden="true"
-          >
-            The house
-          </span>
         </div>
       </div>
     </Link>
@@ -190,7 +184,6 @@ function AboutPageStory({ eventSlug }: { eventSlug?: string | null }) {
               We know the nerves before a match, the sting of a loss, and the pride of a hard-earned win. It&apos;s not
               an ego game — it&apos;s a place to test your skills, be heard, build confidence, and tap when you need to.
             </p>
-            <p className="mt-4 text-sm font-semibold text-brand-red">Come roll with us.</p>
             <div className="mt-6 border-t-2 border-black pt-4">
               <FounderCredit />
             </div>

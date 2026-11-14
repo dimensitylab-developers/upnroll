@@ -71,17 +71,17 @@ export function FighterRecord({ fighter }: { fighter: AdminFighterView }) {
         </dl>
         <div className="grid gap-4 md:grid-cols-2">
           <div className="border-2 border-black bg-white p-4">
-            <p className="mb-2 text-[10px] uppercase tracking-wider text-muted-foreground">Aadhaar card image (private)</p>
+            <p className="mb-2 text-[10px] uppercase tracking-wider text-muted-foreground">Identity proof (private)</p>
             <div className="flex aspect-[16/10] items-center justify-center overflow-hidden border-2 border-black bg-white">
               {fighter.hasAadhaarImage ? (
                 // eslint-disable-next-line @next/next/no-img-element
                 <img
                   src={`/api/v1/admin/fighters/${fighter.userId}/aadhaar`}
-                  alt={`${name} Aadhaar card`}
+                  alt={`${name} identity proof`}
                   className="h-full w-full object-contain"
                 />
               ) : (
-                <span className="px-2 text-center text-[10px] uppercase tracking-wider text-muted-foreground">No Aadhaar image</span>
+                <span className="px-2 text-center text-[10px] uppercase tracking-wider text-muted-foreground">No identity proof</span>
               )}
             </div>
           </div>

@@ -83,7 +83,7 @@ export function SiteFooter({ contact = SITE_CONTACT }: { contact?: SiteContact }
               </div>
 
               <div>
-                <FooterHeading>The house</FooterHeading>
+                <FooterHeading>Find us</FooterHeading>
                 <ul className="space-y-1.5">
                   {HOUSE.map((link) => (
                     <li key={link.href}>
@@ -111,7 +111,6 @@ export function SiteFooter({ contact = SITE_CONTACT }: { contact?: SiteContact }
                     <Instagram className="h-5 w-5 shrink-0 text-brand-red" aria-hidden="true" strokeWidth={2.25} />
                     <span>@{contact.instagramHandle}</span>
                   </p>
-                  <p className="mt-1 text-sm text-neutral-600">DM for queries</p>
                   {hasEmail && <p className="mt-2 text-sm text-neutral-600">{contact.email}</p>}
                 </a>
               </div>

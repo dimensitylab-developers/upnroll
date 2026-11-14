@@ -6,12 +6,12 @@ export const STARTER_FAQS: { question: string; answer: string }[] = [
   {
     question: "How do I register for an event?",
     answer:
-      "Create a grappler account with your details and upload a copy of your Aadhaar card. Sign in, choose a weight class / division, tick both Consent and Agreement, then continue to payment.",
+      "Create a grappler account with your details and upload identity proof. Sign in, choose Beginner or Intermediate and a weight class that matches your gender, tick both Consent and Agreement, then continue to payment.",
   },
   {
     question: "How do I pay the entry fee?",
     answer:
-      "Pay with the UPI instructions shown for that event, then an admin reviews your payment before your place is confirmed. The fee is the one published on that event  coupons can change the amount when they apply.",
+      "Pay with the UPI instructions shown for that event, then an admin reviews your payment before your place is confirmed. The fee is the one published on that event — coupons can change the amount when they apply.",
   },
   {
     question: "Can I use a coupon or promo code?",
@@ -21,7 +21,7 @@ export const STARTER_FAQS: { question: string; answer: string }[] = [
   {
     question: "What is the cancellation refund if I cancel?",
     answer:
-      "There is no full refund when you cancel. You can transfer your spot to a friend, or a 50% cut may apply when a cancellation is approved. The organizer handles money off-platform. Prefer transfer to a friend whenever possible.",
+      "There is no full refund when you cancel. You can transfer your spot to a friend, or a 50% refund may apply when cancellation is approved one month or more before the event. The organizer handles money off-platform. Prefer transfer to a friend whenever possible.",
   },
   {
     question: "Can I transfer my spot to a teammate?",
@@ -31,7 +31,7 @@ export const STARTER_FAQS: { question: string; answer: string }[] = [
   {
     question: "What should I wear?",
     answer:
-      "Compulsory: rashguard and shorts with no zippers or pockets, and a mouthguard. Mouthguard is mandatory. If you forget yours, you must buy one from the mouthguard sponsor on site. If the organizers give you a rashguard or other gear, you compete in it.",
+      "Compulsory: rashguard and shorts with no zippers or pockets, and a mouthguard. Mouthguard is mandatory. If the organizers give you a rashguard or other gear, you compete in it.",
   },
   {
     question: "Which mat is my match on?",
@@ -41,32 +41,32 @@ export const STARTER_FAQS: { question: string; answer: string }[] = [
   {
     question: "When should I warm up?",
     answer:
-      "When your bout is inside 15 minutes, your dashboard shows a warm-up note. Fight-day reminders and notifications can also push that cue. Check your fighter notifications panel on event day.",
+      "When your bout is inside 15 minutes, your dashboard shows a warm-up note. Fight-day reminders and notifications can also push that cue. Check your grappler notifications panel on event day.",
   },
   {
     question: "Do I get fight-night notifications?",
     answer:
-      "Yes. Your fighter desk has a notifications area for reminders and event messages. Organizers can also run outbox jobs for fight-day reminders. Keep your contact details current on your profile.",
+      "Yes. Your grappler desk has a notifications area for reminders and event messages. Organizers can also run outbox jobs for fight-day reminders. Keep your contact details current on your profile.",
   },
   {
-    question: "Do I need to upload an Aadhaar card?",
+    question: "Do I need to upload identity proof?",
     answer:
-      "Yes. Upload a clear copy of your Aadhaar card when you register. Keep the 12-digit number accurate on your profile. Aadhaar stays private  it is not shown on public fighter pages.",
+      "Yes. Upload a clear identity proof image when you register. Identity proof stays private — it is not shown on public grappler pages.",
   },
   {
-    question: "What is the public fighter card?",
+    question: "What is the public grappler card?",
     answer:
-      "Each fighter gets a shareable hype card with photo, record, and public profile details  no private ID or medical data. You can open it from your fighter desk and from public rankings or fighter pages.",
+      "Each grappler gets a shareable hype card with photo, record, and public profile details — no private ID or medical data. You can open it from your grappler desk and from public rankings or grappler pages.",
   },
   {
-    question: "Who can see my Aadhaar and medical information?",
+    question: "Who can see my identity proof and medical information?",
     answer:
-      "Aadhaar and medical answers stay off public fighter pages. Organizers can see the full registration, including the Aadhaar upload, in the admin panel.",
+      "Identity proof and medical answers stay off public grappler pages. Organizers can see the full registration, including the identity proof upload, in the admin panel.",
   },
   {
     question: "How do rankings work?",
     answer:
-      "Rankings follow bracket results: athletes who go further place higher. Early exits place lower. When two athletes lose with no points, the faster loss places lower. Athletes who skip a recent event can drop versus recent participants. Who gets a Super Fight is decided manually by the house.",
+      "Rankings follow bracket results: athletes who go further place higher. Early exits place lower. When two athletes lose with no points, the faster loss places lower. Athletes who skip a recent event can drop versus recent participants. Who gets a Super Fight is decided manually by the organisers.",
   },
   {
     question: "How does live judge scoring work?",
@@ -86,12 +86,12 @@ export const STARTER_FAQS: { question: string; answer: string }[] = [
   {
     question: "What is Up ’n Roll Superfight?",
     answer:
-      "Up ’n Roll Superfight is the featured card series on this site. Open registration, brackets, schedule, and results for that event live under Events when the card is published.",
+      "Up ’n Roll Superfight is the featured card on this site. Open registration, brackets, schedule, and results for that event live under Events when the card is published.",
   },
   {
     question: "I have an emergency and need a human",
     answer:
-      "If this chat cannot help and you have an urgent event-day issue, ask for a human handoff here and the organizer emergency line will be shared in the reply once the house has published it in FAQ. Day-to-day questions should go to Instagram DM (@up.n.roll) or email  phone numbers are not listed on the public site.",
+      "If this chat cannot help and you have an urgent event-day issue, ask for a human handoff here and the organizer emergency line will be shared in the reply once it has been published in FAQ. Day-to-day questions should go to Instagram (@up.n.roll) or email — phone numbers are not listed on the public site.",
   },
 ];
 

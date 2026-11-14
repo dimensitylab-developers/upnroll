@@ -1,20 +1,12 @@
 import type { ReactNode } from "react";
 
-type FunkyHeadlineId =
-  | "built-for-grapplers"
-  | "brazilian-jiu-jitsu-platform"
-  | "real-fights-real-pay-real-rankings";
+type FunkyHeadlineId = "built-for-grapplers" | "real-fights-real-pay-real-rankings";
 
 const SRC: Record<FunkyHeadlineId, { black: string; white: string; alt: string }> = {
   "built-for-grapplers": {
     black: "/headlines/built-for-grapplers.png",
     white: "/headlines/built-for-grapplers-white.png",
     alt: "Built For Grapplers",
-  },
-  "brazilian-jiu-jitsu-platform": {
-    black: "/headlines/brazilian-jiu-jitsu-platform.png",
-    white: "/headlines/brazilian-jiu-jitsu-platform-white.png",
-    alt: "Brazilian Jiu Jitsu Platform",
   },
   "real-fights-real-pay-real-rankings": {
     black: "/headlines/real-fights-real-pay-real-rankings.png",

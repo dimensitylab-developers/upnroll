@@ -106,7 +106,7 @@ export function SuperfightLanding({
           </p>
 
           <p className="mt-5 max-w-md text-sm leading-relaxed text-white/75">
-            Create a grappler account, upload your Aadhaar, pick weight class and division, then pay by UPI.
+            Create a grappler account, upload identity proof, pick weight class and division, then pay by UPI.
           </p>
 
           <div className="mt-7 flex flex-wrap gap-3">

@@ -1,6 +1,14 @@
 import { describe, it, expect } from "vitest";
-import { ageFromDob, grapplerDetailsSchema, grapplerFieldIssues, registerSchema } from "@/features/fighters/grappler-schema";
+import {
+  ageFromDob,
+  beltMatchesExperience,
+  grapplerDetailsSchema,
+  grapplerFieldIssues,
+  registerSchema,
+} from "@/features/fighters/grappler-schema";
 import { loginSchema } from "./schemas";
+import { WAIVER_CLAUSES } from "@/features/fighters/waiver";
+import { STARTER_FAQS } from "@/server/content/starterFaqs";
 
 const dob = "1998-04-12";
 
@@ -26,6 +34,7 @@ function validGrappler(overrides: Record<string, unknown> = {}) {
     emergencyContactName: "Anil Kolhapure",
     emergencyRelationship: "Father",
     bloodGroup: "O+",
+    instagramHandle: "rhea.rolls",
     academy: "Roll House",
     headCoach: "Suketu Bhuva",
     beltRank: "Blue",
@@ -67,9 +76,25 @@ describe("registerSchema", () => {
 });
 
 describe("grapplerDetailsSchema", () => {
-  it("accepts a complete grappler form without an Aadhaar number", () => {
+  it("accepts a complete grappler form with identity proof fields omitted from schema", () => {
     const result = grapplerDetailsSchema.safeParse(validGrappler());
     expect(result.success).toBe(true);
+  });
+
+  it("requires Instagram", () => {
+    const result = grapplerDetailsSchema.safeParse(validGrappler({ instagramHandle: "" }));
+    expect(result.success).toBe(false);
+  });
+
+  it("rejects free-text belt ranks", () => {
+    const result = grapplerDetailsSchema.safeParse(validGrappler({ beltRank: "Brown" }));
+    expect(result.success).toBe(false);
+  });
+
+  it("maps belt eligibility to experience levels", () => {
+    expect(beltMatchesExperience("White", "BEGINNER")).toBe(true);
+    expect(beltMatchesExperience("Blue", "BEGINNER")).toBe(false);
+    expect(beltMatchesExperience("Purple", "INTERMEDIATE")).toBe(true);
   });
 
   it("requires a medical detail when the answer is yes", () => {
@@ -77,6 +102,15 @@ describe("grapplerDetailsSchema", () => {
     expect(parsed.success).toBe(true);
     if (!parsed.success) return;
     expect(grapplerFieldIssues(parsed.data).medicalConditionDetail).toBeTruthy();
+  });
+});
+
+describe("client requirement copy", () => {
+  it("keeps mouthguard compulsory without sponsor-buy wording", () => {
+    const joined = [...WAIVER_CLAUSES, ...STARTER_FAQS.map((f) => f.answer)].join(" ");
+    expect(joined).toMatch(/mouthguard/i);
+    expect(joined).not.toMatch(/mouthguard sponsor/i);
+    expect(joined).not.toMatch(/buy one from the mouthguard/i);
   });
 });
 

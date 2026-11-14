@@ -6,7 +6,7 @@ Tracks everything still pending client approval. Nothing here is to be treated a
 |---|---|---|---|
 | OD-001 | Actual combat discipline(s) run by Up 'n Roll (MMA only? grappling/submission too? mixed events?) | Part C explicitly forbids assuming MMA-only or UFC-style disciplines | Division taxonomy, fighter profile "discipline" field, rules content |
 | OD-002 | Weight classes / age/eligibility categories | **Resolved 2026-11-12; updated 2026-11-14 (No-Gi #2):** Women −55 / 55–65 / +65 × Beginner+Intermediate; Men −55, 55–65, 65–75, 75–85, +85 × Beginner+Intermediate (16 divisions). Seeded via `divisionTaxonomy` / `seed-event` / admin seed button. | Division model, registration eligibility checks |
-| OD-003 | Bracket format(s) to support beyond single elimination | Part N: only approved formats get implemented. **Phase 4 implemented the single-elimination baseline** (`src/server/services/bracketEngine.ts`)  this row stays open only for additional formats (round-robin, points-based, etc.), not the baseline itself | PFL-style standings-table view (research doc §3) if a points format is ever approved |
+| OD-003 | Bracket format(s) to support beyond single elimination | Part N: only approved formats get implemented. **Phase 4 implemented the single-elimination baseline** (`src/server/services/bracketEngine.ts`)  this row stays open only for additional formats (round-robin, points-based, etc.), not the baseline itself. **Client gap (2026-11-14):** round-robin for small / n=3 still blocked — need admin format picker vs auto-RR for n≤3 only. Until then keep single-elim + byes. | PFL-style standings-table view (research doc §3) if a points format is ever approved; client round-robin request |
 | OD-004 | Ranking methodology | **Resolved 2026-11-12 (hybrid):** Public board uses **manual numbering** (`ManualRankingEntry`) when published. Bracket depth / loss-time / recent-event rules inform house order; Super Fight invitation is manual. Computed `wins * 3` remains reference-only via recalculate. | Which formula is actually official  everything downstream already built and waiting |
 | OD-005 | Registration fee amounts per event/division | Needed for payment-instruction screens | QR payment UI copy, `divisions.fee` field values |
 | OD-005a | Real UTR/transaction-reference format (bank/UPI reference conventions) | Phase 3 shipped a conservative generic placeholder validator (alphanumeric, 6-30 chars, `src/features/payments/schemas.ts`) since the real format wasn't specified | Payment submission validation accuracy |
@@ -19,6 +19,17 @@ Tracks everything still pending client approval. Nothing here is to be treated a
 | OD-012 | Hosting/infra and third-party integration approvals (object storage provider, email provider, auth provider choice) | Part F / Part M | Phase 2 infra setup; Phase 5's `MediaAsset` model stores an external URL rather than an uploaded file for the same reason |
 | OD-013 | Whether `middleware.ts` should become `proxy.ts` under Next 16 | Technical, not client-facing, but affects Phase 2 auth wiring | Phase 2 proxy/auth implementation |
 | OD-014 | Brand asset set (logo, approved photography license) | Part B §3  existing TechBlitz imagery is unlicensed for this use | `/ui-preview` Brand Foundation chapter uses placeholders until resolved |
+
+## Client requirements gap — deferred (2026-11-14)
+
+Shipped on `fix/client-requirements-gaps` without inventing product rules. Still blocked pending owner sign-off:
+
+1. **Round robin / format picker (OD-003)** — no RR engine; n=3 stays single-elim with bye.
+2. **Season locks** — no Season model; TRANSFER after a decided match stays allowed until boundary dates + ban rule are approved.
+3. **Made vs Make in India** — current footer uses Make in India lion; do not swap without an approved mark file.
+4. **Past-record format** — UI label is “Past record”; storage remains numeric `careerWins` until a free-text format is approved.
+5. **Unwanted woman-frame asset** — needs client screenshot/PDF mapping before deleting any media.
+6. **AI rankings placeholders** — keep photo/initials until an approved character set lands.
 
 ## Resolution process
 

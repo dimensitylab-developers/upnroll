@@ -60,6 +60,7 @@ type GrapplerFormProps = {
   bottom?: ReactNode;
   submitLabel?: string;
   submitDisabled?: boolean;
+  onGenderChange?: (gender: string) => void;
 };
 
 function FieldError({ name, errors }: { name: string; errors?: GrapplerFormState["fieldErrors"] }) {
@@ -108,20 +109,31 @@ function Choice({
   options,
   value,
   errors,
+  onChange,
 }: {
   legend: string;
   name: string;
   options: { value: string; label: string }[];
   value?: string;
   errors?: GrapplerFormState["fieldErrors"];
+  onChange?: (value: string) => void;
 }) {
+  const controlled = typeof onChange === "function";
   return (
     <fieldset>
       <legend className="text-sm font-medium mb-1.5">{legend}</legend>
       <div className="flex flex-wrap gap-4">
         {options.map((option) => (
           <label key={option.value} className="flex items-center gap-2 text-sm">
-            <input type="radio" name={name} value={option.value} required defaultChecked={value === option.value} />
+            <input
+              type="radio"
+              name={name}
+              value={option.value}
+              required
+              {...(controlled
+                ? { checked: value === option.value, onChange: () => onChange(option.value) }
+                : { defaultChecked: value === option.value })}
+            />
             {option.label}
           </label>
         ))}
@@ -154,6 +166,7 @@ export function GrapplerForm({
   bottom,
   submitLabel,
   submitDisabled = false,
+  onGenderChange,
 }: GrapplerFormProps) {
   const [photoPreviewUrl, setPhotoPreviewUrl] = useState<string | null>(null);
   const [aadhaarPreviewUrl, setAadhaarPreviewUrl] = useState<string | null>(null);
@@ -281,6 +294,7 @@ export function GrapplerForm({
               name="gender"
               value={values?.gender}
               errors={errors}
+              onChange={onGenderChange}
               options={[
                 { value: "Male", label: "Male" },
                 { value: "Female", label: "Female" },
@@ -321,7 +335,7 @@ export function GrapplerForm({
                 )}
               </div>
               <Input id="photo" name="photo" type="file" accept="image/jpeg,image/png,image/webp" onChange={onPhotoChange} />
-              <p className="mt-1 text-xs text-muted-foreground">JPG, PNG, or WebP, under 1.5 MB. Shown on your public fighter card.</p>
+              <p className="mt-1 text-xs text-muted-foreground">JPG, PNG, or WebP, under 1.5 MB. Shown on your public grappler card.</p>
             </div>
           )}
         </div>
@@ -329,18 +343,18 @@ export function GrapplerForm({
         {mode === "event" && (
           <div className="max-w-md">
             <Label htmlFor="aadhaarImage" className="mb-1.5 block">
-              Aadhaar card image
+              Identity proof
             </Label>
             <div className="border-2 border-black bg-white w-full aspect-[16/10] mb-2 overflow-hidden flex items-center justify-center">
               {aadhaarPreviewUrl || hasAadhaarImage ? (
                 // eslint-disable-next-line @next/next/no-img-element
                 <img
                   src={aadhaarPreviewUrl ?? `/api/v1/fighter/aadhaar?v=${aadhaarImageVersion}`}
-                  alt="Aadhaar card"
+                  alt="Identity proof"
                   className="w-full h-full object-contain"
                 />
               ) : (
-                <span className="text-[10px] uppercase tracking-wider text-center px-2 text-muted-foreground">Aadhaar card image</span>
+                <span className="text-[10px] uppercase tracking-wider text-center px-2 text-muted-foreground">Identity proof</span>
               )}
             </div>
             <Input
@@ -352,7 +366,7 @@ export function GrapplerForm({
               onChange={onAadhaarChange}
             />
             <p className="mt-1 text-xs text-muted-foreground">
-              Clear photo of your Aadhaar card. JPG, PNG, or WebP, under 1.5 MB. Private — organizers only; never on public pages.
+              Clear photo of your identity proof. JPG, PNG, or WebP, under 1.5 MB. Private — organizers only; never on public pages.
             </p>
             <FieldError name="aadhaarImage" errors={errors} />
           </div>
@@ -361,18 +375,18 @@ export function GrapplerForm({
         {mode === "profile" && (
           <div className="max-w-md">
             <Label htmlFor="aadhaarImage" className="mb-1.5 block">
-              Aadhaar card image {hasAadhaarImage ? "(optional replace)" : "(optional)"}
+              Identity proof {hasAadhaarImage ? "(optional replace)" : "(optional)"}
             </Label>
             <div className="border-2 border-black bg-white w-full aspect-[16/10] mb-2 overflow-hidden flex items-center justify-center">
               {aadhaarPreviewUrl || hasAadhaarImage ? (
                 // eslint-disable-next-line @next/next/no-img-element
                 <img
                   src={aadhaarPreviewUrl ?? `/api/v1/fighter/aadhaar?v=${aadhaarImageVersion}`}
-                  alt="Aadhaar card"
+                  alt="Identity proof"
                   className="w-full h-full object-contain"
                 />
               ) : (
-                <span className="text-[10px] uppercase tracking-wider text-center px-2 text-muted-foreground">No Aadhaar image yet</span>
+                <span className="text-[10px] uppercase tracking-wider text-center px-2 text-muted-foreground">No identity proof yet</span>
               )}
             </div>
             <Input id="aadhaarImage" name="aadhaarImage" type="file" accept="image/jpeg,image/png,image/webp" onChange={onAadhaarChange} />
@@ -389,9 +403,39 @@ export function GrapplerForm({
         <div className="grid sm:grid-cols-2 gap-4">
           <TextField label="Academy / team name" name="academy" errors={errors} defaultValue={values?.academy} />
           <TextField label="Head coach / coach name" name="headCoach" errors={errors} defaultValue={values?.headCoach} />
-          <TextField label="Belt rank" name="beltRank" errors={errors} defaultValue={values?.beltRank} />
+          <div>
+            <Label htmlFor="beltRank" className="mb-1.5 block">
+              Belt rank
+            </Label>
+            <select
+              id="beltRank"
+              name="beltRank"
+              required
+              defaultValue={values?.beltRank || ""}
+              className="flex h-10 w-full border-2 border-black bg-white px-3 text-sm"
+            >
+              <option value="" disabled>
+                Select belt
+              </option>
+              <option value="White">White (Beginner)</option>
+              <option value="Blue">Blue (Intermediate)</option>
+              <option value="Purple">Purple (Intermediate)</option>
+            </select>
+            <p className="mt-1 text-xs text-muted-foreground">Beginner divisions: white only. Intermediate: blue or purple.</p>
+            <FieldError name="beltRank" errors={errors} />
+          </div>
           <TextField label="Years training" name="yearsTraining" type="number" min={0} max={60} step="0.5" errors={errors} defaultValue={values?.yearsTraining} />
-          <TextField label="Wins" name="careerWins" type="number" min={0} max={500} step="1" errors={errors} defaultValue={values?.careerWins ?? "0"} />
+          <TextField
+            label="Past record"
+            name="careerWins"
+            type="number"
+            min={0}
+            max={500}
+            step="1"
+            errors={errors}
+            defaultValue={values?.careerWins ?? "0"}
+            hint="Number of past wins used for seeding."
+          />
           <TextField label="Weight division" name="weightDivision" errors={errors} defaultValue={values?.weightDivision} />
           <TextField label="How did you hear about Up ’n Roll?" name="heardAbout" errors={errors} defaultValue={values?.heardAbout} />
         </div>
@@ -412,7 +456,13 @@ export function GrapplerForm({
             <Textarea id="allergiesDetail" name="allergiesDetail" defaultValue={values?.allergiesDetail} />
             <FieldError name="allergiesDetail" errors={errors} />
           </div>
-          <Choice legend="Are you currently taking any medication?" name="takingMedication" options={YES_NO} value={values?.takingMedication} errors={errors} />
+          <Choice
+            legend="Are you currently taking any medication, steroids, performance-enhancing substances, or other drugs?"
+            name="takingMedication"
+            options={YES_NO}
+            value={values?.takingMedication}
+            errors={errors}
+          />
           <Choice legend="Are you medically fit to compete?" name="medicallyFit" options={YES_NO} value={values?.medicallyFit} errors={errors} />
         </div>
       </section>
@@ -436,7 +486,7 @@ export function GrapplerForm({
             ? `You agreed to these terms on ${new Date(waiverAcceptedAt).toLocaleDateString("en-IN")}.`
             : mode === "event"
               ? "Read these terms, then tick Consent and Agreement below before you continue."
-              : "These are the terms that come with a fighter account."}
+              : "These are the terms that come with a grappler account."}
         </p>
       </section>
 

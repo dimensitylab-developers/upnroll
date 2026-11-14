@@ -26,9 +26,9 @@ export const grapplerDetailsSchema = z.object({
     .refine((value) => /^[A-Za-z0-9._]{1,30}$/.test(value), "Enter a valid Instagram username."),
   academy: z.string().trim().min(2, "Enter your academy or team.").max(80),
   headCoach: z.string().trim().min(2, "Enter your coach.").max(80),
-  beltRank: z.string().trim().min(2, "Enter your belt rank.").max(40),
+  beltRank: z.enum(["White", "Blue", "Purple"], { message: "Select White, Blue, or Purple." }),
   yearsTraining: z.coerce.number().min(0, "Enter years training.").max(60),
-  careerWins: z.coerce.number().int().min(0, "Enter your wins.").max(500),
+  careerWins: z.coerce.number().int().min(0, "Enter your past record.").max(500),
   weightDivision: z.string().trim().min(1, "Enter your weight division.").max(40),
   heardAbout: z.string().trim().min(2, "Tell us how you heard about Up ’n Roll.").max(120),
   hasMedicalCondition: yesNo,
@@ -67,6 +67,27 @@ export function ageFromDob(iso: string, today = new Date()): number {
 
 export function isMinorAge(age: number) {
   return Number.isFinite(age) && age >= 0 && age < 18;
+}
+
+export type BeltRank = "White" | "Blue" | "Purple";
+export type DivisionExperience = "BEGINNER" | "INTERMEDIATE";
+
+/** Beginner = white only; Intermediate = blue or purple. */
+export function beltsForExperience(level: DivisionExperience | "" | undefined): BeltRank[] {
+  if (level === "BEGINNER") return ["White"];
+  if (level === "INTERMEDIATE") return ["Blue", "Purple"];
+  return ["White", "Blue", "Purple"];
+}
+
+export function beltMatchesExperience(belt: string, level: DivisionExperience | "" | undefined): boolean {
+  if (!level) return true;
+  return beltsForExperience(level).includes(belt as BeltRank);
+}
+
+export function formGenderToDivisionGender(gender: string): "MALE" | "FEMALE" | "" {
+  if (gender === "Male") return "MALE";
+  if (gender === "Female") return "FEMALE";
+  return "";
 }
 
 export function grapplerFieldIssues(

@@ -50,7 +50,7 @@ export async function confirmVerificationCode(email: string, code: string): Prom
   await getEmailAdapter().send({
     to: email,
     subject: "Welcome to Up 'n Roll",
-    body: `${greetingLine(name)}\nYour account is ready. The next card is the Up 'n Roll Superfight Series on Saturday 23 January 2027.`,
+    body: `${greetingLine(name)}\nYour account is ready. The next card is Up 'n Roll Superfight on Saturday 23 January 2027.`,
   });
 
   return { userId: String(user._id), displayName: name };
