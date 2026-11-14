@@ -27,7 +27,7 @@ Shipped on `fix/client-requirements-gaps` without inventing product rules. Still
 1. **Round robin / format picker (OD-003)** — no RR engine; n=3 stays single-elim with bye.
 2. **Season locks** — no Season model; TRANSFER after a decided match stays allowed until boundary dates + ban rule are approved.
 3. **Made vs Make in India** — current footer uses Make in India lion; do not swap without an approved mark file.
-4. **Past-record format** — UI label is “Past record”; storage remains numeric `careerWins` until a free-text format is approved.
+4. **Past-record format** — free-text `pastRecord` shipped; `careerWins` is still derived when the text starts with a number (confirm seeding copy with owner).
 5. **Unwanted woman-frame asset** — needs client screenshot/PDF mapping before deleting any media.
 6. **AI rankings placeholders** — keep photo/initials until an approved character set lands.
 

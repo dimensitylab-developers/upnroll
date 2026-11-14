@@ -41,7 +41,6 @@ function validGrappler(overrides: Record<string, unknown> = {}) {
     yearsTraining: 4,
     pastRecord: "2-1",
     weightDivision: "-65 kg",
-    instagramHandle: "rhea.rolls",
     heardAbout: "Instagram",
     hasMedicalCondition: "no",
     medicalConditionDetail: "",
