@@ -1,55 +1,55 @@
 /**
- * Theme-fit sponsor ribbon — white tape, black edge, logos first.
- * Partner marks are punched for a white strip so black plates disappear.
+ * Tilted white sponsor tape — large, even logos, clear ratios.
  */
 
-type Item =
-  | { kind: "logo"; name: string; src: string; className: string }
-  | { kind: "mark"; name: string; src: string; className: string }
-  | { kind: "word"; text: string };
+type Logo = {
+  name: string;
+  src: string;
+  /** Optical size — height drives scale; width follows the asset ratio. */
+  className: string;
+};
 
-const ITEMS: Item[] = [
-  { kind: "mark", name: "Up 'n Roll", src: "/logo-mark.png", className: "h-9 w-9 sm:h-10 sm:w-10" },
-  { kind: "logo", name: "Up 'n Roll", src: "/logo-wordmark.png", className: "h-7 w-auto sm:h-8" },
-  { kind: "logo", name: "The Perspective Box", src: "/sponsors/perspective-box.png", className: "h-11 w-auto sm:h-12" },
-  { kind: "logo", name: "Partner", src: "/sponsors/eye.png", className: "h-10 w-auto sm:h-11" },
-  { kind: "logo", name: "Hydration", src: "/sponsors/hydration.png", className: "h-4 w-auto min-w-[9rem] sm:h-5 sm:min-w-[11rem]" },
-  { kind: "word", text: "OSS" },
+const LOGOS: Logo[] = [
+  {
+    name: "Up 'n Roll",
+    src: "/logo-wordmark.png",
+    className: "h-9 w-auto sm:h-11",
+  },
+  {
+    name: "The Perspective Box",
+    src: "/sponsors/perspective-box.png?v=2",
+    className: "h-10 w-auto sm:h-12",
+  },
+  {
+    name: "Partner marks",
+    src: "/sponsors/eye.png?v=3",
+    className: "h-10 w-auto sm:h-12",
+  },
+  {
+    name: "Clutch Hydration",
+    src: "/sponsors/hydration.png?v=3",
+    className: "h-10 w-auto sm:h-12",
+  },
 ];
 
-/** Dense enough that wide screens still feel continuous. */
-const RIBBON: Item[] = [...ITEMS, ...ITEMS, ...ITEMS];
+const RIBBON = [...LOGOS, ...LOGOS, ...LOGOS];
 
-function Diamond() {
+function Separator() {
   return (
-    <span
-      className="mx-1 inline-block h-1.5 w-1.5 rotate-45 bg-brand-red sm:mx-1.5 sm:h-2 sm:w-2"
-      aria-hidden="true"
-    />
+    <span className="mx-7 inline-flex shrink-0 items-center sm:mx-10" aria-hidden="true">
+      <span className="h-1.5 w-1.5 rotate-45 bg-brand-red sm:h-2 sm:w-2" />
+    </span>
   );
 }
 
-function Slot({ item }: { item: Item }) {
-  if (item.kind === "word") {
-    return (
-      <span className="inline-flex items-center gap-3 px-2 sm:gap-4 sm:px-3">
-        <Diamond />
-        <span className="text-display text-[11px] font-semibold uppercase tracking-[0.22em] text-black sm:text-xs">
-          {item.text}
-        </span>
-        <Diamond />
-      </span>
-    );
-  }
-
+function LogoSlot({ logo }: { logo: Logo }) {
   return (
-    <span className="inline-flex items-center gap-3 px-2 sm:gap-4 sm:px-3">
-      <Diamond />
+    <span className="inline-flex h-12 shrink-0 items-center justify-center sm:h-14">
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img
-        src={item.src}
-        alt={item.name}
-        className={`max-w-[12rem] object-contain object-center sm:max-w-[15rem] ${item.className}`}
+        src={logo.src}
+        alt={logo.name}
+        className={`max-w-none object-contain object-center ${logo.className}`}
       />
     </span>
   );
@@ -57,41 +57,42 @@ function Slot({ item }: { item: Item }) {
 
 function Track({ ariaHidden }: { ariaHidden?: boolean }) {
   return (
-    <div className="flex w-max items-center" aria-hidden={ariaHidden || undefined}>
-      {RIBBON.map((item, index) => (
-        <Slot
-          key={`${item.kind}-${"src" in item ? item.src : item.text}-${index}`}
-          item={item}
-        />
+    <div className="flex w-max items-center px-6" aria-hidden={ariaHidden || undefined}>
+      {RIBBON.map((logo, index) => (
+        <span key={`${logo.name}-${index}`} className="inline-flex items-center">
+          <LogoSlot logo={logo} />
+          <Separator />
+        </span>
       ))}
     </div>
   );
 }
 
-/** White manga-tape sponsor strip — logos lead, light motion, theme edges. */
+/** Slightly tilted manga tape — narrower band, logos still clear and broad. */
 export function HomeMarquee() {
   return (
-    <section className="home-marquee relative z-10 overflow-hidden" aria-label="Sponsors">
+    <section className="home-marquee relative z-10 py-4 sm:py-5" aria-label="Sponsors">
       <p className="sr-only">Up &apos;n Roll sponsors</p>
-      <div className="border-y-2 border-black bg-white">
-        <div className="relative overflow-hidden">
-          <div
-            className="pointer-events-none absolute inset-y-0 left-0 z-10 w-10 bg-gradient-to-r from-white to-transparent sm:w-16"
-            aria-hidden="true"
-          />
-          <div
-            className="pointer-events-none absolute inset-y-0 right-0 z-10 w-10 bg-gradient-to-l from-white to-transparent sm:w-16"
-            aria-hidden="true"
-          />
-          <div className="home-marquee-row overflow-hidden py-3 sm:py-4">
-            <div className="home-marquee-track flex w-max will-change-transform">
-              <Track />
-              <Track ariaHidden />
+      <div className="relative overflow-hidden">
+        <div className="origin-center -rotate-1 border-y-2 border-black bg-white shadow-[0_4px_0_0_#c8102e] sm:-rotate-[1.25deg]">
+          <div className="relative overflow-hidden">
+            <div
+              className="pointer-events-none absolute inset-y-0 left-0 z-10 w-10 bg-gradient-to-r from-white to-transparent sm:w-16"
+              aria-hidden="true"
+            />
+            <div
+              className="pointer-events-none absolute inset-y-0 right-0 z-10 w-10 bg-gradient-to-l from-white to-transparent sm:w-16"
+              aria-hidden="true"
+            />
+            <div className="home-marquee-row overflow-hidden py-1 sm:py-1.5">
+              <div className="home-marquee-track flex w-max will-change-transform">
+                <Track />
+                <Track ariaHidden />
+              </div>
             </div>
           </div>
         </div>
       </div>
-      <div className="h-1 bg-brand-red" aria-hidden="true" />
     </section>
   );
 }

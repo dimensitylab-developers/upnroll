@@ -42,15 +42,16 @@ export function SiteCopyright({ className = "" }: { className?: string }) {
   );
 }
 
+/** Centered Address · India + flag — one baseline, matched sizes. */
 export function FooterAddress({ className = "" }: { className?: string }) {
   return (
-    <p
-      className={`inline-flex items-center justify-center gap-2 text-sm font-semibold text-foreground ${className}`.trim()}
-    >
-      <span className="text-[10px] font-semibold uppercase tracking-[0.18em] text-brand-red">Address</span>
-      <span className="text-display text-base font-semibold">India</span>
-      <IndianFlag className="h-3.5 w-5 rounded-[1px] ring-1 ring-black/15" />
-    </p>
+    <div className={`flex flex-col items-center justify-center gap-1 ${className}`.trim()}>
+      <p className="text-[10px] font-semibold uppercase leading-none tracking-[0.2em] text-brand-red">Address</p>
+      <p className="inline-flex items-center gap-2 leading-none">
+        <span className="text-sm font-semibold tracking-wide text-foreground">India</span>
+        <IndianFlag className="h-3 w-[1.125rem] shrink-0 rounded-[1px] ring-1 ring-black/15" />
+      </p>
+    </div>
   );
 }
 
