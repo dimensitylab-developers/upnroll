@@ -3,7 +3,6 @@ import Link from "next/link";
 import { connection } from "next/server";
 import { getSession } from "@/server/auth/session";
 import { cachedPublicEvents } from "@/lib/public-reads";
-import { HeaderStickers } from "@/components/home/mat-emojis";
 import { HeaderLockup } from "./header-lockup";
 import { ComicNav } from "./comic-nav";
 import { comicCell, comicCellActive, comicCellIdle } from "./comic-cell";
@@ -18,12 +17,6 @@ const NAV_LINKS = [
   { href: "/seminars", label: "Seminars" },
   { href: "/store", label: "Store" },
 ];
-
-function formatCardDate(value: Date | string) {
-  const date = value instanceof Date ? value : new Date(value);
-  // Only call after `connection()` so cacheComponents allows request-time formatting.
-  return date.toLocaleDateString("en-IN", { day: "numeric", month: "long", year: "numeric" });
-}
 
 function AuthControlsFallback() {
   return (
@@ -44,18 +37,8 @@ function AuthControlsFallback() {
   );
 }
 
-function NextCardFallback() {
-  return (
-    <div className="border-t-2 border-black bg-black text-white" aria-hidden="true">
-      <div className="mx-auto max-w-6xl px-4 py-1.5 sm:px-6 lg:px-8">
-        <p className="text-xs text-white/40 sm:text-sm">Next event</p>
-      </div>
-    </div>
-  );
-}
-
 /**
- * Session + published “next card” strip. Request-scoped for cookies; event list
+ * Session + open-event chip. Request-scoped for cookies; event list
  * reuses the public `"use cache"` helper (invalidated by event mutations).
  */
 async function HeaderSessionChrome() {
@@ -101,32 +84,10 @@ async function HeaderSessionChrome() {
   );
 }
 
-async function HeaderNextCard() {
-  await connection();
-  const events = await cachedPublicEvents();
-  const openEvent = events.find((event) => event.status === "REGISTRATION_OPEN") ?? events[0] ?? null;
-  if (!openEvent) return null;
-
-  return (
-    <div className="border-t-2 border-black bg-black text-white">
-      <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-x-4 gap-y-1 px-4 py-1.5 text-xs sm:px-6 sm:py-2 sm:text-sm lg:px-8">
-        <p className="min-w-0">
-          <span className="font-semibold text-brand-red">Next event</span>{" "}
-          <span className="break-words">{formatCardDate(openEvent.startDate)}</span>
-        </p>
-        <Link href={`/events/${openEvent.slug}`} className="shrink-0 font-semibold text-brand-red">
-          Register
-        </Link>
-      </div>
-    </div>
-  );
-}
-
 /** Static brand + primary nav paint independently of session / DB. */
 export function SiteHeader() {
   return (
     <header className="sticky top-0 z-40 relative border-t-2 border-t-black border-b-2 border-b-brand-red bg-background halftone-bg pt-[env(safe-area-inset-top)]">
-      <HeaderStickers />
       <div className="relative z-10 mx-auto max-w-6xl px-3 sm:px-6 lg:px-8">
         <div className="flex min-h-14 items-center gap-2 py-2 sm:min-h-16 sm:gap-3 sm:py-3">
           <HeaderLockup />
@@ -136,9 +97,6 @@ export function SiteHeader() {
           </Suspense>
         </div>
       </div>
-      <Suspense fallback={<NextCardFallback />}>
-        <HeaderNextCard />
-      </Suspense>
     </header>
   );
 }

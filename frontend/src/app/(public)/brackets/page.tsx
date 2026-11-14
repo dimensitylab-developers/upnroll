@@ -7,7 +7,6 @@ import {
 } from "@/lib/public-reads";
 import { BracketView } from "@/features/brackets/bracket-view";
 import { LiveRefresh } from "@/components/home/live-refresh";
-import { EmojiStrip, MatEmojis } from "@/components/home/mat-emojis";
 import { SectionBanner } from "@/components/home/section-banner";
 import { Badge } from "@/components/ui/badge";
 
@@ -41,11 +40,9 @@ export default async function LiveBracketsPage() {
 
   return (
     <main className="route-enter relative min-h-screen overflow-hidden px-4 py-16">
-      <MatEmojis className="absolute inset-0" />
       <div className="relative mx-auto max-w-5xl">
         <div className="mb-4 flex flex-wrap items-center gap-3">
           <LiveRefresh seconds={8} />
-          <EmojiStrip emojis={["double-leg-takedown", "armbar", "hip-throw", "triangle-choke"]} />
         </div>
         <h1 className="text-display text-4xl font-semibold">Brackets</h1>
         <p className="copy-slab mt-2 max-w-2xl text-sm">

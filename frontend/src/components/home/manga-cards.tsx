@@ -1,12 +1,10 @@
 import Image from "next/image";
-import { GrapplingEmoji, type GrapplingEmojiName } from "@/components/ui/grappling-emoji";
 
 interface MangaCardItem {
   title: string;
   sfx: string;
   image: string;
   line: string;
-  sticker: GrapplingEmojiName;
   tilt: string;
 }
 
@@ -17,7 +15,6 @@ const CARDS: MangaCardItem[] = [
     sfx: "SLAM!",
     image: "/manga/takedown.jpg",
     line: "Level change. Drive through. Finish on top.",
-    sticker: "double-leg-takedown",
     tilt: "-rotate-1",
   },
   {
@@ -25,7 +22,6 @@ const CARDS: MangaCardItem[] = [
     sfx: "CLINCH!",
     image: "/manga/clinch.jpg",
     line: "Collar tie. Dig underhooks. Break the base.",
-    sticker: "clinch-collar-tie",
     tilt: "rotate-1",
   },
   {
@@ -33,7 +29,6 @@ const CARDS: MangaCardItem[] = [
     sfx: "LOCK!",
     image: "/manga/guard.jpg",
     line: "Catch the posture. Launch. Tap.",
-    sticker: "armbar",
     tilt: "-rotate-[0.5deg]",
   },
   {
@@ -41,7 +36,6 @@ const CARDS: MangaCardItem[] = [
     sfx: "SWEEP!",
     image: "/manga/scramble.jpg",
     line: "Off-balance. Reverse. Hunt the back.",
-    sticker: "hip-throw",
     tilt: "rotate-[1.5deg]",
   },
   {
@@ -49,7 +43,6 @@ const CARDS: MangaCardItem[] = [
     sfx: "CHOKE!",
     image: "/manga/choke.jpg",
     line: "Take the back. Sink the choke. Finish.",
-    sticker: "rear-naked-choke",
     tilt: "-rotate-1",
   },
 ];
@@ -77,13 +70,10 @@ function MangaPanel({ card, featured = false }: { card: MangaCardItem; featured?
           {card.sfx}
         </span>
 
-        <div className="absolute bottom-2.5 left-2.5 right-2.5 flex items-end justify-between gap-2">
+        <div className="absolute bottom-2.5 left-2.5 right-2.5">
           <p className="max-w-[14rem] bg-white px-2 py-1 text-[10px] font-semibold uppercase leading-snug tracking-wide text-black sm:text-xs">
             {card.line}
           </p>
-          <span className="shrink-0 rounded-full border-2 border-black bg-white p-1 shadow-[2px_2px_0_0_#000]">
-            <GrapplingEmoji name={card.sticker} size={featured ? 30 : 24} />
-          </span>
         </div>
       </div>
     </article>
@@ -95,14 +85,6 @@ export function MangaCards() {
 
   return (
     <div className="relative">
-      <div className="pointer-events-none absolute -left-4 top-[18%] z-20 hidden md:block" aria-hidden="true">
-        <GrapplingEmoji name="triangle-choke" size={48} className="-rotate-12 drop-shadow-[3px_3px_0_#000]" />
-      </div>
-      <div className="pointer-events-none absolute -right-3 bottom-[12%] z-20 hidden md:block" aria-hidden="true">
-        <GrapplingEmoji name="mount" size={42} className="rotate-12 drop-shadow-[3px_3px_0_#000]" />
-      </div>
-
-      {/* Featured + strip: every frame stays 3:4 so nothing leaves empty white. */}
       <div className="grid items-start gap-4 sm:gap-5 lg:grid-cols-[minmax(0,1.05fr)_minmax(0,1.35fr)] lg:gap-6">
         <div className="mx-auto w-full max-w-md lg:mx-0 lg:max-w-none">
           <MangaPanel card={hero} featured />

@@ -1,18 +1,18 @@
 /**
  * Single-direction sponsor / brand strip.
- * Client sends logos later; until then show Up 'n Roll + placeholder sponsor slots.
+ * Soft surface — not a heavy black band. Logos land here when the client sends them.
  */
 
 const SPONSORS = [
   { label: "Up 'n Roll", tone: "red" as const },
-  { label: "Title sponsor", tone: "white" as const },
+  { label: "Title sponsor", tone: "paper" as const },
   { label: "Sponsor", tone: "ink" as const },
   { label: "Sponsor", tone: "gold" as const },
   { label: "Up 'n Roll", tone: "red" as const },
-  { label: "Sponsor", tone: "white" as const },
+  { label: "Sponsor", tone: "paper" as const },
 ];
 
-function Chip({ label, tone }: { label: string; tone: "red" | "white" | "ink" | "gold" }) {
+function Chip({ label, tone }: { label: string; tone: "red" | "paper" | "ink" | "gold" }) {
   const toneClass =
     tone === "red"
       ? "bg-brand-red text-white"
@@ -43,11 +43,11 @@ function Track({ ariaHidden }: { ariaHidden?: boolean }) {
   );
 }
 
-/** Single-direction brand / sponsor ticker. */
+/** Single-direction brand / sponsor ticker on a light strip. */
 export function HomeMarquee() {
   return (
     <section
-      className="home-marquee relative z-10 overflow-hidden border-y-[3px] border-black bg-black"
+      className="home-marquee relative z-10 overflow-hidden border-y-2 border-black bg-[#efeae2]"
       aria-label="Sponsors"
     >
       <p className="sr-only">Up &apos;n Roll sponsors</p>

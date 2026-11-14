@@ -16,8 +16,8 @@ export default async function HomePage() {
   return (
     <main className="route-enter relative">
       <HomeHero />
-      <HomeMarquee />
       <NextEventStrip event={featured} />
+      <HomeMarquee />
 
       <section className="relative mx-auto max-w-6xl px-4 py-10 sm:px-6 sm:py-12 lg:px-8">
         <HowYouEnter />

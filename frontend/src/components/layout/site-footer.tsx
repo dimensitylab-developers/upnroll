@@ -1,5 +1,6 @@
 import Link from "next/link";
-import { BuiltBy, D3Credit, FounderCredit, SiteCopyright } from "./brand";
+import { Instagram } from "lucide-react";
+import { BuiltBy, FooterAddress, FounderCredit, SiteCopyright } from "./brand";
 import type { SiteContact } from "./site-contact";
 import { SITE_CONTACT } from "./site-contact";
 
@@ -60,9 +61,12 @@ export function SiteFooter({ contact = SITE_CONTACT }: { contact?: SiteContact }
               href={contact.instagramUrl}
               target="_blank"
               rel="noreferrer"
-              className="inline-flex -skew-x-12 border-2 border-black bg-brand-red px-5 py-3 text-sm font-semibold uppercase tracking-wider text-white shadow-[5px_5px_0_0_#fff]"
+              className="inline-flex -skew-x-12 items-center border-2 border-black bg-brand-red px-5 py-3 text-sm font-semibold uppercase tracking-wider text-white shadow-[5px_5px_0_0_#fff]"
             >
-              <span className="inline-block skew-x-12">@{contact.instagramHandle}</span>
+              <span className="inline-flex skew-x-12 items-center gap-2">
+                <Instagram className="h-4 w-4 shrink-0" aria-hidden="true" strokeWidth={2.25} />
+                @{contact.instagramHandle}
+              </span>
             </a>
             <Link
               href="/events"
@@ -109,50 +113,37 @@ export function SiteFooter({ contact = SITE_CONTACT }: { contact?: SiteContact }
 
         <div className="sm:col-span-2 lg:col-span-2">
           <FooterHeading>Contact</FooterHeading>
-          <div className="grid gap-3 sm:grid-cols-2">
-            <a
-              href={contact.instagramUrl}
-              target="_blank"
-              rel="noreferrer"
-              className="border-2 border-black bg-white p-4 shadow-[5px_5px_0_0_#000] transition-transform hover:-translate-y-0.5 hover:shadow-[7px_7px_0_0_#c8102e]"
-            >
-              <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-brand-red">Instagram</p>
-              <p className="text-display mt-2 text-xl font-semibold">@{contact.instagramHandle}</p>
-              <p className="mt-1 text-sm text-muted-foreground">DM for queries</p>
-            </a>
-
-            <div className="border-2 border-black bg-black p-4 text-center text-white shadow-[5px_5px_0_0_#c8102e]">
-              <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-brand-red">Address</p>
-              <p className="text-display mt-2 inline-flex items-center justify-center gap-2 text-xl font-semibold">
-                <span>India</span>
-                <svg viewBox="0 0 18 12" className="h-4 w-6 rounded-[1px]" aria-hidden="true">
-                  <rect width="18" height="4" fill="#FF9933" />
-                  <rect y="4" width="18" height="4" fill="#FFFFFF" />
-                  <rect y="8" width="18" height="4" fill="#138808" />
-                  <circle cx="9" cy="6" r="1.45" fill="none" stroke="#000080" strokeWidth="0.45" />
-                </svg>
-              </p>
-              {hasEmail && (
-                <a href={`mailto:${contact.email}`} className="mt-3 block text-sm text-white/85 underline">
-                  {contact.email}
-                </a>
-              )}
-              {!hasEmail && (
-                <p className="mt-3 text-sm text-white/55">DM Instagram for queries.</p>
-              )}
-            </div>
-          </div>
+          <a
+            href={contact.instagramUrl}
+            target="_blank"
+            rel="noreferrer"
+            className="block max-w-md border-2 border-black bg-white p-4 shadow-[5px_5px_0_0_#000] transition-transform hover:-translate-y-0.5 hover:shadow-[7px_7px_0_0_#c8102e]"
+          >
+            <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-brand-red">Instagram</p>
+            <p className="text-display mt-2 inline-flex items-center gap-2.5 text-xl font-semibold">
+              <Instagram className="h-6 w-6 shrink-0 text-brand-red" aria-hidden="true" strokeWidth={2.25} />
+              <span>@{contact.instagramHandle}</span>
+            </p>
+            <p className="mt-1 text-sm text-muted-foreground">DM for queries</p>
+            {hasEmail && (
+              <p className="mt-2 text-sm text-muted-foreground">{contact.email}</p>
+            )}
+          </a>
         </div>
       </div>
 
       <div className="border-t-2 border-black bg-white">
-        <div className="mx-auto flex max-w-6xl flex-col items-center gap-3 px-4 py-4 text-center sm:flex-row sm:items-center sm:justify-between sm:text-left sm:px-6 lg:px-8">
-          <div className="flex flex-col items-center gap-2 sm:items-start sm:gap-y-1">
+        <div className="mx-auto grid max-w-6xl grid-cols-1 items-center gap-3 px-4 py-4 text-center sm:grid-cols-3 sm:gap-4 sm:px-6 sm:text-left lg:px-8">
+          <div className="flex flex-col items-center gap-1.5 sm:items-start">
             <SiteCopyright />
-            <D3Credit />
             <FounderCredit />
           </div>
-          <BuiltBy />
+          <div className="flex justify-center sm:justify-center">
+            <FooterAddress />
+          </div>
+          <div className="flex justify-center sm:justify-end">
+            <BuiltBy />
+          </div>
         </div>
       </div>
     </footer>

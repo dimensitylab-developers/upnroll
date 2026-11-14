@@ -2,17 +2,8 @@
 
 import Link from "next/link";
 import { useState } from "react";
-import { GrapplingEmoji, type GrapplingEmojiName } from "@/components/ui/grappling-emoji";
 import { cn } from "@/lib/utils";
 import type { HomeFaqItem } from "@/components/home/home-faq-data";
-
-const STICKERS: GrapplingEmojiName[] = [
-  "double-leg-takedown",
-  "armbar",
-  "hip-throw",
-  "triangle-choke",
-  "rear-naked-choke",
-];
 
 const TILTS = ["-rotate-1", "rotate-1", "-rotate-[0.75deg]", "rotate-[1.25deg]", "-rotate-[1.1deg]"];
 
@@ -62,7 +53,6 @@ export function HomeFaqTimeline({ items }: { items: HomeFaqItem[] }) {
           {items.map((item, index) => {
             const open = openId === item.id;
             const flip = index % 2 === 1;
-            const sticker = STICKERS[index % STICKERS.length];
             const tilt = TILTS[index % TILTS.length];
 
             return (
@@ -94,16 +84,6 @@ export function HomeFaqTimeline({ items }: { items: HomeFaqItem[] }) {
                       open && "bg-[#fff8f6] shadow-[7px_7px_0_0_var(--color-brand-red)]"
                     )}
                   >
-                    <span
-                      className={cn(
-                        "pointer-events-none absolute -top-3 border-2 border-black bg-white p-1 shadow-[2px_2px_0_0_#000]",
-                        flip ? "-left-2 sm:-left-3" : "-right-2 sm:-right-3"
-                      )}
-                      aria-hidden="true"
-                    >
-                      <GrapplingEmoji name={sticker} size={28} />
-                    </span>
-
                     <div className="flex items-start justify-between gap-3">
                       <div className="min-w-0">
                         <p className="text-funky text-base text-brand-red sm:text-lg">{item.label}</p>

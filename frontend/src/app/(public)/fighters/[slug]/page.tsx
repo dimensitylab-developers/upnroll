@@ -7,7 +7,6 @@ import { FighterHypeCard } from "@/features/fighters/fighter-hype-card";
 import { ShareFighterCardButton } from "@/features/fighters/share-fighter-card-button";
 import { Table, TableHeader, TableRow, TableHead, TableBody, TableCell } from "@/components/ui/table";
 import { NotFoundError } from "@/server/http/errors";
-import { MatEmojis } from "@/components/home/mat-emojis";
 import { PageBackLink } from "@/components/layout/page-back-link";
 
 export default async function PublicFighterProfilePage({ params }: { params: Promise<{ slug: string }> }) {
@@ -46,7 +45,6 @@ export default async function PublicFighterProfilePage({ params }: { params: Pro
 
   return (
     <main className="relative min-h-screen overflow-x-hidden px-4 py-10 sm:py-16">
-      <MatEmojis className="pointer-events-none absolute inset-0 opacity-40" />
       <div className="relative mx-auto max-w-2xl">
         <PageBackLink href="/rankings" label="Back to rankings" />
 

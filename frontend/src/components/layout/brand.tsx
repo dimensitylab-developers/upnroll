@@ -25,15 +25,8 @@ function IndianFlag({ className = "h-3 w-4" }: { className?: string }) {
 
 export function FounderCredit({ className = "" }: { className?: string }) {
   return (
-    <address
-      className={`not-italic inline-flex flex-wrap items-center justify-center gap-x-1.5 text-xs text-muted-foreground ${className}`.trim()}
-    >
-      <span>Founded by Suketu Bhuva</span>
-      <span aria-hidden="true">·</span>
-      <span className="inline-flex items-center gap-1">
-        <span>India</span>
-        <IndianFlag className="h-3 w-4 rounded-[1px] ring-1 ring-black/10" />
-      </span>
+    <address className={`not-italic text-xs text-muted-foreground ${className}`.trim()}>
+      Founded by Suketu Bhuva
     </address>
   );
 }
@@ -44,15 +37,19 @@ const COPYRIGHT_YEAR = 2026;
 export function SiteCopyright({ className = "" }: { className?: string }) {
   return (
     <p className={`text-[11px] leading-none text-muted-foreground ${className}`.trim()}>
-      © {COPYRIGHT_YEAR} Up &apos;n Roll · D3 Spectator. All rights reserved.
+      © {COPYRIGHT_YEAR} D3 Spectator. All rights reserved.
     </p>
   );
 }
 
-export function D3Credit({ className = "" }: { className?: string }) {
+export function FooterAddress({ className = "" }: { className?: string }) {
   return (
-    <p className={`text-[11px] leading-none text-muted-foreground ${className}`.trim()}>
-      A D3 Spectator brand
+    <p
+      className={`inline-flex items-center justify-center gap-2 text-sm font-semibold text-foreground ${className}`.trim()}
+    >
+      <span className="text-[10px] font-semibold uppercase tracking-[0.18em] text-brand-red">Address</span>
+      <span className="text-display text-base font-semibold">India</span>
+      <IndianFlag className="h-3.5 w-5 rounded-[1px] ring-1 ring-black/15" />
     </p>
   );
 }
