@@ -9,9 +9,7 @@ type DashboardNameplateProps = {
   weightDivision?: string;
   wins: number;
   losses: number;
-  sheetPercent: number;
   hasPhoto: boolean;
-  sheetReady: boolean;
 };
 
 /** Athlete identity strip  clean weigh-in board energy, not a toy header. */
@@ -24,9 +22,7 @@ export function DashboardNameplate({
   weightDivision,
   wins,
   losses,
-  sheetPercent,
   hasPhoto,
-  sheetReady,
 }: DashboardNameplateProps) {
   const meta = [academy, beltRank, weightDivision].filter(Boolean).join(" · ");
   const initials = shortName
@@ -64,7 +60,7 @@ export function DashboardNameplate({
           <p className="mt-2 text-sm text-muted-foreground">
             {meta || (
               <>
-                Sheet incomplete.{" "}
+                Profile incomplete.{" "}
                 <Link href="/fighter/profile" className="font-semibold text-brand-red underline">
                   Finish your profile
                 </Link>
@@ -76,17 +72,6 @@ export function DashboardNameplate({
             <div className="min-w-[4.5rem] border-2 border-black bg-[#f7f4ef] px-3 py-2">
               <p className="text-display text-xl font-semibold leading-none">{wins}-{losses}</p>
               <p className="mt-1 text-[9px] font-semibold uppercase tracking-[0.18em] text-black/45">Record</p>
-            </div>
-            <div className="min-w-[4.5rem] border-2 border-black bg-[#f7f4ef] px-3 py-2">
-              <p className="text-display text-xl font-semibold leading-none">{sheetPercent}%</p>
-              <p className="mt-1 text-[9px] font-semibold uppercase tracking-[0.18em] text-black/45">Sheet</p>
-            </div>
-            <div
-              className={`flex min-w-[5.5rem] items-center border-2 border-black px-3 py-2 text-[10px] font-semibold uppercase tracking-[0.16em] ${
-                sheetReady ? "bg-black text-white" : "bg-brand-red text-white"
-              }`}
-            >
-              {sheetReady ? "Event ready" : "Sheet open"}
             </div>
           </div>
 

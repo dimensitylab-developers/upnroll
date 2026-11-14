@@ -35,7 +35,6 @@ export default async function FighterDashboardPage() {
     ["AWAITING_PAYMENT", "PENDING_VERIFICATION", "CONFIRMED"].includes(r.status)
   );
   const hasPhoto = Boolean(data.profile?.photoKey);
-  const sheetReady = data.profileHealth.percent >= 100;
   const publicSlug = data.profile?.slug?.trim() || "";
 
   return (
@@ -52,9 +51,7 @@ export default async function FighterDashboardPage() {
           weightDivision={data.profile?.weightDivision}
           wins={data.record.wins}
           losses={data.record.losses}
-          sheetPercent={data.profileHealth.percent}
           hasPhoto={hasPhoto}
-          sheetReady={sheetReady}
         />
 
         {data.alerts.length > 0 && (

@@ -17,8 +17,11 @@ export function TeammateTransferButton({ registrationId }: { registrationId: str
       </Button>
       {state.error && <p className="text-xs text-primary">{state.error}</p>}
       {state.link && (
-        <p className="text-xs">
-          Free transfer link: <a className="underline" href={state.link}>{state.link}</a>
+        <p className="text-xs leading-relaxed">
+          Free transfer link (your friend signs in and completes the grappler form):{" "}
+          <a className="underline" href={state.link}>
+            {state.link}
+          </a>
         </p>
       )}
     </form>
