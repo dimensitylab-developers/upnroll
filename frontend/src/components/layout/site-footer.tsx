@@ -58,7 +58,8 @@ export function SiteFooter({ contact = SITE_CONTACT }: { contact?: SiteContact }
                 <img src="/logo-wordmark.png" alt="Up 'n Roll" className="h-11 w-auto sm:h-12" />
               </Link>
               <p className="mt-5 max-w-sm text-sm leading-relaxed text-white/70">
-                Made by an athlete for an athlete. Real fights. Real pay. Real rankings.
+                <span className="block">Made by an athlete for an athlete.</span>
+                <span className="block">Real fights. Real pay. Real rankings.</span>
               </p>
             </div>
 
