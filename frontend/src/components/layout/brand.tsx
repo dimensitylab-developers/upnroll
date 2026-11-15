@@ -39,8 +39,8 @@ export function FooterAddress({ className = "" }: { className?: string }) {
       <img
         src="/make-in-india.png"
         alt="Make in India"
-        width={720}
-        height={405}
+        width={492}
+        height={268}
         className="h-11 w-auto object-contain sm:h-12"
       />
     </div>
