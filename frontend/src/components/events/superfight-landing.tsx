@@ -284,7 +284,8 @@ export function SuperfightLanding({
                     </li>
                   ))}
                 </ul>
-                <p className="mt-4 border border-brand-red/80 bg-brand-red/20 px-3 py-2.5 text-xs leading-relaxed sm:text-sm">
+                <p className="mt-5 border-2 border-white bg-brand-red px-4 py-3 text-sm font-semibold leading-relaxed text-white shadow-[4px_4px_0_0_rgba(255,255,255,0.9)] sm:text-base">
+                  <span aria-hidden="true" className="mr-2">⚠</span>
                   {RULES.penalties.warning}
                 </p>
               </div>
