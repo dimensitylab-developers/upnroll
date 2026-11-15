@@ -25,51 +25,83 @@ export default async function FighterRequestsPage() {
   const active = registrations.filter((r) => isActiveRegistration(r.status));
 
   return (
-    <div className="max-w-2xl mx-auto space-y-10">
-      <div>
-        <h1 className="text-display text-2xl font-semibold mb-4">Request a cancellation or transfer</h1>
-        <div className="space-y-2">
+    <div className="mx-auto max-w-2xl space-y-10">
+      <section className="space-y-4">
+        <div>
+          <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-brand-red">House desk</p>
+          <h1 className="text-display mt-1 text-2xl font-semibold sm:text-3xl">Cancellation / transfer</h1>
+          <p className="mt-2 text-sm text-muted-foreground">
+            Ask to cancel, move division, or pass your seat to a teammate.
+          </p>
+        </div>
+
+        <div className="space-y-3">
           {await Promise.all(
             active.map(async (r) => {
               const divisions = r.event ? await listDivisionsForEvent(String(r.event._id)) : [];
-              const otherDivisions = divisions.filter((d) => String(d._id) !== String(r.divisionId)).map((d) => ({ id: String(d._id), name: d.name }));
+              const otherDivisions = divisions
+                .filter((d) => String(d._id) !== String(r.divisionId))
+                .map((d) => ({ id: String(d._id), name: d.name }));
               return (
-                <div key={String(r._id)} className="manga-panel p-4 flex items-center justify-between">
-                  <div>
-                    <p className="font-medium">{r.event?.name}  {r.division?.name}</p>
-                    <Badge variant="outline">{r.status.replaceAll("_", " ")}</Badge>
+                <article
+                  key={String(r._id)}
+                  className="flex flex-col gap-4 border-2 border-black bg-white p-4 shadow-[4px_4px_0_0_#000] sm:flex-row sm:items-center sm:justify-between sm:p-5"
+                >
+                  <div className="min-w-0">
+                    <p className="text-display text-lg font-semibold">{r.event?.name}</p>
+                    <p className="mt-1 text-sm text-muted-foreground">{r.division?.name}</p>
+                    <div className="mt-2">
+                      <Badge variant="outline">{r.status.replaceAll("_", " ")}</Badge>
+                    </div>
                   </div>
-                  <div className="flex flex-col items-end gap-2">
+                  <div className="flex flex-wrap items-center gap-2 sm:flex-col sm:items-end">
                     <CreateRequestDialog registrationId={String(r._id)} otherDivisions={otherDivisions} />
                     <TeammateTransferButton registrationId={String(r._id)} />
                   </div>
-                </div>
+                </article>
               );
             })
           )}
-          {active.length === 0 && <p className="text-sm text-muted-foreground">No active registrations to request changes for.</p>}
+          {active.length === 0 && (
+            <p className="border-2 border-black bg-white px-4 py-6 text-sm text-muted-foreground shadow-[4px_4px_0_0_#000]">
+              No active registrations to request changes for.
+            </p>
+          )}
         </div>
-      </div>
+      </section>
 
-      <div>
-        <h2 className="text-display text-xl font-semibold mb-4">Your requests</h2>
-        <div className="space-y-2">
-          {requests.map((r) => (
-            <div key={String(r._id)} className="manga-panel p-4">
-              <div className="flex items-center justify-between">
-                <p className="font-medium">{r.type}</p>
-                <Badge variant={r.status === "APPROVED" ? "default" : r.status === "REJECTED" ? "destructive" : "secondary"}>{r.status}</Badge>
-              </div>
-              <p className="text-sm text-muted-foreground mt-1">{r.reason}</p>
-              {r.reviewNote && <p className="text-sm text-muted-foreground mt-1">Admin note: {r.reviewNote}</p>}
-              {r.type === "CANCELLATION" && r.status === "APPROVED" && (
-                <p className="text-sm mt-1">Refund: {r.refundPercent ?? 0}%.</p>
-              )}
-            </div>
-          ))}
-          {requests.length === 0 && <p className="text-sm text-muted-foreground">No requests submitted yet.</p>}
+      <section className="space-y-4">
+        <div>
+          <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-brand-red">History</p>
+          <h2 className="text-display mt-1 text-xl font-semibold sm:text-2xl">Your requests</h2>
         </div>
-      </div>
+        <div className="space-y-3">
+          {requests.map((r) => (
+            <article key={String(r._id)} className="border-2 border-black bg-white p-4 shadow-[4px_4px_0_0_#000] sm:p-5">
+              <div className="flex items-center justify-between gap-3">
+                <p className="font-semibold">{r.type.replaceAll("_", " ")}</p>
+                <Badge
+                  variant={
+                    r.status === "APPROVED" ? "default" : r.status === "REJECTED" ? "destructive" : "secondary"
+                  }
+                >
+                  {r.status}
+                </Badge>
+              </div>
+              <p className="mt-2 text-sm text-muted-foreground">{r.reason}</p>
+              {r.reviewNote && <p className="mt-1 text-sm text-muted-foreground">Admin note: {r.reviewNote}</p>}
+              {r.type === "CANCELLATION" && r.status === "APPROVED" && (
+                <p className="mt-2 text-sm font-medium">Refund: {r.refundPercent ?? 0}%.</p>
+              )}
+            </article>
+          ))}
+          {requests.length === 0 && (
+            <p className="border-2 border-black bg-white px-4 py-6 text-sm text-muted-foreground shadow-[4px_4px_0_0_#000]">
+              No requests submitted yet.
+            </p>
+          )}
+        </div>
+      </section>
     </div>
   );
 }

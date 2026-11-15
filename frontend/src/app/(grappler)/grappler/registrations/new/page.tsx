@@ -3,6 +3,7 @@ import { listOpenDivisionsForRegistration } from "@/server/services/registration
 import { getFighterProfile } from "@/server/services/fighterService";
 import { NewRegistrationForm } from "@/features/registrations/new-registration-form";
 import type { GrapplerDefaults } from "@/features/fighters/grappler-form";
+import { normalizeWeightBand } from "@/features/fighters/weight-bands";
 
 /** Session/DB-bound route; allow blocking navigation under Cache Components. */
 export const instant = false;
@@ -44,7 +45,7 @@ export default async function NewRegistrationPage({
     beltRank: profile?.beltRank ?? "",
     yearsTraining: profile?.yearsTraining ? String(profile.yearsTraining) : "",
     pastRecord: profile?.pastRecord ?? "",
-    weightDivision: profile?.weightDivision ?? "",
+    weightDivision: normalizeWeightBand(profile?.weightDivision ?? "", profile?.gender ?? ""),
     heardAbout: profile?.heardAbout ?? "",
     hasMedicalCondition: profile ? yesNo(Boolean(profile.hasMedicalCondition)) : "",
     medicalConditionDetail: profile?.medicalConditionDetail ?? "",

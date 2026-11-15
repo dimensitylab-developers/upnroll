@@ -28,7 +28,7 @@ export function FighterNav() {
 
   return (
     <nav
-      className="flex gap-1 overflow-x-auto [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+      className="-mx-1 flex gap-1.5 overflow-x-auto px-1 pb-0.5 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
       aria-label="Grappler sections"
     >
       {LINKS.map((link) => {
@@ -39,13 +39,11 @@ export function FighterNav() {
             href={link.href}
             aria-current={active ? "page" : undefined}
             className={cn(
-              "shrink-0 px-2.5 py-1.5 text-xs uppercase tracking-[0.14em] whitespace-nowrap",
-              active
-                ? "bg-black font-semibold text-white"
-                : "text-muted-foreground hover:bg-black/5 hover:text-foreground"
+              "inline-flex min-h-9 shrink-0 -skew-x-12 items-center border-2 border-black px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.12em] whitespace-nowrap shadow-[2px_2px_0_0_#000] transition-colors sm:min-h-10 sm:px-3 sm:text-xs",
+              active ? "bg-brand-red text-white" : "bg-white text-black hover:bg-black hover:text-white"
             )}
           >
-            {link.label}
+            <span className="inline-block skew-x-12">{link.label}</span>
           </Link>
         );
       })}

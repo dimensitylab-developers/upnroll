@@ -36,7 +36,7 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
                   the mat.
                 </h2>
                 <p className="mt-4 max-w-xs text-sm leading-relaxed text-white/65">
-                  Sign in to your desk  grappler sheet, payments, matches, and the house board.
+                  Sign in to your grappler desk for sheet, payments, matches, and the house board.
                 </p>
               </div>
               <div>

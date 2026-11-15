@@ -4,9 +4,10 @@ import { peekTeammateTransfer } from "@/server/services/teammateTransfer";
 import { toAppError } from "@/server/http/errors";
 import { ClaimTransferForm } from "@/features/requests/claim-transfer-form";
 import type { GrapplerDefaults } from "@/features/fighters/grappler-form";
+import { normalizeWeightBand } from "@/features/fighters/weight-bands";
 import Link from "next/link";
 
-/** Session/DB-bound route — never instant-prerender. */
+/** Session/DB-bound route; never instant-prerender. */
 export const instant = false;
 
 function yesNo(value: boolean | undefined) {
@@ -51,7 +52,7 @@ export default async function ClaimTransferPage({ params }: { params: Promise<{ 
     beltRank: profile?.beltRank ?? "",
     yearsTraining: profile?.yearsTraining ? String(profile.yearsTraining) : "",
     pastRecord: profile?.pastRecord ?? "",
-    weightDivision: profile?.weightDivision ?? "",
+    weightDivision: normalizeWeightBand(profile?.weightDivision ?? "", profile?.gender ?? ""),
     heardAbout: profile?.heardAbout ?? "",
     hasMedicalCondition: profile ? yesNo(Boolean(profile.hasMedicalCondition)) : "",
     medicalConditionDetail: profile?.medicalConditionDetail ?? "",
@@ -65,7 +66,7 @@ export default async function ClaimTransferPage({ params }: { params: Promise<{ 
     <div className="mx-auto w-full min-w-0 max-w-3xl manga-panel overflow-visible p-6 sm:p-8">
       <h1 className="mb-2 text-display text-2xl font-semibold">Take a teammate&apos;s spot</h1>
       <p className="mb-6 text-sm text-muted-foreground">
-        Fill the grappler form for this seat — identity proof, medical answers, and waiver — then confirm. Your teammate
+        Fill the grappler form for this seat (identity proof, medical answers, and waiver), then confirm. Your teammate
         leaves the event when you finish.
       </p>
       <ClaimTransferForm

@@ -154,7 +154,7 @@ export default async function AdminEventDetailPage({ params }: { params: Promise
 
       <AdminSection title="Registrations">
         <p className="mb-4 text-sm text-muted-foreground">
-          Open a fighter sheet for the full registration profile. Withdraw incomplete or unpaid spots so the bracket stays clean.
+          Open a grappler sheet for the full registration profile. Withdraw incomplete or unpaid spots so the bracket stays clean.
         </p>
         <div className="space-y-3">
           {registrations.map((registration) => (

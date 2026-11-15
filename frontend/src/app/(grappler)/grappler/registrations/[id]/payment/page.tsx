@@ -86,14 +86,14 @@ export default async function RegistrationPaymentPage({ params }: { params: Prom
           </>
         ) : registration.status === "PENDING_VERIFICATION" ? (
           <div className="space-y-2">
-            <p className="text-sm font-semibold">Thank you  payment received for review.</p>
+            <p className="text-sm font-semibold">Thank you. Payment received for review.</p>
             <p className="text-sm text-muted-foreground">
               An organizer will review your UPI submission before your place is confirmed.
             </p>
           </div>
         ) : registration.status === "CONFIRMED" ? (
           <div className="space-y-2">
-            <p className="text-sm font-semibold text-brand-cyan">Thank you  your place is confirmed.</p>
+            <p className="text-sm font-semibold text-brand-cyan">Thank you. Your place is confirmed.</p>
             <p className="text-sm text-muted-foreground">Payment approved. Your registration is locked for this event.</p>
           </div>
         ) : (

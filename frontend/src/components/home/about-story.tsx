@@ -90,7 +90,7 @@ function AboutHomeTeaser() {
   );
 }
 
-function AboutPageStory({ eventSlug }: { eventSlug?: string | null }) {
+function AboutPageStory() {
   return (
     <div className="bg-[#efeae2]">
       <section className="relative overflow-hidden border-b-2 border-black bg-black text-white">
@@ -233,26 +233,6 @@ function AboutPageStory({ eventSlug }: { eventSlug?: string | null }) {
           </ul>
         </section>
 
-        <section className="border-2 border-black bg-black px-6 py-10 text-white shadow-[8px_8px_0_0_#000] sm:px-10">
-          <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-brand-red">Ready</p>
-          <p className="text-display mt-3 max-w-xl text-3xl font-semibold leading-tight sm:text-4xl">
-            Come roll with us.
-          </p>
-          <div className="mt-7 flex flex-wrap gap-3">
-            <Link
-              href="/register"
-              className="inline-flex -skew-x-12 border-2 border-black bg-brand-red px-5 py-3 text-sm font-semibold uppercase tracking-wider text-white shadow-[5px_5px_0_0_#fff]"
-            >
-              <span className="inline-block skew-x-12">Register</span>
-            </Link>
-            <Link
-              href={eventSlug ? `/events/${eventSlug}` : "/events"}
-              className="inline-flex border-2 border-white px-5 py-3 text-sm font-semibold uppercase tracking-wider"
-            >
-              Next event
-            </Link>
-          </div>
-        </section>
       </div>
     </div>
   );
@@ -267,7 +247,7 @@ export function AboutStory({
   page?: boolean;
 }) {
   if (page) {
-    return <AboutPageStory eventSlug={eventSlug} />;
+    return <AboutPageStory />;
   }
   return <AboutHomeTeaser />;
 }
