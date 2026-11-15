@@ -22,7 +22,7 @@ const STOPS = [
   {
     n: "05",
     title: "Result",
-    body: "Brackets, call times, and winners stay published. A past card keeps its date on the record.",
+    body: "Brackets, call times, and winners stay published. A past event keeps its date on the record.",
   },
 ];
 

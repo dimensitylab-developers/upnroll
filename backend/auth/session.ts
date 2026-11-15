@@ -19,11 +19,17 @@ export type SessionUser = {
 
 export type AppSession = { user: SessionUser };
 
-function toSessionUser(user: { _id: unknown; email?: string; role: UserRole; status: "ACTIVE" | "DISABLED" }): SessionUser {
+/** Map legacy Mongo "FIGHTER" to canonical GRAPPLER so requireRole/requireActor stay strict. */
+function normalizeSessionRole(role: string): UserRole {
+  if (role === "FIGHTER") return "GRAPPLER";
+  return role as UserRole;
+}
+
+function toSessionUser(user: { _id: unknown; email?: string; role: string; status: "ACTIVE" | "DISABLED" }): SessionUser {
   return {
     _id: String(user._id),
     email: user.email ?? "",
-    role: user.role,
+    role: normalizeSessionRole(user.role),
     status: user.status,
   };
 }

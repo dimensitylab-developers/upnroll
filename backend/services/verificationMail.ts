@@ -4,6 +4,7 @@ import { EmailVerification } from "@/server/models/EmailVerification";
 import { User } from "@/server/models/User";
 import { getEmailAdapter } from "@/server/email/console";
 import { greetingLine } from "@/server/email/greeting";
+import { simpleEmail } from "@/server/email/templates/simple";
 
 const CODE_TTL_MS = 15 * 60 * 1000;
 
@@ -20,11 +21,14 @@ export async function sendVerificationCode(userId: string, email: string): Promi
     codeHash: hashCode(code),
     expiresAt: new Date(Date.now() + CODE_TTL_MS),
   });
-  await getEmailAdapter().send({
-    to: email,
+  const message = simpleEmail({
     subject: "Your Up 'n Roll code",
-    body: `Your code is ${code}. It expires in 15 minutes.`,
+    badge: "VERIFICATION",
+    headline: "Your verification code",
+    paragraphs: [`Your code is ${code}. It expires in 15 minutes.`],
+    preheader: `Your Up 'n Roll code is ${code}.`,
   });
+  await getEmailAdapter().send({ to: email, ...message });
 }
 
 export async function confirmVerificationCode(email: string, code: string): Promise<{ userId: string; displayName: string } | null> {
@@ -47,11 +51,18 @@ export async function confirmVerificationCode(email: string, code: string): Prom
   const { FighterProfile } = await import("@/server/models/FighterProfile");
   const profile = await FighterProfile.findOne({ userId: user._id }).lean();
   const name = profile?.displayName || email;
-  await getEmailAdapter().send({
-    to: email,
+  const welcome = simpleEmail({
     subject: "Welcome to Up 'n Roll",
-    body: `${greetingLine(name)}\nYour account is ready. The next card is Up 'n Roll Superfight on Saturday 23 January 2027.`,
+    badge: "WELCOME",
+    headline: "You're in.",
+    greeting: greetingLine(name),
+    paragraphs: [
+      "Your account is ready. The next card is Up 'n Roll Superfight on Saturday 23 January 2027.",
+    ],
+    cta: { label: "Visit Up 'n Roll", href: "/" },
+    preheader: "Your Up 'n Roll account is ready.",
   });
+  await getEmailAdapter().send({ to: email, ...welcome });
 
   return { userId: String(user._id), displayName: name };
 }

@@ -11,6 +11,8 @@ import { FighterProfile } from "@/server/models/FighterProfile";
 import { getStorageAdapter } from "@/server/storage/factory";
 import { getEmailAdapter } from "@/server/email/console";
 import { greetingLine } from "@/server/email/greeting";
+import { simpleEmail } from "@/server/email/templates/simple";
+import { tournamentConfirmedEmail } from "@/server/email/templates/tournament-confirmed";
 import { writeAuditLog } from "@/server/audit/log";
 import { validateScreenshotMeta } from "@/features/payments/file-validation";
 import {
@@ -123,11 +125,18 @@ export async function submitPayment(
     throw err;
   }
 
-  await getEmailAdapter().send({
-    to: user.email,
+  const received = simpleEmail({
     subject: "Payment submission received",
-    body: `We received your payment submission (reference ${utr}) for ${event.name}. An organizer will review it manually  this is not yet confirmation of payment.`,
+    badge: "PAYMENT RECEIVED",
+    headline: "We got your submission.",
+    greeting: greetingLine(user.email),
+    paragraphs: [
+      `We received your payment submission (reference ${utr}) for ${event.name}. An organizer will review it manually — this is not yet confirmation of payment.`,
+    ],
+    cta: { label: "Open grappler dashboard", href: "/grappler/dashboard" },
+    preheader: `Payment submission received for ${event.name}.`,
   });
+  await getEmailAdapter().send({ to: user.email, ...received });
 
   return submission;
 }
@@ -206,29 +215,31 @@ async function notifyFighterOfPaymentDecision(
   if (!user?.email) return;
 
   const name = profile?.displayName?.trim() || user.email;
-  const card = `${event?.name ?? "your event"}  ${division?.name ?? "your division"}`;
+  const eventName = event?.name ?? "your event";
+  const divisionName = division?.name ?? "your division";
+  const card = `${eventName} — ${divisionName}`;
 
   const message =
     decision === "APPROVED"
-      ? {
-          subject: "Registration verified  you're confirmed",
-          body: [
-            greetingLine(name),
-            "",
-            `An organizer verified your payment for ${card}.`,
-            "Your registration is confirmed. See you on the mats.",
-          ].join("\n"),
-        }
-      : {
-          subject: "Payment rejected  action needed",
-          body: [
-            greetingLine(name),
-            "",
+      ? tournamentConfirmedEmail({
+          name,
+          eventName,
+          division: divisionName,
+          reference: submission.submittedUtr?.trim() || "—",
+        })
+      : simpleEmail({
+          subject: "Payment rejected — action needed",
+          badge: "PAYMENT REJECTED",
+          headline: "Action needed on your payment.",
+          greeting: greetingLine(name),
+          paragraphs: [
             `Your payment for ${card} was not approved.`,
             `Reason: ${note.trim() || "No reason provided."}`,
             "You can resubmit payment from your fighter dashboard.",
-          ].join("\n"),
-        };
+          ],
+          cta: { label: "Open grappler dashboard", href: "/grappler/dashboard" },
+          preheader: `Payment for ${eventName} was not approved.`,
+        });
 
   try {
     await getEmailAdapter().send({ to: user.email, ...message });

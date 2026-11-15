@@ -15,7 +15,7 @@ const BRACKET_FACTORS = [
 ] as const;
 
 const DOORS = [
-  { href: "/events", title: "Events", body: "The card, the date, the venue." },
+  { href: "/events", title: "Events", body: "The event, the date, the venue." },
   { href: "/brackets", title: "Brackets", body: "Live board and published trees." },
   { href: "/rankings", title: "Rankings", body: "Points and public profiles." },
   { href: "/faq", title: "FAQ", body: "Straight answers from the book." },
@@ -175,7 +175,7 @@ function AboutPageStory() {
             />
             <div className="absolute inset-0 bg-gradient-to-t from-black via-black/20 to-transparent" />
             <p className="absolute bottom-5 left-5 right-5 text-display text-2xl font-semibold text-white sm:text-3xl">
-              Jiu jitsu as a lifestyle, not just a card to enter.
+              Jiu jitsu as a lifestyle, not just an event to enter.
             </p>
           </article>
           <article className="border-2 border-black bg-white p-5 shadow-[8px_8px_0_0_#c8102e] sm:p-8">
@@ -214,7 +214,7 @@ function AboutPageStory() {
         </section>
 
         <section>
-          <SectionBanner>Around the card</SectionBanner>
+          <SectionBanner>Around the event</SectionBanner>
           <ul className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
             {DOORS.map((door) => (
               <li key={door.href}>

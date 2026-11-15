@@ -1,6 +1,6 @@
 import { Schema, model, models, type InferSchemaType, type Model } from "mongoose";
 
-const fighterProfileSchema = new Schema(
+const grapplerProfileSchema = new Schema(
   {
     userId: { type: Schema.Types.ObjectId, ref: "User", required: true, unique: true },
     displayName: { type: String, required: true, trim: true },
@@ -47,7 +47,20 @@ const fighterProfileSchema = new Schema(
   { timestamps: true }
 );
 
-export type FighterProfileDoc = InferSchemaType<typeof fighterProfileSchema>;
+export type GrapplerProfileDoc = InferSchemaType<typeof grapplerProfileSchema>;
+/** @deprecated Prefer GrapplerProfileDoc */
+export type FighterProfileDoc = GrapplerProfileDoc;
 
-export const FighterProfile: Model<FighterProfileDoc> =
-  models.FighterProfile ?? model<FighterProfileDoc>("FighterProfile", fighterProfileSchema);
+/**
+ * Canonical model name GrapplerProfile.
+ * Collection stays `fighterprofiles` until you run
+ * `scripts/migrate-fighter-to-grappler.ts` and then flip this third arg to
+ * `"grapplerprofiles"`.
+ */
+export const GrapplerProfile: Model<GrapplerProfileDoc> =
+  (models.GrapplerProfile as Model<GrapplerProfileDoc> | undefined) ??
+  (models.FighterProfile as Model<GrapplerProfileDoc> | undefined) ??
+  model<GrapplerProfileDoc>("GrapplerProfile", grapplerProfileSchema, "fighterprofiles");
+
+/** Alias so fighterService and other imports keep compiling. */
+export const FighterProfile = GrapplerProfile;

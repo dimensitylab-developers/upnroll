@@ -286,15 +286,15 @@ function openEvent(slug: string) {
   };
 }
 
-async function user(email: string, role: "FIGHTER" | "ADMIN" = "FIGHTER") {
+async function user(email: string, role: "GRAPPLER" | "ADMIN" = "GRAPPLER") {
   const { User } = await import("../models/User");
   return User.create({ email, passwordHash: "hash", role, status: "ACTIVE" });
 }
 
 function fighter(doc: { _id: unknown }) {
-  return Object.freeze({ userId: String(doc._id), role: "FIGHTER" as const });
+  return Object.freeze({ userId: String(doc._id), role: "GRAPPLER" as const });
 }
 
-function actor(doc: { _id: unknown }, role: "FIGHTER" | "ADMIN") {
+function actor(doc: { _id: unknown }, role: "GRAPPLER" | "ADMIN") {
   return Object.freeze({ userId: String(doc._id), role });
 }

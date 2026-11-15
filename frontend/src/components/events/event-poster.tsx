@@ -6,6 +6,7 @@ const EVENT_BANNERS: Record<string, string> = {
 };
 
 export function EventPoster({
+  eventId,
   name,
   slug,
   date,
@@ -15,6 +16,7 @@ export function EventPoster({
   registerUntil,
   canRegister,
 }: {
+  eventId: string;
   name: string;
   slug: string;
   date: string;
@@ -45,10 +47,10 @@ export function EventPoster({
                 <span className="-rotate-2 border-2 border-black bg-brand-red px-2.5 py-1 text-display text-xl font-semibold shadow-[3px_3px_0_0_#000]">
                   #2
                 </span>
-                <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-brand-red">Next card · Match</p>
+                <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-brand-red">Next event · Match</p>
               </div>
             ) : (
-              <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-brand-red">Next card</p>
+              <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-brand-red">Next event</p>
             )}
             <p className="text-display mt-2 text-xl font-semibold sm:text-2xl">{date}</p>
             <h2 className="text-display mt-1 max-w-3xl text-3xl font-semibold leading-[0.95] sm:text-5xl">{name}</h2>
@@ -60,7 +62,7 @@ export function EventPoster({
         </div>
       ) : (
         <div className="bg-black px-6 py-8 text-white sm:px-10 sm:py-10">
-          <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-brand-red">Next card</p>
+          <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-brand-red">Next event</p>
           <p className="text-display mt-4 text-2xl font-semibold sm:text-3xl">{date}</p>
           <h2 className="text-display mt-2 max-w-3xl text-4xl font-semibold leading-[0.95] sm:text-6xl">{name}</h2>
           {line && <p className="mt-4 text-sm text-white/80">{line}</p>}
@@ -78,11 +80,11 @@ export function EventPoster({
             prefetch
             className="inline-flex border-2 border-black bg-white px-4 py-2 text-sm font-semibold shadow-[4px_4px_0_0_#000] transition-colors active:bg-brand-red/10"
           >
-            Open full card
+            Open full event
           </Link>
           {canRegister ? (
             <Link
-              href="/fighter/registrations/new"
+              href={`/grappler/registrations/new?event=${encodeURIComponent(eventId)}`}
               className="inline-flex border-2 border-black bg-brand-red px-4 py-2 text-sm font-semibold text-white shadow-[4px_4px_0_0_#000]"
             >
               Register to compete

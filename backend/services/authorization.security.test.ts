@@ -85,8 +85,8 @@ vi.mock("@/server/audit/log", () => ({
 }));
 
 const admin = Object.freeze({ userId: "admin-1", role: "ADMIN" as const });
-const fighter = Object.freeze({ userId: "fighter-1", role: "FIGHTER" as const });
-const other = Object.freeze({ userId: "fighter-2", role: "FIGHTER" as const });
+const fighter = Object.freeze({ userId: "fighter-1", role: "GRAPPLER" as const });
+const other = Object.freeze({ userId: "fighter-2", role: "GRAPPLER" as const });
 
 describe("protected reads and mutations", () => {
   it("rejects a fighter listing registrations for an event", async () => {

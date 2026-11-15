@@ -36,6 +36,7 @@ export function NewRegistrationForm({
   hasParentalConsentImage,
   parentalConsentImageVersion,
   waiverAcceptedAt,
+  initialEventId = "",
 }: {
   divisions: DivisionOption[];
   defaults: GrapplerDefaults;
@@ -44,33 +45,59 @@ export function NewRegistrationForm({
   hasParentalConsentImage: boolean;
   parentalConsentImageVersion: string;
   waiverAcceptedAt: string | null;
+  initialEventId?: string;
 }) {
   const router = useRouter();
   const [state, formAction, pending] = useActionState(createRegistrationAction, initialState);
+
+  const events = useMemo(() => {
+    const seen = new Map<string, string>();
+    for (const division of divisions) {
+      if (!seen.has(division.eventId)) seen.set(division.eventId, division.eventName);
+    }
+    return [...seen.entries()].map(([id, name]) => ({ id, name }));
+  }, [divisions]);
+
+  const preferredEventId = useMemo(() => {
+    if (initialEventId && events.some((event) => event.id === initialEventId)) return initialEventId;
+    if (events.length === 1) return events[0].id;
+    return "";
+  }, [events, initialEventId]);
+
+  const [eventId, setEventId] = useState(preferredEventId);
   const [experienceLevel, setExperienceLevel] = useState<ExperienceLevel | "">("");
   const [divisionId, setDivisionId] = useState("");
   const [consent, setConsent] = useState(false);
   const [agreement, setAgreement] = useState(false);
   const [gender, setGender] = useState(defaults.gender ?? "");
 
-  const hasTaxonomy = divisions.some((d) => d.experienceLevel === "BEGINNER" || d.experienceLevel === "INTERMEDIATE");
+  const eventDivisions = useMemo(
+    () => (eventId ? divisions.filter((d) => d.eventId === eventId) : []),
+    [divisions, eventId]
+  );
+
+  const hasTaxonomy = eventDivisions.some(
+    (d) => d.experienceLevel === "BEGINNER" || d.experienceLevel === "INTERMEDIATE"
+  );
 
   const filteredDivisions = useMemo(() => {
     const code = divisionGenderCode(gender);
     const byGender = !code
-      ? divisions
-      : divisions.filter((division) => !division.gender || division.gender === code);
+      ? eventDivisions
+      : eventDivisions.filter((division) => !division.gender || division.gender === code);
 
     if (!hasTaxonomy) return byGender;
     if (!experienceLevel) return [];
     return byGender.filter((d) => d.experienceLevel === experienceLevel || d.experienceLevel === "");
-  }, [divisions, experienceLevel, gender, hasTaxonomy]);
-
-  const selectedDivision = filteredDivisions.find((d) => d.id === divisionId) ?? null;
+  }, [eventDivisions, experienceLevel, gender, hasTaxonomy]);
 
   useEffect(() => {
     if (state.redirectTo) router.push(state.redirectTo);
   }, [state.redirectTo, router]);
+
+  useEffect(() => {
+    if (!eventId && preferredEventId) setEventId(preferredEventId);
+  }, [eventId, preferredEventId]);
 
   useEffect(() => {
     if (!divisionId) return;
@@ -84,6 +111,7 @@ export function NewRegistrationForm({
   }
 
   const navigating = Boolean(state.redirectTo);
+  const eventLocked = events.length === 1;
 
   return (
     <GrapplerForm
@@ -105,6 +133,34 @@ export function NewRegistrationForm({
         <section className="space-y-4">
           <SectionBanner>Event entry</SectionBanner>
           <div className="grid max-w-md gap-4">
+            <div>
+              <Label htmlFor="eventId" className="mb-1.5 block">
+                Event
+              </Label>
+              <Select
+                value={eventId}
+                onValueChange={(value) => {
+                  setEventId(value);
+                  setExperienceLevel("");
+                  setDivisionId("");
+                }}
+                disabled={eventLocked}
+              >
+                <SelectTrigger id="eventId" aria-label="Event">
+                  <SelectValue placeholder="Select an event" />
+                </SelectTrigger>
+                <SelectContent>
+                  {events.map((event) => (
+                    <SelectItem key={event.id} value={event.id}>
+                      {event.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              {eventLocked ? (
+                <p className="mt-1 text-xs text-muted-foreground">Only this event is open for registration.</p>
+              ) : null}
+            </div>
             {hasTaxonomy && (
               <div>
                 <Label htmlFor="experienceLevel" className="mb-1.5 block">
@@ -116,9 +172,12 @@ export function NewRegistrationForm({
                     setExperienceLevel(value as ExperienceLevel);
                     setDivisionId("");
                   }}
+                  disabled={!eventId}
                 >
                   <SelectTrigger id="experienceLevel" aria-label="Experience level">
-                    <SelectValue placeholder="Select Beginner or Intermediate" />
+                    <SelectValue
+                      placeholder={eventId ? "Select Beginner or Intermediate" : "Choose an event first"}
+                    />
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="BEGINNER">Beginner (white belts)</SelectItem>
@@ -135,23 +194,25 @@ export function NewRegistrationForm({
               <Select
                 value={divisionId}
                 onValueChange={setDivisionId}
-                disabled={hasTaxonomy && !experienceLevel}
+                disabled={!eventId || (hasTaxonomy && !experienceLevel)}
               >
                 <SelectTrigger id="divisionId" aria-label="Weight class">
                   <SelectValue
                     placeholder={
-                      hasTaxonomy && !experienceLevel
-                        ? "Choose experience level first"
-                        : !gender
-                          ? "Set gender in personal information below"
-                          : "Select a weight class"
+                      !eventId
+                        ? "Choose an event first"
+                        : hasTaxonomy && !experienceLevel
+                          ? "Choose experience level first"
+                          : !gender
+                            ? "Set gender in personal information below"
+                            : "Select a weight class"
                     }
                   />
                 </SelectTrigger>
                 <SelectContent>
                   {filteredDivisions.map((division) => (
                     <SelectItem key={division.id} value={division.id}>
-                      {division.eventName} — {weightClassLabel(division.name)} ({division.discipline})
+                      {weightClassLabel(division.name)} ({division.discipline})
                     </SelectItem>
                   ))}
                 </SelectContent>
@@ -159,12 +220,12 @@ export function NewRegistrationForm({
               <p className="mt-1 text-xs text-muted-foreground">
                 Weight classes follow your gender and experience level. Beginner is white belt only; Intermediate is blue or purple.
               </p>
-              {gender && filteredDivisions.length === 0 && experienceLevel && (
+              {eventId && gender && filteredDivisions.length === 0 && (!hasTaxonomy || experienceLevel) && (
                 <p className="mt-1 text-xs text-muted-foreground">No open divisions match this gender and level yet.</p>
               )}
             </div>
           </div>
-          <CouponField eventId={selectedDivision?.eventId ?? null} disabled={pending || navigating} />
+          <CouponField eventId={eventId || null} disabled={pending || navigating} />
         </section>
       }
       bottom={

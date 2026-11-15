@@ -102,7 +102,7 @@ export async function GET(request: NextRequest) {
       user = await User.create({
         email,
         passwordHash: await hashPassword(randomBytes(32).toString("hex")),
-        role: "FIGHTER",
+        role: "GRAPPLER",
         emailVerified: true,
         emailVerifiedAt: new Date(),
         displayName: googleName,
@@ -161,7 +161,7 @@ export async function GET(request: NextRequest) {
     const next =
       user.role === "ADMIN"
         ? "/admin"
-        : resolveAuthReturnPath(returnPath, { current: "/login", fallback: "/fighter/dashboard" });
+        : resolveAuthReturnPath(returnPath, { current: "/login", fallback: "/grappler/dashboard" });
     const response = NextResponse.redirect(new URL(next, url.origin));
     clearOAuthCookies(response);
     return response;

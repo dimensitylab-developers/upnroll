@@ -18,6 +18,19 @@ const nextConfig: NextConfig = {
   outputFileTracingRoot: repoRoot,
   // One mongoose instance. Bundling it per server chunk drops the connection.
   serverExternalPackages: ["mongoose", "mongodb", "nodemailer"],
+  async redirects() {
+    return [
+      { source: "/fighter", destination: "/grappler/dashboard", permanent: true },
+      { source: "/fighter/:path*", destination: "/grappler/:path*", permanent: true },
+      { source: "/fighters", destination: "/grapplers", permanent: true },
+      { source: "/fighters/:path*", destination: "/grapplers/:path*", permanent: true },
+      { source: "/admin/fighters", destination: "/admin/grapplers", permanent: true },
+      { source: "/admin/fighters/:path*", destination: "/admin/grapplers/:path*", permanent: true },
+      { source: "/api/v1/fighter/:path*", destination: "/api/v1/grappler/:path*", permanent: true },
+      { source: "/api/v1/public/fighters/:path*", destination: "/api/v1/public/grapplers/:path*", permanent: true },
+      { source: "/api/v1/admin/fighters/:path*", destination: "/api/v1/admin/grapplers/:path*", permanent: true },
+    ];
+  },
   async headers() {
     return [
       {

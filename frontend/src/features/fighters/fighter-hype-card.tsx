@@ -47,7 +47,7 @@ export function FighterHypeCard({
   const line = [fighter.beltRank, fighter.weightDivision].filter(Boolean).join(" · ");
   const wins = fighter.wins ?? 0;
   const losses = fighter.losses ?? 0;
-  const photoSrc = fighter.hasPhoto && fighter.slug ? `/api/v1/public/fighters/${fighter.slug}/photo` : null;
+  const photoSrc = fighter.hasPhoto && fighter.slug ? `/api/v1/public/grapplers/${fighter.slug}/photo` : null;
   const house = fighter.houseLabel ?? "Up 'n Roll";
 
   const body = compact ? (
@@ -61,7 +61,7 @@ export function FighterHypeCard({
       <div className="flex items-center justify-between gap-1 border-b border-black bg-black px-1.5 py-0.5 text-white">
         <span className="truncate text-[8px] font-semibold uppercase tracking-[0.14em] text-brand-red">{house}</span>
         <span className="shrink-0 text-[8px] font-semibold uppercase tracking-[0.12em] text-white/65">
-          {fighter.rank ? `#${fighter.rank}` : "Card"}
+          {fighter.rank ? `#${fighter.rank}` : "Profile"}
         </span>
       </div>
 
@@ -107,7 +107,7 @@ export function FighterHypeCard({
       <div className="flex items-center justify-between gap-2 border-b-2 border-black bg-black px-2.5 py-1 text-white">
         <span className="text-[9px] font-semibold uppercase tracking-[0.18em] text-brand-red">{house}</span>
         <span className="text-[9px] font-semibold uppercase tracking-[0.16em] text-white/65">
-          {fighter.rank ? `#${fighter.rank}` : "Card"}
+          {fighter.rank ? `#${fighter.rank}` : "Profile"}
         </span>
       </div>
 

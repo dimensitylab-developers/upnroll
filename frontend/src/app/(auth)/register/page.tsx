@@ -4,6 +4,7 @@ import { Suspense } from "react";
 import { RegisterForm } from "@/features/auth/register-form";
 import { GoogleSignInLink } from "@/features/auth/google-sign-in-link";
 import { AuthBackLink } from "@/components/layout/auth-back-link";
+import { isSafeAppPath } from "@/lib/safe-app-path";
 
 export const metadata: Metadata = { title: { absolute: "Sign up  Up 'n Roll" } };
 
@@ -20,20 +21,6 @@ export default function RegisterPage({
       <Suspense fallback={<AuthBackLink from={undefined} current="/register" fallback="/login" />}>
         <RegisterChrome searchParams={searchParams} />
       </Suspense>
-      <RegisterForm />
-      <div className="relative my-5 text-center">
-        <span className="absolute inset-x-0 top-1/2 h-px bg-black/15" aria-hidden="true" />
-        <span className="relative bg-white px-3 text-[10px] font-semibold uppercase tracking-[0.2em] text-muted-foreground">
-          Or
-        </span>
-      </div>
-      <GoogleSignInLink entry="register" />
-      <p className="mt-6 text-center text-sm text-muted-foreground">
-        Already have an account?{" "}
-        <Link href="/login?from=%2Fregister" className="font-medium text-primary">
-          Login
-        </Link>
-      </p>
     </div>
   );
 }
@@ -43,7 +30,9 @@ async function RegisterChrome({
 }: {
   searchParams: Promise<{ from?: string; google?: string }>;
 }) {
-  const { from, google } = await searchParams;
+  const { from: rawFrom, google } = await searchParams;
+  const from = isSafeAppPath(rawFrom) ? rawFrom : undefined;
+  const loginHref = from ? `/login?from=${encodeURIComponent(from)}` : "/login?from=%2Fregister";
   const googleNote =
     google === "unavailable"
       ? "Google sign-in is not set up yet. Use your email."
@@ -63,6 +52,20 @@ async function RegisterChrome({
       {googleNote && (
         <p className="mb-4 border-2 border-black bg-[#f7f4ef] px-3 py-2 text-sm text-muted-foreground">{googleNote}</p>
       )}
+      <RegisterForm from={from} />
+      <div className="relative my-5 text-center">
+        <span className="absolute inset-x-0 top-1/2 h-px bg-black/15" aria-hidden="true" />
+        <span className="relative bg-white px-3 text-[10px] font-semibold uppercase tracking-[0.2em] text-muted-foreground">
+          Or
+        </span>
+      </div>
+      <GoogleSignInLink entry="register" from={from} />
+      <p className="mt-6 text-center text-sm text-muted-foreground">
+        Already have an account?{" "}
+        <Link href={loginHref} className="font-medium text-primary">
+          Login
+        </Link>
+      </p>
     </>
   );
 }

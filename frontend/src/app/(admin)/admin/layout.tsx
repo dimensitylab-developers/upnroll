@@ -41,7 +41,7 @@ async function AdminShell({ children }: { children: React.ReactNode }) {
   await connection();
   const session = await getSession();
   if (!session) redirect("/login");
-  if (session.user.role !== "ADMIN") redirect("/fighter/dashboard");
+  if (session.user.role !== "ADMIN") redirect("/grappler/dashboard");
 
   const displayName = await resolveDisplayName(session.user._id, session.user.email);
   const greeting = portalGreeting(displayName, "ADMIN");

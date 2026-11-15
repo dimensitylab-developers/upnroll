@@ -51,7 +51,7 @@ vi.mock("@/server/models/PaymentSubmission", () => ({
   PaymentSubmission: { updateMany: vi.fn().mockResolvedValue(undefined) },
 }));
 
-const actor = Object.freeze({ userId: "claimer1", role: "FIGHTER" as const });
+const actor = Object.freeze({ userId: "claimer1", role: "GRAPPLER" as const });
 const token = "a".repeat(36);
 
 function lean(value: unknown) {

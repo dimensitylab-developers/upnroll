@@ -70,7 +70,7 @@ async function ensureFighter(email: string, displayName: string, mobile: string)
     user = await User.create({
       email: normalized,
       passwordHash: await hashPassword(PASSWORD),
-      role: "FIGHTER",
+      role: "GRAPPLER",
       emailVerified: true,
       emailVerifiedAt: new Date(),
       status: "ACTIVE",

@@ -70,7 +70,7 @@ describe("getSession / requireSession / requireRole", () => {
     mockSessionFindOne.mockReturnValue({
       lean: () => Promise.resolve({ userId: "u1", expiresAt: new Date(Date.now() + 100000) }),
     });
-    mockUserFindById.mockReturnValue({ select: () => ({ lean: () => Promise.resolve({ _id: "u1", role: "FIGHTER", status: "DISABLED", passwordHash: "secret" }) }) });
+    mockUserFindById.mockReturnValue({ select: () => ({ lean: () => Promise.resolve({ _id: "u1", role: "GRAPPLER", status: "DISABLED", passwordHash: "secret" }) }) });
     const { getSession } = await import("./session");
     expect(await getSession()).toBeNull();
   });
@@ -83,14 +83,30 @@ describe("getSession / requireSession / requireRole", () => {
     });
     mockUserFindById.mockReturnValue({
       select: () => ({
-        lean: () => Promise.resolve({ _id: "u1", email: "a@example.com", role: "FIGHTER", status: "ACTIVE", passwordHash: "secret" }),
+        lean: () => Promise.resolve({ _id: "u1", email: "a@example.com", role: "GRAPPLER", status: "ACTIVE", passwordHash: "secret" }),
       }),
     });
     const { getSession } = await import("./session");
     const result = await getSession();
-    expect(result?.user).toEqual({ _id: "u1", email: "a@example.com", role: "FIGHTER", status: "ACTIVE" });
+    expect(result?.user).toEqual({ _id: "u1", email: "a@example.com", role: "GRAPPLER", status: "ACTIVE" });
     expect(result).not.toHaveProperty("session");
     expect(result?.user).not.toHaveProperty("passwordHash");
+  });
+
+  it("normalizes legacy FIGHTER role from Mongo to GRAPPLER on the session", async () => {
+    const { packCookieValue } = await import("./cookies");
+    mockCookieStore.get.mockReturnValue({ value: packCookieValue("raw-token") });
+    mockSessionFindOne.mockReturnValue({
+      lean: () => Promise.resolve({ userId: "u1", expiresAt: new Date(Date.now() + 100000) }),
+    });
+    mockUserFindById.mockReturnValue({
+      select: () => ({
+        lean: () => Promise.resolve({ _id: "u1", email: "legacy@example.com", role: "FIGHTER", status: "ACTIVE" }),
+      }),
+    });
+    const { getSession } = await import("./session");
+    const result = await getSession();
+    expect(result?.user.role).toBe("GRAPPLER");
   });
 
   it("requireSession throws UnauthorizedError when there's no session", async () => {
@@ -106,7 +122,7 @@ describe("getSession / requireSession / requireRole", () => {
     mockSessionFindOne.mockReturnValue({
       lean: () => Promise.resolve({ userId: "u1", expiresAt: new Date(Date.now() + 100000) }),
     });
-    mockUserFindById.mockReturnValue({ select: () => ({ lean: () => Promise.resolve({ _id: "u1", role: "FIGHTER", status: "ACTIVE" }) }) });
+    mockUserFindById.mockReturnValue({ select: () => ({ lean: () => Promise.resolve({ _id: "u1", role: "GRAPPLER", status: "ACTIVE" }) }) });
     const { requireRole } = await import("./session");
     const { ForbiddenError } = await import("@/server/http/errors");
     await expect(requireRole("ADMIN")).rejects.toBeInstanceOf(ForbiddenError);
@@ -126,7 +142,7 @@ describe("getSession / requireSession / requireRole", () => {
     });
     mockUserFindById.mockReturnValue({
       select: () => ({
-        lean: () => Promise.resolve({ _id: "new-user", email: "new@example.com", role: "FIGHTER", status: "ACTIVE" }),
+        lean: () => Promise.resolve({ _id: "new-user", email: "new@example.com", role: "GRAPPLER", status: "ACTIVE" }),
       }),
     });
 
@@ -140,7 +156,7 @@ describe("getSession / requireSession / requireRole", () => {
     expect(session?.user).toEqual({
       _id: "new-user",
       email: "new@example.com",
-      role: "FIGHTER",
+      role: "GRAPPLER",
       status: "ACTIVE",
     });
   });
@@ -168,7 +184,7 @@ describe("getSession / requireSession / requireRole", () => {
     });
     mockUserFindById.mockReturnValue({
       select: () => ({
-        lean: () => Promise.resolve({ _id: "u1", email: "a@example.com", role: "FIGHTER", status: "ACTIVE" }),
+        lean: () => Promise.resolve({ _id: "u1", email: "a@example.com", role: "GRAPPLER", status: "ACTIVE" }),
       }),
     });
 

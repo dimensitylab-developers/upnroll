@@ -45,7 +45,7 @@ export function FighterPhoto({
   return (
     // eslint-disable-next-line @next/next/no-img-element
     <img
-      src={`/api/v1/public/fighters/${slug}/photo`}
+      src={`/api/v1/public/grapplers/${slug}/photo`}
       alt=""
       width={width}
       height={height}

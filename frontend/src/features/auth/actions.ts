@@ -13,7 +13,7 @@ import { getClientIp } from "@/server/http/clientIp";
 import { loginSchema } from "./schemas";
 import { registerSchema } from "@/features/fighters/grappler-schema";
 import { sendVerificationCode, confirmVerificationCode } from "@/server/services/verificationMail";
-import { resolveAuthReturnPath } from "@/lib/safe-app-path";
+import { isSafeAppPath, resolveAuthReturnPath } from "@/lib/safe-app-path";
 
 export type AuthActionState = {
   error?: string;
@@ -74,12 +74,12 @@ export async function registerAction(
     }
 
     const passwordHash = await hashPassword(password);
-    // Public registration only ever creates FIGHTER accounts  see Part M:
+    // Public registration only ever creates GRAPPLER accounts  see Part M:
     // admin accounts are created exclusively via scripts/create-admin.ts.
     const user = await User.create({
       email,
       passwordHash,
-      role: "FIGHTER",
+      role: "GRAPPLER",
       emailVerified: false,
       displayName,
     });
@@ -111,7 +111,10 @@ export async function registerAction(
     throw err;
   }
 
-  redirect(`/verify?email=${encodeURIComponent(email)}`);
+  const from = String(formData.get("from") ?? "");
+  const verifyParams = new URLSearchParams({ email });
+  if (isSafeAppPath(from)) verifyParams.set("from", from);
+  redirect(`/verify?${verifyParams.toString()}`);
 }
 
 export async function loginAction(
@@ -160,7 +163,7 @@ export async function loginAction(
     redirect("/admin");
   }
   const from = String(formData.get("from") ?? "");
-  redirect(resolveAuthReturnPath(from, { current: "/login", fallback: "/fighter/dashboard" }));
+  redirect(resolveAuthReturnPath(from, { current: "/login", fallback: "/grappler/dashboard" }));
 }
 
 export async function verifyEmailAction(
@@ -188,7 +191,8 @@ export async function verifyEmailAction(
     targetId: confirmed.userId,
     after: { via: "email_verify" },
   });
-  redirect("/fighter/dashboard");
+  const from = String(formData.get("from") ?? "");
+  redirect(isSafeAppPath(from) ? from : "/grappler/dashboard");
 }
 
 export async function resendCodeAction(

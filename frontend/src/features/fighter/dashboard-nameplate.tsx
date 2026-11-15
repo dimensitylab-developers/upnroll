@@ -43,12 +43,12 @@ export function DashboardNameplate({
         <div className="group mx-auto h-32 w-24 shrink-0 overflow-hidden border-2 border-white bg-[#1a1a1a] transition-transform duration-200 hover:-translate-y-0.5 sm:mx-0 sm:h-40 sm:w-32">
           {hasPhoto ? (
             // eslint-disable-next-line @next/next/no-img-element
-            <img src="/api/v1/fighter/photo" alt="" className="h-full w-full object-cover" />
+            <img src="/api/v1/grappler/photo" alt="" className="h-full w-full object-cover" />
           ) : (
             <div className="flex h-full w-full flex-col items-center justify-center gap-1.5">
               <span className="text-display text-3xl font-semibold text-white/30 sm:text-4xl">{initials || "UR"}</span>
               <Link
-                href="/fighter/profile"
+                href="/grappler/profile"
                 className="pointer-events-auto text-[9px] font-semibold uppercase tracking-[0.16em] text-brand-red underline"
               >
                 Add photo
@@ -69,7 +69,7 @@ export function DashboardNameplate({
             {meta || (
               <>
                 Profile incomplete.{" "}
-                <Link href="/fighter/profile" className="font-semibold text-brand-red underline">
+                <Link href="/grappler/profile" className="font-semibold text-brand-red underline">
                   Finish your profile
                 </Link>
               </>
@@ -85,7 +85,7 @@ export function DashboardNameplate({
             <p className="mt-1.5 text-[9px] font-semibold uppercase tracking-[0.2em] text-black/45">Record</p>
           </div>
           <Link
-            href="/fighter/registrations/new"
+            href="/grappler/registrations/new"
             className="inline-flex min-h-10 -skew-x-12 items-center border-2 border-black bg-brand-red px-4 text-[10px] font-semibold uppercase tracking-[0.14em] text-white shadow-[3px_3px_0_0_#fff]"
           >
             <span className="inline-block skew-x-12">Register</span>

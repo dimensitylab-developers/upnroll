@@ -3,7 +3,7 @@ import Link from "next/link";
 import { SectionBanner } from "./section-banner";
 
 const LINES = [
-  { kicker: "01", title: "Register", body: "Put your name on the card." },
+  { kicker: "01", title: "Register", body: "Put your name on the event." },
   { kicker: "02", title: "Step on the mat", body: "Show up ready. The bracket does not wait." },
   { kicker: "03", title: "Follow it through", body: "From the first round to the final." },
 ];
@@ -17,7 +17,7 @@ const HOUSE_RULES = [
 ];
 
 const NIGHT = [
-  { n: "01", title: "Your name is on the card", body: "Once you are in, the event lists you. That is the start of the night." },
+  { n: "01", title: "Your name is on the event", body: "Once you are in, the event lists you. That is the start of the night." },
   { n: "02", title: "You are called to the mat", body: "When your bout is up, you step on. The bracket does not wait." },
   { n: "03", title: "The referee runs the match", body: "The referee's word is the match. Safety comes before the score." },
   { n: "04", title: "The result is published", body: "Win, loss, or stoppage, the result goes up for everyone to see." },
@@ -33,7 +33,7 @@ export function HomeGlimpse({
   eventSlug?: string | null;
 }) {
   const spots = [
-    { href: "/events", title: "Events", body: "The card, the date, and the venue for what is coming up." },
+    { href: "/events", title: "Events", body: "The event, the date, and the venue for what is coming up." },
     { href: "/rankings", title: "Rankings", body: "The points board and every public grappler profile." },
     { href: "/seminars", title: "Seminars", body: "Classes and camps, listed when a date is set." },
     { href: "/store", title: "Store", body: "Manga grappling shirts. Opening soon." },
@@ -42,9 +42,9 @@ export function HomeGlimpse({
   return (
     <>
       <section className="pb-14">
-        <SectionBanner>Every card</SectionBanner>
+        <SectionBanner>Every event</SectionBanner>
         <p className="copy-slab mb-4 inline-block max-w-2xl text-display text-2xl font-semibold sm:text-3xl">
-          Up &apos;n Roll runs the card. You bring the fight.
+          Up &apos;n Roll runs the event. You bring the fight.
         </p>
         <ol className="grid sm:grid-cols-3 gap-3">
           {LINES.map((line) => (
@@ -77,7 +77,7 @@ export function HomeGlimpse({
       </section>
 
       <section className="pb-14">
-        <SectionBanner>Around the card</SectionBanner>
+        <SectionBanner>Around the event</SectionBanner>
         <ul className="grid sm:grid-cols-2 lg:grid-cols-3 gap-3">
           {spots.map((spot) => (
             <li key={spot.title}>

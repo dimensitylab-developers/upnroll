@@ -1,0 +1,68 @@
+import type { Metadata } from "next";
+import { actorFromSession, getSession } from "@/server/auth/session";
+import { getFighterProfile } from "@/server/services/fighterService";
+import { ProfileForm } from "@/features/profile/profile-form";
+import type { GrapplerDefaults } from "@/features/fighters/grappler-form";
+import { normalizeWeightBand } from "@/features/fighters/weight-bands";
+
+/** Session/DB-bound route  allow blocking navigation under Cache Components. */
+export const instant = false;
+
+export const metadata: Metadata = { title: "Profile" };
+
+function yesNo(value: boolean | undefined, ready: boolean): string {
+  if (!ready) return "";
+  return value ? "yes" : "no";
+}
+
+export default async function FighterProfilePage() {
+  const session = await getSession();
+  const profile = session ? await getFighterProfile(actorFromSession(session)) : null;
+  const ready = Boolean(profile?.dateOfBirth);
+  const imageVersion = profile?.updatedAt ? new Date(profile.updatedAt).getTime().toString() : "";
+  const defaults: GrapplerDefaults = {
+    displayName: profile?.displayName ?? "",
+    dateOfBirth: profile?.dateOfBirth ?? "",
+    age: ready ? String(profile?.age ?? "") : "",
+    gender: profile?.gender ?? "",
+    mobile: profile?.mobile ?? "",
+    nationality: profile?.nationality ?? "",
+    cityState: profile?.cityState ?? "",
+    emergencyContactName: profile?.emergencyContactName ?? "",
+    emergencyRelationship: profile?.emergencyRelationship ?? "",
+    bloodGroup: profile?.bloodGroup ?? "",
+    instagramHandle: profile?.instagramHandle ?? "",
+    academy: profile?.academy || profile?.gym || "",
+    headCoach: profile?.headCoach ?? "",
+    beltRank: profile?.beltRank ?? "",
+    yearsTraining: ready ? String(profile?.yearsTraining ?? 0) : "",
+    pastRecord: profile?.pastRecord ?? "",
+    weightDivision: normalizeWeightBand(profile?.weightDivision ?? "", profile?.gender ?? ""),
+    heardAbout: profile?.heardAbout ?? "",
+    hasMedicalCondition: yesNo(profile?.hasMedicalCondition, ready),
+    medicalConditionDetail: profile?.medicalConditionDetail ?? "",
+    hasAllergies: yesNo(profile?.hasAllergies, ready),
+    allergiesDetail: profile?.allergiesDetail ?? "",
+    takingMedication: yesNo(profile?.takingMedication, ready),
+    medicallyFit: yesNo(profile?.medicallyFit, ready),
+  };
+
+  return (
+    <div className="manga-panel mx-auto w-full min-w-0 max-w-4xl overflow-visible p-6 sm:p-8">
+      <h1 className="text-display text-2xl font-semibold mb-2">Your profile</h1>
+      <p className="text-sm text-muted-foreground mb-6">
+        Belt, years training, academy, and coach are what the seeding board reads. Identity proof and medical answers stay off public pages. Organizers see the full form in the admin panel.
+      </p>
+      <ProfileForm
+        defaults={defaults}
+        hasPhoto={Boolean(profile?.photoKey)}
+        photoVersion={imageVersion}
+        hasAadhaarImage={Boolean(profile?.aadhaarImageKey)}
+        aadhaarImageVersion={imageVersion}
+        hasParentalConsentImage={Boolean(profile?.parentalConsentImageKey)}
+        parentalConsentImageVersion={imageVersion}
+        waiverAcceptedAt={profile?.waiverAcceptedAt ? new Date(profile.waiverAcceptedAt).toISOString() : null}
+      />
+    </div>
+  );
+}

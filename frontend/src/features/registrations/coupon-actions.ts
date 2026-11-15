@@ -21,7 +21,7 @@ export type CouponActionState = {
 };
 
 export async function applyCouponAction(_prev: CouponActionState, formData: FormData): Promise<CouponActionState> {
-  const actor = await requireActor("FIGHTER");
+  const actor = await requireActor("GRAPPLER");
   const eventId = String(formData.get("eventId") ?? "");
   const code = String(formData.get("code") ?? "");
   const reservationIntentId = String(formData.get("reservationIntentId") ?? "");
@@ -46,7 +46,7 @@ export async function applyCouponAction(_prev: CouponActionState, formData: Form
 }
 
 export async function releaseCouponAction(_prev: CouponActionState, formData: FormData): Promise<CouponActionState> {
-  const actor = await requireActor("FIGHTER");
+  const actor = await requireActor("GRAPPLER");
   const eventId = String(formData.get("eventId") ?? "");
   const code = String(formData.get("code") ?? "");
   const reservationIntentId = String(formData.get("reservationIntentId") ?? "");

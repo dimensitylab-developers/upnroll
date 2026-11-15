@@ -12,13 +12,15 @@ import { Label } from "@/components/ui/label";
  */
 export function CouponField({ eventId, disabled }: { eventId: string | null; disabled?: boolean }) {
   const intentId = useMemo(() => crypto.randomUUID(), []);
-  const [open, setOpen] = useState(false);
+  const [hasCoupon, setHasCoupon] = useState<"yes" | "no">("no");
   const [code, setCode] = useState("");
   const [applied, setApplied] = useState<NonNullable<CouponActionState["applied"]> | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [pending, startTransition] = useTransition();
 
   if (!eventId) return null;
+
+  const open = hasCoupon === "yes" || Boolean(applied);
 
   const applyCoupon = () => {
     const trimmed = code.trim();
@@ -58,22 +60,43 @@ export function CouponField({ eventId, disabled }: { eventId: string | null; dis
         return;
       }
       setApplied(null);
+      setHasCoupon("no");
     });
   };
 
   return (
     <div className="border-2 border-dashed border-black/50 bg-white/50 p-4">
-      <label className="flex items-center gap-2 text-sm font-semibold uppercase tracking-wider">
-        <input
-          type="checkbox"
-          checked={open || Boolean(applied)}
-          onChange={(e) => setOpen(e.target.checked)}
-          disabled={disabled || Boolean(applied) || pending}
-        />
-        Do you have a coupon code?
-      </label>
+      <fieldset disabled={disabled || Boolean(applied) || pending}>
+        <legend className="text-sm font-semibold uppercase tracking-wider">Do you have a coupon code?</legend>
+        <div className="mt-3 flex flex-wrap gap-4 text-sm">
+          <label className="flex items-center gap-2">
+            <input
+              type="radio"
+              name="hasCoupon"
+              value="yes"
+              checked={hasCoupon === "yes" || Boolean(applied)}
+              onChange={() => setHasCoupon("yes")}
+            />
+            Yes
+          </label>
+          <label className="flex items-center gap-2">
+            <input
+              type="radio"
+              name="hasCoupon"
+              value="no"
+              checked={hasCoupon === "no" && !applied}
+              onChange={() => {
+                setHasCoupon("no");
+                setError(null);
+                setCode("");
+              }}
+            />
+            No
+          </label>
+        </div>
+      </fieldset>
 
-      {(open || applied) && !applied && (
+      {open && !applied && (
         <div className="mt-3 flex flex-wrap items-end gap-2">
           <div className="min-w-[12rem] flex-1">
             <Label htmlFor="couponCode">Code</Label>

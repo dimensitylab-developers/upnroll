@@ -160,7 +160,7 @@ export async function processMatchReminderJob(job: OutboxJobDoc) {
       body,
       dedupeKey: `reminder:${matchId}:v${scheduleVersion}:${mode}:${userId}`,
       emailSubject: `${event?.name ?? "Up 'n Roll"}  ${title}`,
-      emailBody: `${body}\n\nOpen your matches: /fighter/matches\n\nNote: email delivery is best-effort; timing is not guaranteed to the minute.\n`,
+      emailBody: `${body}\n\nOpen your matches: /grappler/matches\n\nNote: email delivery is best-effort; timing is not guaranteed to the minute.\n`,
     });
   }
 }

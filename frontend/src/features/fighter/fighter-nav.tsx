@@ -6,12 +6,12 @@ import { useSyncExternalStore } from "react";
 import { cn } from "@/lib/utils";
 
 const LINKS = [
-  { href: "/fighter/dashboard", label: "Desk" },
-  { href: "/fighter/profile", label: "Profile" },
-  { href: "/fighter/registrations", label: "Events" },
-  { href: "/fighter/matches", label: "Matches" },
-  { href: "/fighter/requests", label: "Requests" },
-  { href: "/fighter/notifications", label: "Alerts" },
+  { href: "/grappler/dashboard", label: "Desk" },
+  { href: "/grappler/profile", label: "Profile" },
+  { href: "/grappler/registrations", label: "Events" },
+  { href: "/grappler/matches", label: "Matches" },
+  { href: "/grappler/requests", label: "Requests" },
+  { href: "/grappler/notifications", label: "Alerts" },
 ];
 
 function useHasHydrated() {

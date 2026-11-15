@@ -2,7 +2,7 @@ import Link from "next/link";
 
 export function FightSoonAlert({
   minutes = 10,
-  href = "/fighter/matches",
+  href = "/grappler/matches",
 }: {
   minutes?: number;
   href?: string;

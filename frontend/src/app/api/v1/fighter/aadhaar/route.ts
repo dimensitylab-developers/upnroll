@@ -6,7 +6,7 @@ import { toWebFileStream } from "@/server/http/streamFile";
 
 export async function GET(request: Request) {
   try {
-    const actor = await requireActor("FIGHTER");
+    const actor = await requireActor("GRAPPLER");
     const profile = await getFighterProfile(actor);
     if (!profile?.aadhaarImageKey) return new NextResponse("No identity proof image yet.", { status: 404 });
 

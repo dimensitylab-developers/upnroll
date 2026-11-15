@@ -53,7 +53,7 @@ export default async function PublicEventDetailPage({ params }: { params: Promis
     const record: HeldRecordData = {
       name: event.name,
       date,
-      summary: "This card is finished. The date stays. Photographs, video, the winner, the bracket, and the rankings stay with it.",
+      summary: "This event is finished. The date stays. Photographs, video, the winner, the bracket, and the rankings stay with it.",
       photos: media.filter((item) => !isVideo(item.externalUrl)).map((item) => ({ src: item.externalUrl, alt: item.caption })),
       videos: media.filter((item) => isVideo(item.externalUrl)).map((item) => ({ src: item.externalUrl, caption: item.caption })),
       winners: [...finals.entries()].map(([division, winner]) => ({ name: winner.name, division, photo: null })),
@@ -67,12 +67,12 @@ export default async function PublicEventDetailPage({ params }: { params: Promis
       scoringNote: "",
       scoring: [],
       rules: [],
-      bracket: "Winners move forward. If someone is out, they continue on the other side of the card.",
+      bracket: "Winners move forward. If someone is out, they continue on the other side of the event.",
       bracketHref: `/events/${slug}/brackets`,
-      rankingsNote: "The public board counts 3 points for each win until the official formula is set. Wins from this card are part of that board once the results are published.",
+      rankingsNote: "The public board counts 3 points for each win until the official formula is set. Wins from this event are part of that board once the results are published.",
       rankings: [...finals.values()].map((winner) => ({ name: winner.name, note: "Final" })),
       ending: ["Submission", "Points", "Disqualification", "Referee stoppage", "Withdrawal"],
-      endingNote: "A match on this card ended by one of those, and the result stays on the public results list.",
+      endingNote: "A match on this event ended by one of those, and the result stays on the public results list.",
     };
 
     return (
@@ -91,6 +91,7 @@ export default async function PublicEventDetailPage({ params }: { params: Promis
     const start = new Date(event.startDate);
     return (
       <SuperfightLanding
+        eventId={String(event._id)}
         slug={slug}
         name={event.name}
         dateLabel={start.toLocaleDateString("en-IN", { day: "numeric", month: "long", year: "numeric" })}
@@ -118,35 +119,40 @@ export default async function PublicEventDetailPage({ params }: { params: Promis
     <main className="route-enter min-h-screen bg-background halftone-bg px-4 py-10 sm:py-16">
       <div className="mx-auto max-w-2xl">
         <PageBackLink href="/events" label="Back to events" />
-        <p className="mb-2 text-[11px] font-semibold uppercase tracking-[0.22em] text-brand-red">Upcoming event</p>
-        <h1 className="text-display mb-2 text-3xl font-semibold break-words sm:text-4xl">
-          {new Date(event.startDate).toLocaleDateString("en-IN", { day: "numeric", month: "long", year: "numeric" })}
-        </h1>
-        <p className="copy-slab mb-2 text-muted-foreground">{event.name}</p>
-        <p className="mb-6">
-          <a href={mapsHref} target="_blank" rel="noreferrer" className="text-sm font-semibold text-brand-red underline">
-            {venue}
-          </a>
-        </p>
+        <div className="mt-2 border-2 border-black bg-white p-5 shadow-[6px_6px_0_0_#000] sm:p-8">
+          <p className="mb-2 text-[11px] font-semibold uppercase tracking-[0.22em] text-brand-red">Upcoming event</p>
+          <h1 className="text-display mb-2 text-3xl font-semibold break-words sm:text-4xl">
+            {new Date(event.startDate).toLocaleDateString("en-IN", { day: "numeric", month: "long", year: "numeric" })}
+          </h1>
+          <p className="mb-2 text-muted-foreground">{event.name}</p>
+          <p className="mb-6">
+            <a href={mapsHref} target="_blank" rel="noreferrer" className="text-sm font-semibold text-brand-red underline">
+              {venue}
+            </a>
+          </p>
 
-        {announcementBoard && (
-          <MatchAnnouncementBanner mats={announcementBoard.mats} eventName={announcementBoard.eventName} />
-        )}
-
-        <div className="mb-8 flex flex-wrap gap-x-4 gap-y-2">
-          {event.status === "REGISTRATION_OPEN" && (
-            <Link href="/fighter/registrations/new" className="min-h-11 inline-flex items-center text-sm font-semibold text-brand-red">
-              Register now
-            </Link>
+          {announcementBoard && (
+            <MatchAnnouncementBanner mats={announcementBoard.mats} eventName={announcementBoard.eventName} />
           )}
-        </div>
 
-        <Badge variant="outline" className="mb-3">
-          {event.status.replaceAll("_", " ")}
-        </Badge>
-        <p className="copy-slab text-sm text-muted-foreground">
-          Experience level and weight class are chosen on the registration form.
-        </p>
+          <div className="mb-8 flex flex-wrap gap-x-4 gap-y-2">
+            {event.status === "REGISTRATION_OPEN" && (
+              <Link
+                href={`/grappler/registrations/new?event=${encodeURIComponent(String(event._id))}`}
+                className="min-h-11 inline-flex items-center text-sm font-semibold text-brand-red"
+              >
+                Register now
+              </Link>
+            )}
+          </div>
+
+          <Badge variant="outline" className="mb-3">
+            {event.status.replaceAll("_", " ")}
+          </Badge>
+          <p className="text-sm text-muted-foreground">
+            Experience level and weight class are chosen on the registration form.
+          </p>
+        </div>
       </div>
     </main>
   );

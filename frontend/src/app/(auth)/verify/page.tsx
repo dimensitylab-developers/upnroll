@@ -1,10 +1,15 @@
 import type { Metadata } from "next";
 import { Suspense } from "react";
 import { VerifyForm } from "@/features/auth/verify-form";
+import { isSafeAppPath } from "@/lib/safe-app-path";
 
 export const metadata: Metadata = { title: { absolute: "Confirm your email  Up 'n Roll" } };
 
-export default function VerifyPage({ searchParams }: { searchParams: Promise<{ email?: string }> }) {
+export default function VerifyPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ email?: string; from?: string }>;
+}) {
   return (
     <div className="max-w-sm mx-auto">
       <h1 className="text-display text-2xl font-semibold mb-2">Confirm your email</h1>
@@ -24,14 +29,19 @@ function VerifyFallback() {
   );
 }
 
-async function VerifyChrome({ searchParams }: { searchParams: Promise<{ email?: string }> }) {
-  const { email = "" } = await searchParams;
+async function VerifyChrome({
+  searchParams,
+}: {
+  searchParams: Promise<{ email?: string; from?: string }>;
+}) {
+  const { email = "", from: rawFrom } = await searchParams;
+  const from = isSafeAppPath(rawFrom) ? rawFrom : undefined;
   return (
     <>
       <p className="text-sm text-muted-foreground mb-6">
         {email ? `We sent a code to ${email}.` : "Enter the code from your email."}
       </p>
-      <VerifyForm email={email} />
+      <VerifyForm email={email} from={from} />
     </>
   );
 }

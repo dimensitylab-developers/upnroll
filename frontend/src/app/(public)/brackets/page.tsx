@@ -51,7 +51,7 @@ export default async function LiveBracketsPage() {
 
         {!focus && (
           <p className="copy-slab mt-10 text-sm text-muted-foreground">
-            No public card is up yet. Check back when an event opens.
+            No public event is up yet. Check back when an event opens.
           </p>
         )}
 
@@ -123,7 +123,7 @@ export default async function LiveBracketsPage() {
             <section className="mt-12">
               <SectionBanner>Published brackets</SectionBanner>
               {brackets.length === 0 ? (
-                <p className="copy-slab text-sm">No bracket has been published for this card yet.</p>
+                <p className="copy-slab text-sm">No bracket has been published for this event yet.</p>
               ) : (
                 <div className="space-y-10">
                   {brackets.map((row) => (

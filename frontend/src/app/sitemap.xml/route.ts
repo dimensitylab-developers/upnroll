@@ -4,7 +4,7 @@ import { absoluteUrl } from "@/lib/site-url";
 const STATIC_PATHS = [
   "/",
   "/events",
-  "/fighters",
+  "/grapplers",
   "/rankings",
   "/brackets",
   "/faq",
@@ -25,7 +25,7 @@ export async function GET() {
       paths.add(`/events/${event.slug}/schedule`);
       paths.add(`/events/${event.slug}/results`);
     }
-    for (const fighter of fighters) paths.add(`/fighters/${fighter.slug}`);
+    for (const fighter of fighters) paths.add(`/grapplers/${fighter.slug}`);
   } catch {
     // The static paths above still describe the public site when the database is unreachable.
   }

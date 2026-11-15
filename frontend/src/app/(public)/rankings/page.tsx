@@ -66,7 +66,7 @@ export default async function PublicRankingsPage({
       const ranked = rankingBySlug.get(athlete.slug);
       return {
         key: athlete.slug,
-        href: `/fighters/${athlete.slug}`,
+        href: `/grapplers/${athlete.slug}`,
         fighter: {
           displayName: live?.displayName || athlete.displayName,
           slug: athlete.slug,
@@ -91,7 +91,7 @@ export default async function PublicRankingsPage({
         const ranked = rankingBySlug.get(fighter.slug);
         return {
           key: fighter.slug,
-          href: `/fighters/${fighter.slug}`,
+          href: `/grapplers/${fighter.slug}`,
           fighter: {
             ...fighter,
             wins: ranked?.wins ?? fighter.wins ?? 0,
@@ -197,7 +197,7 @@ export default async function PublicRankingsPage({
         <section id="cards" className="mt-16 scroll-mt-24">
           <SectionBanner>Grappler cards</SectionBanner>
           <p className="copy-slab mb-6 max-w-2xl text-sm">
-            Dense board. Tap a card for the full profile. No private contact or medical details.
+            Dense board. Tap a profile for the full record. No private contact or medical details.
           </p>
 
           <ul className="grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-4 md:grid-cols-4 lg:grid-cols-5">

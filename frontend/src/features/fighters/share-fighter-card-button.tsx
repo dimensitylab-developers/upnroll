@@ -15,9 +15,9 @@ export function ShareFighterCardButton({
   const [copied, setCopied] = useState(false);
 
   async function share() {
-    const url = `${window.location.origin}/fighters/${slug}`;
+    const url = `${window.location.origin}/grapplers/${slug}`;
     const title = `${displayName} · Up 'n Roll`;
-    const text = `Check ${displayName}'s card on Up 'n Roll.`;
+    const text = `Check ${displayName}'s profile on Up 'n Roll.`;
 
     try {
       if (typeof navigator.share === "function") {
@@ -47,7 +47,7 @@ export function ShareFighterCardButton({
       }
     >
       {copied ? <Check className="h-3.5 w-3.5" /> : <Share2 className="h-3.5 w-3.5" />}
-      {copied ? "Link copied" : "Share card"}
+      {copied ? "Link copied" : "Share profile"}
     </button>
   );
 }
