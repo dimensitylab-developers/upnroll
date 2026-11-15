@@ -34,20 +34,26 @@ export function FightTapePlayer({
     });
   }
 
-  const mediaClass = fill ? "absolute inset-0 h-full w-full object-contain object-center" : "block h-auto w-full";
+  // `fill` stretches to match the sibling column's height, but only once that
+  // height actually exists (the sm:+ side-by-side layout). On mobile (stacked,
+  // no definite parent height) it must fall back to natural block sizing, or
+  // the video collapses to 0px tall.
+  const mediaClass = fill
+    ? "block h-auto w-full sm:absolute sm:inset-0 sm:h-full sm:w-full sm:object-contain sm:object-center"
+    : "block h-auto w-full";
 
   return (
     <article
       className={`media-glow overflow-hidden border-2 border-black bg-white shadow-[5px_5px_0_0_#000] transition-transform duration-200 hover:-translate-y-1 hover:shadow-[8px_8px_0_0_#c8102e] ${
-        fill ? "flex h-full min-h-0 flex-col" : ""
+        fill ? "sm:flex sm:h-full sm:min-h-0 sm:flex-col" : ""
       }`}
     >
-      <div className={`relative overflow-hidden bg-neutral-950 ${fill ? "min-h-0 flex-1" : ""}`}>
+      <div className={`relative overflow-hidden bg-neutral-950 ${fill ? "sm:min-h-0 sm:flex-1" : ""}`}>
         {!started ? (
           <button
             type="button"
             onClick={startPlayback}
-            className={`group relative block w-full ${fill ? "h-full" : ""}`}
+            className={`group relative block w-full ${fill ? "sm:h-full" : ""}`}
             aria-label={label ? `Play ${label}` : `Play video: ${alt}`}
           >
             {/* eslint-disable-next-line @next/next/no-img-element */}

@@ -14,7 +14,7 @@ export function BrandMark({ className = "h-10 w-10" }: { className?: string }) {
 
 export function FounderCredit({ className = "" }: { className?: string }) {
   return (
-    <address className={`not-italic text-xs text-muted-foreground ${className}`.trim()}>
+    <address className={`not-italic text-[11px] leading-none text-muted-foreground ${className}`.trim()}>
       Founded by Suketu Bhuva
     </address>
   );
@@ -25,9 +25,9 @@ const COPYRIGHT_YEAR = 2026;
 
 export function SiteCopyright({ className = "" }: { className?: string }) {
   return (
-    <p className={`text-[11px] leading-none text-muted-foreground ${className}`.trim()}>
-      © {COPYRIGHT_YEAR} Up &apos;n Roll. 
-       <span className="block">All rights reserved by D3 Spectators Brand.</span>
+    <p className={`space-y-1.5 text-[11px] leading-none text-muted-foreground ${className}`.trim()}>
+      <span className="block">© {COPYRIGHT_YEAR} Up &apos;n Roll.</span>
+      <span className="block">All rights reserved by D3 Spectators Brand.</span>
     </p>
   );
 }

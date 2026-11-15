@@ -87,7 +87,7 @@ async function GrapplerShell({ children }: { children: React.ReactNode }) {
       </header>
       <main className="relative mx-auto w-full max-w-5xl flex-1 px-3 pb-12 pt-5 sm:px-4 sm:pt-6">{children}</main>
       <div className="flex justify-end px-3 pb-[max(1rem,env(safe-area-inset-bottom))] sm:px-5">
-        <div className="flex flex-col items-end gap-1">
+        <div className="flex flex-col items-end gap-1.5">
           <SiteCopyright />
           <FounderCredit />
           <BuiltBy />

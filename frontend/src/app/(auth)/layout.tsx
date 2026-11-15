@@ -51,7 +51,7 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
           <div className="p-5 sm:p-8 lg:p-10">{children}</div>
         </div>
 
-        <div className="mt-6 flex flex-col items-center gap-1 sm:items-start">
+        <div className="mt-6 flex flex-col items-center gap-1.5 sm:items-start">
           <SiteCopyright />
           <FounderCredit />
           <BuiltBy />

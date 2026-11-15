@@ -38,7 +38,7 @@ function TapeStrip({ tapes }: { tapes: Tape[] }) {
       ) : null}
 
       {portrait ? (
-        <div className="mx-auto w-full max-w-[16rem] shrink-0 sm:mx-0 sm:w-auto sm:max-w-none sm:self-stretch sm:aspect-[9/16]">
+        <div className="mx-auto w-full max-w-[16rem] shrink-0 sm:mx-0 sm:w-56 sm:max-w-none sm:self-stretch">
           <FightTapePlayer
             src={portrait.src}
             poster={portrait.poster}

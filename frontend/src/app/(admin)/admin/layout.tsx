@@ -80,7 +80,7 @@ async function AdminShell({ children }: { children: React.ReactNode }) {
       <main className="mx-auto w-full max-w-6xl flex-1 px-3 py-5 sm:px-6 sm:py-8 lg:px-8">{children}</main>
       <div className="border-t-2 border-black bg-white">
         <div className="mx-auto flex max-w-6xl justify-end gap-4 px-4 py-4 sm:px-6 lg:px-8">
-          <div className="flex flex-col items-end gap-1">
+          <div className="flex flex-col items-end gap-1.5">
             <SiteCopyright />
             <FounderCredit />
             <BuiltBy />
