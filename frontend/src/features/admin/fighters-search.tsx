@@ -22,6 +22,7 @@ export function FightersSearch({ defaultValue }: { defaultValue: string }) {
           const next = new URLSearchParams(searchParams.toString());
           if (value.trim()) next.set("q", value);
           else next.delete("q");
+          next.delete("page");
           router.replace(`${pathname}?${next.toString()}`);
         });
       }}

@@ -3,18 +3,37 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 
-/** Soft-refresh the current RSC tree so live boards pick up new match results. */
+/**
+ * Soft-refresh the current RSC tree so live boards pick up new match results.
+ * Skips ticks while the tab is hidden/backgrounded  a phone with this page open in a
+ * background tab shouldn't keep re-rendering and re-fetching every few seconds, and
+ * refreshes once immediately on return so the view isn't stale when the user comes back.
+ */
 export function LiveRefresh({ seconds = 8 }: { seconds?: number }) {
   const router = useRouter();
   const [pulse, setPulse] = useState(false);
 
   useEffect(() => {
-    const timer = window.setInterval(() => {
+    const refresh = () => {
       setPulse(true);
       router.refresh();
       window.setTimeout(() => setPulse(false), 160);
+    };
+
+    const timer = window.setInterval(() => {
+      if (document.visibilityState !== "visible") return;
+      refresh();
     }, Math.max(4, seconds) * 1000);
-    return () => window.clearInterval(timer);
+
+    const onVisible = () => {
+      if (document.visibilityState === "visible") refresh();
+    };
+    document.addEventListener("visibilitychange", onVisible);
+
+    return () => {
+      window.clearInterval(timer);
+      document.removeEventListener("visibilitychange", onVisible);
+    };
   }, [router, seconds]);
 
   return (

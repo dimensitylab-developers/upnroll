@@ -10,7 +10,7 @@ import { PageHeader } from "@/components/page-header";
 import { MatchResultDialog } from "@/features/matches/match-result-dialog";
 import { ScheduleMatchDialog } from "@/features/matches/schedule-match-dialog";
 import { JudgeCredentialsPanel } from "@/features/matches/judge-credentials-panel";
-import { fetchJudgeCredentialMeta } from "@/features/matches/judge-credential-actions";
+import { fetchJudgeCredentialMetaBatch, type fetchJudgeCredentialMeta } from "@/features/matches/judge-credential-actions";
 import { PageBackLink } from "@/components/layout/page-back-link";
 
 /** Session/DB-bound route  allow blocking navigation under Cache Components. */
@@ -215,10 +215,7 @@ export default async function AdminMatchesPage({ params }: { params: Promise<{ i
     throw err;
   }
   const matches = await listMatchesForEvent(actor, id);
-  const judgeMetaEntries = await Promise.all(
-    matches.map(async (m) => [String(m._id), await fetchJudgeCredentialMeta(String(m._id))] as const)
-  );
-  const judgeMetaByMatch = new Map(judgeMetaEntries);
+  const judgeMetaByMatch = await fetchJudgeCredentialMetaBatch(matches.map((m) => String(m._id)));
   const upcoming = matches.filter((m) => UPCOMING_STATUSES.has(m.status));
   const completed = matches.filter((m) => COMPLETED_STATUSES.has(m.status));
 

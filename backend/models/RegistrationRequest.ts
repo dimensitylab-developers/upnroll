@@ -20,6 +20,10 @@ const registrationRequestSchema = new Schema(
   { timestamps: true }
 );
 
+// requestService.listRequestsForAdmin sorts the whole (unfiltered) collection by createdAt
+// on every /admin/requests load.
+registrationRequestSchema.index({ createdAt: -1 });
+
 export type RegistrationRequestDoc = InferSchemaType<typeof registrationRequestSchema>;
 
 export const RegistrationRequest: Model<RegistrationRequestDoc> =

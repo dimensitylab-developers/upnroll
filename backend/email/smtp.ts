@@ -28,17 +28,22 @@ const SMTP_GREETING_TIMEOUT_MS = 15_000;
 const SMTP_SOCKET_TIMEOUT_MS = 30_000;
 
 export function createSmtpAdapter(settings: SmtpSettings, createTransport: TransportFactory = nodemailer.createTransport): EmailAdapter {
+  // Lazily created once per adapter instance and reused across sends  avoids paying a
+  // fresh TCP/TLS/SMTP-greeting handshake on every single email.
+  let transport: MailSender | null = null;
   return {
     async send(input) {
-      const transport = createTransport({
-        host: settings.host,
-        port: settings.port,
-        secure: settings.port === 465,
-        auth: { user: settings.user, pass: settings.pass },
-        connectionTimeout: SMTP_CONNECTION_TIMEOUT_MS,
-        greetingTimeout: SMTP_GREETING_TIMEOUT_MS,
-        socketTimeout: SMTP_SOCKET_TIMEOUT_MS,
-      });
+      if (!transport) {
+        transport = createTransport({
+          host: settings.host,
+          port: settings.port,
+          secure: settings.port === 465,
+          auth: { user: settings.user, pass: settings.pass },
+          connectionTimeout: SMTP_CONNECTION_TIMEOUT_MS,
+          greetingTimeout: SMTP_GREETING_TIMEOUT_MS,
+          socketTimeout: SMTP_SOCKET_TIMEOUT_MS,
+        });
+      }
       await transport.sendMail({
         from: settings.from,
         to: input.to,

@@ -6,8 +6,15 @@ import { User } from "@/server/models/User";
 import { writeAuditLog } from "@/server/audit/log";
 import { listPublicMatchHistory } from "./matchService";
 import { NotFoundError } from "@/server/http/errors";
-import { requireObjectId } from "@/server/validation/objectId";
+import { isMongoObjectId, requireObjectId } from "@/server/validation/objectId";
 import { assertAdmin, assertFighter, type Actor } from "@/server/auth/actor";
+
+/** Escapes regex metacharacters so free-text search can't break or behave unexpectedly. */
+function escapeRegExp(value: string): string {
+  return value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+}
+
+const ADMIN_FIGHTERS_PAGE_SIZE = 30;
 
 export type AdminFighterView = {
   userId: string;
@@ -253,16 +260,48 @@ function toPublicCard(
   };
 }
 
-/** Full grappler form for organizers. Aadhaar and medical answers stay off public pages. */
-export async function listFightersForAdmin(actor: Actor) {
+/**
+ * Full grappler form for organizers. Aadhaar and medical answers stay off public pages.
+ * Search/pagination run in Mongo, not after an unbounded fetch  the roster is not loaded
+ * in full on every page view/search keystroke.
+ */
+export async function listFightersForAdmin(
+  actor: Actor,
+  options: { search?: string; page?: number } = {}
+): Promise<{ fighters: AdminFighterView[]; total: number; page: number; pageSize: number; totalPages: number }> {
   assertAdmin(actor);
   await connectDB();
-  const profiles = await FighterProfile.find().sort({ createdAt: -1 }).lean();
+
+  const search = options.search?.trim() ?? "";
+  const page = Math.max(1, Math.trunc(options.page ?? 1) || 1);
+
+  let filter: Record<string, unknown> = {};
+  if (search) {
+    const pattern = new RegExp(escapeRegExp(search), "i");
+    const or: Record<string, unknown>[] = [{ displayName: pattern }, { cityState: pattern }, { academy: pattern }, { gym: pattern }];
+    if (isMongoObjectId(search)) {
+      or.push({ userId: search });
+    } else {
+      const matchingUsers = await User.find({ email: pattern }).select("_id").lean();
+      if (matchingUsers.length > 0) or.push({ userId: { $in: matchingUsers.map((user) => user._id) } });
+    }
+    filter = { $or: or };
+  }
+
+  const total = await FighterProfile.countDocuments(filter);
+  const totalPages = Math.max(1, Math.ceil(total / ADMIN_FIGHTERS_PAGE_SIZE));
+  const safePage = Math.min(page, totalPages);
+  const profiles = await FighterProfile.find(filter)
+    .sort({ createdAt: -1 })
+    .skip((safePage - 1) * ADMIN_FIGHTERS_PAGE_SIZE)
+    .limit(ADMIN_FIGHTERS_PAGE_SIZE)
+    .lean();
   const users = await User.find({ _id: { $in: profiles.map((profile) => profile.userId) } })
     .select("email")
     .lean();
   const emailById = new Map(users.map((user) => [String(user._id), user.email]));
-  return profiles.map((profile) => toAdminFighterView(profile, emailById.get(String(profile.userId)) ?? ""));
+  const fighters = profiles.map((profile) => toAdminFighterView(profile, emailById.get(String(profile.userId)) ?? ""));
+  return { fighters, total, page: safePage, pageSize: ADMIN_FIGHTERS_PAGE_SIZE, totalPages };
 }
 
 /** One fighter’s full registration-style profile for the admin roster detail. */

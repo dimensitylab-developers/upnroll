@@ -7,25 +7,59 @@ import { STARTER_FAQS } from "@/server/content/starterFaqs";
 import { writeAuditLog } from "@/server/audit/log";
 import { NotFoundError } from "@/server/http/errors";
 
+/** Once seeded in this process, starter FAQs never need re-checking  avoids 21 sequential
+ *  findOne calls on every chatbot question. Reset only by a process restart/redeploy. */
+let starterFaqsEnsured = false;
+
 /** Publish missing starter FAQs so the page and chatbot stay current as the site grows. */
 async function ensureStarterFaqs() {
+  if (starterFaqsEnsured) return;
+
   const admin = await User.findOne({ role: "ADMIN" }).select("_id").lean();
   if (!admin) return;
 
+  const existing = await ContentEntry.find({
+    type: "FAQ",
+    title: { $in: STARTER_FAQS.map((faq) => faq.question) },
+  })
+    .select("title")
+    .lean();
+  const existingTitles = new Set(existing.map((entry) => entry.title));
+
   const now = Date.now();
-  for (const [index, faq] of STARTER_FAQS.entries()) {
-    const exists = await ContentEntry.findOne({ type: "FAQ", title: faq.question }).select("_id").lean();
-    if (exists) continue;
-    await ContentEntry.create({
-      type: "FAQ",
-      title: faq.question,
-      body: faq.answer,
-      publicationState: "PUBLISHED",
-      createdBy: admin._id,
-      createdAt: new Date(now - index * 1000),
-      updatedAt: new Date(now - index * 1000),
-    });
+  const missing = STARTER_FAQS.map((faq, index) => ({ faq, index })).filter(
+    ({ faq }) => !existingTitles.has(faq.question)
+  );
+  if (missing.length > 0) {
+    await ContentEntry.insertMany(
+      missing.map(({ faq, index }) => ({
+        type: "FAQ",
+        title: faq.question,
+        body: faq.answer,
+        publicationState: "PUBLISHED",
+        createdBy: admin._id,
+        createdAt: new Date(now - index * 1000),
+        updatedAt: new Date(now - index * 1000),
+      }))
+    );
   }
+
+  // Keep "What should I wear?" aligned if an older seed included sponsor purchase wording
+  const wearCanonical = STARTER_FAQS.find((faq) => faq.question === "What should I wear?")?.answer;
+  if (wearCanonical) {
+    await ContentEntry.updateMany(
+      {
+        type: "FAQ",
+        title: "What should I wear?",
+        body: { $regex: /mouthguard sponsor|buy one from the mouthguard/i },
+      },
+      {
+        $set: { body: wearCanonical, updatedAt: new Date() },
+      }
+    );
+  }
+
+  starterFaqsEnsured = true;
 }
 
 export async function createContentEntry(

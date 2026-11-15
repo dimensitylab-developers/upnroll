@@ -5,6 +5,7 @@ import { requireActor } from "@/server/auth/session";
 import {
   generateMatchJudgeCredentials,
   getActiveJudgeCredentialMeta,
+  getActiveJudgeCredentialMetaForMatches,
   regenerateMatchJudgeCredentials,
   revokeMatchJudgeCredentials,
 } from "@/server/services/judgeCredentialService";
@@ -66,4 +67,11 @@ export async function revokeJudgeCredentialsAction(
 export async function fetchJudgeCredentialMeta(matchId: string) {
   const actor = await requireActor("ADMIN");
   return getActiveJudgeCredentialMeta(actor, matchId);
+}
+
+/** Batched variant  one $in query for all matches on a page instead of one per match. */
+export async function fetchJudgeCredentialMetaBatch(matchIds: string[]) {
+  const actor = await requireActor("ADMIN");
+  if (matchIds.length === 0) return new Map();
+  return getActiveJudgeCredentialMetaForMatches(actor, matchIds);
 }

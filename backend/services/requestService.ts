@@ -149,7 +149,12 @@ export async function decideRequest(actor: Actor, requestId: string, decision: "
       cta: { label: "Open grappler dashboard", href: "/grappler/dashboard" },
       preheader: bodyText,
     });
-    await getEmailAdapter().send({ to: user.email, ...requestMail });
+    try {
+      await getEmailAdapter().send({ to: user.email, ...requestMail });
+    } catch (err) {
+      // The decision is already committed; do not fail the admin action on mail delivery.
+      console.error("[request decision email failed]", err instanceof Error ? err.message : err);
+    }
   }
 
   return updated;

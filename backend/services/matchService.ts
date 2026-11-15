@@ -263,7 +263,15 @@ export async function updateMatchSchedule(
       ...profiles.map((profile) => notifyWhatsApp({ to: profile.mobile ?? "", body })),
       ...users
         .filter((user) => user.email)
-        .map((user) => getEmailAdapter().send({ to: user.email, ...boutMail })),
+        .map((user) =>
+          getEmailAdapter()
+            .send({ to: user.email, ...boutMail })
+            .catch((err) => {
+              // The schedule change is already committed; one recipient's mail failure
+              // should not fail the admin's schedule update or block other recipients.
+              console.error("[schedule change email failed]", err instanceof Error ? err.message : err);
+            })
+        ),
     ]);
     void reminder;
   }

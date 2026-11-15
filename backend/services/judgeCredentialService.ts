@@ -232,3 +232,24 @@ export async function getActiveJudgeCredentialMeta(actor: Actor, matchId: string
     status: cred.status,
   };
 }
+
+/** Batched variant of getActiveJudgeCredentialMeta  one $in query instead of one per match. */
+export async function getActiveJudgeCredentialMetaForMatches(actor: Actor, matchIds: string[]) {
+  assertAdmin(actor);
+  const ids = matchIds.map((id) => requireObjectId(id, "match"));
+  await connectDB();
+  const creds = await MatchJudgeCredential.find({ matchId: { $in: ids }, status: "ACTIVE" })
+    .select("matchId username generation issuedAt issuedBy status")
+    .lean();
+  const byMatch = new Map<string, NonNullable<Awaited<ReturnType<typeof getActiveJudgeCredentialMeta>>>>();
+  for (const cred of creds) {
+    byMatch.set(String(cred.matchId), {
+      credentialId: String(cred._id),
+      username: cred.username,
+      generation: cred.generation,
+      issuedAt: cred.issuedAt,
+      status: cred.status,
+    });
+  }
+  return byMatch;
+}

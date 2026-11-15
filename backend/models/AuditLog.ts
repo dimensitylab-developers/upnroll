@@ -13,6 +13,12 @@ const auditLogSchema = new Schema(
   { timestamps: { createdAt: true, updatedAt: false } }
 );
 
+// audit/log.ts's listRecentAuditLogs/listAuditLogsPage sort the whole collection by createdAt
+// on every admin dashboard load and on /admin/audit.
+auditLogSchema.index({ createdAt: -1 });
+// listRecentAuditLogsByActions and getAdminPresenceStats filter by action + a createdAt range.
+auditLogSchema.index({ action: 1, createdAt: -1 });
+
 export type AuditLogDoc = InferSchemaType<typeof auditLogSchema>;
 
 export const AuditLog: Model<AuditLogDoc> =

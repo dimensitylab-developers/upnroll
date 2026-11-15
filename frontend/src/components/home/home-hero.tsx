@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 import { FunkyHeadline } from "./funky-headline";
 import { HeroFightTape } from "./hero-fight-tape";
@@ -17,8 +18,15 @@ export function HomeHero() {
           <div className="relative border-2 border-black bg-white p-4 shadow-[8px_8px_0_0_#000] sm:p-7 sm:shadow-[10px_10px_0_0_#000]">
             <div className="pointer-events-none absolute -right-2 -top-2 h-8 w-8 border-2 border-black bg-brand-red sm:-right-3 sm:-top-3 sm:h-10 sm:w-10" aria-hidden="true" />
             <h1 id="home-wordmark" className="max-w-xl">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src="/logo-wordmark.png" alt="Up 'n Roll" className="h-auto w-full" width={640} height={160} />
+              <Image
+                src="/logo-wordmark.png"
+                alt="Up 'n Roll"
+                className="h-auto w-full"
+                width={640}
+                height={160}
+                priority
+                sizes="(min-width: 1024px) 480px, 90vw"
+              />
             </h1>
           </div>
 

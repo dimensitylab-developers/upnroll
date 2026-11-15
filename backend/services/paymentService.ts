@@ -136,7 +136,12 @@ export async function submitPayment(
     cta: { label: "Open grappler dashboard", href: "/grappler/dashboard" },
     preheader: `Payment submission received for ${event.name}.`,
   });
-  await getEmailAdapter().send({ to: user.email, ...received });
+  try {
+    await getEmailAdapter().send({ to: user.email, ...received });
+  } catch (err) {
+    // The submission is already committed; do not fail the fighter's action on mail delivery.
+    console.error("[payment submission email failed]", err instanceof Error ? err.message : err);
+  }
 
   return submission;
 }

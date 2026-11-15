@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { connection } from "next/server";
 import { BrandMark } from "@/components/layout/brand";
+import { DynamicBoundary } from "@/components/dynamic-boundary";
+import { PageLoader } from "@/components/layout/page-loader";
 
 export const instant = false;
 
@@ -10,7 +12,15 @@ export const metadata: Metadata = {
   title: "Judge scoring · Up 'n Roll",
 };
 
-export default async function JudgeLayout({ children }: { children: React.ReactNode }) {
+export default function JudgeLayout({ children }: { children: React.ReactNode }) {
+  return (
+    <DynamicBoundary fallback={<PageLoader />}>
+      <JudgeShell>{children}</JudgeShell>
+    </DynamicBoundary>
+  );
+}
+
+async function JudgeShell({ children }: { children: React.ReactNode }) {
   await connection();
   return (
     <div className="min-h-dvh bg-background halftone-bg">
