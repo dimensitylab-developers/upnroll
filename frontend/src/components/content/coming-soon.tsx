@@ -15,6 +15,11 @@ export function ComingSoon() {
         <div className="border-2 border-black bg-white px-8 py-10 shadow-[8px_8px_0_0_#000] sm:px-14 sm:py-14">
           <h1 className="text-display text-center text-4xl font-semibold uppercase leading-none tracking-[0.08em] text-brand-red sm:text-6xl md:text-7xl">
             Coming Soon
+            <span className="coming-soon-dots" aria-hidden="true">
+              <span>.</span>
+              <span>.</span>
+              <span>.</span>
+            </span>
           </h1>
         </div>
       </div>

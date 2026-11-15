@@ -118,5 +118,5 @@ export const CHAT_PROMPTS = [
   "What should I wear?",
   "Can I transfer my spot to a teammate?",
   "How do rankings work?",
-  "I have an emergency and need a human",
+  "I have an emergency and need a human assistance",
 ] as const;

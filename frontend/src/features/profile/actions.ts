@@ -59,8 +59,8 @@ export async function updateProfileAction(_prevState: ProfileActionState, formDa
 
   if (minor && "empty" in parentalConsent && !existing.parentalConsentImageKey) {
     return {
-      error: "Upload a signed parental consent form.",
-      fieldErrors: { parentalConsentImage: ["Upload a signed parental consent form."] },
+      error: "Upload a signed parental consent.",
+      fieldErrors: { parentalConsentImage: ["Upload a signed parental consent."] },
     };
   }
 

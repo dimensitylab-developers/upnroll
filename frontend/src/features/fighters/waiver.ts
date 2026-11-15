@@ -27,5 +27,5 @@ export const PARENTAL_CONSENT_CLAUSES = [
   "I give permission for my child to compete in this Up 'n Roll No-Gi event.",
   "I have read the event rules, risks of grappling sports, and the athlete waiver.",
   "I accept that the organiser, organisation, venue, athlete’s gym, coaches, and sponsors are not liable for injury or unforeseen events before, during, or after training or the fight.",
-  "I confirm the information on this form is true, and I will upload a signed parental consent form.",
+  "I confirm the information on this form is true, and I will upload a signed parental consent.",
 ] as const;

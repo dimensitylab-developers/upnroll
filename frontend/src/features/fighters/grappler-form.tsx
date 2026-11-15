@@ -309,7 +309,7 @@ export function GrapplerForm({
             />
             <TextField label="Mobile number" name="mobile" type="tel" errors={errors} defaultValue={values?.mobile} autoComplete="tel" />
             <TextField label="Nationality" name="nationality" errors={errors} defaultValue={values?.nationality} autoComplete="country-name" />
-            <TextField label="City / State" name="cityState" errors={errors} defaultValue={values?.cityState} />
+            <TextField label="State" name="cityState" errors={errors} defaultValue={values?.cityState} />
             <TextField label="Emergency contact name" name="emergencyContactName" errors={errors} defaultValue={values?.emergencyContactName} />
             <TextField label="Relationship" name="emergencyRelationship" errors={errors} defaultValue={values?.emergencyRelationship} />
             <TextField label="Blood group" name="bloodGroup" errors={errors} defaultValue={values?.bloodGroup} />
@@ -533,7 +533,7 @@ export function GrapplerForm({
           </ol>
           <div className="max-w-md">
             <Label htmlFor="parentalConsentImage" className="mb-1.5 block">
-              Signed parental consent form
+              Signed parental consent 
             </Label>
             <div className="mb-2 flex aspect-[16/10] w-full items-center justify-center overflow-hidden border-2 border-black bg-white">
               {consentPreviewUrl || hasParentalConsentImage ? (
@@ -545,7 +545,7 @@ export function GrapplerForm({
                 />
               ) : (
                 <span className="px-2 text-center text-[10px] uppercase tracking-wider text-muted-foreground">
-                  Upload signed consent form
+                  Upload signed consent 
                 </span>
               )}
             </div>
@@ -558,7 +558,7 @@ export function GrapplerForm({
               onChange={onConsentChange}
             />
             <p className="mt-1 text-xs text-muted-foreground">
-              Clear photo of the signed parental consent form. JPG, PNG, or WebP, under 1.5 MB. Private to organizers only.
+              Clear photo of the signed parental consent . JPG, PNG, or WebP, under 1.5 MB. Private to organizers only.
             </p>
             <FieldError name="parentalConsentImage" errors={errors} />
           </div>

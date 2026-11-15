@@ -347,11 +347,8 @@ export function SuperfightLanding({
               >
                 Instagram · {RULES.contact.instagram}
               </a>
-              <a href={`mailto:${RULES.contact.email}`} className="font-semibold hover:text-brand-red">
+              <a href={`mailto:${RULES.contact.email}`} className="self-end font-semibold hover:text-brand-red sm:self-auto">
                 {RULES.contact.email}
-              </a>
-              <a href={`tel:${RULES.contact.phoneTel}`} className="font-semibold hover:text-brand-red">
-                {RULES.contact.phone}
               </a>
             </div>
           </div>
