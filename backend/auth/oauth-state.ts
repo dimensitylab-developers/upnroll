@@ -5,7 +5,7 @@ import { getConfig } from "@/lib/config";
 export const OAUTH_STATE_COOKIE = "upnroll_oauth_state";
 /** Remembers whether Google OAuth started from login or register (for error redirects). */
 export const OAUTH_ENTRY_COOKIE = "upnroll_oauth_entry";
-/** Optional same-origin path to return to after Google login (e.g. /fighter/registrations/new). */
+/** Optional same-origin path to return to after Google login (e.g. /grappler/registrations/new). */
 export const OAUTH_RETURN_COOKIE = "upnroll_oauth_return";
 export const OAUTH_STATE_MAX_AGE_SECONDS = 600;
 

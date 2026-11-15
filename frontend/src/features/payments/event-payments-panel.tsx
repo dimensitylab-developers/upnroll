@@ -41,7 +41,7 @@ export function EventPaymentsPanel({
       <section className="border-2 border-black bg-white p-4 shadow-[6px_6px_0_0_#000] sm:p-6">
         <h2 className="text-display text-base font-semibold sm:text-lg">Payment options</h2>
         <p className="mt-1 text-sm text-muted-foreground">
-          Fighters see the default option unless a coupon selects another tier.
+          Grapplers see the default option unless a coupon selects another tier.
         </p>
 
         <ul className="mt-4 space-y-4">

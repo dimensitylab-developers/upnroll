@@ -24,7 +24,7 @@ function titleFromEmail(email: string): string {
     .join(" ");
 }
 
-/** Resolve the name we put on dashboards and chrome. Prefer User, then fighter profile, then email. */
+/** Resolve the name we put on dashboards and chrome. Prefer User, then grappler profile, then email. */
 export const resolveDisplayName = cache(async function resolveDisplayName(userId: string, email: string): Promise<string> {
   await connectDB();
   const userObjectId = Types.ObjectId.isValid(userId) ? new Types.ObjectId(userId) : null;
@@ -64,7 +64,7 @@ export function portalWelcomeLine(fullName: string, role: UserRole): string {
 }
 
 /**
- * Browser-tab identity by role  fighter shows their name, admin shows the desk.
+ * Browser-tab identity by role  grappler shows their name, admin shows the desk.
  * Root metadata template appends `· Up 'n Roll`.
  */
 export function portalTabTitle(fullName: string, role: UserRole): string {

@@ -60,7 +60,7 @@ export function EventPitchPopup() {
   if (!open) return null;
 
   return (
-    <div className="fixed inset-0 z-[80] flex items-end justify-center p-3 sm:items-center sm:p-6" role="dialog" aria-modal="true" aria-label="Upcoming card">
+    <div className="fixed inset-0 z-[80] flex items-end justify-center p-3 sm:items-center sm:p-6" role="dialog" aria-modal="true" aria-label="Upcoming event">
       <button
         type="button"
         className={`absolute inset-0 bg-black/70 transition-opacity duration-300 ${leaving ? "opacity-0" : "opacity-100"}`}
@@ -83,7 +83,7 @@ export function EventPitchPopup() {
         </button>
 
         <div className="border-b-2 border-black bg-black px-4 py-3 pr-24 text-white">
-          <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-brand-red">Next card · #2</p>
+          <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-brand-red">Next event · #2</p>
           <p className="mt-1 text-display text-lg font-semibold leading-tight sm:text-xl">Grapplers only. No-Gi.</p>
         </div>
 
@@ -107,7 +107,7 @@ export function EventPitchPopup() {
               onClick={markSeen}
               className="inline-flex -skew-x-12 border-2 border-black bg-brand-red px-4 py-2 text-xs font-semibold uppercase tracking-wider text-white shadow-[4px_4px_0_0_#000]"
             >
-              <span className="inline-block skew-x-12">Open the card</span>
+              <span className="inline-block skew-x-12">Open the event</span>
             </Link>
             <Link
               href="/register"

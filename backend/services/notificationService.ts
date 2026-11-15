@@ -120,7 +120,7 @@ export async function processMatchResultNotifyJob(job: OutboxJobDoc & { _id?: un
       type: "MATCH_RESULT",
       title: `${event?.name ?? "Match"} result posted`,
       body: `Your ${division?.name ?? "division"} match is official (${match.resultMethod || "result"}).`,
-      href: `/fighter/matches`,
+      href: `/grappler/matches`,
       eventId: String(match.eventId),
       matchId,
       dedupeKey: `match-result:${effectsKey}:${userId}`,
@@ -134,7 +134,7 @@ export async function processMatchResultNotifyJob(job: OutboxJobDoc & { _id?: un
           headline: "Your result is official.",
           greeting: `Hi ${nameByUser.get(userId) ?? "fighter"},`,
           paragraphs: [`Your match result is official: ${match.resultMethod || "recorded"}.`],
-          cta: { label: "Open your matches", href: "/fighter/matches" },
+          cta: { label: "Open your matches", href: "/grappler/matches" },
           preheader: `Match result: ${match.resultMethod || "recorded"}.`,
         });
         await getEmailAdapter().send({ to: user.email, ...resultMail });
@@ -169,7 +169,7 @@ export async function processScheduleChangedNotifyJob(job: OutboxJobDoc & { _id?
       type: "MATCH_SCHEDULE_CHANGED",
       title: "Match schedule updated",
       body: `${event?.name ?? "Event"} · ${division?.name ?? "Division"} · ${mat} · ${when} (${tz})`,
-      href: `/fighter/matches`,
+      href: `/grappler/matches`,
       eventId: String(match.eventId),
       matchId,
       dedupeKey: `schedule-change:${matchId}:v${scheduleVersion}:${userId}`,
@@ -193,7 +193,7 @@ export async function createInAppAndEmailReminder(input: {
     type: input.type,
     title: input.title,
     body: input.body,
-    href: `/fighter/matches`,
+    href: `/grappler/matches`,
     eventId: input.eventId,
     matchId: input.matchId,
     dedupeKey: input.dedupeKey,
@@ -205,7 +205,7 @@ export async function createInAppAndEmailReminder(input: {
       badge: "MATCH REMINDER",
       headline: input.title,
       paragraphs: [input.emailBody],
-      cta: { label: "Open your matches", href: "/fighter/matches" },
+      cta: { label: "Open your matches", href: "/grappler/matches" },
       preheader: input.body,
     });
     await getEmailAdapter().send({ to: user.email, ...reminderMail });

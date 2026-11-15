@@ -70,8 +70,8 @@ vi.mock("@/server/models/FighterProfile", () => ({
 vi.mock("@/server/models/Bracket", () => ({ Bracket: {} }));
 vi.mock("@/server/audit/log", () => ({ writeAuditLog: vi.fn() }));
 
-const fighterA = Object.freeze({ userId: "fighter-a", role: "FIGHTER" as const });
-const fighterB = Object.freeze({ userId: "fighter-b", role: "FIGHTER" as const });
+const fighterA = Object.freeze({ userId: "fighter-a", role: "GRAPPLER" as const });
+const fighterB = Object.freeze({ userId: "fighter-b", role: "GRAPPLER" as const });
 const admin = Object.freeze({ userId: "admin-1", role: "ADMIN" as const });
 
 describe("match privacy", () => {

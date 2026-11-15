@@ -41,11 +41,11 @@ export function DashboardNameplate({
         <div className="mx-auto h-28 w-24 shrink-0 overflow-hidden border-2 border-black bg-[#f3efe8] sm:mx-0 sm:h-36 sm:w-28">
           {hasPhoto ? (
             // eslint-disable-next-line @next/next/no-img-element
-            <img src="/api/v1/fighter/photo" alt="" className="h-full w-full object-cover" />
+            <img src="/api/v1/grappler/photo" alt="" className="h-full w-full object-cover" />
           ) : (
             <div className="flex h-full w-full flex-col items-center justify-center gap-1">
               <span className="text-display text-3xl font-semibold text-black/25 sm:text-4xl">{initials || "UR"}</span>
-              <Link href="/fighter/profile" className="pointer-events-auto text-[9px] font-semibold uppercase tracking-[0.16em] text-brand-red underline">
+              <Link href="/grappler/profile" className="pointer-events-auto text-[9px] font-semibold uppercase tracking-[0.16em] text-brand-red underline">
                 Add photo
               </Link>
             </div>
@@ -61,7 +61,7 @@ export function DashboardNameplate({
             {meta || (
               <>
                 Profile incomplete.{" "}
-                <Link href="/fighter/profile" className="font-semibold text-brand-red underline">
+                <Link href="/grappler/profile" className="font-semibold text-brand-red underline">
                   Finish your profile
                 </Link>
               </>
@@ -79,19 +79,19 @@ export function DashboardNameplate({
             <Link href="/" className="text-brand-red hover:underline">
               Main site →
             </Link>
-            <Link href="/fighter/profile" className="text-black hover:text-brand-red">
+            <Link href="/grappler/profile" className="text-black hover:text-brand-red">
               Profile
             </Link>
-            <Link href="/fighter/registrations/new" className="text-black hover:text-brand-red">
+            <Link href="/grappler/registrations/new" className="text-black hover:text-brand-red">
               Register
             </Link>
-            <Link href="/fighter/registrations" className="text-black hover:text-brand-red">
+            <Link href="/grappler/registrations" className="text-black hover:text-brand-red">
               Payments
             </Link>
-            <Link href="/fighter/matches" className="text-black hover:text-brand-red">
+            <Link href="/grappler/matches" className="text-black hover:text-brand-red">
               Matches
             </Link>
-            <Link href="/fighter/requests" className="text-black hover:text-brand-red">
+            <Link href="/grappler/requests" className="text-black hover:text-brand-red">
               Requests
             </Link>
           </nav>

@@ -1,6 +1,6 @@
 "use server";
 
-import { getPublicFaqs } from "@/server/content/starterFaqs";
+import { cachedPublishedContent } from "@/lib/public-reads";
 import { matchFaq } from "@/server/services/chatbotEngine";
 
 const FALLBACK_MESSAGE =
@@ -10,7 +10,12 @@ export async function askChatbotAction(question: string): Promise<{ answer: stri
   const trimmed = question.trim();
   if (!trimmed) return { answer: FALLBACK_MESSAGE, matched: false };
 
-  const faqs = getPublicFaqs();
+  const entries = await cachedPublishedContent("FAQ");
+  const faqs = entries.map((entry) => ({
+    id: entry._id,
+    question: entry.title,
+    answer: entry.body,
+  }));
   const match = matchFaq(trimmed, faqs);
 
   return match ? { answer: match.answer, matched: true } : { answer: FALLBACK_MESSAGE, matched: false };

@@ -7,7 +7,7 @@ import { NotFoundError } from "@/server/http/errors";
 
 export async function GET() {
   try {
-    const actor = await requireActor("FIGHTER");
+    const actor = await requireActor("GRAPPLER");
     const profile = await getFighterProfile(actor);
     if (!profile?.photoKey?.trim()) throw new NotFoundError("No photograph yet.");
     return await serveStoredImage(profile.photoKey.trim());

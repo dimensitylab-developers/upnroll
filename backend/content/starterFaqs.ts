@@ -95,13 +95,14 @@ export const STARTER_FAQS: { question: string; answer: string }[] = [
   },
 ];
 
-/** Stable public FAQ list (not DB-dependent; survives empty Mongo / redeploy). */
+/** Seed corpus shape used by ensureStarterFaqs and FAQ matcher tests. */
 export type PublicFaqItem = {
   id: string;
   question: string;
   answer: string;
 };
 
+/** Maps STARTER_FAQS for seeding/tests. Public /faq and chatbot read published ContentEntry rows. */
 export function getPublicFaqs(): PublicFaqItem[] {
   return STARTER_FAQS.map((faq, index) => ({
     id: `starter-faq-${index + 1}`,

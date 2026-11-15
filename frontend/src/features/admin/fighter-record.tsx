@@ -32,7 +32,7 @@ export function FighterRecord({ fighter }: { fighter: AdminFighterView }) {
           {fighter.hasPhoto ? (
             // eslint-disable-next-line @next/next/no-img-element
             <img
-              src={`/api/v1/admin/fighters/${fighter.userId}/photo`}
+              src={`/api/v1/admin/grapplers/${fighter.userId}/photo`}
               alt={`${name} passport photograph`}
               className="h-full w-full object-contain"
             />
@@ -76,7 +76,7 @@ export function FighterRecord({ fighter }: { fighter: AdminFighterView }) {
               {fighter.hasAadhaarImage ? (
                 // eslint-disable-next-line @next/next/no-img-element
                 <img
-                  src={`/api/v1/admin/fighters/${fighter.userId}/aadhaar`}
+                  src={`/api/v1/admin/grapplers/${fighter.userId}/aadhaar`}
                   alt={`${name} identity proof`}
                   className="h-full w-full object-contain"
                 />
@@ -91,7 +91,7 @@ export function FighterRecord({ fighter }: { fighter: AdminFighterView }) {
               {fighter.hasParentalConsentImage ? (
                 // eslint-disable-next-line @next/next/no-img-element
                 <img
-                  src={`/api/v1/admin/fighters/${fighter.userId}/parental-consent`}
+                  src={`/api/v1/admin/grapplers/${fighter.userId}/parental-consent`}
                   alt={`${name} parental consent`}
                   className="h-full w-full object-contain"
                 />

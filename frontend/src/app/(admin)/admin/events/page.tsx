@@ -19,9 +19,9 @@ export default async function AdminEventsPage() {
   return (
     <div className="space-y-10">
       <section className="border-2 border-black bg-black px-5 py-7 text-white shadow-[8px_8px_0_0_#c8102e] sm:px-8">
-        <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-brand-red">Cards</p>
+        <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-brand-red">Events</p>
         <h1 className="text-display mt-2 text-3xl font-semibold">Events</h1>
-        <p className="mt-2 max-w-xl text-sm text-white/70">Create a card, then open its hub to edit details, QR, divisions, brackets, and matches.</p>
+        <p className="mt-2 max-w-xl text-sm text-white/70">Create an event, then open its hub to edit details, QR, divisions, brackets, and matches.</p>
       </section>
 
       <div className="border-2 border-black bg-white p-5 shadow-[6px_6px_0_0_#000] sm:p-8">

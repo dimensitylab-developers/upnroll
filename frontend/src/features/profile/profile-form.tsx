@@ -53,7 +53,7 @@ export function ProfileForm({
         success={state.success}
         errorTitle="Profile not saved"
         successTitle="Profile saved"
-        successMessage="Your fighter details were stored. Open your public card from Rankings when you want to check how it looks."
+        successMessage="Your grappler details were stored. Open your public profile from Rankings when you want to check how it looks."
       />
       <GrapplerForm
         mode="profile"

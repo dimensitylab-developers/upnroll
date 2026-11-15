@@ -12,7 +12,7 @@ export async function submitPaymentAction(
   _prevState: SubmitPaymentActionState,
   formData: FormData
 ): Promise<SubmitPaymentActionState> {
-  const actor = await requireActor("FIGHTER");
+  const actor = await requireActor("GRAPPLER");
 
   const parsed = submitPaymentSchema.safeParse({
     registrationId: formData.get("registrationId"),
@@ -39,6 +39,6 @@ export async function submitPaymentAction(
     return { error: appError.message };
   }
 
-  revalidatePath(`/fighter/registrations/${parsed.data.registrationId}/payment`);
+  revalidatePath(`/grappler/registrations/${parsed.data.registrationId}/payment`);
   return { success: true };
 }

@@ -44,7 +44,7 @@ function AuthControlsFallback() {
 async function HeaderSessionChrome() {
   await connection();
   const [session, events] = await Promise.all([getSession(), cachedPublicEvents()]);
-  const dashboardHref = session ? (session.user.role === "ADMIN" ? "/admin" : "/fighter/dashboard") : null;
+  const dashboardHref = session ? (session.user.role === "ADMIN" ? "/admin" : "/grappler/dashboard") : null;
   const openEvent = events.find((event) => event.status === "REGISTRATION_OPEN") ?? events[0] ?? null;
 
   return (

@@ -169,7 +169,7 @@ export default async function AdminEventDetailPage({ params }: { params: Promise
                   <span className="text-sm text-muted-foreground">{registration.status.replaceAll("_", " ")}</span>
                   {registration.fighter ? (
                     <Link
-                      href={`/admin/fighters/${registration.fighter.userId}`}
+                      href={`/admin/grapplers/${registration.fighter.userId}`}
                       className="text-xs font-semibold uppercase tracking-wider text-brand-red"
                     >
                       Open sheet →

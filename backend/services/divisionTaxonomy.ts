@@ -79,13 +79,55 @@ export function roadToSuperFightDivisionSeeds(): TaxonomySeed[] {
   return seeds;
 }
 
-/** Public Superfight / card rules board: mirrors the posted event sheet. */
+/** Public Superfight / card rules board: mirrors the posted No-Gi tournament sheet. */
 export const EVENT_POINTS_RULES = {
+  eventFormat: "No-Gi Grappling",
+  divisions: {
+    title: "Divisions",
+    beginner: { title: "Beginner division", detail: "White Belts Only" },
+    advanced: { title: "Advanced division", detail: "Blue & Purple Belts" },
+  },
+  matchFormat: {
+    title: "Match format",
+    total: "Total Match Time: 6 Minutes",
+    items: [
+      "First 3 Minutes – No Points Period",
+      "Final 3 Minutes – Scoring Period",
+      "Submission victories are valid throughout the entire match",
+    ],
+  },
+  scoring: {
+    title: "Scoring system (active in final 3 minutes)",
+    points: [
+      { label: "Takedown", detail: "2 points" },
+      { label: "Sweep", detail: "2 points" },
+      { label: "Knee on belly", detail: "2 points" },
+      { label: "Guard pass", detail: "3 points" },
+      { label: "Mount", detail: "2 points" },
+      { label: "Back control", detail: "3 points", note: "Hooks or Body Triangle" },
+    ],
+  },
   /** Intermediate (blue & purple). Key `advanced` kept for older call sites. */
   advanced: {
-    title: "Intermediate division",
+    title: "Advanced division",
     subtitle: "Blue & Purple Belts",
     scoringTitle: "Scoring system (active in final 3 minutes)",
+    permittedTitle: "Permitted submissions",
+    permitted: [
+      "All Standard Chokes",
+      "Armbar",
+      "Kimura",
+      "Americana",
+      "Omoplata",
+      "Straight Foot Lock (Straight Ankle Lock)",
+      "Toe Hold",
+      "Knee Bar",
+      "Calf Slicer",
+      "Flying Submissions",
+      "Jumping Guard",
+    ],
+    prohibitedTitle: "Prohibited techniques",
+    prohibited: ["Heel Hooks", "Neck Cranks", "Spine Cranks", "Twisters", "Slams"],
     points: [
       { label: "Takedown", detail: "2 points" },
       { label: "Sweep", detail: "2 points" },
@@ -97,6 +139,7 @@ export const EVENT_POINTS_RULES = {
   },
   beginner: {
     title: "Beginner division",
+    subtitle: "White Belts Only",
     permittedTitle: "Permitted submissions",
     permitted: [
       "All Standard Chokes",
@@ -132,12 +175,35 @@ export const EVENT_POINTS_RULES = {
     warning:
       "A penalty point may be awarded for the above. Repeated violations may result in disqualification.",
   },
+  matchOutcome: {
+    title: "Match outcome",
+    intro: "A competitor may win by:",
+    endings: [
+      "Submission",
+      "Points",
+      "Opponent Disqualification",
+      "Referee Stoppage",
+      "Opponent Withdrawal",
+    ],
+    tiebreaker:
+      "In the event of a tied score, the decision will be based on: Activity | Positional Control | Submission Attempts.",
+  },
   general: {
-    title: "General",
+    title: "General rules",
     items: [
       "Rashguard & Grappling Shorts are mandatory",
       "No zippers, pockets or hard objects",
+      "Referee decisions are final",
+      "Athlete safety takes priority at all times",
+      "Organizers reserve the right to merge divisions",
     ],
+  },
+  contact: {
+    instagram: "up.n.roll",
+    instagramUrl: "https://www.instagram.com/up.n.roll/",
+    email: "info.upnroll@gmail.com",
+    phone: "+91 7738719800",
+    phoneTel: "+917738719800",
   },
   acknowledgement: {
     title: "Competitor acknowledgement",

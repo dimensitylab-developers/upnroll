@@ -33,7 +33,7 @@ export type RegistrationActionState = {
 };
 
 function paymentPath(registrationId: string) {
-  return `/fighter/registrations/${registrationId}/payment`;
+  return `/grappler/registrations/${registrationId}/payment`;
 }
 
 async function existingActiveRegistrationId(userId: string, divisionId: string): Promise<string | null> {
@@ -52,7 +52,7 @@ export async function createRegistrationAction(
   _prevState: RegistrationActionState,
   formData: FormData
 ): Promise<RegistrationActionState> {
-  const actor = await requireActor("FIGHTER");
+  const actor = await requireActor("GRAPPLER");
 
   const registrationParsed = createRegistrationSchema.safeParse({
     divisionId: formData.get("divisionId"),

@@ -8,7 +8,7 @@ import { Label } from "@/components/ui/label";
 
 const initialState: AuthActionState = {};
 
-export function VerifyForm({ email }: { email: string }) {
+export function VerifyForm({ email, from }: { email: string; from?: string }) {
   const [state, formAction, pending] = useActionState(verifyEmailAction, initialState);
   const [resend, resendAction, resendPending] = useActionState(resendCodeAction, initialState);
 
@@ -16,6 +16,7 @@ export function VerifyForm({ email }: { email: string }) {
     <div className="space-y-6">
       <form action={formAction} className="space-y-4">
         <input type="hidden" name="email" value={email} />
+        {from ? <input type="hidden" name="from" value={from} /> : null}
         {state.error && <p className="text-sm text-primary">{state.error}</p>}
         <div>
           <Label htmlFor="code" className="mb-1.5 block">Code</Label>

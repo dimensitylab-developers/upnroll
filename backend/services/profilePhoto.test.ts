@@ -9,7 +9,7 @@ vi.mock("@/server/storage/factory", () => ({
 
 import { saveProfilePhoto } from "./profilePhoto";
 
-const fighter = { userId: "507f1f77bcf86cd799439011", role: "FIGHTER" as const };
+const fighter = { userId: "507f1f77bcf86cd799439011", role: "GRAPPLER" as const };
 
 describe("saveProfilePhoto", () => {
   beforeEach(() => {

@@ -4,7 +4,7 @@ export const HELD_ARCHIVE: Record<string, HeldRecordData> = {
   "no-gi-12-july-2026": {
     name: "No-Gi Grappling",
     date: "12 July 2026",
-    summary: "A No-Gi card. White belts in one division, blue and purple belts in the other. The record below is what was published for that night.",
+    summary: "A No-Gi event. White belts in one division, blue and purple belts in the other. The record below is what was published for that night.",
     photos: [],
     videos: [{ src: "/Videos/IMG_7263.MP4_2.mp4", caption: "12 July 2026" }],
     winners: [],
@@ -34,10 +34,10 @@ export const HELD_ARCHIVE: Record<string, HeldRecordData> = {
       { title: "Advanced, still prohibited", lines: ["Heel hooks", "Neck cranks", "Spine cranks", "Twisters", "Slams"] },
     ],
     bracket:
-      "This card did not publish a drawn bracket. On Up ’n Roll, winners move forward, and if someone is out they continue on the other side of the card.",
+      "This event did not publish a drawn bracket. On Up ’n Roll, winners move forward, and if someone is out they continue on the other side of the event.",
     bracketHref: null,
     rankingsNote:
-      "This card did not publish its own rankings list. The public board counts 3 points for each win until the official formula is set.",
+      "This event did not publish its own rankings list. The public board counts 3 points for each win until the official formula is set.",
     rankings: [],
     ending: [
       "Submission",

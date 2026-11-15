@@ -187,7 +187,7 @@ export async function judgeFinalizeAction(_prev: JudgeActionState, formData: For
     );
     invalidatePublicTags(["schedule", "rankings", "fighters", "brackets"]);
     revalidatePath("/judge");
-    revalidatePath("/fighter/matches");
+    revalidatePath("/grappler/matches");
     return { ok: true };
   } catch (err) {
     return { error: toAppError(err).message };

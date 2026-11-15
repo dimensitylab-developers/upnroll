@@ -133,7 +133,7 @@ export async function submitPayment(
     paragraphs: [
       `We received your payment submission (reference ${utr}) for ${event.name}. An organizer will review it manually — this is not yet confirmation of payment.`,
     ],
-    cta: { label: "Open fighter dashboard", href: "/fighter" },
+    cta: { label: "Open grappler dashboard", href: "/grappler/dashboard" },
     preheader: `Payment submission received for ${event.name}.`,
   });
   await getEmailAdapter().send({ to: user.email, ...received });
@@ -237,7 +237,7 @@ async function notifyFighterOfPaymentDecision(
             `Reason: ${note.trim() || "No reason provided."}`,
             "You can resubmit payment from your fighter dashboard.",
           ],
-          cta: { label: "Open fighter dashboard", href: "/fighter" },
+          cta: { label: "Open grappler dashboard", href: "/grappler/dashboard" },
           preheader: `Payment for ${eventName} was not approved.`,
         });
 

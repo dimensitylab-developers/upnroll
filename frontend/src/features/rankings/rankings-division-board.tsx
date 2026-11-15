@@ -76,7 +76,7 @@ function DivisionColumn({
       {champion ? (
         <div className="mt-3">
           {champion.slug ? (
-            <Link href={`/fighters/${champion.slug}`} className="block hover:text-brand-red">
+            <Link href={`/grapplers/${champion.slug}`} className="block hover:text-brand-red">
               <h3 className="text-display text-xl font-semibold uppercase leading-[0.95] tracking-wide sm:text-2xl">
                 {champion.displayName}
               </h3>
@@ -121,7 +121,7 @@ function DivisionColumn({
               <div className="min-w-0 flex-1">
                 {fighter.slug ? (
                   <Link
-                    href={`/fighters/${fighter.slug}`}
+                    href={`/grapplers/${fighter.slug}`}
                     className="block truncate text-sm font-medium hover:text-brand-red"
                   >
                     {fighter.displayName}

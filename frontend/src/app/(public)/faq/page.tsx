@@ -1,8 +1,13 @@
-import { getPublicFaqs } from "@/server/content/starterFaqs";
+import { cachedPublishedContent } from "@/lib/public-reads";
 import { FaqBoard } from "@/features/content/faq-board";
 
-export default function PublicFaqPage() {
-  const items = getPublicFaqs();
+export default async function PublicFaqPage() {
+  const entries = await cachedPublishedContent("FAQ");
+  const items = entries.map((entry) => ({
+    id: entry._id,
+    question: entry.title,
+    answer: entry.body,
+  }));
 
   return (
     <main className="min-h-screen bg-background halftone-bg px-4 py-14 sm:py-20">

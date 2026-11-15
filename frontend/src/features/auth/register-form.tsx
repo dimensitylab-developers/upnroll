@@ -18,12 +18,13 @@ function FieldError({ name, errors }: { name: string; errors?: AuthActionState["
   return <p className="mt-1 text-xs text-primary">{message}</p>;
 }
 
-export function RegisterForm() {
+export function RegisterForm({ from }: { from?: string }) {
   const [state, formAction, pending] = useActionState(registerAction, initialState);
   const [showPassword, setShowPassword] = useState(false);
 
   return (
     <form action={formAction} className="mx-auto w-full max-w-md space-y-4">
+      {from ? <input type="hidden" name="from" value={from} /> : null}
       {state.error && (
         <p className="border-2 border-brand-red bg-brand-red/5 px-3 py-2.5 text-sm text-primary" role="alert">
           {state.error}

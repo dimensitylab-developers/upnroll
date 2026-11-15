@@ -16,11 +16,11 @@ export async function markNotificationReadAction(
   _prev: NotificationActionState,
   formData: FormData
 ): Promise<NotificationActionState> {
-  const actor = await requireActor("FIGHTER");
+  const actor = await requireActor("GRAPPLER");
   const id = String(formData.get("notificationId") ?? "");
   try {
     await markNotificationRead(actor, id);
-    revalidatePath("/fighter/notifications");
+    revalidatePath("/grappler/notifications");
   } catch (err) {
     return { error: toAppError(err).message };
   }
@@ -28,9 +28,9 @@ export async function markNotificationReadAction(
 }
 
 export async function markAllNotificationsReadAction() {
-  const actor = await requireActor("FIGHTER");
+  const actor = await requireActor("GRAPPLER");
   await markAllNotificationsRead(actor);
-  revalidatePath("/fighter/notifications");
+  revalidatePath("/grappler/notifications");
 }
 
 export async function retryOutboxJobAction(

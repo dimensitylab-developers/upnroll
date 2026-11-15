@@ -1,5 +1,11 @@
 import Link from "next/link";
-import { cachedPublicDivisions, cachedPublicEvents, cachedPublishedMedia, cachedPublicRankings } from "@/lib/public-reads";
+import {
+  cachedPublicDivisions,
+  cachedPublicEvents,
+  cachedPublishedContent,
+  cachedPublishedMedia,
+  cachedPublicRankings,
+} from "@/lib/public-reads";
 import { Badge } from "@/components/ui/badge";
 import { HomeGlimpse } from "@/components/home/home-glimpse";
 import { getHomeFaqs } from "@/components/home/home-faq-data";
@@ -8,7 +14,7 @@ import { SectionBanner } from "@/components/home/section-banner";
 
 const GALLERY = [
   { src: "/gallery/grappling-mat.jpg", alt: "Grappling match on the mat" },
-  { src: "/gallery/clinch.jpg", alt: "Fighters locked in a clinch" },
+  { src: "/gallery/clinch.jpg", alt: "Grapplers locked in a clinch" },
   { src: "/gallery/grappling-throw.jpg", alt: "Grappling throw on the blue mat" },
 ];
 
@@ -42,7 +48,7 @@ export async function HomeGlimpseSection() {
       }
       happy={
         <figure className="bg-card border-2 border-black rounded-md overflow-hidden shadow-[6px_6px_0_0_#000]">
-          <img src="/gallery/happy-medal.jpg" alt="Fighter with a medal beside a friend at the event" className="w-full h-auto" />
+          <img src="/gallery/happy-medal.jpg" alt="Grappler with a medal beside a friend at the event" className="w-full h-auto" />
         </figure>
       }
     />
@@ -136,7 +142,7 @@ export async function HomeRankingsSection() {
             <li key={row.slug ?? row.rank} className="flex items-center justify-between py-2.5">
               <span>
                 <span className="text-brand-gold font-semibold mr-3">#{row.rank}</span>
-                {row.slug ? <Link href={`/fighters/${row.slug}`} className="hover:underline">{row.displayName}</Link> : row.displayName}
+                {row.slug ? <Link href={`/grapplers/${row.slug}`} className="hover:underline">{row.displayName}</Link> : row.displayName}
               </span>
               <span className="text-sm text-muted-foreground">{row.wins}-{row.losses}</span>
             </li>
@@ -147,8 +153,16 @@ export async function HomeRankingsSection() {
   );
 }
 
-export function HomeFaqSection() {
-  const items = getHomeFaqs(4);
+export async function HomeFaqSection() {
+  const entries = await cachedPublishedContent("FAQ");
+  const items = getHomeFaqs(
+    entries.map((entry) => ({
+      id: entry._id,
+      question: entry.title,
+      answer: entry.body,
+    })),
+    4
+  );
   if (items.length === 0) return null;
 
   return (

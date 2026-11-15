@@ -74,7 +74,7 @@ export default async function AdminOverviewPage() {
           {welcome}
         </h1>
         <p className="mt-3 max-w-xl text-sm text-white/70">
-          Watch who signs up, who walks in, and who registers for a card  then keep the house moving.
+          Watch who signs up, who walks in, and who registers for an event  then keep the house moving.
         </p>
         <div className="mt-5 flex flex-col gap-2 sm:mt-6 sm:flex-row sm:flex-wrap sm:gap-3">
           <Link
@@ -84,10 +84,10 @@ export default async function AdminOverviewPage() {
             <span className="inline-block skew-x-12">Manage events</span>
           </Link>
           <Link
-            href="/admin/fighters"
+            href="/admin/grapplers"
             className="inline-flex min-h-11 items-center justify-center border-2 border-white px-4 py-2.5 text-sm font-semibold uppercase tracking-wider"
           >
-            Fighters
+            Grapplers
           </Link>
           <Link
             href="/admin/payments"
@@ -99,7 +99,7 @@ export default async function AdminOverviewPage() {
       </section>
 
       <div className="grid grid-cols-2 gap-2 sm:gap-3 lg:grid-cols-4">
-        <AdminStatCard label="Fighters" value={data.fighterCount} href="/admin/fighters" hint="Full roster" />
+        <AdminStatCard label="Grapplers" value={data.fighterCount} href="/admin/grapplers" hint="Full roster" />
         <AdminStatCard
           label="Entries today"
           value={data.presence.entriesToday}
@@ -110,7 +110,7 @@ export default async function AdminOverviewPage() {
         <AdminStatCard
           label="New accounts today"
           value={data.presence.newAccountsToday}
-          href="/admin/fighters"
+          href="/admin/grapplers"
           hint="Sign-ups"
           accent={data.presence.newAccountsToday > 0}
         />
@@ -124,7 +124,7 @@ export default async function AdminOverviewPage() {
       </div>
 
       {openCard && (
-        <AdminSection title="Next card" actionHref={`/admin/events/${openCard._id}`} actionLabel="Open hub →">
+        <AdminSection title="Next event" actionHref={`/admin/events/${openCard._id}`} actionLabel="Open hub →">
           <div className="border-2 border-black bg-white p-5 shadow-[6px_6px_0_0_#000] sm:p-6">
             <div className="flex flex-wrap items-start justify-between gap-3">
               <div>
@@ -153,15 +153,15 @@ export default async function AdminOverviewPage() {
       )}
 
       <div className="grid gap-8 lg:grid-cols-2">
-        <AdminSection title="Who came in" actionHref="/admin/fighters" actionLabel="Roster">
+        <AdminSection title="Who came in" actionHref="/admin/grapplers" actionLabel="Roster">
           <AdminTimeline items={entryItems} empty="No sign-ins recorded yet." />
         </AdminSection>
 
-        <AdminSection title="New accounts" actionHref="/admin/fighters" actionLabel="Fighters">
-          <AdminTimeline items={accountItems} empty="No fighter accounts yet." />
+        <AdminSection title="New accounts" actionHref="/admin/grapplers" actionLabel="Grapplers">
+          <AdminTimeline items={accountItems} empty="No grappler accounts yet." />
         </AdminSection>
 
-        <AdminSection title="Profiles" actionHref="/admin/fighters" actionLabel="Open sheets">
+        <AdminSection title="Profiles" actionHref="/admin/grapplers" actionLabel="Open sheets">
           <AdminTimeline items={profileItems} empty="No profile create/update activity yet." />
         </AdminSection>
 

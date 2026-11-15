@@ -253,7 +253,7 @@ export async function updateMatchSchedule(
       badge: "BOUT SCHEDULED",
       headline: "You're on the card.",
       paragraphs: [body],
-      cta: { label: "View your matches", href: "/fighter/matches" },
+      cta: { label: "View your matches", href: "/grappler/matches" },
       preheader: body,
     });
     const users = registrations.length

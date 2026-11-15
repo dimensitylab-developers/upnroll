@@ -33,7 +33,7 @@ export type ClaimTransferActionState = {
 };
 
 export async function createRequestAction(_prevState: RequestActionState, formData: FormData): Promise<RequestActionState> {
-  const actor = await requireActor("FIGHTER");
+  const actor = await requireActor("GRAPPLER");
 
   const parsed = createRequestSchema.safeParse({
     registrationId: formData.get("registrationId"),
@@ -54,7 +54,7 @@ export async function createRequestAction(_prevState: RequestActionState, formDa
     return { error: toAppError(err).message };
   }
 
-  revalidatePath("/fighter/requests");
+  revalidatePath("/grappler/requests");
   return { success: true };
 }
 
@@ -78,11 +78,11 @@ export async function createTeammateTransferAction(
   _prevState: RequestActionState,
   formData: FormData
 ): Promise<RequestActionState> {
-  const actor = await requireActor("FIGHTER");
+  const actor = await requireActor("GRAPPLER");
   const registrationId = String(formData.get("registrationId") ?? "");
   try {
     const invite = await createTeammateTransfer(actor, registrationId);
-    return { link: `/fighter/transfer/${invite.rawToken}` };
+    return { link: `/grappler/transfer/${invite.rawToken}` };
   } catch (err) {
     return { error: toAppError(err).message };
   }
@@ -92,7 +92,7 @@ export async function claimTeammateTransferAction(
   _prevState: ClaimTransferActionState,
   formData: FormData
 ): Promise<ClaimTransferActionState> {
-  const actor = await requireActor("FIGHTER");
+  const actor = await requireActor("GRAPPLER");
   const token = String(formData.get("token") ?? "");
   const consent = String(formData.get("consent") ?? "") === "yes";
   const agreement = String(formData.get("agreement") ?? "") === "yes";
@@ -157,14 +157,14 @@ export async function claimTeammateTransferAction(
 
     const registration = await claimTeammateTransfer(actor, token);
     invalidatePublicTags(["schedule", "rankings", "fighters"]);
-    revalidatePath("/fighter/dashboard");
-    revalidatePath("/fighter/registrations");
+    revalidatePath("/grappler/dashboard");
+    revalidatePath("/grappler/registrations");
 
     const registrationId = String(registration._id);
     if (registration.status === "AWAITING_PAYMENT" || registration.status === "PENDING_VERIFICATION") {
-      return { redirectTo: `/fighter/registrations/${registrationId}/payment` };
+      return { redirectTo: `/grappler/registrations/${registrationId}/payment` };
     }
-    return { redirectTo: "/fighter/dashboard", success: true };
+    return { redirectTo: "/grappler/dashboard", success: true };
   } catch (err) {
     return { error: toAppError(err).message };
   }

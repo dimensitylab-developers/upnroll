@@ -1,10 +1,14 @@
-import { getPublicFaqs, type PublicFaqItem } from "@/server/content/starterFaqs";
-
 export type HomeFaqItem = {
   id: string;
   question: string;
   answer: string;
   label: string;
+};
+
+export type FaqSourceItem = {
+  id: string;
+  question: string;
+  answer: string;
 };
 
 /** Homepage: short set athletes ask first (no contact FAQ). */
@@ -15,9 +19,8 @@ export const HOME_FAQ_PRIORITY = [
   "What should I wear?",
 ] as const;
 
-/** Hardcoded FAQs for home: never depends on Mongo content. */
-export function getHomeFaqs(limit = 4): HomeFaqItem[] {
-  const faqs = getPublicFaqs();
+/** Pick a short homepage strip from published FAQs (priority titles first). */
+export function getHomeFaqs(faqs: FaqSourceItem[], limit = 4): HomeFaqItem[] {
   const byTitle = new Map(faqs.map((faq) => [faq.question, faq]));
   const picked: HomeFaqItem[] = [];
 
@@ -45,8 +48,4 @@ export function getHomeFaqs(limit = 4): HomeFaqItem[] {
   }
 
   return picked;
-}
-
-export function getAllPublicFaqs(): PublicFaqItem[] {
-  return getPublicFaqs();
 }

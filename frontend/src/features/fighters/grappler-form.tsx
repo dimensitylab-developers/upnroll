@@ -332,7 +332,7 @@ export function GrapplerForm({
                   // Chosen file shows immediately. Saved photos stay on the signed-in fighter's route.
                   // eslint-disable-next-line @next/next/no-img-element
                   <img
-                    src={photoPreviewUrl ?? `/api/v1/fighter/photo?v=${photoVersion}`}
+                    src={photoPreviewUrl ?? `/api/v1/grappler/photo?v=${photoVersion}`}
                     alt="Passport size photograph"
                     className="w-full h-full object-contain"
                   />
@@ -355,7 +355,7 @@ export function GrapplerForm({
               {aadhaarPreviewUrl || hasAadhaarImage ? (
                 // eslint-disable-next-line @next/next/no-img-element
                 <img
-                  src={aadhaarPreviewUrl ?? `/api/v1/fighter/aadhaar?v=${aadhaarImageVersion}`}
+                  src={aadhaarPreviewUrl ?? `/api/v1/grappler/aadhaar?v=${aadhaarImageVersion}`}
                   alt="Identity proof"
                   className="w-full h-full object-contain"
                 />
@@ -387,7 +387,7 @@ export function GrapplerForm({
               {aadhaarPreviewUrl || hasAadhaarImage ? (
                 // eslint-disable-next-line @next/next/no-img-element
                 <img
-                  src={aadhaarPreviewUrl ?? `/api/v1/fighter/aadhaar?v=${aadhaarImageVersion}`}
+                  src={aadhaarPreviewUrl ?? `/api/v1/grappler/aadhaar?v=${aadhaarImageVersion}`}
                   alt="Identity proof"
                   className="w-full h-full object-contain"
                 />
@@ -540,7 +540,7 @@ export function GrapplerForm({
               {consentPreviewUrl || hasParentalConsentImage ? (
                 // eslint-disable-next-line @next/next/no-img-element
                 <img
-                  src={consentPreviewUrl ?? `/api/v1/fighter/parental-consent?v=${parentalConsentImageVersion}`}
+                  src={consentPreviewUrl ?? `/api/v1/grappler/parental-consent?v=${parentalConsentImageVersion}`}
                   alt="Parental consent form"
                   className="h-full w-full object-contain"
                 />

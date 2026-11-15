@@ -146,7 +146,7 @@ export async function decideRequest(actor: Actor, requestId: string, decision: "
       badge: approved ? "REQUEST APPROVED" : "REQUEST REJECTED",
       headline: approved ? "Your request was approved." : "Your request was not approved.",
       paragraphs: [bodyText],
-      cta: { label: "Open fighter dashboard", href: "/fighter" },
+      cta: { label: "Open grappler dashboard", href: "/grappler/dashboard" },
       preheader: bodyText,
     });
     await getEmailAdapter().send({ to: user.email, ...requestMail });

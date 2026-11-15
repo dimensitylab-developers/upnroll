@@ -28,7 +28,7 @@ export type ProfileActionState = {
 };
 
 export async function updateProfileAction(_prevState: ProfileActionState, formData: FormData): Promise<ProfileActionState> {
-  const actor = await requireActor("FIGHTER");
+  const actor = await requireActor("GRAPPLER");
 
   const parsed = grapplerDetailsSchema.safeParse(grapplerFromForm(formData));
   if (!parsed.success) {
@@ -53,7 +53,7 @@ export async function updateProfileAction(_prevState: ProfileActionState, formDa
   const existing = await getFighterProfile(actor);
   if (!existing) {
     return {
-      error: "Your fighter profile was not found. Sign out, sign in again, or contact support if this keeps happening.",
+      error: "Your grappler profile was not found. Sign out, sign in again, or contact support if this keeps happening.",
     };
   }
 
@@ -133,8 +133,8 @@ export async function updateProfileAction(_prevState: ProfileActionState, formDa
     /* ignore */
   }
 
-  revalidatePath("/fighter/profile");
-  revalidatePath("/fighter/dashboard");
-  if (slug) revalidatePath(`/fighters/${slug}`);
+  revalidatePath("/grappler/profile");
+  revalidatePath("/grappler/dashboard");
+  if (slug) revalidatePath(`/grapplers/${slug}`);
   return { success: true };
 }

@@ -70,14 +70,14 @@ function PodiumSlot({ fighter }: { fighter: PodiumFighter }) {
   const place = PLACE[fighter.rank as 1 | 2 | 3];
   if (!place) return null;
 
-  const photoSrc = fighter.hasPhoto && fighter.slug ? `/api/v1/public/fighters/${fighter.slug}/photo` : null;
+  const photoSrc = fighter.hasPhoto && fighter.slug ? `/api/v1/public/grapplers/${fighter.slug}/photo` : null;
   const face = (
     <div className={`podium-slot group flex w-full flex-col items-center ${place.delay}`}>
       {/* Photo plate */}
       <div className={`relative ${place.tilt} transition-transform duration-200 group-hover:-translate-y-1`}>
         {fighter.rank === 1 ? (
           <span className="absolute -top-3 left-1/2 z-10 -translate-x-1/2 border-2 border-black bg-brand-red px-2 py-0.5 text-[9px] font-semibold uppercase tracking-[0.18em] text-white shadow-[2px_2px_0_0_#000]">
-            #1 on the card
+            #1 on the board
           </span>
         ) : null}
         <div className={`relative overflow-hidden border-2 border-black ${place.face} ${place.photo} ${place.shadow}`}>
@@ -150,7 +150,7 @@ function PodiumSlot({ fighter }: { fighter: PodiumFighter }) {
   return (
     <li className={`min-w-0 flex-1 ${place.order}`}>
       <Link
-        href={`/fighters/${fighter.slug}`}
+        href={`/grapplers/${fighter.slug}`}
         className="block focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-black"
       >
         {face}

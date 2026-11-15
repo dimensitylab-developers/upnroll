@@ -87,7 +87,7 @@ export async function listRecentAuditLogsByActions(actor: Actor, actions: string
 export async function listRecentAccountsForAdmin(actor: Actor, limit = 8) {
   assertAdmin(actor);
   await connectDB();
-  const users = await User.find({ role: "FIGHTER" })
+  const users = await User.find({ role: { $in: ["GRAPPLER", "FIGHTER"] } })
     .sort({ createdAt: -1 })
     .limit(limit)
     .select("email createdAt emailVerified")
@@ -148,7 +148,7 @@ export async function getAdminPresenceStats(actor: Actor) {
   const since = startOfLocalDay();
   const [entriesToday, newAccountsToday] = await Promise.all([
     AuditLog.countDocuments({ action: "USER_LOGIN", createdAt: { $gte: since } }),
-    User.countDocuments({ role: "FIGHTER", createdAt: { $gte: since } }),
+    User.countDocuments({ role: { $in: ["GRAPPLER", "FIGHTER"] }, createdAt: { $gte: since } }),
   ]);
   return { entriesToday, newAccountsToday };
 }

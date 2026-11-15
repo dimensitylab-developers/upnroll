@@ -33,10 +33,10 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
                 <h2 className="text-display mt-6 text-3xl font-semibold leading-none lg:text-4xl">
                   Step on
                   <br />
-                  the card.
+                  the mat.
                 </h2>
                 <p className="mt-4 max-w-xs text-sm leading-relaxed text-white/65">
-                  Sign in to your desk  fighter sheet, payments, matches, and the house board.
+                  Sign in to your desk  grappler sheet, payments, matches, and the house board.
                 </p>
               </div>
               <div>

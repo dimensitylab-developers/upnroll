@@ -128,7 +128,7 @@ async function upsertDemoFighter(demo: DemoFighter, password = DEMO_PASSWORD) {
     user = await User.create({
       email: demo.email,
       passwordHash: await hashPassword(password),
-      role: "FIGHTER",
+      role: "GRAPPLER",
       emailVerified: true,
       emailVerifiedAt: new Date(),
       status: "ACTIVE",

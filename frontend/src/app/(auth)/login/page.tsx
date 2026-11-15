@@ -63,7 +63,10 @@ async function LoginChrome({
       <GoogleSignInLink from={from} />
       <p className="mt-6 text-center text-sm text-muted-foreground">
         No account?{" "}
-        <Link href="/register?from=%2Flogin" className="font-semibold text-brand-red underline">
+        <Link
+          href={from ? `/register?from=${encodeURIComponent(from)}` : "/register?from=%2Flogin"}
+          className="font-semibold text-brand-red underline"
+        >
           Register
         </Link>
       </p>

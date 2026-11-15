@@ -151,7 +151,7 @@ export async function updateFighterProfile(actor: Actor, input: FighterDetailsIn
   assertFighter(actor);
   await connectDB();
   const profile = await FighterProfile.findOne({ userId: actor.userId });
-  if (!profile) throw new NotFoundError("Fighter profile not found.");
+  if (!profile) throw new NotFoundError("Grappler profile not found.");
 
   profile.displayName = input.displayName;
   profile.gym = input.gym;
@@ -271,7 +271,7 @@ export async function getFighterForAdmin(actor: Actor, userId: string): Promise<
   const id = requireObjectId(userId, "fighter");
   await connectDB();
   const profile = await FighterProfile.findOne({ userId: id }).lean();
-  if (!profile) throw new NotFoundError("Fighter not found.");
+  if (!profile) throw new NotFoundError("Grappler not found.");
   const user = await User.findById(id).select("email").lean();
   return toAdminFighterView(profile, user?.email ?? "");
 }
@@ -302,7 +302,7 @@ export async function listPublicFighters() {
 export async function getPublicFighterBySlug(slug: string) {
   await connectDB();
   const profile = await FighterProfile.findOne({ slug }).select(PUBLIC_FIGHTER_FIELDS).lean();
-  if (!profile) throw new NotFoundError("Fighter not found.");
+  if (!profile) throw new NotFoundError("Grappler not found.");
 
   const [record, ranking] = await Promise.all([
     listPublicMatchHistory(String(profile.userId)),
