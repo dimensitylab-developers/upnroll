@@ -91,7 +91,7 @@ export const EVENT_POINTS_RULES = {
     title: "Match format",
     total: "Total Match Time: 6 Minutes",
     items: [
-      "First 3 Minutes – No Points Period",
+      "First 3 Minutes – Submission Period",
       "Final 3 Minutes – Scoring Period",
       "Submission victories are valid throughout the entire match",
     ],

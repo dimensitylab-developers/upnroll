@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import type { FightingMedia } from "./site-photos";
 import { FightTapePlayer } from "./fight-tape-player";
 
@@ -8,49 +8,21 @@ type Tape = Extract<FightingMedia, { type: "video" }>;
 
 /**
  * Landscapes stacked left; portrait on the right matched to that stack height (9:16).
+ * Height-matching is pure CSS (flex stretch + aspect-ratio) so it never re-measures
+ * on resize - a prior JS ResizeObserver-driven version caused the stack height and
+ * portrait width to feed back into each other, which jittered the layout on desktop.
  */
 function TapeStrip({ tapes }: { tapes: Tape[] }) {
   const landscapes = tapes.filter((tape) => tape.orientation !== "portrait");
   const portraits = tapes.filter((tape) => tape.orientation === "portrait");
   const portrait = portraits[0];
 
-  const stackRef = useRef<HTMLUListElement>(null);
-  const [portraitSize, setPortraitSize] = useState<{ height: number; width: number } | null>(null);
-
-  useEffect(() => {
-    const node = stackRef.current;
-    if (!node || !portrait) {
-      setPortraitSize(null);
-      return;
-    }
-
-    const sync = () => {
-      // Only height-match on sm+ side-by-side layout; mobile stays natural stacked.
-      if (!window.matchMedia("(min-width: 640px)").matches) {
-        setPortraitSize(null);
-        return;
-      }
-      const height = Math.round(node.getBoundingClientRect().height);
-      if (height < 8) return;
-      setPortraitSize({ height, width: Math.round((height * 9) / 16) });
-    };
-
-    sync();
-    const ro = new ResizeObserver(sync);
-    ro.observe(node);
-    window.addEventListener("resize", sync);
-    return () => {
-      ro.disconnect();
-      window.removeEventListener("resize", sync);
-    };
-  }, [portrait, landscapes.length]);
-
   if (tapes.length === 0) return null;
 
   return (
-    <div className="flex flex-col gap-3 sm:flex-row sm:items-start">
+    <div className="flex flex-col gap-3 sm:flex-row sm:items-stretch">
       {landscapes.length > 0 ? (
-        <ul ref={stackRef} className="flex min-w-0 flex-1 flex-col gap-3">
+        <ul className="flex min-w-0 flex-1 flex-col gap-3">
           {landscapes.map((tape) => (
             <li key={tape.src} className="min-w-0">
               <FightTapePlayer
@@ -66,14 +38,7 @@ function TapeStrip({ tapes }: { tapes: Tape[] }) {
       ) : null}
 
       {portrait ? (
-        <div
-          className="mx-auto w-full max-w-[16rem] shrink-0 sm:mx-0 sm:max-w-none"
-          style={
-            portraitSize
-              ? { width: portraitSize.width, height: portraitSize.height, maxWidth: "100%" }
-              : undefined
-          }
-        >
+        <div className="mx-auto w-full max-w-[16rem] shrink-0 sm:mx-0 sm:w-auto sm:max-w-none sm:self-stretch sm:aspect-[9/16]">
           <FightTapePlayer
             src={portrait.src}
             poster={portrait.poster}

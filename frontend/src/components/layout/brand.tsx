@@ -26,7 +26,7 @@ const COPYRIGHT_YEAR = 2026;
 export function SiteCopyright({ className = "" }: { className?: string }) {
   return (
     <p className={`text-[11px] leading-none text-muted-foreground ${className}`.trim()}>
-      © {COPYRIGHT_YEAR} Up &apos;n Roll. All rights reserved.
+      © {COPYRIGHT_YEAR} Up &apos;n Roll. All rights reserved by D3 Spectators Brand.
     </p>
   );
 }

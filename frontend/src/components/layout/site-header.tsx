@@ -2,7 +2,6 @@ import { Suspense } from "react";
 import Link from "next/link";
 import { connection } from "next/server";
 import { getSession } from "@/server/auth/session";
-import { cachedPublicEvents } from "@/lib/public-reads";
 import { HeaderLockup } from "./header-lockup";
 import { ComicNav } from "./comic-nav";
 import { comicCell, comicCellActive, comicCellIdle } from "./comic-cell";
@@ -43,22 +42,12 @@ function AuthControlsFallback() {
  */
 async function HeaderSessionChrome() {
   await connection();
-  const [session, events] = await Promise.all([getSession(), cachedPublicEvents()]);
+  const session = await getSession();
   const dashboardHref = session ? (session.user.role === "ADMIN" ? "/admin" : "/grappler/dashboard") : null;
-  const openEvent = events.find((event) => event.status === "REGISTRATION_OPEN") ?? events[0] ?? null;
 
   return (
     <>
       <div className="ml-auto hidden items-center gap-2 md:flex">
-        {openEvent && (
-          <Link
-            href={`/events/${openEvent.slug}`}
-            className={`${comicCell} ${comicCellActive} max-w-[11rem] overflow-hidden`}
-            style={{ transform: "rotate(-2deg)" }}
-          >
-            <span className="truncate">{openEvent.name}</span>
-          </Link>
-        )}
         {dashboardHref ? (
           <Link href={dashboardHref} className={`${comicCell} ${comicCellActive}`}>
             Dashboard
@@ -75,11 +64,7 @@ async function HeaderSessionChrome() {
         )}
       </div>
 
-      <MobileNavToggle
-        links={NAV_LINKS}
-        dashboardHref={dashboardHref}
-        event={openEvent ? { href: `/events/${openEvent.slug}`, label: openEvent.name } : null}
-      />
+      <MobileNavToggle links={NAV_LINKS} dashboardHref={dashboardHref} />
     </>
   );
 }

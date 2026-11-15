@@ -14,11 +14,9 @@ function withFrom(href: string, from: string) {
 export function MobileNavToggle({
   links,
   dashboardHref,
-  event = null,
 }: {
   links: { href: string; label: string }[];
   dashboardHref: string | null;
-  event?: { href: string; label: string } | null;
 }) {
   const [open, setOpen] = useState(false);
   const pathname = usePathname();
@@ -83,15 +81,6 @@ export function MobileNavToggle({
             <p className="px-1 text-[11px] font-semibold uppercase tracking-[0.18em] text-brand-red">
               Menu
             </p>
-            {event && (
-              <Link
-                href={event.href}
-                className={`${comicCell} ${comicCellActive} min-h-11`}
-                onClick={closeAndReturnFocus}
-              >
-                <span className="truncate">{event.label}</span>
-              </Link>
-            )}
             {links.map((link) => {
               const active = pathname === link.href || pathname.startsWith(`${link.href}/`);
               const prefetch =

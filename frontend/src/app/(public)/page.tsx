@@ -25,7 +25,7 @@ export default async function HomePage() {
 
       <section className="relative mx-auto max-w-6xl overflow-hidden px-4 pb-14 pt-2 sm:px-6 sm:pb-16 lg:px-8">
         <div className="mb-5">
-          <SectionBanner>On the mat</SectionBanner>
+          <SectionBanner>Highlights</SectionBanner>
         </div>
         <FightingGallery media={FIGHTING_MEDIA} />
       </section>

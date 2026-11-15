@@ -109,6 +109,9 @@ export function SiteFooter({ contact = SITE_CONTACT }: { contact?: SiteContact }
                     <span>@{contact.instagramHandle}</span>
                   </p>
                   {hasEmail && <p className="mt-2 text-sm text-neutral-600">{contact.email}</p>}
+                  <address className="mt-2 text-sm not-italic text-neutral-600">
+                    {contact.city ? `${contact.city}, India` : "India"}
+                  </address>
                 </a>
               </div>
             </div>
