@@ -20,7 +20,7 @@ function TapeStrip({ tapes }: { tapes: Tape[] }) {
   if (tapes.length === 0) return null;
 
   return (
-    <div className="flex flex-col gap-3 sm:flex-row sm:items-stretch">
+    <div className="flex flex-col gap-3 sm:grid sm:grid-cols-[minmax(0,3fr)_minmax(0,2fr)] sm:items-stretch">
       {landscapes.length > 0 ? (
         <ul className="flex min-w-0 flex-1 flex-col gap-3">
           {landscapes.map((tape) => (
@@ -38,7 +38,7 @@ function TapeStrip({ tapes }: { tapes: Tape[] }) {
       ) : null}
 
       {portrait ? (
-        <div className="mx-auto w-full max-w-[16rem] shrink-0 sm:mx-0 sm:w-auto sm:max-w-none sm:self-stretch sm:aspect-[9/16]">
+        <div className="mx-auto w-full max-w-[16rem] sm:mx-0 sm:w-full sm:max-w-none sm:self-stretch">
           <FightTapePlayer
             src={portrait.src}
             poster={portrait.poster}
