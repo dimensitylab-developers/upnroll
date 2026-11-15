@@ -10,7 +10,7 @@ export const HELD_ARCHIVE: Record<string, HeldRecordData> = {
     winners: [],
     divisions: [
       { name: "Beginner", detail: "White belts only." },
-      { name: "Advanced", detail: "Blue and purple belts." },
+      { name: "Intermediate", detail: "Blue and purple belts." },
     ],
     rounds: [
       { label: "6:00", detail: "Each match was six minutes." },
@@ -30,8 +30,8 @@ export const HELD_ARCHIVE: Record<string, HeldRecordData> = {
     rules: [
       { title: "Beginner, permitted", lines: ["All standard chokes", "Armbar", "Kimura", "Americana", "Omoplata", "Straight foot lock"] },
       { title: "Beginner, prohibited", lines: ["Heel hooks", "Toe holds", "Knee bars", "Calf slicers", "Flying submissions", "Jumping guard", "Neck cranks", "Spine cranks", "Twisters", "Slams"] },
-      { title: "Advanced, also permitted", lines: ["Toe hold", "Knee bar", "Calf slicer", "Flying submissions", "Jumping guard"] },
-      { title: "Advanced, still prohibited", lines: ["Heel hooks", "Neck cranks", "Spine cranks", "Twisters", "Slams"] },
+      { title: "Intermediate, also permitted", lines: ["Toe hold", "Knee bar", "Calf slicer", "Flying submissions", "Jumping guard"] },
+      { title: "Intermediate, still prohibited", lines: ["Heel hooks", "Neck cranks", "Spine cranks", "Twisters", "Slams"] },
     ],
     bracket:
       "This event did not publish a drawn bracket. On Up ’n Roll, winners move forward, and if someone is out they continue on the other side of the event.",
