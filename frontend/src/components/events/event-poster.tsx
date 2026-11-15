@@ -91,10 +91,15 @@ export function EventPoster({
             ) : null}
           </div>
           {venueLabel ? (
-            <p className="inline-flex items-center gap-1.5 text-sm font-semibold">
+            <a
+              href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(venueLabel)}`}
+              target="_blank"
+              rel="noreferrer"
+              className="inline-flex items-center gap-1.5 text-sm font-semibold underline decoration-brand-red decoration-2 underline-offset-4 hover:text-brand-red"
+            >
               <MapPin className="size-4 shrink-0 text-brand-red" aria-hidden="true" />
               {venueLabel}
-            </p>
+            </a>
           ) : null}
         </div>
       </div>
