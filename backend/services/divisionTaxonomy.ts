@@ -85,7 +85,7 @@ export const EVENT_POINTS_RULES = {
   divisions: {
     title: "Divisions",
     beginner: { title: "Beginner division", detail: "White Belts Only" },
-    advanced: { title: "Advanced division", detail: "Blue & Purple Belts" },
+    advanced: { title: "Intermediate division", detail: "Blue & Purple Belts" },
   },
   matchFormat: {
     title: "Match format",
@@ -109,7 +109,7 @@ export const EVENT_POINTS_RULES = {
   },
   /** Intermediate (blue & purple). Key `advanced` kept for older call sites. */
   advanced: {
-    title: "Advanced division",
+    title: "Intermediate division",
     subtitle: "Blue & Purple Belts",
     scoringTitle: "Scoring system (active in final 3 minutes)",
     permittedTitle: "Permitted submissions",
