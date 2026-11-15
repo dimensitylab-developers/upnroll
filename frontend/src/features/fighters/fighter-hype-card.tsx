@@ -16,7 +16,6 @@ export type FighterHypeCardData = {
   points?: number;
   rank?: number | null;
   featured?: boolean;
-  houseLabel?: string;
 };
 
 function initials(name: string) {
@@ -48,7 +47,6 @@ export function FighterHypeCard({
   const wins = fighter.wins ?? 0;
   const losses = fighter.losses ?? 0;
   const photoSrc = fighter.hasPhoto && fighter.slug ? `/api/v1/public/grapplers/${fighter.slug}/photo` : null;
-  const house = fighter.houseLabel ?? "Up 'n Roll";
 
   const body = compact ? (
     <article
@@ -58,11 +56,7 @@ export function FighterHypeCard({
         fighter.featured ? "ring-2 ring-brand-red ring-offset-1" : "",
       ].join(" ")}
     >
-      <div className="flex items-center justify-between gap-1 border-b border-black bg-black px-1.5 py-1 text-white">
-        <span className="inline-flex min-w-0 shrink items-center rounded-[2px] bg-white px-1.5 py-1">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src="/logo-wordmark.png" alt={house} className="h-3.5 w-auto object-contain" />
-        </span>
+      <div className="flex items-center justify-end border-b border-black bg-black px-1.5 py-1 text-white">
         <span className="shrink-0 text-[8px] font-semibold uppercase tracking-[0.12em] text-white/65">
           {fighter.rank ? `#${fighter.rank}` : "Profile"}
         </span>
@@ -107,11 +101,7 @@ export function FighterHypeCard({
         fighter.featured ? "ring-2 ring-brand-red ring-offset-2" : "",
       ].join(" ")}
     >
-      <div className="flex items-center justify-between gap-2 border-b-2 border-black bg-black px-2.5 py-1.5 text-white">
-        <span className="inline-flex min-w-0 shrink items-center rounded-sm bg-white px-2 py-1">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src="/logo-wordmark.png" alt={house} className="h-4 w-auto object-contain" />
-        </span>
+      <div className="flex items-center justify-end border-b-2 border-black bg-black px-2.5 py-1.5 text-white">
         <span className="shrink-0 text-[9px] font-semibold uppercase tracking-[0.16em] text-white/65">
           {fighter.rank ? `#${fighter.rank}` : "Profile"}
         </span>

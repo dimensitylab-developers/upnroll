@@ -56,7 +56,6 @@ async function AdminShell({ children }: { children: React.ReactNode }) {
                 <BrandMark className="h-7 w-7 sm:h-8 sm:w-8" />
               </span>
               <span className="min-w-0">
-                <span className="block text-[10px] font-semibold uppercase tracking-[0.22em] text-brand-red">House control</span>
                 <span className="text-display block truncate text-base font-semibold sm:text-lg lg:text-xl">
                   <span className="sm:hidden">Admin</span>
                   <span className="hidden sm:inline">Up &apos;n Roll Admin</span>

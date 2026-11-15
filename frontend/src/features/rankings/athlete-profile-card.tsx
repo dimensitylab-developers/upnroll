@@ -6,7 +6,7 @@ export function AthleteProfileCard({
   href,
   boardLine,
 }: {
-  athlete: Pick<HeldCardAthlete, "displayName" | "gym" | "city" | "state" | "weights" | "divisions" | "featured" | "houseLabel" | "instagram"> & {
+  athlete: Pick<HeldCardAthlete, "displayName" | "gym" | "city" | "state" | "weights" | "divisions" | "featured" | "instagram"> & {
     slug: string;
   };
   href: string;
@@ -34,11 +34,6 @@ export function AthleteProfileCard({
           {athleteInitials(athlete.displayName)}
         </div>
         <div className="min-w-0 flex-1">
-          {athlete.featured && (
-            <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-brand-red">
-              {athlete.houseLabel ?? "Up 'n Roll"}
-            </p>
-          )}
           <p className="text-lg font-semibold leading-tight">{athlete.displayName}</p>
           <p className="mt-1 text-sm text-muted-foreground">
             {athlete.gym || "Independent"}

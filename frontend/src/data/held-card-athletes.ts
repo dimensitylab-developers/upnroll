@@ -15,14 +15,10 @@ export type HeldCardAthlete = {
   event: string;
   eventSlug: string;
   featured: boolean;
-  /** House label for the featured Up 'n Roll profile. */
-  houseLabel?: string;
 };
 
 const ROSTER: HeldCardAthlete[] = (athletes as HeldCardAthlete[]).map((athlete) =>
-  athlete.featured
-    ? { ...athlete, houseLabel: "Up 'n Roll", displayName: athlete.displayName || "Suketu" }
-    : athlete
+  athlete.featured ? { ...athlete, displayName: athlete.displayName || "Suketu" } : athlete
 );
 
 export function listHeldCardAthletes(): HeldCardAthlete[] {

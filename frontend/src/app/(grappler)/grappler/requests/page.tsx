@@ -28,7 +28,7 @@ export default async function FighterRequestsPage() {
     <div className="mx-auto max-w-2xl space-y-10">
       <section className="space-y-4">
         <div>
-          <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-brand-red">House desk</p>
+          <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-brand-red">Requests</p>
           <h1 className="text-display mt-1 text-2xl font-semibold sm:text-3xl">Cancellation / transfer</h1>
           <p className="mt-2 text-sm text-muted-foreground">
             Ask to cancel, move division, or pass your seat to a teammate.

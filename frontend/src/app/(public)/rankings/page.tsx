@@ -31,7 +31,6 @@ type BoardFighter = {
   points: number;
   rank: number | null;
   featured: boolean;
-  houseLabel?: string;
 };
 
 function emptyByClass(): Record<WeightClassId, DivisionRankedFighter[]> {
@@ -81,7 +80,6 @@ export default async function PublicRankingsPage({
           points: ranked?.points ?? live?.points ?? 0,
           rank: ranked?.rank ?? live?.rank ?? null,
           featured: Boolean(athlete.featured),
-          houseLabel: athlete.houseLabel,
         },
       };
     }),

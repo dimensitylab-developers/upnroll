@@ -64,12 +64,7 @@ async function GrapplerShell({ children }: { children: React.ReactNode }) {
               aria-label="Grappler home"
             >
               <BrandMark className="h-8 w-8" />
-              <span className="leading-none">
-                <span className="block text-[9px] font-semibold uppercase tracking-[0.18em] text-brand-red">
-                  House desk
-                </span>
-                <span className="hidden sm:inline">Grappler</span>
-              </span>
+              <span className="leading-none">Grappler</span>
             </Link>
             <div className="ml-auto flex items-center gap-2">
               <Link

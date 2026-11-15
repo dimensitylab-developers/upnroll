@@ -39,7 +39,6 @@ export default async function PublicFighterProfilePage({ params }: { params: Pro
     points: 0,
     rank: null,
     featured: Boolean(held?.featured),
-    houseLabel: held?.houseLabel,
   };
   const history = live?.history ?? [];
 
@@ -53,7 +52,6 @@ export default async function PublicFighterProfilePage({ params }: { params: Pro
             fighter={{
               ...card,
               featured: Boolean(held?.featured),
-              houseLabel: held?.houseLabel ?? "Up 'n Roll",
             }}
           />
           <div className="flex flex-wrap gap-2">
