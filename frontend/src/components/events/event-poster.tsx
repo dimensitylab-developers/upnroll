@@ -1,5 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
+import { MapPin } from "lucide-react";
 
 const EVENT_BANNERS: Record<string, string> = {
   "up-n-roll-superfight-series": "/banners/up-n-roll-no-gi-2.jpg",
@@ -27,6 +28,7 @@ export function EventPoster({
   canRegister: boolean;
 }) {
   const banner = EVENT_BANNERS[slug] ?? null;
+  const venueLabel = venue || (slug === "up-n-roll-superfight-series" ? "Mumbai" : "");
 
   return (
     <article className="border-2 border-black bg-white shadow-[8px_8px_0_0_#000]">
@@ -55,9 +57,6 @@ export function EventPoster({
             <p className="text-display mt-2 text-xl font-semibold sm:text-2xl">{date}</p>
             <h2 className="text-display mt-2 max-w-3xl text-3xl font-semibold leading-tight sm:text-5xl">{name}</h2>
             {line && <p className="mt-3 text-sm text-white/85">{line}</p>}
-            <p className="mt-2 text-sm text-white/80">
-              {venue || (slug === "up-n-roll-superfight-series" ? "Mumbai" : "")}
-            </p>
           </div>
         </div>
       ) : (
@@ -66,7 +65,6 @@ export function EventPoster({
           <p className="text-display mt-4 text-2xl font-semibold sm:text-3xl">{date}</p>
           <h2 className="text-display mt-2 max-w-3xl text-4xl font-semibold leading-[0.95] sm:text-6xl">{name}</h2>
           {line && <p className="mt-4 text-sm text-white/80">{line}</p>}
-          {venue && <p className="mt-4 text-sm text-white/80">{venue}</p>}
         </div>
       )}
 
@@ -74,21 +72,29 @@ export function EventPoster({
         <p className="max-w-xl text-sm leading-relaxed">{statusLine}</p>
         {registerUntil && <p className="mt-2 text-sm">Registration closes {registerUntil}.</p>}
 
-        <div className="mt-8 flex flex-wrap gap-3">
-          <Link
-            href={`/events/${slug}`}
-            prefetch
-            className="inline-flex border-2 border-black bg-white px-4 py-2 text-sm font-semibold shadow-[4px_4px_0_0_#000] transition-colors active:bg-brand-red/10"
-          >
-            Open full event
-          </Link>
-          {canRegister ? (
+        <div className="mt-8 flex flex-wrap items-center justify-between gap-3">
+          <div className="flex flex-wrap gap-3">
             <Link
-              href={`/grappler/registrations/new?event=${encodeURIComponent(eventId)}`}
-              className="inline-flex border-2 border-black bg-brand-red px-4 py-2 text-sm font-semibold text-white shadow-[4px_4px_0_0_#000]"
+              href={`/events/${slug}`}
+              prefetch
+              className="inline-flex border-2 border-black bg-white px-4 py-2 text-sm font-semibold shadow-[4px_4px_0_0_#000] transition-colors active:bg-brand-red/10"
             >
-              Register to compete
+              Open full event
             </Link>
+            {canRegister ? (
+              <Link
+                href={`/grappler/registrations/new?event=${encodeURIComponent(eventId)}`}
+                className="inline-flex border-2 border-black bg-brand-red px-4 py-2 text-sm font-semibold text-white shadow-[4px_4px_0_0_#000]"
+              >
+                Register to compete
+              </Link>
+            ) : null}
+          </div>
+          {venueLabel ? (
+            <p className="inline-flex items-center gap-1.5 text-sm font-semibold">
+              <MapPin className="size-4 shrink-0 text-brand-red" aria-hidden="true" />
+              {venueLabel}
+            </p>
           ) : null}
         </div>
       </div>

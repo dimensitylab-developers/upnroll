@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { MapPin } from "lucide-react";
 import { cachedPublicEvents } from "@/lib/public-reads";
 import { SectionBanner } from "@/components/home/section-banner";
 import { EventPoster } from "@/components/events/event-poster";
@@ -59,11 +60,17 @@ export default async function PublicEventsPage() {
                   className="block border-2 border-black bg-white px-5 py-4 shadow-[4px_4px_0_0_#000] transition-colors active:bg-brand-red/10"
                 >
                   <p className="font-semibold">{event.name}</p>
-                  <p className="mt-1 text-sm text-muted-foreground">
-                    {formatDate(event.startDate)}
-                    {event.venue ? ` · ${event.venue}` : ""}
-                    {" · "}
-                    {statusLine(event.status)}
+                  <p className="mt-1 flex flex-wrap items-center gap-x-1.5 text-sm text-muted-foreground">
+                    <span>{formatDate(event.startDate)}</span>
+                    {event.venue ? (
+                      <span className="inline-flex items-center gap-1">
+                        <span aria-hidden="true">·</span>
+                        <MapPin className="size-3.5 shrink-0 text-brand-red" aria-hidden="true" />
+                        {event.venue}
+                      </span>
+                    ) : null}
+                    <span aria-hidden="true">·</span>
+                    <span>{statusLine(event.status)}</span>
                   </p>
                 </Link>
               ))}
