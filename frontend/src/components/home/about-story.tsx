@@ -11,7 +11,7 @@ const BRACKET_FACTORS = [
   "Belt",
   "Training years",
   "Match record",
-  "Gym",
+  "Academy",
 ] as const;
 
 const DOORS = [
@@ -175,7 +175,7 @@ function AboutPageStory() {
             />
             <div className="absolute inset-0 bg-gradient-to-t from-black via-black/20 to-transparent" />
             <p className="absolute bottom-5 left-5 right-5 text-display text-2xl font-semibold text-white sm:text-3xl">
-              Jiu jitsu as a lifestyle, not just an event to enter.
+              Jiu jitsu should be a lifestyle, not just an event to enter.
             </p>
           </article>
           <article className="border-2 border-black bg-white p-5 shadow-[8px_8px_0_0_#c8102e] sm:p-8">
@@ -194,17 +194,18 @@ function AboutPageStory() {
           <SectionBanner>Ranking system</SectionBanner>
           <p className="mt-3 max-w-3xl text-sm leading-relaxed">
             Three events build the board. The fourth is the superfight. Who gets that invitation is confirmed by the
-            house, not points alone.
+            rank, not by the organizer.
           </p>
           <details className="mt-4">
             <summary className="cursor-pointer text-sm font-semibold text-brand-red">Know more</summary>
             <div className="mt-3 space-y-2 text-sm leading-relaxed text-muted-foreground">
+              <p>Superfight eligibility is based on wins and top rankings within the same division. Athletes may switch divisions, but their previous rankings will not carry over. They must establish a new ranking in the new division to qualify for a superfight.'
+              </p>
               <p>
                 Deeper bracket runs place higher. Early exits place lower. When two athletes lose with no points, the
                 faster loss places lower. Missing a recent event can drop you versus athletes who showed up.
               </p>
-              <p>Featured #1 gets the photo. The list under the podium starts at #2.</p>
-            </div>
+             </div>
           </details>
         </section>
 

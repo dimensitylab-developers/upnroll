@@ -4,6 +4,7 @@ import { NotFoundError } from "@/server/http/errors";
 import { getRegistrationForFighter } from "@/server/services/registrationService";
 import { canSubmitPayment } from "@/server/services/registrationStateMachine";
 import { PaymentForm } from "@/features/payments/payment-form";
+import { PaymentCouponField } from "@/features/payments/payment-coupon-field";
 import { QrCode } from "lucide-react";
 import { PageBackLink } from "@/components/layout/page-back-link";
 
@@ -65,6 +66,13 @@ export default async function RegistrationPaymentPage({ params }: { params: Prom
                 Previous submission rejected: {latestSubmission.reviewNote}
               </p>
             )}
+            {eventId && (
+              <PaymentCouponField
+                eventId={eventId}
+                registrationId={String(registration._id)}
+                appliedCouponCode={feeView.couponCode}
+              />
+            )}
             <div className="mx-auto mb-4 flex size-48 items-center justify-center overflow-hidden rounded-md border-2 border-black bg-white shadow-[4px_4px_0_0_#000]">
               {hasQr && qrSrc ? (
                 // eslint-disable-next-line @next/next/no-img-element
@@ -85,16 +93,16 @@ export default async function RegistrationPaymentPage({ params }: { params: Prom
             <PaymentForm registrationId={String(registration._id)} />
           </>
         ) : registration.status === "PENDING_VERIFICATION" ? (
-          <div className="space-y-2">
-            <p className="text-sm font-semibold">Thank you. Payment received for review.</p>
-            <p className="text-sm text-muted-foreground">
-              An organizer will review your UPI submission before your place is confirmed.
+          <div className="space-y-2 text-center">
+            <p className="text-display text-3xl font-bold uppercase tracking-wide sm:text-4xl">Thank you!</p>
+            <p className="text-xs text-muted-foreground">
+              Payment received for review. An organizer will review your UPI submission before your place is confirmed.
             </p>
           </div>
         ) : registration.status === "CONFIRMED" ? (
-          <div className="space-y-2">
-            <p className="text-sm font-semibold text-brand-cyan">Thank you. Your place is confirmed.</p>
-            <p className="text-sm text-muted-foreground">Payment approved. Your registration is locked for this event.</p>
+          <div className="space-y-2 text-center">
+            <p className="text-display text-3xl font-bold uppercase tracking-wide text-brand-cyan sm:text-4xl">Thank you!</p>
+            <p className="text-xs text-muted-foreground">Your place is confirmed. Payment approved and your registration is locked for this event.</p>
           </div>
         ) : (
           <p className="text-sm text-muted-foreground">No action available for this registration&apos;s current status.</p>

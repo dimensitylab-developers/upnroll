@@ -1,7 +1,7 @@
 /** English clauses from the grappler registration sheet. */
 export const WAIVER_CLAUSES = [
   "I understand this is a No-Gi only event.",
-  "I will wear approved attire (rashguard + shorts/spats, no pockets/zippers) and a compulsory mouthguard. I bring my own mouthguard.",
+  "I will wear approved attire (rashguard + shorts/spats, no pockets/zippers) and compulsory mouthguard and groin guard. I bring my own mouthguard and groin guard.",
   "I agree to follow all referee decisions and I accept the rules and scoring system.",
   "The organizers reserve the right to merge divisions and also to make athletes who train under the same coach compete.",
   "I am medically fit to compete.",
@@ -12,7 +12,9 @@ export const WAIVER_CLAUSES = [
   "The grappler agrees they take the fight by their own choice, and no gym owner, coach, or event organiser has forced them to compete.",
   "The organizer holds the full right to merge divisions.",
   "If the organisers give out rashguards or gear, I have no problem wearing them and competing.",
-  "There is no full refund on cancellation. You may transfer your spot to a friend. A 50% refund may apply when cancellation is approved one month or more before the event; there is no refund within the final month. Refunds are handled manually by the organiser. No refund will be initiated on the day of the event, before the fight, or after the fight.",
+  "Full refunds are not available for cancellations. However, you may transfer your spot to a friend. A 50% cancellation fee may apply if you cancel within one month of the event. Any approved refund will be processed manually by the organiser. No refund will be initiated on the day of the event, before the fight, or after the fight.",
+  "I accept responsibility for medical expenses arising during the event. To the extent permitted by law, the organiser, organisation, venue owners, and sponsors are not responsible for these costs. (Personal medical insurance covering event participation is recommended.)",
+  "Superfight eligibility is based on wins and top rankings within the same division. Athletes may switch divisions, but their previous rankings will not carry over. They must establish a new ranking in the new division to qualify for a superfight.",
   "I have read and understood the rules, the regulations, and this waiver, and I agree to abide by them.",
 ] as const;
 

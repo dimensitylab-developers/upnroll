@@ -4,10 +4,13 @@ import { connectDB } from "@/server/db/connect";
 import { assertAdmin, assertFighter, type Actor } from "@/server/auth/actor";
 import { Coupon, type CouponDoc } from "@/server/models/Coupon";
 import { Event } from "@/server/models/Event";
+import { Division } from "@/server/models/Division";
+import { Registration, type RegistrationDoc } from "@/server/models/Registration";
 import { writeAuditLog } from "@/server/audit/log";
 import { NotFoundError, ValidationError, ConflictError } from "@/server/http/errors";
 import { requireObjectId } from "@/server/validation/objectId";
 import { bindSession, sessionOpts, withTransaction, type DbSession } from "@/server/db/transaction";
+import { canSubmitPayment } from "./registrationStateMachine";
 import {
   couponReservationMinutes,
   maxOpenCouponReservationsPerUser,
@@ -349,6 +352,80 @@ export async function redeemReservedCouponInSession(
   );
 
   return { coupon, paymentOptionId: String(coupon.paymentOptionId) };
+}
+
+/**
+ * Apply an already-reserved coupon to a registration created earlier without one  the
+ * fighter enters a code on the payment page, not at registration time. Redeems atomically
+ * with re-pricing the registration's fee snapshot, which submitPayment always re-reads
+ * (see the comment in paymentService.submitPayment), so the discount takes effect on the
+ * very next payment submission and the payment page's QR/amount on its next render.
+ */
+export async function applyCouponToRegistration(
+  actor: Actor,
+  registrationId: string,
+  input: { couponId: string; reservationIntentId: string }
+) {
+  assertFighter(actor);
+  requireObjectId(registrationId, "registration");
+  requireObjectId(input.couponId, "coupon");
+  await connectDB();
+
+  return withTransaction(async (session) => {
+    const registration = await bindSession(Registration.findById(registrationId), session);
+    if (!registration || String(registration.userId) !== actor.userId) {
+      throw new NotFoundError("Registration not found.");
+    }
+    if (!canSubmitPayment(registration.status as RegistrationDoc["status"])) {
+      throw new ConflictError("A coupon cannot be applied to this registration in its current state.");
+    }
+    if (registration.couponId) {
+      throw new ConflictError("A coupon has already been applied to this registration.");
+    }
+
+    const division = await bindSession(Division.findById(registration.divisionId), session);
+    if (!division) throw new NotFoundError("Division not found.");
+
+    const now = new Date();
+    const redeemed = await redeemReservedCouponInSession(session, {
+      eventId: String(registration.eventId),
+      couponId: input.couponId,
+      userId: actor.userId,
+      reservationIntentId: input.reservationIntentId,
+      registrationId: String(registration._id),
+      now,
+    });
+    const couponOption = await getPaymentOption(String(registration.eventId), redeemed.paymentOptionId);
+    if (!couponOption?.active) throw new ValidationError("Coupon payment option is unavailable.");
+    const amount =
+      division.feeMinorUnitsOverride != null ? division.feeMinorUnitsOverride : couponOption.amountMinorUnits;
+
+    registration.set("feeSnapshot", {
+      amountMinorUnits: amount,
+      currency: couponOption.currency,
+      paymentOptionId: couponOption.id,
+      paymentOptionLabel: couponOption.label,
+      qrImageKey: couponOption.qrImageKey,
+      couponId: redeemed.coupon._id,
+      couponCode: redeemed.coupon.code,
+      snapshottedAt: now,
+    });
+    registration.couponId = redeemed.coupon._id as unknown as RegistrationDoc["couponId"];
+    await registration.save(sessionOpts(session));
+
+    await writeAuditLog(
+      {
+        actorId: actor.userId,
+        action: "REGISTRATION_COUPON_APPLIED",
+        targetType: "Registration",
+        targetId: String(registration._id),
+        after: { amountMinorUnits: amount, paymentOptionId: couponOption.id, couponId: String(redeemed.coupon._id) },
+      },
+      session
+    );
+
+    return { registration, feeView: { amountMinorUnits: amount, currency: couponOption.currency, paymentOptionId: couponOption.id, paymentOptionLabel: couponOption.label, couponCode: redeemed.coupon.code } };
+  });
 }
 
 export async function previewCouponForFighter(

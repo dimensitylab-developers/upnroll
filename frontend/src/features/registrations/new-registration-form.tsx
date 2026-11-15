@@ -8,7 +8,6 @@ import { divisionGenderCode } from "@/features/fighters/weight-bands";
 import { Label } from "@/components/ui/label";
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/select";
 import { SectionBanner } from "@/components/home/section-banner";
-import { CouponField } from "./coupon-field";
 
 type ExperienceLevel = "BEGINNER" | "INTERMEDIATE";
 
@@ -164,7 +163,7 @@ export function NewRegistrationForm({
             {hasTaxonomy && (
               <div>
                 <Label htmlFor="experienceLevel" className="mb-1.5 block">
-                  Experience level
+                  Division
                 </Label>
                 <Select
                   value={experienceLevel}
@@ -174,7 +173,7 @@ export function NewRegistrationForm({
                   }}
                   disabled={!eventId}
                 >
-                  <SelectTrigger id="experienceLevel" aria-label="Experience level">
+                  <SelectTrigger id="experienceLevel" aria-label="Division">
                     <SelectValue
                       placeholder={eventId ? "Select Beginner or Intermediate" : "Choose an event first"}
                     />
@@ -225,7 +224,6 @@ export function NewRegistrationForm({
               )}
             </div>
           </div>
-          <CouponField eventId={eventId || null} disabled={pending || navigating} />
         </section>
       }
       bottom={
