@@ -63,7 +63,7 @@ export default async function AdminRankingsPage() {
             <TableHeader>
               <TableRow>
                 <TableHead>Rank</TableHead>
-                <TableHead>Fighter</TableHead>
+                <TableHead>Grappler</TableHead>
                 <TableHead>Record</TableHead>
                 <TableHead>Points</TableHead>
               </TableRow>

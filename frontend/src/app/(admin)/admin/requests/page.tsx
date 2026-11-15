@@ -29,7 +29,7 @@ export default async function AdminRequestsPage() {
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead>Fighter</TableHead>
+                <TableHead>Grappler</TableHead>
                 <TableHead>Type</TableHead>
                 <TableHead>Reason</TableHead>
                 <TableHead>Status</TableHead>

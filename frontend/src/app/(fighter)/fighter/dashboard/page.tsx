@@ -19,6 +19,17 @@ function statusLabel(status: string) {
   return status.replaceAll("_", " ");
 }
 
+function registrationDeskAction(status: string, registrationId: string) {
+  const href = `/fighter/registrations/${registrationId}/payment`;
+  if (status === "AWAITING_PAYMENT" || status === "REJECTED") {
+    return { href, label: "Payment desk" };
+  }
+  if (status === "PENDING_VERIFICATION") {
+    return { href, label: "Payment status" };
+  }
+  return { href, label: "View seat" };
+}
+
 export default async function FighterDashboardPage() {
   const session = await getSession();
   if (!session) return null;
@@ -34,14 +45,15 @@ export default async function FighterDashboardPage() {
   const openReg = data.registrations.find((r) =>
     ["AWAITING_PAYMENT", "PENDING_VERIFICATION", "CONFIRMED"].includes(r.status)
   );
+  const openRegAction = openReg ? registrationDeskAction(openReg.status, String(openReg._id)) : null;
   const hasPhoto = Boolean(data.profile?.photoKey);
   const publicSlug = data.profile?.slug?.trim() || "";
 
   return (
-    <div className="relative space-y-8 sm:space-y-10">
-      <DashboardAtmosphere name={name} />
+    <div className="relative space-y-7 sm:space-y-9">
+      <DashboardAtmosphere />
 
-      <div className="relative z-10 space-y-8 sm:space-y-10">
+      <div className="relative z-10 space-y-7 sm:space-y-9">
         <DashboardNameplate
           name={name}
           shortName={short}
@@ -54,22 +66,37 @@ export default async function FighterDashboardPage() {
           hasPhoto={hasPhoto}
         />
 
-        {data.alerts.length > 0 && (
+        {(data.alerts.length > 0 || data.pendingRequests.length > 0) && (
           <div className="space-y-2">
             {data.alerts.map((alert) => (
               <p
                 key={alert}
-                className="border-2 border-black bg-brand-red px-4 py-3 text-sm font-medium text-white shadow-[4px_4px_0_0_#000]"
+                className="border-2 border-black bg-brand-red px-4 py-3 text-sm font-semibold text-white shadow-[4px_4px_0_0_#000]"
               >
                 {alert}
               </p>
             ))}
+            {data.pendingRequests.length > 0 && (
+              <div className="flex flex-col gap-3 border-2 border-black bg-white px-4 py-3 shadow-[4px_4px_0_0_#000] sm:flex-row sm:items-center sm:justify-between">
+                <p className="text-sm font-medium">
+                  {data.pendingRequests.length === 1
+                    ? "You have 1 request waiting on the house."
+                    : `You have ${data.pendingRequests.length} requests waiting on the house.`}
+                </p>
+                <Link
+                  href="/fighter/requests"
+                  className="inline-flex min-h-9 -skew-x-12 items-center justify-center border-2 border-black bg-black px-3 text-[10px] font-semibold uppercase tracking-[0.14em] text-white shadow-[3px_3px_0_0_#c8102e]"
+                >
+                  <span className="inline-block skew-x-12">Open requests</span>
+                </Link>
+              </div>
+            )}
           </div>
         )}
 
         <DashboardSection eyebrow="Live" title="What matters now">
-          <div className="grid gap-0 overflow-hidden border-2 border-black bg-white shadow-[6px_6px_0_0_#000] sm:grid-cols-2">
-            <div className="border-b-2 border-black p-4 sm:border-b-0 sm:border-r-2 sm:p-5">
+          <div className="grid gap-3 sm:grid-cols-2 sm:gap-4">
+            <article className="flex flex-col border-2 border-black bg-white p-4 shadow-[6px_6px_0_0_#000] sm:p-5">
               <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-brand-red">Next bout</p>
               {nextMatch ? (
                 <>
@@ -78,33 +105,37 @@ export default async function FighterDashboardPage() {
                     <span className="mx-2 text-brand-red">vs</span>
                     {nextMatch.competitorBName ?? "TBD"}
                   </p>
-                  <p className="mt-2 text-sm text-muted-foreground">
-                    {nextMatch.event?.name ?? "Event"}
-                    {nextMatch.mat ? ` · Mat ${nextMatch.mat}` : ""}
-                  </p>
-                  <p className="mt-1 text-sm text-muted-foreground">
-                    {nextMatch.scheduledAt
-                      ? new Date(nextMatch.scheduledAt).toLocaleString("en-IN", {
-                          dateStyle: "medium",
-                          timeStyle: "short",
-                        })
-                      : "Time TBA"}
-                  </p>
+                  <div className="mt-3 flex flex-wrap gap-2">
+                    {nextMatch.mat ? (
+                      <span className="border-2 border-black bg-[#f7f4ef] px-2 py-1 text-[10px] font-semibold uppercase tracking-[0.14em]">
+                        Mat {nextMatch.mat}
+                      </span>
+                    ) : null}
+                    <span className="border-2 border-black bg-[#f7f4ef] px-2 py-1 text-[10px] font-semibold uppercase tracking-[0.14em]">
+                      {nextMatch.scheduledAt
+                        ? new Date(nextMatch.scheduledAt).toLocaleString("en-IN", {
+                            dateStyle: "medium",
+                            timeStyle: "short",
+                          })
+                        : "Time TBA"}
+                    </span>
+                  </div>
+                  <p className="mt-3 text-sm text-muted-foreground">{nextMatch.event?.name ?? "Event"}</p>
                   <Link
                     href="/fighter/matches"
-                    className="mt-4 inline-flex text-xs font-semibold uppercase tracking-[0.14em] text-brand-red hover:underline"
+                    className="mt-6 inline-flex min-h-10 w-fit -skew-x-12 items-center border-2 border-black bg-black px-4 text-[10px] font-semibold uppercase tracking-[0.14em] text-white shadow-[3px_3px_0_0_#c8102e]"
                   >
-                    Open match desk →
+                    <span className="inline-block skew-x-12">Open match desk</span>
                   </Link>
                 </>
               ) : (
-                <p className="mt-3 max-w-sm text-sm leading-relaxed text-muted-foreground">
+                <p className="mt-3 max-w-sm flex-1 text-sm leading-relaxed text-muted-foreground">
                   No bout on the clock. When brackets publish, your mat call lands here first.
                 </p>
               )}
-            </div>
+            </article>
 
-            <div className="p-4 sm:p-5">
+            <article className="flex flex-col border-2 border-black bg-white p-4 shadow-[6px_6px_0_0_#000] sm:p-5">
               <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-brand-red">Active event</p>
               {openReg ? (
                 <>
@@ -112,65 +143,69 @@ export default async function FighterDashboardPage() {
                     {openReg.event?.name ?? "Event"}
                   </p>
                   <p className="mt-2 text-sm text-muted-foreground">{openReg.division?.name ?? "Division"}</p>
-                  <div className="mt-4 flex flex-wrap items-center gap-3">
+                  <div className="mt-4">
                     <Badge variant="outline">{statusLabel(openReg.status)}</Badge>
-                    <Link
-                      href={`/fighter/registrations/${openReg._id}/payment`}
-                      className="text-xs font-semibold uppercase tracking-[0.14em] text-brand-red hover:underline"
-                    >
-                      Payment desk →
-                    </Link>
                   </div>
+                  {openRegAction ? (
+                    <Link
+                      href={openRegAction.href}
+                      className="mt-6 inline-flex min-h-10 w-fit -skew-x-12 items-center border-2 border-black bg-brand-red px-4 text-[10px] font-semibold uppercase tracking-[0.14em] text-white shadow-[3px_3px_0_0_#000]"
+                    >
+                      <span className="inline-block skew-x-12">{openRegAction.label}</span>
+                    </Link>
+                  ) : null}
                 </>
               ) : (
                 <>
-                  <p className="mt-3 max-w-sm text-sm leading-relaxed text-muted-foreground">
+                  <p className="mt-3 max-w-sm flex-1 text-sm leading-relaxed text-muted-foreground">
                     No active seat on an event. When registration opens, take your division here.
                   </p>
                   <Link
                     href="/fighter/registrations/new"
-                    className="mt-4 inline-flex min-h-10 items-center border-2 border-black bg-brand-red px-4 text-xs font-semibold uppercase tracking-[0.14em] text-white shadow-[3px_3px_0_0_#000]"
+                    className="mt-6 inline-flex min-h-10 w-fit -skew-x-12 items-center border-2 border-black bg-brand-red px-4 text-[10px] font-semibold uppercase tracking-[0.14em] text-white shadow-[3px_3px_0_0_#000]"
                   >
-                    Register now
+                    <span className="inline-block skew-x-12">Register now</span>
                   </Link>
                 </>
               )}
-            </div>
+            </article>
           </div>
         </DashboardSection>
 
         {publicSlug ? (
           <DashboardSection eyebrow="Public" title="Playing card">
-            <div className="flex flex-col gap-4 sm:flex-row sm:items-start">
-              <div className="mx-auto shrink-0 sm:mx-0 [&_.fighter-playing-card]:origin-top [&_.fighter-playing-card]:scale-[0.88]">
-                <FighterHypeCard
-                  fighter={{
-                    displayName: name,
-                    slug: publicSlug,
-                    gym: data.profile?.gym || "",
-                    academy,
-                    discipline: data.profile?.discipline || "",
-                    beltRank: data.profile?.beltRank || "",
-                    weightDivision: data.profile?.weightDivision || "",
-                    hasPhoto,
-                    wins: data.record.wins,
-                    losses: data.record.losses,
-                  }}
-                  href={`/fighters/${publicSlug}`}
-                />
-              </div>
-              <div className="min-w-0 space-y-3 sm:pt-1">
-                <p className="text-sm leading-relaxed text-muted-foreground">
-                  Shareable face on rankings — photo, record, academy. No personal details.
-                </p>
-                <div className="flex flex-wrap gap-2">
-                  <ShareFighterCardButton slug={publicSlug} displayName={name} />
-                  <Link
+            <div className="border-2 border-black bg-white p-4 shadow-[6px_6px_0_0_#000] sm:p-5">
+              <div className="flex flex-col gap-5 sm:flex-row sm:items-start">
+                <div className="mx-auto shrink-0 sm:mx-0 [&_.fighter-playing-card]:origin-top [&_.fighter-playing-card]:scale-[0.92]">
+                  <FighterHypeCard
+                    fighter={{
+                      displayName: name,
+                      slug: publicSlug,
+                      gym: data.profile?.gym || "",
+                      academy,
+                      discipline: data.profile?.discipline || "",
+                      beltRank: data.profile?.beltRank || "",
+                      weightDivision: data.profile?.weightDivision || "",
+                      hasPhoto,
+                      wins: data.record.wins,
+                      losses: data.record.losses,
+                    }}
                     href={`/fighters/${publicSlug}`}
-                    className="inline-flex min-h-10 items-center border-2 border-black bg-white px-3 text-xs font-semibold uppercase tracking-[0.14em] shadow-[3px_3px_0_0_#000]"
-                  >
-                    Public page →
-                  </Link>
+                  />
+                </div>
+                <div className="min-w-0 flex-1 space-y-4 sm:pt-2">
+                  <p className="max-w-sm text-sm leading-relaxed text-muted-foreground">
+                    Shareable face on rankings: photo, record, academy. No personal details.
+                  </p>
+                  <div className="flex flex-wrap gap-2">
+                    <ShareFighterCardButton slug={publicSlug} displayName={name} />
+                    <Link
+                      href={`/fighters/${publicSlug}`}
+                      className="inline-flex min-h-10 -skew-x-12 items-center border-2 border-black bg-white px-4 text-[10px] font-semibold uppercase tracking-[0.14em] shadow-[3px_3px_0_0_#000]"
+                    >
+                      <span className="inline-block skew-x-12">Public page</span>
+                    </Link>
+                  </div>
                 </div>
               </div>
             </div>

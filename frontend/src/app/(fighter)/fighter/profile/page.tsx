@@ -3,6 +3,7 @@ import { actorFromSession, getSession } from "@/server/auth/session";
 import { getFighterProfile } from "@/server/services/fighterService";
 import { ProfileForm } from "@/features/profile/profile-form";
 import type { GrapplerDefaults } from "@/features/fighters/grappler-form";
+import { normalizeWeightBand } from "@/features/fighters/weight-bands";
 
 /** Session/DB-bound route  allow blocking navigation under Cache Components. */
 export const instant = false;
@@ -36,7 +37,7 @@ export default async function FighterProfilePage() {
     beltRank: profile?.beltRank ?? "",
     yearsTraining: ready ? String(profile?.yearsTraining ?? 0) : "",
     pastRecord: profile?.pastRecord ?? "",
-    weightDivision: profile?.weightDivision ?? "",
+    weightDivision: normalizeWeightBand(profile?.weightDivision ?? "", profile?.gender ?? ""),
     heardAbout: profile?.heardAbout ?? "",
     hasMedicalCondition: yesNo(profile?.hasMedicalCondition, ready),
     medicalConditionDetail: profile?.medicalConditionDetail ?? "",

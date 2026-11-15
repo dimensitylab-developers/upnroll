@@ -9,7 +9,7 @@ import { AdminEmpty } from "@/features/admin/ui/admin-empty";
 /** Session/DB-bound route  allow blocking navigation under Cache Components. */
 export const instant = false;
 
-export const metadata: Metadata = { title: "Fighters" };
+export const metadata: Metadata = { title: "Grapplers" };
 
 export default async function AdminFightersPage({
   searchParams,
@@ -33,7 +33,7 @@ export default async function AdminFightersPage({
     <div className="space-y-8">
       <section className="border-2 border-black bg-black px-5 py-7 text-white shadow-[8px_8px_0_0_#c8102e] sm:px-8">
         <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-brand-red">Roster</p>
-        <h1 className="text-display mt-2 text-3xl font-semibold">Fighters</h1>
+        <h1 className="text-display mt-2 text-3xl font-semibold">Grapplers</h1>
         <p className="mt-2 max-w-2xl text-sm text-white/70">
           Open a name to read the full registration sheet  personal, competition, medical, and terms.
         </p>
@@ -47,7 +47,7 @@ export default async function AdminFightersPage({
 
       <div className="space-y-3">
         {filtered.map((fighter) => {
-          const name = fighter.displayName.trim() || "Unnamed fighter";
+          const name = fighter.displayName.trim() || "Unnamed grappler";
           const meta = [fighter.academy, fighter.cityState, fighter.weightDivision].filter((part) => part.trim()).join(" · ");
           return (
             <Link
@@ -77,7 +77,7 @@ export default async function AdminFightersPage({
             </Link>
           );
         })}
-        {filtered.length === 0 && <AdminEmpty>No fighters match that search.</AdminEmpty>}
+        {filtered.length === 0 && <AdminEmpty>No grapplers match that search.</AdminEmpty>}
       </div>
     </div>
   );

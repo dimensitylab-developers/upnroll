@@ -24,17 +24,17 @@ export default async function AdminFighterDetailPage({
     throw err;
   }
 
-  const name = fighter.displayName.trim() || "Unnamed fighter";
+  const name = fighter.displayName.trim() || "Unnamed grappler";
 
   return (
     <div className="space-y-8">
-      <PageBackLink href="/admin/fighters" label="Back to fighters" />
+      <PageBackLink href="/admin/fighters" label="Back to grapplers" />
 
       <section className="border-2 border-black bg-black px-5 py-7 text-white shadow-[8px_8px_0_0_#c8102e] sm:px-8">
         <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-brand-red">Registration sheet</p>
         <h1 className="text-display mt-2 text-3xl font-semibold sm:text-4xl">{name}</h1>
         <p className="mt-2 max-w-2xl text-sm text-white/70">
-          Same sections the fighter fills on profile and event registration  personal, competition, medical, and terms.
+          Same sections the grappler fills on profile and event registration  personal, competition, medical, and terms.
         </p>
       </section>
 

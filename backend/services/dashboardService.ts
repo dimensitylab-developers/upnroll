@@ -84,19 +84,21 @@ export async function getFighterDashboardData(actor: Actor) {
 
   const ownRegistrationIds = new Set(registrations.map((r) => String(r._id)));
   const upcomingMatches = matches.filter((m) => m.status === "SCHEDULED" || m.status === "PENDING");
-  const recentResults = matches
+  const decided = matches
     .filter((m) => m.status === "COMPLETED" || m.status === "BYE")
-    .sort((a, b) => new Date(b.updatedAt as Date).getTime() - new Date(a.updatedAt as Date).getTime())
-    .slice(0, 5)
     .map((m) => ({
       ...m,
       outcome: m.winnerRegistrationId
         ? (ownRegistrationIds.has(String(m.winnerRegistrationId)) ? ("WIN" as const) : ("LOSS" as const))
         : null,
     }));
+  // Full career record for the desk / playing card (not truncated).
+  const wins = decided.filter((m) => m.outcome === "WIN").length;
+  const losses = decided.filter((m) => m.outcome === "LOSS").length;
+  const recentResults = [...decided]
+    .sort((a, b) => new Date(b.updatedAt as Date).getTime() - new Date(a.updatedAt as Date).getTime())
+    .slice(0, 5);
   const pendingRequests = requests.filter((r) => r.status === "PENDING");
-  const wins = recentResults.filter((m) => m.outcome === "WIN").length;
-  const losses = recentResults.filter((m) => m.outcome === "LOSS").length;
   const now = new Date();
   const alerts = upcomingMatches.flatMap((match) => {
     if (!match.scheduledAt) return [];
