@@ -84,19 +84,21 @@ async function HeaderSessionChrome() {
   );
 }
 
-/** Static brand + primary nav paint independently of session / DB. */
+/** Floating comic bar: sticky inset shell, no full-bleed rule line. */
 export function SiteHeader() {
   return (
-    <header className="sticky top-0 z-40 relative border-t-2 border-t-black border-b-2 border-b-brand-red bg-background halftone-bg pt-[env(safe-area-inset-top)]">
-      <div className="relative z-10 mx-auto max-w-6xl px-3 sm:px-6 lg:px-8">
-        <div className="flex min-h-14 items-center gap-2 py-2 sm:min-h-16 sm:gap-3 sm:py-3">
-          <HeaderLockup />
-          <ComicNav links={NAV_LINKS} />
-          <Suspense fallback={<AuthControlsFallback />}>
-            <HeaderSessionChrome />
-          </Suspense>
+    <div className="pointer-events-none sticky top-0 z-40 px-3 pb-2 pt-[max(0.75rem,env(safe-area-inset-top))] sm:px-4 sm:pt-4">
+      <header className="pointer-events-auto relative mx-auto max-w-6xl rounded-2xl border-[3px] border-black bg-background halftone-bg shadow-[6px_6px_0_0_#000] sm:rounded-3xl">
+        <div className="px-3 sm:px-4 lg:px-5">
+          <div className="flex min-h-14 items-center gap-2 py-2 sm:min-h-16 sm:gap-3 sm:py-2.5">
+            <HeaderLockup />
+            <ComicNav links={NAV_LINKS} />
+            <Suspense fallback={<AuthControlsFallback />}>
+              <HeaderSessionChrome />
+            </Suspense>
+          </div>
         </div>
-      </div>
-    </header>
+      </header>
+    </div>
   );
 }

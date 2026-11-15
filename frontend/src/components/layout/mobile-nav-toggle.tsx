@@ -77,7 +77,7 @@ export function MobileNavToggle({
         <div
           id={menuId}
           ref={panelRef}
-          className="absolute left-0 right-0 top-full z-50 border-b-2 border-b-brand-red bg-background px-4 py-4 halftone-bg shadow-[0_12px_0_0_rgba(0,0,0,0.08)]"
+          className="absolute left-[-3px] right-[-3px] top-[calc(100%+2px)] z-50 rounded-2xl border-[3px] border-black bg-background px-4 py-4 halftone-bg shadow-[6px_6px_0_0_#000] sm:rounded-3xl"
         >
           <nav aria-label="Primary mobile" className="flex flex-col gap-2">
             <p className="px-1 text-[11px] font-semibold uppercase tracking-[0.18em] text-brand-red">

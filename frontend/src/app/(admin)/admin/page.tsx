@@ -87,7 +87,7 @@ export default async function AdminOverviewPage() {
             href="/admin/fighters"
             className="inline-flex min-h-11 items-center justify-center border-2 border-white px-4 py-2.5 text-sm font-semibold uppercase tracking-wider"
           >
-            Fighters
+            Grapplers
           </Link>
           <Link
             href="/admin/payments"
@@ -99,7 +99,7 @@ export default async function AdminOverviewPage() {
       </section>
 
       <div className="grid grid-cols-2 gap-2 sm:gap-3 lg:grid-cols-4">
-        <AdminStatCard label="Fighters" value={data.fighterCount} href="/admin/fighters" hint="Full roster" />
+        <AdminStatCard label="Grapplers" value={data.fighterCount} href="/admin/fighters" hint="Full roster" />
         <AdminStatCard
           label="Entries today"
           value={data.presence.entriesToday}
@@ -157,8 +157,8 @@ export default async function AdminOverviewPage() {
           <AdminTimeline items={entryItems} empty="No sign-ins recorded yet." />
         </AdminSection>
 
-        <AdminSection title="New accounts" actionHref="/admin/fighters" actionLabel="Fighters">
-          <AdminTimeline items={accountItems} empty="No fighter accounts yet." />
+        <AdminSection title="New accounts" actionHref="/admin/fighters" actionLabel="Grapplers">
+          <AdminTimeline items={accountItems} empty="No grappler accounts yet." />
         </AdminSection>
 
         <AdminSection title="Profiles" actionHref="/admin/fighters" actionLabel="Open sheets">

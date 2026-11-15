@@ -14,7 +14,7 @@ export function FightersSearch({ defaultValue }: { defaultValue: string }) {
     <Input
       defaultValue={defaultValue}
       placeholder="Search name, email, gym, city…"
-      aria-label="Search fighters"
+      aria-label="Search grapplers"
       className="max-w-md border-2 border-black bg-white shadow-[4px_4px_0_0_#000]"
       onChange={(e) => {
         const value = e.target.value;

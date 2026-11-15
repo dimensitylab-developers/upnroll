@@ -42,7 +42,7 @@ export default async function AdminPaymentsPage() {
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead>Fighter</TableHead>
+                <TableHead>Grappler</TableHead>
                 <TableHead>Event</TableHead>
                 <TableHead>Amount</TableHead>
                 <TableHead>UTR</TableHead>
