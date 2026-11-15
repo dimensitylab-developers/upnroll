@@ -273,14 +273,14 @@ export function SuperfightLanding({
             {/* Penalties + match outcome */}
             <div className="grid gap-0 border-b-2 border-black lg:grid-cols-2">
               <div className="border-b-2 border-black bg-black p-5 text-white sm:p-6 lg:border-b-0 lg:border-r-2">
-                <p className="text-xs font-semibold uppercase tracking-[0.18em] text-brand-red">
+                <p className="text-xs font-bold uppercase tracking-[0.18em] text-white">
                   {RULES.penalties.title}
                 </p>
                 <ul className="mt-4 space-y-2">
                   {RULES.penalties.items.map((item) => (
                     <li key={item} className="flex items-start justify-between gap-3 text-sm">
                       <span>{item}</span>
-                      <span className="shrink-0 font-semibold text-brand-red">-1</span>
+                      <span className="shrink-0 rounded-sm bg-brand-red px-2 py-0.5 text-sm font-bold tabular-nums text-white">-1</span>
                     </li>
                   ))}
                 </ul>
