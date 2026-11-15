@@ -29,14 +29,13 @@ export function VideoSoundToggle({
       onClick={() => onMutedChange(!muted)}
       aria-pressed={!muted}
       aria-label={muted ? "Turn sound on" : "Turn sound off"}
-      className={`inline-flex items-center gap-1.5 border-2 border-white/80 bg-black/55 px-2.5 py-1.5 text-[10px] font-semibold uppercase tracking-[0.16em] text-white shadow-[3px_3px_0_0_rgba(0,0,0,0.65)] backdrop-blur-sm transition-transform hover:-translate-y-0.5 hover:bg-black/70 ${className}`}
+      className={`inline-flex size-8 items-center justify-center rounded-full border-2 border-white/80 bg-black/55 text-white shadow-[3px_3px_0_0_rgba(0,0,0,0.65)] backdrop-blur-sm transition-transform hover:-translate-y-0.5 hover:bg-black/70 ${className}`}
     >
       {muted ? (
-        <VolumeX className="h-3.5 w-3.5 shrink-0 text-white" aria-hidden="true" strokeWidth={2.5} />
+        <VolumeX className="size-4 shrink-0 text-white" aria-hidden="true" strokeWidth={2.5} />
       ) : (
-        <Volume2 className="h-3.5 w-3.5 shrink-0 text-white" aria-hidden="true" strokeWidth={2.5} />
+        <Volume2 className="size-4 shrink-0 text-white" aria-hidden="true" strokeWidth={2.5} />
       )}
-      <span>{muted ? "Sound off" : "Sound on"}</span>
     </button>
   );
 }
