@@ -67,7 +67,7 @@ export default async function AdminOverviewPage() {
     <div className="space-y-6 sm:space-y-8 lg:space-y-10">
       <section className="border-2 border-black bg-black px-4 py-5 text-white shadow-[6px_6px_0_0_#c8102e] sm:px-6 sm:py-7 sm:shadow-[8px_8px_0_0_#c8102e] lg:px-8">
         <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-brand-red sm:text-[11px] sm:tracking-[0.22em]">
-          House control
+         Admin control
         </p>
         <p className="mt-2 text-xs text-brand-red sm:mt-3 sm:text-sm">{greeting}</p>
         <h1 className="text-display mt-1 text-2xl font-semibold leading-tight break-words sm:mt-2 sm:text-3xl lg:text-4xl">
