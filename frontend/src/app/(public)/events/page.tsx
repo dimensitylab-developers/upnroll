@@ -89,10 +89,6 @@ export default async function PublicEventsPage() {
 
         <section>
           <SectionBanner>Held</SectionBanner>
-          <p className="mb-6 max-w-2xl border-2 border-black bg-white px-5 py-4 text-sm leading-relaxed shadow-[4px_4px_0_0_#000]">
-            Every event that has been held keeps one record: photographs, video, the winner, how the rounds were run, the
-            bracket, the rankings, and how it ended. The next event joins this list the same way.
-          </p>
           <ul className="grid gap-4 md:grid-cols-2">
             {heldEvents.map((event) => (
               <li key={event.href} className={heldEvents.length === 1 ? "md:col-span-2" : undefined}>
