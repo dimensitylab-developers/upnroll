@@ -102,7 +102,7 @@ function DivisionColumn({
         </div>
       ) : (
         <div className="mt-3">
-          <p className="text-display text-xl font-semibold uppercase text-muted-foreground">Open</p>
+          <p className="text-display text-xl font-semibold uppercase text-muted-foreground">To be announced</p>
           <p className="mt-1 text-[11px] font-semibold uppercase tracking-[0.18em] text-muted-foreground">
             Champion
           </p>
@@ -130,6 +130,15 @@ function DivisionColumn({
                   <p className="truncate text-sm font-medium">{fighter.displayName}</p>
                 )}
               </div>
+            </li>
+          ))}
+        </ol>
+      ) : !champion ? (
+        <ol className="mt-5 border-t border-black/10 pt-1" aria-label="Places to be announced">
+          {[2, 3, 4, 5, 6].map((place) => (
+            <li key={place} className="flex items-baseline gap-3 border-b border-black/5 py-2.5">
+              <span className="w-5 shrink-0 text-sm font-semibold tabular-nums text-muted-foreground">{place}</span>
+              <p className="text-sm font-medium text-muted-foreground/70">To be announced</p>
             </li>
           ))}
         </ol>

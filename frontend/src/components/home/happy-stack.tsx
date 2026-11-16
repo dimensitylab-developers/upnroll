@@ -1,7 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useState, type ReactNode } from "react";
 import { Shuffle } from "lucide-react";
+import { SectionBanner } from "@/components/home/section-banner";
 
 const TILTS = [-6, 4, -3, 7, -5, 3, -8, 5, -2, 6, -4, 8, -7];
 const NUDGES = [
@@ -29,15 +30,22 @@ function shuffled<T>(items: T[]): T[] {
   return copy;
 }
 
-export function HappyStack({ photos: initialPhotos }: { photos: { src: string; alt: string }[] }) {
+export function HappyStack({
+  photos: initialPhotos,
+  title,
+}: {
+  photos: { src: string; alt: string }[];
+  title?: ReactNode;
+}) {
   const [photos, setPhotos] = useState(initialPhotos);
   const [lifted, setLifted] = useState<number | null>(null);
 
   if (photos.length === 0) return null;
 
   return (
-    <div className="relative overflow-hidden border-2 border-black bg-[#f4f1ea] p-3 shadow-[8px_8px_0_0_#000] sm:p-5">
-      <div className="relative z-30 mb-4 flex justify-end">
+    <div>
+      <div className="mb-6 flex flex-wrap items-center justify-between gap-3">
+        {title !== undefined ? title : <SectionBanner className="mb-0">Celebrations</SectionBanner>}
         <button
           type="button"
           onClick={() => {
@@ -50,7 +58,9 @@ export function HappyStack({ photos: initialPhotos }: { photos: { src: string; a
           Shuffle
         </button>
       </div>
-      <ul className="relative grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-3 lg:gap-5">
+
+      <div className="relative overflow-hidden border-2 border-black bg-[#f4f1ea] p-3 shadow-[8px_8px_0_0_#000] sm:p-5">
+        <ul className="relative grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-3 lg:gap-5">
         {photos.map((photo, index) => {
           const tilt = TILTS[index % TILTS.length]!;
           const nudge = NUDGES[index % NUDGES.length]!;
@@ -90,5 +100,6 @@ export function HappyStack({ photos: initialPhotos }: { photos: { src: string; a
         })}
       </ul>
     </div>
-  );
+  </div>
+);
 }
