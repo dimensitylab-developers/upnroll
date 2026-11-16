@@ -62,7 +62,6 @@ export function FighterRecord({ fighter }: { fighter: AdminFighterView }) {
           <Line label="Nationality" value={shown(fighter.nationality)} />
           <Line label="State" value={shown(fighter.cityState)} />
           <Line label="Emergency contact name" value={shown(fighter.emergencyContactName)} />
-          <Line label="Relationship" value={shown(fighter.emergencyRelationship)} />
           <Line label="Blood group" value={shown(fighter.bloodGroup)} />
           <Line
             label="Instagram"
