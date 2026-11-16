@@ -180,42 +180,25 @@ export function SuperfightLanding({
               </p>
             </div>
 
-            {/* Divisions + match format */}
-            <div className="grid gap-0 border-b-2 border-black lg:grid-cols-2">
-              <div className="border-b-2 border-black p-5 sm:p-6 lg:border-b-0 lg:border-r-2">
-                <p className="text-xs font-semibold uppercase tracking-[0.2em] text-brand-red">
-                  {RULES.divisions.title}
-                </p>
-                <div className="mt-4 space-y-3">
-                  <div className="border-2 border-black bg-white px-4 py-3 shadow-[3px_3px_0_0_#000]">
-                    <p className="text-sm font-semibold uppercase tracking-wide">
-                      {RULES.divisions.beginner.title}
+            {/* Divisions */}
+            <div className="border-b-2 border-black p-5 sm:p-6">
+              <p className="text-center text-xs font-semibold uppercase tracking-[0.2em] text-brand-red">
+                {RULES.divisions.title}
+              </p>
+              <div className="mx-auto mt-4 grid max-w-3xl gap-4 sm:grid-cols-2">
+                {[RULES.divisions.beginner, RULES.divisions.advanced].map((division) => (
+                  <div
+                    key={division.title}
+                    className="border-2 border-black bg-white px-5 py-5 text-center shadow-[4px_4px_0_0_#000]"
+                  >
+                    <p className="text-display text-xl font-semibold uppercase tracking-wide sm:text-2xl">
+                      {division.title}
                     </p>
-                    <p className="mt-1 text-sm text-black/70">{RULES.divisions.beginner.detail}</p>
-                  </div>
-                  <div className="border-2 border-black bg-white px-4 py-3 shadow-[3px_3px_0_0_#000]">
-                    <p className="text-sm font-semibold uppercase tracking-wide">
-                      {RULES.divisions.advanced.title}
+                    <p className="mt-1.5 text-sm font-semibold uppercase tracking-[0.14em] text-brand-red">
+                      {division.detail}
                     </p>
-                    <p className="mt-1 text-sm text-black/70">{RULES.divisions.advanced.detail}</p>
                   </div>
-                </div>
-              </div>
-              <div className="p-5 sm:p-6">
-                <p className="text-xs font-semibold uppercase tracking-[0.2em] text-brand-red">
-                  {RULES.matchFormat.title}
-                </p>
-                <p className="mt-3 text-base font-semibold">{RULES.matchFormat.total}</p>
-                <ul className="mt-3 space-y-2">
-                  {RULES.matchFormat.items.map((item) => (
-                    <li
-                      key={item}
-                      className="border-l-4 border-brand-red bg-white px-3 py-2 text-sm leading-snug shadow-[2px_2px_0_0_#000]"
-                    >
-                      {item}
-                    </li>
-                  ))}
-                </ul>
+                ))}
               </div>
             </div>
 
