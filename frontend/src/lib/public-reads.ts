@@ -3,7 +3,7 @@ import { cacheLife, cacheTag } from "next/cache";
 import { getEventBySlug, listDivisionsForEvent, listPublicEvents } from "@/server/services/eventService";
 import { getPublishedBracketForDivision } from "@/server/services/bracketService";
 import { listPublicResults, listPublicSchedule } from "@/server/services/matchService";
-import { listPublicRankings } from "@/server/services/rankingService";
+import { listPublicRankings, listRankingBoardEntries } from "@/server/services/rankingService";
 import { getPublicFighterBySlug, listPublicFighters } from "@/server/services/fighterService";
 import { listPublished } from "@/server/services/contentService";
 import { listPublishedMedia, listPublishedMediaForEvent } from "@/server/services/mediaService";
@@ -168,13 +168,13 @@ export async function cachedPublicFighters() {
   return plain(await listPublicFighters());
 }
 
-/** Grapplers with a confirmed registration; used by the rankings board so it fills in automatically. */
-export async function cachedRegisteredPublicFighters() {
+/** Confirmed registrations placed in their divisions; powers the public rankings board. */
+export async function cachedRankingBoardEntries() {
   "use cache";
   cacheTag("fighters", "rankings");
   cacheLife("minutes");
   if (process.env.CI === "true") return [];
-  return plain(await listPublicFighters({ registeredOnly: true }));
+  return plain(await listRankingBoardEntries());
 }
 
 export async function cachedPublicFighter(slug: string) {
