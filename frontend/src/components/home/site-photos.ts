@@ -30,6 +30,11 @@ export const FIGHTING_PHOTOS = [
   fightingStill("003A8193.JPG"),
   fightingStill("003A8259.JPG", "portrait"),
   fightingStill("003A8278.JPG", "portrait"),
+  {
+    src: "/Fighting/opt/highlight-guard.jpg",
+    alt: "Grappling on the mat" as const,
+    orientation: "portrait" as const,
+  },
 ];
 
 /**
