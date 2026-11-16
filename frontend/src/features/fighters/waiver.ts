@@ -1,7 +1,7 @@
 /** English clauses from the grappler registration sheet. */
 export const WAIVER_CLAUSES = [
   "I understand this is a No-Gi only event.",
-  "I will wear approved attire (rashguard + shorts/spats, no pockets/zippers) and compulsory mouthguard and groin guard. I bring my own mouthguard and groin guard.",
+  "I will wear approved attire (rashguard + shorts/spats, no pockets/zippers) and a compulsory mouthguard. I bring my own mouthguard. A groin guard is recommended but not compulsory.",
   "I agree to follow all referee decisions and I accept the rules and scoring system.",
   "The organizers reserve the right to merge divisions and also to make athletes who train under the same coach compete.",
   "I am medically fit to compete.",
