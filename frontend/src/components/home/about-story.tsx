@@ -125,11 +125,10 @@ function AboutPageStory() {
 
       <div className="mx-auto max-w-6xl space-y-12 px-4 py-12 sm:px-6 sm:py-14 lg:px-8">
         <section className="border-2 border-black bg-white p-5 shadow-[6px_6px_0_0_#000] sm:p-6">
-          <SectionBanner>The stage</SectionBanner>
+          <SectionBanner>The platform</SectionBanner>
           <p className="mt-4 text-sm leading-relaxed sm:text-base">
-            Every grappler deserves a real stage. Compete across three events and earn ranking points for every match,
-            with wins counting the most. The top performers in each division earn their place in the superfight at the
-            fourth event.
+            Every grappler deserves a real platform. Compete across three events and earn ranking points for every match,
+            with wins counting the most. The top performers in each division earn their place in the superfight.
           </p>
           <p className="mt-3 text-sm leading-relaxed text-muted-foreground sm:text-base">
             Registration fees are returned as show money, and superfight winners take a bonus on top. We run Beginner
