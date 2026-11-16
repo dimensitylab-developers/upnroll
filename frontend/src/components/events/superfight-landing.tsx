@@ -85,7 +85,7 @@ export function SuperfightLanding({
   divisions?: unknown[];
 }) {
   const place = venue || "Navnit Gujarat Samaj Mumbai";
-  const editionNumber = name.match(/#\s*(\d+)/)?.[1];
+  const editionNumber = name.match(/#\s*(\d+)/)?.[1] ?? (slug === "up-n-roll-superfight-series" ? "2" : undefined);
 
   return (
     <main className="route-enter relative isolate overflow-hidden text-white">
