@@ -205,7 +205,6 @@ function AboutPageStory() {
         </section>
 
         <section>
-          <SectionBanner>Celebrations</SectionBanner>
           <HappyStack photos={HAPPY_PHOTOS} />
         </section>
 
