@@ -117,8 +117,8 @@ function AboutPageStory() {
           </h1>
           <p className="mt-5 max-w-xl text-sm leading-relaxed text-white/80 sm:text-base">
             Up &apos;n Roll is a no-gi grappling platform built for grapplers everywhere, whether you are stepping on
-            the mat for the first time or chasing your next belt. A real stage, fair brackets, and rankings that lead
-            to the superfight.
+            the mats for the first time or chasing your next belt. A real platform where fair brackets, and rankings
+            will lead you to the superfight.
           </p>
         </div>
       </section>

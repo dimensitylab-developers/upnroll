@@ -11,7 +11,7 @@ export const STARTER_FAQS: { question: string; answer: string }[] = [
   {
     question: "How do I pay the entry fee?",
     answer:
-      "Pay with the UPI instructions shown for that event, then an admin reviews your payment before your place is confirmed. The fee is the one published on that event. Coupons can change the amount when they apply.",
+      "Pay with the UPI instructions shown for that event, then an admin reviews your payment before your place is confirmed.",
   },
   {
     question: "Can I use a coupon or promo code?",
@@ -21,7 +21,7 @@ export const STARTER_FAQS: { question: string; answer: string }[] = [
   {
     question: "What is the cancellation refund if I cancel?",
     answer:
-      "There is no full refund when you cancel. You can transfer your spot to a friend, or a 50% refund may apply when cancellation is approved one month or more before the event. The organizer handles money off-platform. Prefer transfer to a friend whenever possible.",
+      "A 50% refund is applicable for approved cancellations requested one month or more before the event. Cancellations made within one month of the event are non-refundable. All approved refunds are processed directly by the event organizer.",
   },
   {
     question: "Can I transfer my spot to a teammate?",
