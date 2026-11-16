@@ -189,7 +189,7 @@ function AboutPageStory() {
           <SectionBanner>Ranking system</SectionBanner>
           <p className="mt-3 max-w-3xl text-sm leading-relaxed">
             Three events build the board. The fourth is the superfight. Who gets that invitation is confirmed by the
-            rank, not by the organizer.
+            ranking system.
           </p>
           <details className="mt-4">
             <summary className="cursor-pointer text-sm font-semibold text-brand-red">Know more</summary>
