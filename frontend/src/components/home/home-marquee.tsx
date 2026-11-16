@@ -57,7 +57,7 @@ function LogoSlot({ logo }: { logo: Logo }) {
 
 function Track({ ariaHidden }: { ariaHidden?: boolean }) {
   return (
-    <div className="flex w-max items-center px-6" aria-hidden={ariaHidden || undefined}>
+    <div className="flex w-max items-center" aria-hidden={ariaHidden || undefined}>
       {RIBBON.map((logo, index) => (
         <span key={`${logo.name}-${index}`} className="inline-flex items-center">
           <LogoSlot logo={logo} />
