@@ -162,7 +162,7 @@ function AboutPageStory() {
         <section className="grid gap-4 lg:grid-cols-[0.95fr_1.05fr]">
           <article className="relative min-h-[240px] overflow-hidden border-2 border-black bg-black shadow-[8px_8px_0_0_#000]">
             <Image
-              src="/gallery/grappling-mat.jpg"
+              src="/Fighting/opt/003A8057.webp"
               alt=""
               fill
               className="object-cover opacity-70"
