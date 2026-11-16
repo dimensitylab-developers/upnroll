@@ -174,10 +174,6 @@ export default async function PublicRankingsPage({
             <h1 className="text-display text-4xl font-semibold uppercase tracking-wide sm:text-5xl">
               Rankings
             </h1>
-            <p className="copy-slab mt-3 max-w-xl text-sm">
-              Top seat shows #1 with a photo when available. The list under each class starts at #2.
-              Order follows brackets and house numbering. Who gets a Super Fight is decided manually.
-            </p>
           </div>
           <p className="text-sm">
             <Link href="/rankings/demo" className="copy-slab underline underline-offset-2 hover:text-brand-red">
