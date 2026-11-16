@@ -47,7 +47,7 @@ export function portalGreeting(fullName: string, role: UserRole): string {
   const hour = new Date().getHours();
 
   if (role === "ADMIN") {
-    if (hour < 12) return `Morning, ${name}. The house is open.`;
+    if (hour < 12) return `Morning, ${name}.`;
     if (hour < 18) return `Hi, ${name}. You're on the desk.`;
     return `Evening, ${name}. Still running the card.`;
   }
