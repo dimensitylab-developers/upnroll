@@ -84,8 +84,8 @@ export const EVENT_POINTS_RULES = {
   eventFormat: "No-Gi Grappling",
   divisions: {
     title: "Divisions",
-    beginner: { title: "Beginner division", detail: "White Belts Only" },
-    advanced: { title: "Intermediate division", detail: "Blue & Purple Belts" },
+    beginner: { title: "Beginner", detail: "White Belts Only" },
+    advanced: { title: "Intermediate", detail: "Blue & Purple Belts" },
   },
   matchFormat: {
     title: "Match format",

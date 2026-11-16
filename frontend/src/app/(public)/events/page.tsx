@@ -72,7 +72,7 @@ export default async function PublicEventsPage() {
 
         <section>
           <SectionBanner>How a match runs</SectionBanner>
-          <EventStory />
+          <EventStory rulesHref={featuredEvent ? `/events/${featuredEvent.slug}#rules` : "/events"} />
         </section>
       </div>
     </main>
