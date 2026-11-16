@@ -119,17 +119,14 @@ export function PreEventBoard({
         </div>
       </div>
 
-      <ol className="grid border-t-2 border-white/20 sm:grid-cols-3 sm:divide-x-2 sm:divide-white/20">
-        {PROMISES.map((item, index) => (
-          <li key={item.title} className="flex gap-4 border-b-2 border-white/20 p-5 last:border-b-0 sm:border-b-0 sm:p-6">
-            <span className="text-display text-3xl font-semibold leading-none text-brand-red">0{index + 1}</span>
-            <div>
-              <h2 className="text-display text-lg font-semibold uppercase tracking-wide">{item.title}</h2>
-              <p className="mt-1 text-sm leading-relaxed text-white/70">{item.body}</p>
-            </div>
+      <ul className="grid border-t-2 border-white/20 sm:grid-cols-3 sm:divide-x-2 sm:divide-white/20">
+        {PROMISES.map((item) => (
+          <li key={item.title} className="border-b-2 border-white/20 p-5 last:border-b-0 sm:border-b-0 sm:p-6">
+            <h2 className="text-display text-lg font-semibold uppercase tracking-wide text-brand-red">{item.title}</h2>
+            <p className="mt-1 text-sm leading-relaxed text-white/70">{item.body}</p>
           </li>
         ))}
-      </ol>
+      </ul>
     </section>
   );
 }
