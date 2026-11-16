@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { Shuffle } from "lucide-react";
 
 const TILTS = [-6, 4, -3, 7, -5, 3, -8, 5, -2, 6, -4, 8, -7];
 const NUDGES = [
@@ -19,13 +20,36 @@ const NUDGES = [
   { x: -12, y: 8 },
 ];
 
-export function HappyStack({ photos }: { photos: { src: string; alt: string }[] }) {
+function shuffled<T>(items: T[]): T[] {
+  const copy = [...items];
+  for (let i = copy.length - 1; i > 0; i -= 1) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [copy[i], copy[j]] = [copy[j]!, copy[i]!];
+  }
+  return copy;
+}
+
+export function HappyStack({ photos: initialPhotos }: { photos: { src: string; alt: string }[] }) {
+  const [photos, setPhotos] = useState(initialPhotos);
   const [lifted, setLifted] = useState<number | null>(null);
 
   if (photos.length === 0) return null;
 
   return (
     <div className="relative overflow-hidden border-2 border-black bg-[#f4f1ea] p-3 shadow-[8px_8px_0_0_#000] sm:p-5">
+      <div className="relative z-30 mb-4 flex justify-end">
+        <button
+          type="button"
+          onClick={() => {
+            setLifted(null);
+            setPhotos((current) => shuffled(current));
+          }}
+          className="inline-flex items-center gap-2 border-2 border-black bg-brand-red px-4 py-2 text-xs font-semibold uppercase tracking-wider text-white shadow-[4px_4px_0_0_#000] transition-transform hover:translate-x-0.5 hover:translate-y-0.5 hover:shadow-[2px_2px_0_0_#000]"
+        >
+          <Shuffle className="size-4" aria-hidden="true" />
+          Shuffle
+        </button>
+      </div>
       <ul className="relative grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-3 lg:gap-5">
         {photos.map((photo, index) => {
           const tilt = TILTS[index % TILTS.length]!;
