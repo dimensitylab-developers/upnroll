@@ -91,7 +91,7 @@ export const STARTER_FAQS: { question: string; answer: string }[] = [
   {
     question: "I have an emergency and need a human",
     answer:
-      "For human help, send an email to info.upnroll@gmail.com with your name, the event, and what you need. The Up 'n Roll team will contact you. For day-to-day questions you can also message @up.n.roll on Instagram.",
+      "For human help, send an email to info.upnroll@gmail.com with your name, the event, and what you need. The Up 'n Roll team will contact you. For day-to-day questions you can also reach us on Instagram (@up.n.roll).",
   },
 ];
 
