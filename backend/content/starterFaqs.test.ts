@@ -24,7 +24,7 @@ describe("starter FAQs", () => {
     const expected = [
       "Create a grappler account",
       "Pay with the UPI",
-      "Compulsory: rashguard",
+      "rashguard with shorts or spats",
       "free link",
       "Rankings follow bracket results",
       "Instagram (@up.n.roll)",
