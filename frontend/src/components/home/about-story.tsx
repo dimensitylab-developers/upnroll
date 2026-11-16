@@ -96,11 +96,11 @@ function AboutPageStory() {
       <section className="relative overflow-hidden border-b-2 border-black bg-black text-white">
         <div className="pointer-events-none absolute inset-0">
           <Image
-            src="/Fighting/003A8013.JPG"
+            src="/Fighting/opt/about-hero.webp"
             alt=""
             fill
             priority
-            className="object-cover object-[center_20%] opacity-40"
+            className="object-cover object-[center_12%] opacity-55"
             sizes="100vw"
           />
           <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_left,rgba(200,16,46,0.4),transparent_55%),linear-gradient(to_bottom,rgba(0,0,0,0.3),#000_90%)]" />
