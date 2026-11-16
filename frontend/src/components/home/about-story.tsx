@@ -10,7 +10,7 @@ const BRACKET_FACTORS = [
   "Weight",
   "Belt",
   "Training years",
-  "Match record",
+  "Previous match record",
   "Academy",
 ] as const;
 
@@ -119,31 +119,26 @@ function AboutPageStory() {
             About Up &apos;n Roll
           </h1>
           <p className="mt-5 max-w-xl text-sm leading-relaxed text-white/80 sm:text-base">
-            A no-gi grappling platform built for grapplers everywhere, first time on the mat or chasing the next belt.
+            Up &apos;n Roll is a no-gi grappling platform built for grapplers everywhere, whether you are stepping on
+            the mat for the first time or chasing your next belt. A real stage, fair brackets, and rankings that lead
+            to the superfight.
           </p>
         </div>
       </section>
 
       <div className="mx-auto max-w-6xl space-y-12 px-4 py-12 sm:px-6 sm:py-14 lg:px-8">
-        <section className="grid gap-4 lg:grid-cols-3">
-          <article className="border-2 border-black bg-white p-5 shadow-[6px_6px_0_0_#000] sm:p-6 lg:col-span-2">
-            <SectionBanner>The stage</SectionBanner>
-            <p className="mt-4 text-sm leading-relaxed sm:text-base">
-              Every grappler deserves a real stage. Athletes compete across three events and earn ranking points for
-              every match, with wins counting the most. Top performers earn their place in the superfight at the fourth
-              event.
-            </p>
-            <p className="mt-3 text-sm leading-relaxed text-muted-foreground sm:text-base">
-              Registration fees come back as show money. Superfight winners take a bonus on top. Beginner and
-              Intermediate divisions for men and women, with prize money in every division. Higher belts join as we grow.
-            </p>
-          </article>
-          <article className="flex flex-col justify-between border-2 border-black bg-brand-red p-5 text-white shadow-[6px_6px_0_0_#000] sm:p-6">
-            <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-white/80">Show money</p>
-            <p className="text-display mt-4 text-3xl font-semibold leading-tight">
-              Your effort is always rewarded.
-            </p>
-          </article>
+        <section className="border-2 border-black bg-white p-5 shadow-[6px_6px_0_0_#000] sm:p-6">
+          <SectionBanner>The stage</SectionBanner>
+          <p className="mt-4 text-sm leading-relaxed sm:text-base">
+            Every grappler deserves a real stage. Compete across three events and earn ranking points for every match,
+            with wins counting the most. The top performers in each division earn their place in the superfight at the
+            fourth event.
+          </p>
+          <p className="mt-3 text-sm leading-relaxed text-muted-foreground sm:text-base">
+            Registration fees are returned as show money, and superfight winners take a bonus on top. We run Beginner
+            and Intermediate divisions for men and women, with prize money in every division. Higher belts will join
+            as we grow.
+          </p>
         </section>
 
         <section className="border-2 border-black bg-white p-5 shadow-[8px_8px_0_0_#000] sm:p-8">
@@ -199,7 +194,7 @@ function AboutPageStory() {
           <details className="mt-4">
             <summary className="cursor-pointer text-sm font-semibold text-brand-red">Know more</summary>
             <div className="mt-3 space-y-2 text-sm leading-relaxed text-muted-foreground">
-              <p>Superfight eligibility is based on wins and top rankings within the same division. Athletes may switch divisions, but their previous rankings will not carry over. They must establish a new ranking in the new division to qualify for a superfight.'
+              <p>Superfight eligibility is based on wins and top rankings within the same division. Athletes may switch divisions, but their previous rankings will not carry over. They must establish a new ranking in the new division to qualify for a superfight.
               </p>
               <p>
                 Deeper bracket runs place higher. Early exits place lower. When two athletes lose with no points, the
