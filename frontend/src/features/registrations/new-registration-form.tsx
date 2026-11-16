@@ -133,32 +133,37 @@ export function NewRegistrationForm({
           <SectionBanner>Event entry</SectionBanner>
           <div className="grid max-w-md gap-4">
             <div>
-              <Label htmlFor="eventId" className="mb-1.5 block">
-                Event
-              </Label>
-              <Select
-                value={eventId}
-                onValueChange={(value) => {
-                  setEventId(value);
-                  setExperienceLevel("");
-                  setDivisionId("");
-                }}
-                disabled={eventLocked}
-              >
-                <SelectTrigger id="eventId" aria-label="Event">
-                  <SelectValue placeholder="Select an event" />
-                </SelectTrigger>
-                <SelectContent>
-                  {events.map((event) => (
-                    <SelectItem key={event.id} value={event.id}>
-                      {event.name}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+              <p className="mb-1.5 text-sm font-medium leading-none">Event</p>
               {eventLocked ? (
-                <p className="mt-1 text-xs text-muted-foreground">Only this event is open for registration.</p>
-              ) : null}
+                <p className="rounded-md border border-input bg-muted/40 px-3 py-2.5 text-sm font-semibold">
+                  {events[0].name}
+                </p>
+              ) : (
+                <>
+                  <Label htmlFor="eventId" className="sr-only">
+                    Event
+                  </Label>
+                  <Select
+                    value={eventId}
+                    onValueChange={(value) => {
+                      setEventId(value);
+                      setExperienceLevel("");
+                      setDivisionId("");
+                    }}
+                  >
+                    <SelectTrigger id="eventId" aria-label="Event">
+                      <SelectValue placeholder="Select an event" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {events.map((event) => (
+                        <SelectItem key={event.id} value={event.id}>
+                          {event.name}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </>
+              )}
             </div>
             {hasTaxonomy && (
               <div>
