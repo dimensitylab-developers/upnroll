@@ -197,8 +197,8 @@ function AboutPageStory() {
               <p>Superfight eligibility is based on wins and top rankings within the same division. Athletes may switch divisions, but their previous rankings will not carry over. They must establish a new ranking in the new division to qualify for a superfight.
               </p>
               <p>
-                Deeper bracket runs place higher. Early exits place lower. When two athletes lose with no points, the
-                faster loss places lower. Missing a recent event can drop you versus athletes who showed up.
+                The further you go in a bracket, the higher you rank, and every win earns you points. If you are knocked
+                out early, you rank lower. Skipping an event can also move you down against athletes who competed.
               </p>
              </div>
           </details>
