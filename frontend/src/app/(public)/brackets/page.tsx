@@ -49,7 +49,7 @@ export default async function LiveBracketsPage() {
             <LiveRefresh seconds={8} />
           </div>
         )}
-        <h1 className="text-display text-4xl font-semibold">Brackets</h1>
+        {!preEvent && <h1 className="text-display text-4xl font-semibold">Brackets</h1>}
 
         {!focus && (
           <p className="copy-slab mt-10 text-sm text-muted-foreground">
