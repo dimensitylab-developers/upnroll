@@ -2,6 +2,7 @@ import "server-only";
 import { connectDB } from "@/server/db/connect";
 import { FighterProfile } from "@/server/models/FighterProfile";
 import { RankingRecord } from "@/server/models/RankingRecord";
+import { Registration } from "@/server/models/Registration";
 import { User } from "@/server/models/User";
 import { writeAuditLog } from "@/server/audit/log";
 import { listPublicMatchHistory } from "./matchService";
@@ -276,10 +277,15 @@ export async function getFighterForAdmin(actor: Actor, userId: string): Promise<
   return toAdminFighterView(profile, user?.email ?? "");
 }
 
-export async function listPublicFighters() {
+export async function listPublicFighters(options: { registeredOnly?: boolean } = {}) {
   await connectDB();
+  // `registeredOnly` limits the list to grapplers with a confirmed event registration, so boards
+  // fill in automatically as entries are approved.
+  const filter = options.registeredOnly
+    ? { userId: { $in: await Registration.distinct("userId", { status: "CONFIRMED" }) } }
+    : {};
   const [rows, rankingRows] = await Promise.all([
-    FighterProfile.find()
+    FighterProfile.find(filter)
       .sort({ displayName: 1 })
       .select(PUBLIC_FIGHTER_FIELDS)
       .lean(),

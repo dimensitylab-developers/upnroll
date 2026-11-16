@@ -168,6 +168,15 @@ export async function cachedPublicFighters() {
   return plain(await listPublicFighters());
 }
 
+/** Grapplers with a confirmed registration; used by the rankings board so it fills in automatically. */
+export async function cachedRegisteredPublicFighters() {
+  "use cache";
+  cacheTag("fighters", "rankings");
+  cacheLife("minutes");
+  if (process.env.CI === "true") return [];
+  return plain(await listPublicFighters({ registeredOnly: true }));
+}
+
 export async function cachedPublicFighter(slug: string) {
   "use cache";
   cacheTag("fighters", `fighter:${slug}`);
