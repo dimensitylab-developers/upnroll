@@ -513,7 +513,7 @@
 
   .media-glow {
     box-shadow:
-      10px 10px 0 0 #c8102e,
+      3px 3px 0 0 #c8102e,
       0 0 0 1px rgba(200, 16, 46, 0.08),
       -18px 0 40px -28px rgba(200, 16, 46, 0.45),
       18px 0 40px -28px rgba(200, 16, 46, 0.35);
