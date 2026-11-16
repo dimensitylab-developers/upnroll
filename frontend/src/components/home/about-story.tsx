@@ -70,14 +70,15 @@ function AboutHomeTeaser() {
           </div>
         </div>
 
-        <div className="relative hidden min-h-[280px] border-t-2 border-black lg:block lg:border-l-2 lg:border-t-0">
-          <div className="absolute inset-4 overflow-hidden border-2 border-white/30 bg-black/40 shadow-[6px_6px_0_0_rgba(200,16,46,0.85)]">
+        <div className="hidden items-center justify-center border-t-2 border-black p-6 lg:flex lg:border-l-2 lg:border-t-0">
+          <div className="w-full max-w-[19rem] overflow-hidden border-2 border-white/30 bg-black/40 shadow-[3px_3px_0_0_rgba(200,16,46,0.85)]">
             <Image
               src="/Fighting/opt/about-card.jpg"
               alt=""
-              fill
-              className="object-contain"
-              sizes="28rem"
+              width={1066}
+              height={1600}
+              className="block h-auto w-full transition-transform duration-700 group-hover:scale-110"
+              sizes="19rem"
             />
           </div>
         </div>

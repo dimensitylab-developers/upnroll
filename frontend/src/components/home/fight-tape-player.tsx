@@ -66,8 +66,12 @@ export function FightTapePlayer({
               decoding="async"
               className={mediaClass}
             />
-            <span className="absolute inset-0 flex items-center justify-center bg-black/35">
-              <span className="border-2 border-black bg-brand-red px-4 py-2 text-xs font-semibold uppercase tracking-wider text-white shadow-[4px_4px_0_0_#000] transition-transform group-hover:scale-105">
+            <span className="absolute inset-0 flex flex-col items-center justify-center gap-2 bg-black/35">
+              <span className="flex size-14 items-center justify-center rounded-full border-2 border-black bg-white shadow-[3px_3px_0_0_#000] transition-transform group-hover:scale-110 sm:size-16">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src="/logo-mark.png" alt="" width={40} height={48} className="h-7 w-6 object-contain sm:h-8" />
+              </span>
+              <span className="text-xs font-semibold uppercase tracking-[0.25em] text-white [text-shadow:0_1px_4px_rgba(0,0,0,0.8)]">
                 Play
               </span>
             </span>
