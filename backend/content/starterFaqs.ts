@@ -91,7 +91,7 @@ export const STARTER_FAQS: { question: string; answer: string }[] = [
   {
     question: "I have an emergency and need a human",
     answer:
-      "If this chat cannot help and you have an urgent event-day issue, ask for a human handoff here and the organizer emergency line will be shared in the reply once it has been published in FAQ. Day-to-day questions should go to Instagram (@up.n.roll) or email. Phone numbers are not listed on the public site.",
+      "For human help, send an email to info.upnroll@gmail.com with your name, the event, and what you need. The Up 'n Roll team will contact you. For day-to-day questions you can also message @up.n.roll on Instagram.",
   },
 ];
 
