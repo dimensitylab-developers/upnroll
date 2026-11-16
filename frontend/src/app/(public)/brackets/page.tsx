@@ -74,11 +74,9 @@ export default async function LiveBracketsPage() {
               </div>
             </section>
 
-            <section className="mt-12">
-              <SectionBanner>Called to the mat</SectionBanner>
-              {live.length === 0 ? (
-                <p className="copy-slab text-sm">No bout is scheduled on the mat right now.</p>
-              ) : (
+            {live.length > 0 && (
+              <section className="mt-12">
+                <SectionBanner>Called to the mat</SectionBanner>
                 <ul className="grid gap-3 sm:grid-cols-2">
                   {live.map((match) => (
                     <li key={`${match.round}-${match.order}-${match.competitorAName}-${match.competitorBName}`} className="border-2 border-black bg-white p-4 shadow-[4px_4px_0_0_#000]">
@@ -96,14 +94,12 @@ export default async function LiveBracketsPage() {
                     </li>
                   ))}
                 </ul>
-              )}
-            </section>
+              </section>
+            )}
 
-            <section className="mt-12">
-              <SectionBanner>Just decided</SectionBanner>
-              {decided.length === 0 ? (
-                <p className="copy-slab text-sm">Results will land here as soon as a bout ends.</p>
-              ) : (
+            {decided.length > 0 && (
+              <section className="mt-12">
+                <SectionBanner>Just decided</SectionBanner>
                 <ul className="space-y-2">
                   {[...decided].reverse().slice(0, 12).map((match) => (
                     <li key={`${match.round}-${match.order}-${match.winnerName}`} className="flex flex-wrap items-center justify-between gap-2 border-2 border-black bg-white px-4 py-3 text-sm shadow-[3px_3px_0_0_#000]">
@@ -117,14 +113,12 @@ export default async function LiveBracketsPage() {
                     </li>
                   ))}
                 </ul>
-              )}
-            </section>
+              </section>
+            )}
 
-            <section className="mt-12">
-              <SectionBanner>Published brackets</SectionBanner>
-              {brackets.length === 0 ? (
-                <p className="copy-slab text-sm">No bracket has been published for this event yet.</p>
-              ) : (
+            {brackets.length > 0 && (
+              <section className="mt-12">
+                <SectionBanner>Published brackets</SectionBanner>
                 <div className="space-y-10">
                   {brackets.map((row) => (
                     <div key={row.bracket._id}>
@@ -133,8 +127,17 @@ export default async function LiveBracketsPage() {
                     </div>
                   ))}
                 </div>
-              )}
-            </section>
+              </section>
+            )}
+
+            {live.length === 0 && decided.length === 0 && brackets.length === 0 && (
+              <section className="mt-12 border-2 border-black bg-white p-5 shadow-[4px_4px_0_0_#000]">
+                <p className="text-sm font-semibold">Brackets are coming soon.</p>
+                <p className="mt-1 text-sm text-muted-foreground">
+                  Published brackets, live bouts and results appear here and update as the event runs.
+                </p>
+              </section>
+            )}
           </>
         )}
       </div>
