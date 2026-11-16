@@ -4,7 +4,6 @@ import { cachedPublicEvents } from "@/lib/public-reads";
 import { SectionBanner } from "@/components/home/section-banner";
 import { EventPoster } from "@/components/events/event-poster";
 import { EventStory } from "@/components/events/event-story";
-import { HELD_COVERS } from "@/components/events/held-archive";
 
 function formatDate(value: Date | string) {
   return new Date(value).toLocaleDateString("en-IN", { day: "numeric", month: "long", year: "numeric" });
@@ -21,19 +20,8 @@ export default async function PublicEventsPage() {
   // Cross-request cached public reads; event mutations invalidate the "events" tag.
   const events = await cachedPublicEvents();
   const coming = events.filter((event) => event.status !== "COMPLETED");
-  const finished = events.filter((event) => event.status === "COMPLETED");
   const featuredEvent = coming[0] ?? null;
   const later = coming.slice(1);
-
-  const heldEvents = [
-    ...HELD_COVERS.map((event) => ({ ...event, href: `/events/held/${event.slug}` })),
-    ...finished.map((event) => ({
-      href: `/events/${event.slug}`,
-      name: event.name,
-      date: formatDate(event.startDate),
-      line: "The full record for this event.",
-    })),
-  ];
 
   return (
     <main className="route-enter min-h-screen bg-background halftone-bg px-4 py-10 sm:py-16">
@@ -85,30 +73,6 @@ export default async function PublicEventsPage() {
         <section>
           <SectionBanner>How a match runs</SectionBanner>
           <EventStory />
-        </section>
-
-        <section>
-          <SectionBanner>Previous events</SectionBanner>
-          <ul className="grid gap-4 md:grid-cols-2">
-            {heldEvents.map((event) => (
-              <li key={event.href} className={heldEvents.length === 1 ? "md:col-span-2" : undefined}>
-                <Link
-                  href={event.href}
-                  className="grid h-full border-2 border-black bg-white shadow-[8px_8px_0_0_#000] transition-colors active:bg-brand-red/5 md:grid-cols-[13rem_minmax(0,1fr)]"
-                >
-                  <div className="bg-black px-6 py-6 text-white">
-                    <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-brand-red">Previous event</p>
-                    <p className="text-display mt-3 text-2xl font-semibold">{event.date}</p>
-                  </div>
-                  <div className="px-6 py-6">
-                    <h3 className="text-display text-3xl font-semibold">{event.name}</h3>
-                    <p className="mt-2 text-sm leading-relaxed">{event.line}</p>
-                    <p className="mt-4 text-sm font-semibold text-brand-red">Open the record</p>
-                  </div>
-                </Link>
-              </li>
-            ))}
-          </ul>
         </section>
       </div>
     </main>
