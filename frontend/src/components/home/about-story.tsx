@@ -58,7 +58,7 @@ function AboutHomeTeaser() {
               belt. Real stage. Fair brackets. Rankings that lead to the superfight.
             </p>
             <p className="mt-3 max-w-lg text-sm leading-relaxed text-white/65">
-              Three events build the board. The fourth is the superfight. Your effort is always rewarded.
+              Every match builds the board. Your effort is always rewarded.
             </p>
           </div>
 
@@ -127,7 +127,7 @@ function AboutPageStory() {
         <section className="border-2 border-black bg-white p-5 shadow-[6px_6px_0_0_#000] sm:p-6">
           <SectionBanner>The platform</SectionBanner>
           <p className="mt-4 text-sm leading-relaxed sm:text-base">
-            Every grappler deserves a real platform. Compete across three events and earn ranking points for every match,
+            Every grappler deserves a real platform. Compete and earn ranking points for every match,
             with wins counting the most. The top performers in each division earn their place in the superfight.
           </p>
           <p className="mt-3 text-sm leading-relaxed text-muted-foreground sm:text-base">
@@ -184,8 +184,7 @@ function AboutPageStory() {
         <section className="border-2 border-black bg-white p-5 shadow-[6px_6px_0_0_#000] sm:p-8">
           <SectionBanner>Ranking system</SectionBanner>
           <p className="mt-3 max-w-3xl text-sm leading-relaxed">
-            Three events build the board. The fourth is the superfight. Who gets that invitation is confirmed by the
-            ranking system.
+            Every match builds the board. Who earns a place in the superfight is confirmed by the ranking system.
           </p>
           <details className="mt-4">
             <summary className="cursor-pointer text-sm font-semibold text-brand-red">Know more</summary>

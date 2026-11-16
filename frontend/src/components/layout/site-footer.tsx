@@ -75,9 +75,15 @@ export function SiteFooter({ contact = SITE_CONTACT }: { contact?: SiteContact }
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img src="/logo-wordmark.png" alt="Up 'n Roll" className="h-11 w-auto sm:h-12" />
               </Link>
-              <p className="mt-5 max-w-sm text-sm leading-relaxed text-white/70">
-                <span className="block">Earn Your Role.</span>
-              </p>
+              <div className="mt-5">
+                <div className="inline-flex -skew-x-12 items-stretch shadow-[4px_4px_0_0_#000]">
+                  <span className="w-2 bg-white" aria-hidden="true" />
+                  <span className="bg-brand-red px-3.5 py-1.5 text-display text-xs font-bold uppercase tracking-[0.22em] text-white sm:text-sm">
+                    <span className="inline-block skew-x-12">Earn Your Roll</span>
+                  </span>
+                  <span className="w-4 bg-black" aria-hidden="true" />
+                </div>
+              </div>
             </div>
 
             <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3 lg:gap-6">

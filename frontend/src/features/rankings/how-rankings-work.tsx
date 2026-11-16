@@ -18,7 +18,7 @@ const STEPS = [
   },
   {
     title: "Compete",
-    body: "Three events build the board. Every match earns ranking points, and wins count the most.",
+    body: "Every match earns ranking points, and wins count the most.",
   },
   {
     title: "Rank",
@@ -26,7 +26,7 @@ const STEPS = [
   },
   {
     title: "Superfight",
-    body: "The fourth event is the superfight. Eligibility is based on wins and top rankings within the same division.",
+    body: "The top performers earn a place in the superfight. Eligibility is based on wins and top rankings within the same division.",
   },
 ];
 
