@@ -31,7 +31,7 @@ export const STARTER_FAQS: { question: string; answer: string }[] = [
   {
     question: "What should I wear?",
     answer:
-      "Wear a rashguard with shorts or spats, with no zippers or pockets. A groin guard and a mouthguard (compulsory) are also required.",
+      "Wear a rashguard with shorts or spats, with no zippers or pockets. A mouthguard is compulsory. A groin guard is recommended but not compulsory.",
   },
   {
     question: "Which mat is my match on?",
