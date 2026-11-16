@@ -174,7 +174,7 @@ function AboutPageStory() {
             </p>
           </article>
           <article className="border-2 border-black bg-white p-5 shadow-[8px_8px_0_0_#c8102e] sm:p-8">
-            <SectionBanner>Made by an athlete</SectionBanner>
+            <SectionBanner>Made by an athlete for an athlete</SectionBanner>
             <p className="mt-4 text-sm leading-relaxed sm:text-base">
               We know the nerves before a match, the sting of a loss, and the pride of a hard-earned win. It&apos;s not
               an ego game. It&apos;s a place to test your skills, be heard, build confidence, and tap when you need to.
