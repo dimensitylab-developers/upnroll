@@ -162,10 +162,10 @@ function AboutPageStory() {
         <section className="grid gap-4 lg:grid-cols-[0.95fr_1.05fr]">
           <article className="relative min-h-[240px] overflow-hidden border-2 border-black bg-black shadow-[8px_8px_0_0_#000]">
             <Image
-              src="/Fighting/opt/003A8057.webp"
+              src="/Fighting/opt/about-lifestyle.webp"
               alt=""
               fill
-              className="object-cover opacity-70"
+              className="object-cover object-[center_40%] opacity-80"
               sizes="(max-width: 1024px) 100vw, 28rem"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-black via-black/20 to-transparent" />
