@@ -1,6 +1,6 @@
-import Link from "next/link";
 import { connection } from "next/server";
 import { cachedRankingBoardEntries } from "@/lib/public-reads";
+import { HowRankingsWork } from "@/features/rankings/how-rankings-work";
 import { RankingsBoard, type RankingsLevel } from "@/features/rankings/rankings-board";
 import { SectionBanner } from "@/components/home/section-banner";
 
@@ -30,11 +30,7 @@ export default async function PublicRankingsPage({
               Rankings
             </h1>
           </div>
-          <p className="text-sm">
-            <Link href="/rankings/demo" className="copy-slab underline underline-offset-2 hover:text-brand-red">
-              See how seeding works
-            </Link>
-          </p>
+          <HowRankingsWork />
         </div>
       </div>
 
