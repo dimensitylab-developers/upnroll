@@ -57,7 +57,7 @@ export function HeldRecord({ record }: { record: HeldRecordData }) {
   return (
     <article className="space-y-6">
       <header className="border-2 border-black bg-black px-6 py-8 text-white shadow-[8px_8px_0_0_#000] sm:px-10 sm:py-10">
-        <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-brand-red">Held</p>
+        <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-brand-red">Previous event</p>
         <p className="text-display mt-4 text-2xl font-semibold sm:text-3xl">{record.date}</p>
         <h1 className="text-display mt-2 max-w-3xl text-4xl font-semibold leading-[0.95] sm:text-6xl">{record.name}</h1>
         <p className="mt-4 max-w-2xl text-sm leading-relaxed text-white/80">{record.summary}</p>

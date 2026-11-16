@@ -88,7 +88,7 @@ export default async function PublicEventsPage() {
         </section>
 
         <section>
-          <SectionBanner>Held</SectionBanner>
+          <SectionBanner>Previous events</SectionBanner>
           <ul className="grid gap-4 md:grid-cols-2">
             {heldEvents.map((event) => (
               <li key={event.href} className={heldEvents.length === 1 ? "md:col-span-2" : undefined}>
@@ -97,7 +97,7 @@ export default async function PublicEventsPage() {
                   className="grid h-full border-2 border-black bg-white shadow-[8px_8px_0_0_#000] transition-colors active:bg-brand-red/5 md:grid-cols-[13rem_minmax(0,1fr)]"
                 >
                   <div className="bg-black px-6 py-6 text-white">
-                    <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-brand-red">Held</p>
+                    <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-brand-red">Previous event</p>
                     <p className="text-display mt-3 text-2xl font-semibold">{event.date}</p>
                   </div>
                   <div className="px-6 py-6">
