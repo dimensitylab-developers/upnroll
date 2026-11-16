@@ -14,7 +14,7 @@ import {
 const STEPS = [
   {
     title: "Enter",
-    body: "Once your registration is confirmed, you appear in your division: your weight class and Beginner or Intermediate.",
+    body: "Once your registration is confirmed, you appear in your division.",
   },
   {
     title: "Compete",

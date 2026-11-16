@@ -132,8 +132,8 @@ export function SiteFooter({ contact = SITE_CONTACT }: { contact?: SiteContact }
                 <div className="mt-3 rounded-3xl border border-white/25 bg-white/95 p-4 text-black shadow-[0_16px_48px_-24px_rgba(200,16,46,0.7)] backdrop-blur-md">
                   <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-brand-red">Address</p>
                   <address className="mt-2 inline-flex items-center gap-2 text-base font-semibold not-italic sm:text-lg">
-                    <IndiaFlag />
                     <span>India</span>
+                    <IndiaFlag />
                   </address>
                 </div>
               </div>

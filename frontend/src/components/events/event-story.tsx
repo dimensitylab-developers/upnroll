@@ -7,7 +7,7 @@ const STOPS = [
   {
     n: "02",
     title: "Division",
-    body: "You fight inside one group: name, discipline, and a set number of spots. Small groups run as round robin and will not be merged.",
+    body: "You fight inside one group: name, discipline, and a set number of spots. Small groups run as round robin.",
   },
   {
     n: "03",
