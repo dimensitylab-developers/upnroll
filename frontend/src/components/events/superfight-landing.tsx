@@ -64,7 +64,6 @@ function RuleList({
 export function SuperfightLanding({
   eventId,
   slug,
-  name,
   dateLabel,
   weekdayLabel,
   venue,
@@ -112,12 +111,11 @@ export function SuperfightLanding({
 
         <section className="mt-7 max-w-2xl sm:mt-9">
           <p className="text-[11px] font-semibold uppercase tracking-[0.28em] text-brand-red">
-            Up &apos;n Roll · {RULES.eventFormat}
+            Up &apos;n Roll
           </p>
           <h1 className="text-display mt-3 text-4xl font-semibold italic leading-[0.92] tracking-tight sm:text-5xl lg:text-6xl">
             No-Gi Tournament
           </h1>
-          <p className="mt-3 text-sm text-white/70">{name}</p>
 
           <div className="mt-6 grid gap-3 border-2 border-white/25 bg-black/55 p-4 backdrop-blur-sm sm:grid-cols-3 sm:gap-0 sm:divide-x sm:divide-white/25 sm:p-0">
             <div className="sm:px-4 sm:py-4">
