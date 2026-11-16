@@ -24,14 +24,9 @@ const LOGOS: Logo[] = [
     role: "Event Coverage Partner",
   },
   {
-    name: "Partner marks",
-    src: "/sponsors/eye.png?v=3",
-    className: "h-10 w-auto sm:h-12",
-  },
-  {
     name: "Clutch Hydration",
-    src: "/sponsors/hydration.png?v=3",
-    className: "h-10 w-auto sm:h-12",
+    src: "/sponsors/hydration.png?v=4",
+    className: "h-9 w-auto sm:h-11",
     role: "Hydration Partner",
   },
 ];
