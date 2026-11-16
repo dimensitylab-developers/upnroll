@@ -73,16 +73,12 @@ function AboutHomeTeaser() {
         <div className="relative hidden min-h-[280px] border-t-2 border-black lg:block lg:border-l-2 lg:border-t-0">
           <div className="absolute inset-4 overflow-hidden border-2 border-white/30 bg-black/40 shadow-[6px_6px_0_0_rgba(200,16,46,0.85)]">
             <Image
-              src="/Fighting/003A8193.JPG"
+              src="/Fighting/opt/about-card.jpg"
               alt=""
               fill
-              className="object-cover transition-transform duration-700 group-hover:scale-110"
+              className="object-contain"
               sizes="28rem"
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent" />
-            <p className="absolute bottom-4 left-4 right-4 text-display text-2xl font-semibold leading-tight text-white">
-              About Up &apos;n Roll
-            </p>
           </div>
         </div>
       </div>

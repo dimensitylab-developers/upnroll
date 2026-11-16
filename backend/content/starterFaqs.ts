@@ -6,7 +6,7 @@ export const STARTER_FAQS: { question: string; answer: string }[] = [
   {
     question: "How do I register for an event?",
     answer:
-      "Create a grappler account with your details and upload identity proof. Sign in, choose Beginner or Intermediate and a weight class that matches your gender, tick both Consent and Agreement, then continue to payment.",
+      "Create a grappler account with your details and upload a picture of any government ID. Sign in, choose Beginner or Intermediate and a weight class that matches your gender, tick both Consent and Agreement, then continue to payment.",
   },
   {
     question: "How do I pay the entry fee?",
