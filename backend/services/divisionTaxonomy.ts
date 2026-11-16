@@ -196,6 +196,8 @@ export const EVENT_POINTS_RULES = {
       "Referee decisions are final",
       "Athlete safety takes priority at all times",
       "Organizers reserve the right to merge divisions",
+      "If an athlete declines, is injured, or cannot make weight before the superfight, the fight is offered to the third-best athlete in that weight class",
+      "If an athlete cannot make the weight class they selected on the event day, no money is refunded, but they may change their weight class",
     ],
   },
   contact: {

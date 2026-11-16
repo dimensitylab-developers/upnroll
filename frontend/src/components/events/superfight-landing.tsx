@@ -173,7 +173,7 @@ export function SuperfightLanding({
           <div className="overflow-hidden border-2 border-black bg-[#f3efe8] shadow-[10px_10px_0_0_#c8102e]">
             <div className="bg-brand-red px-5 py-4 text-center sm:px-8">
               <p className="text-display text-2xl font-semibold italic uppercase tracking-tight text-white sm:text-3xl">
-                Rule set
+                Rules Set
               </p>
             </div>
 

@@ -45,9 +45,6 @@ export default async function LiveBracketsPage() {
           <LiveRefresh seconds={8} />
         </div>
         <h1 className="text-display text-4xl font-semibold">Brackets</h1>
-        <p className="copy-slab mt-2 max-w-2xl text-sm">
-          Live board for this event. Wins, losses, and every published bracket refresh as matches finish.
-        </p>
 
         {!focus && (
           <p className="copy-slab mt-10 text-sm text-muted-foreground">
@@ -132,9 +129,8 @@ export default async function LiveBracketsPage() {
 
             {live.length === 0 && decided.length === 0 && brackets.length === 0 && (
               <section className="mt-12 border-2 border-black bg-white p-5 shadow-[4px_4px_0_0_#000]">
-                <p className="text-sm font-semibold">Brackets are coming soon.</p>
-                <p className="mt-1 text-sm text-muted-foreground">
-                  Published brackets, live bouts and results appear here and update as the event runs.
+                <p className="text-display text-2xl font-semibold uppercase tracking-wide">
+                  It will be live on the event day.
                 </p>
               </section>
             )}

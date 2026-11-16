@@ -46,9 +46,6 @@ async function RegisterChrome({
     <>
       <AuthBackLink from={from} current="/register" fallback="/login" />
       <h1 className="mb-3 mt-2 text-display text-3xl font-semibold">Sign up</h1>
-      <p className="mb-6 text-sm text-muted-foreground">
-        Name, mobile, and email get you an account. The full grappler form opens when you register for an event.
-      </p>
       {googleNote && (
         <p className="mb-4 border-2 border-black bg-[#f7f4ef] px-3 py-2 text-sm text-muted-foreground">{googleNote}</p>
       )}

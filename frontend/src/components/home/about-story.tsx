@@ -158,15 +158,15 @@ function AboutPageStory() {
         <section className="grid gap-4 lg:grid-cols-[0.95fr_1.05fr]">
           <article className="relative min-h-[240px] overflow-hidden border-2 border-black bg-black shadow-[8px_8px_0_0_#000]">
             <Image
-              src="/Fighting/opt/about-lifestyle.webp"
+              src="/Fighting/opt/about-lifestyle.jpg"
               alt=""
               fill
-              className="object-cover object-[center_40%] opacity-80"
+              className="object-cover object-center"
               sizes="(max-width: 1024px) 100vw, 28rem"
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-black via-black/20 to-transparent" />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent" />
             <p className="absolute bottom-5 left-5 right-5 text-display text-2xl font-semibold text-white sm:text-3xl">
-              Jiu jitsu should be a lifestyle, not just an event to enter.
+              Make Jujutsu Your Lifestyle.
             </p>
           </article>
           <article className="border-2 border-black bg-white p-5 shadow-[8px_8px_0_0_#c8102e] sm:p-8">

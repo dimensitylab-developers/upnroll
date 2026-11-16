@@ -27,7 +27,7 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
                 <span className="inline-flex -skew-x-12 items-stretch shadow-[4px_4px_0_0_#c8102e]">
                   <span className="w-2 bg-white" aria-hidden="true" />
                   <span className="bg-brand-red px-3 py-1.5 text-[10px] font-semibold uppercase tracking-[0.22em] text-white">
-                    <span className="inline-block skew-x-12">Mat gate</span>
+                    <span className="inline-block skew-x-12">Sign In</span>
                   </span>
                 </span>
                 <h2 className="text-display mt-6 text-3xl font-semibold leading-none lg:text-4xl">
@@ -35,9 +35,6 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
                   <br />
                   the mat.
                 </h2>
-                <p className="mt-4 max-w-xs text-sm leading-relaxed text-white/65">
-                  Sign in to your grappler desk for sheet, payments, matches, and the house board.
-                </p>
               </div>
               <div>
                 <div className="checker-strip h-2 border-y border-white/30" aria-hidden="true" />

@@ -7,6 +7,8 @@ type Logo = {
   src: string;
   /** Optical size: height drives scale; width follows the asset ratio. */
   className: string;
+  /** Partner role shown under the logo. */
+  role?: string;
 };
 
 const LOGOS: Logo[] = [
@@ -19,6 +21,7 @@ const LOGOS: Logo[] = [
     name: "The Perspective Box",
     src: "/sponsors/perspective-box.png?v=2",
     className: "h-10 w-auto sm:h-12",
+    role: "Event Coverage Partner",
   },
   {
     name: "Partner marks",
@@ -29,6 +32,7 @@ const LOGOS: Logo[] = [
     name: "Clutch Hydration",
     src: "/sponsors/hydration.png?v=3",
     className: "h-10 w-auto sm:h-12",
+    role: "Hydration Partner",
   },
 ];
 
@@ -44,13 +48,18 @@ function Separator() {
 
 function LogoSlot({ logo }: { logo: Logo }) {
   return (
-    <span className="inline-flex h-12 shrink-0 items-center justify-center sm:h-14">
+    <span className="inline-flex h-12 shrink-0 flex-col items-center justify-center gap-0.5 sm:h-14">
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img
         src={logo.src}
         alt={logo.name}
         className={`max-w-none object-contain object-center ${logo.className}`}
       />
+      {logo.role ? (
+        <span className="text-[9px] font-semibold uppercase leading-none tracking-[0.16em] text-black/60 sm:text-[10px]">
+          {logo.role}
+        </span>
+      ) : null}
     </span>
   );
 }

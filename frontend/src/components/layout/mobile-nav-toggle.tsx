@@ -57,7 +57,7 @@ export function MobileNavToggle({
           href={withFrom("/login", pathname || "/")}
           className={`${comicCell} ${comicCellIdle} min-h-11`}
         >
-          Login
+          Sign In
         </Link>
       )}
       <button
