@@ -13,7 +13,7 @@ export const WAIVER_CLAUSES = [
   "The organizer holds the full right to merge divisions.",
   "If the organisers give out rashguards or gear, I have no problem wearing them and competing.",
   "Full refunds are not available for cancellations. However, you may transfer your spot to a friend. A 50% cancellation fee may apply if you cancel within one month of the event. Any approved refund will be processed manually by the organiser. No refund will be initiated on the day of the event, before the fight, or after the fight.",
-  "I accept responsibility for medical expenses arising during the event. To the extent permitted by law, the organiser, organisation, venue owners, and sponsors are not responsible for these costs. (Personal medical insurance covering event participation is recommended.)",
+  "I accept responsibility for medical expenses arising during the event. To the extent permitted by law, the organiser, organisation, venue owners, and sponsors are not responsible for these costs. Personal medical insurance is recommended.",
   "Superfight eligibility is based on wins and top rankings within the same division. Athletes may switch divisions, but their previous rankings will not carry over. They must establish a new ranking in the new division to qualify for a superfight.",
   "I have read and understood the rules, the regulations, and this waiver, and I agree to abide by them.",
 ] as const;
