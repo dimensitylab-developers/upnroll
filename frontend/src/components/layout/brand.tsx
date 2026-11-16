@@ -27,7 +27,7 @@ export function SiteCopyright({ className = "" }: { className?: string }) {
   return (
     <p className={`space-y-1.5 text-[11px] leading-none text-muted-foreground ${className}`.trim()}>
       <span className="block">© {COPYRIGHT_YEAR} Up &apos;n Roll.</span>
-      <span className="block">All rights reserved by D3 Spectators Brand.</span>
+      <span className="block">All rights reserved by A D3 Spectator Brand.</span>
     </p>
   );
 }
