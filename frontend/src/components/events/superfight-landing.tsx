@@ -64,6 +64,7 @@ function RuleList({
 export function SuperfightLanding({
   eventId,
   slug,
+  name,
   dateLabel,
   weekdayLabel,
   venue,
@@ -84,6 +85,7 @@ export function SuperfightLanding({
   divisions?: unknown[];
 }) {
   const place = venue || "Navnit Gujarat Samaj Mumbai";
+  const editionNumber = name.match(/#\s*(\d+)/)?.[1];
 
   return (
     <main className="route-enter relative isolate overflow-hidden text-white">
@@ -114,7 +116,7 @@ export function SuperfightLanding({
             Up &apos;n Roll
           </p>
           <h1 className="text-display mt-3 text-4xl font-semibold italic leading-[0.92] tracking-tight sm:text-5xl lg:text-6xl">
-            No-Gi Tournament
+            No-Gi Tournament{editionNumber ? ` #${editionNumber}` : ""}
           </h1>
 
           <div className="mt-6 grid gap-3 border-2 border-white/25 bg-black/55 p-4 backdrop-blur-sm sm:grid-cols-3 sm:gap-0 sm:divide-x sm:divide-white/25 sm:p-0">
