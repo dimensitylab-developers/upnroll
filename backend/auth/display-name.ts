@@ -44,7 +44,10 @@ export const resolveDisplayName = cache(async function resolveDisplayName(userId
 
 export function portalGreeting(fullName: string, role: UserRole): string {
   const name = firstName(fullName);
-  const hour = new Date().getHours();
+  // The server runs in UTC; greet by India time so "morning" matches the athletes' and admins' clock.
+  const hour = Number(
+    new Intl.DateTimeFormat("en-GB", { hour: "numeric", hourCycle: "h23", timeZone: "Asia/Kolkata" }).format(new Date())
+  );
 
   if (role === "ADMIN") {
     if (hour < 12) return `Morning, ${name}.`;
