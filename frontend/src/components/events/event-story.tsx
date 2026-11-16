@@ -1,32 +1,35 @@
+import Link from "next/link";
+
 const STOPS = [
   {
     n: "01",
     title: "Enter",
-    body: "Sign up, choose a weight class / division, pay with the UPI instructions, and wait for admin confirmation.",
+    body: "Sign up, choose your weight class and division, pay with the UPI instructions, and wait for admin confirmation.",
   },
   {
     n: "02",
     title: "Division",
-    body: "You fight inside one group: name, discipline, and a set number of spots. Small groups run as round robin.",
+    body: "Fight inside your chosen division and secure a rank based on your performance.",
   },
   {
     n: "03",
-    title: "Mat",
-    body: "The floor is split into mats. Your bout gets one. Follow the mat you are assigned.",
+    title: "Call",
+    body: "You will be notified in your Grappler account or on your profile dashboard.",
   },
   {
     n: "04",
-    title: "Call",
-    body: "When your name is up, you step on. The referee runs the match. Safety comes before the score.",
+    title: "Rules",
+    body: "Every match follows the published rule set. Safety comes first, and the referee's decision is final.",
+    link: true,
   },
   {
     n: "05",
     title: "Result",
-    body: "Brackets, call times, and winners stay published. A past event keeps its date on the record.",
+    body: "Your win will display as per your division.",
   },
 ];
 
-export function EventStory() {
+export function EventStory({ rulesHref = "/events" }: { rulesHref?: string }) {
   return (
     <div>
       <ol className="grid gap-3 sm:grid-cols-2 lg:grid-cols-5">
@@ -35,6 +38,11 @@ export function EventStory() {
             <p className="text-display text-3xl font-semibold leading-none text-brand-red">{stop.n}</p>
             <h3 className="mt-4 text-display text-xl font-semibold">{stop.title}</h3>
             <p className="mt-2 text-sm leading-relaxed">{stop.body}</p>
+            {"link" in stop && stop.link ? (
+              <Link href={rulesHref} className="mt-3 text-sm font-semibold text-brand-red underline underline-offset-4">
+                Read the rules
+              </Link>
+            ) : null}
           </li>
         ))}
       </ol>

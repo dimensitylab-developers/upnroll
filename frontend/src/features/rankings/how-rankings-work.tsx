@@ -18,15 +18,19 @@ const STEPS = [
   },
   {
     title: "Compete",
-    body: "Three events build the board. Every match earns ranking points, and wins count the most.",
+    body: "Every match earns ranking points, and wins count the most.",
   },
   {
     title: "Rank",
     body: "Until a match in your division is decided, entries show a dot and 00 points. After that, ranks 1, 2, 3 follow the points.",
   },
   {
+    title: "Timing",
+    body: "Timings will determine loser rankings also.",
+  },
+  {
     title: "Superfight",
-    body: "The fourth event is the superfight. Eligibility is based on wins and top rankings within the same division.",
+    body: "If an athlete declines, is injured, or cannot make weight before the superfight, the fight is offered to the third-best athlete in that weight class.",
   },
 ];
 

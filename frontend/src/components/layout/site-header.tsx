@@ -21,12 +21,12 @@ function AuthControlsFallback() {
   return (
     <>
       <div className="hidden md:flex items-center gap-2 ml-auto">
-        <span className={`${comicCell} ${comicCellIdle} pointer-events-none opacity-50`}>Login</span>
+        <span className={`${comicCell} ${comicCellIdle} pointer-events-none opacity-50`}>Sign In</span>
         <span className={`${comicCell} ${comicCellActive} pointer-events-none opacity-50`}>Sign up</span>
       </div>
       <div className="md:hidden ml-auto flex items-center gap-2">
         <span className={`${comicCell} ${comicCellIdle} pointer-events-none opacity-50`} aria-hidden="true">
-          Login
+          Sign In
         </span>
         <span className={`${comicCell} ${comicCellIdle} pointer-events-none opacity-50`} aria-hidden="true">
           Menu
@@ -55,7 +55,7 @@ async function HeaderSessionChrome() {
         ) : (
           <>
             <Link href="/login?from=%2F" className={`${comicCell} ${comicCellIdle}`}>
-              Login
+              Sign In
             </Link>
             <Link href="/register?from=%2F" className={`${comicCell} ${comicCellActive}`}>
               Sign up

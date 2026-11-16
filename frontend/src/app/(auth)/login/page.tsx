@@ -47,9 +47,7 @@ async function LoginChrome({
   return (
     <>
       <AuthBackLink from={from} current="/login" fallback="/" />
-      <p className="mt-4 text-[10px] font-semibold uppercase tracking-[0.22em] text-brand-red sm:hidden">Mat gate</p>
       <h1 className="text-display mt-2 mb-2 text-3xl font-semibold tracking-tight">Sign in</h1>
-      <p className="mb-6 text-sm text-muted-foreground">Enter the desk with your house email.</p>
       {googleNote && (
         <p className="mb-4 border-2 border-black bg-[#f7f4ef] px-3 py-2 text-sm text-muted-foreground">{googleNote}</p>
       )}

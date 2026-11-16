@@ -7,6 +7,7 @@ import {
 } from "@/lib/public-reads";
 import { BracketView } from "@/features/brackets/bracket-view";
 import { LiveRefresh } from "@/components/home/live-refresh";
+import { PreEventBoard } from "@/features/brackets/pre-event-board";
 import { SectionBanner } from "@/components/home/section-banner";
 import { Badge } from "@/components/ui/badge";
 
@@ -38,16 +39,17 @@ export default async function LiveBracketsPage() {
   const decided = schedule.filter((match) => match.status === "COMPLETED" || match.status === "BYE");
   const waiting = schedule.filter((match) => match.status === "PENDING");
 
+  const preEvent = Boolean(focus) && live.length === 0 && decided.length === 0 && brackets.length === 0;
+
   return (
     <main className="route-enter relative min-h-screen overflow-hidden px-4 py-16">
       <div className="relative mx-auto max-w-5xl">
-        <div className="mb-4 flex flex-wrap items-center gap-3">
-          <LiveRefresh seconds={8} />
-        </div>
+        {!preEvent && (
+          <div className="mb-4 flex flex-wrap items-center gap-3">
+            <LiveRefresh seconds={8} />
+          </div>
+        )}
         <h1 className="text-display text-4xl font-semibold">Brackets</h1>
-        <p className="copy-slab mt-2 max-w-2xl text-sm">
-          Live board for this event. Wins, losses, and every published bracket refresh as matches finish.
-        </p>
 
         {!focus && (
           <p className="copy-slab mt-10 text-sm text-muted-foreground">
@@ -55,7 +57,15 @@ export default async function LiveBracketsPage() {
           </p>
         )}
 
-        {focus && (
+        {focus && preEvent && (
+          <PreEventBoard
+            eventName={focus.name}
+            eventDate={new Date(focus.startDate).toLocaleDateString("en-IN", { day: "numeric", month: "long", year: "numeric" })}
+            eventHref={`/events/${focus.slug}`}
+          />
+        )}
+
+        {focus && !preEvent && (
           <>
             <section className="mt-10 border-2 border-black bg-white p-5 shadow-[6px_6px_0_0_#000]">
               <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-brand-red">On the board</p>
@@ -130,14 +140,6 @@ export default async function LiveBracketsPage() {
               </section>
             )}
 
-            {live.length === 0 && decided.length === 0 && brackets.length === 0 && (
-              <section className="mt-12 border-2 border-black bg-white p-5 shadow-[4px_4px_0_0_#000]">
-                <p className="text-sm font-semibold">Brackets are coming soon.</p>
-                <p className="mt-1 text-sm text-muted-foreground">
-                  Published brackets, live bouts and results appear here and update as the event runs.
-                </p>
-              </section>
-            )}
           </>
         )}
       </div>

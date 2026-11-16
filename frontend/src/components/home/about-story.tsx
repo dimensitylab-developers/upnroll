@@ -58,7 +58,7 @@ function AboutHomeTeaser() {
               belt. Real stage. Fair brackets. Rankings that lead to the superfight.
             </p>
             <p className="mt-3 max-w-lg text-sm leading-relaxed text-white/65">
-              Three events build the board. The fourth is the superfight. Your effort is always rewarded.
+              Every match builds the board. Your effort is always rewarded.
             </p>
           </div>
 
@@ -127,7 +127,7 @@ function AboutPageStory() {
         <section className="border-2 border-black bg-white p-5 shadow-[6px_6px_0_0_#000] sm:p-6">
           <SectionBanner>The platform</SectionBanner>
           <p className="mt-4 text-sm leading-relaxed sm:text-base">
-            Every grappler deserves a real platform. Compete across three events and earn ranking points for every match,
+            Every grappler deserves a real platform. Compete and earn ranking points for every match,
             with wins counting the most. The top performers in each division earn their place in the superfight.
           </p>
           <p className="mt-3 text-sm leading-relaxed text-muted-foreground sm:text-base">
@@ -158,15 +158,15 @@ function AboutPageStory() {
         <section className="grid gap-4 lg:grid-cols-[0.95fr_1.05fr]">
           <article className="relative min-h-[240px] overflow-hidden border-2 border-black bg-black shadow-[8px_8px_0_0_#000]">
             <Image
-              src="/Fighting/opt/about-lifestyle.webp"
+              src="/Fighting/opt/about-lifestyle.jpg"
               alt=""
               fill
-              className="object-cover object-[center_40%] opacity-80"
+              className="object-cover object-center"
               sizes="(max-width: 1024px) 100vw, 28rem"
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-black via-black/20 to-transparent" />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent" />
             <p className="absolute bottom-5 left-5 right-5 text-display text-2xl font-semibold text-white sm:text-3xl">
-              Jiu jitsu should be a lifestyle, not just an event to enter.
+              Make Jiu Jitsu Your Lifestyle.
             </p>
           </article>
           <article className="border-2 border-black bg-white p-5 shadow-[8px_8px_0_0_#c8102e] sm:p-8">
@@ -184,8 +184,7 @@ function AboutPageStory() {
         <section className="border-2 border-black bg-white p-5 shadow-[6px_6px_0_0_#000] sm:p-8">
           <SectionBanner>Ranking system</SectionBanner>
           <p className="mt-3 max-w-3xl text-sm leading-relaxed">
-            Three events build the board. The fourth is the superfight. Who gets that invitation is confirmed by the
-            ranking system.
+            Every match builds the board. Who earns a place in the superfight is confirmed by the ranking system.
           </p>
           <details className="mt-4">
             <summary className="cursor-pointer text-sm font-semibold text-brand-red">Know more</summary>

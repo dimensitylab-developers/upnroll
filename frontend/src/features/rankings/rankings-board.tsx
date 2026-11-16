@@ -14,14 +14,14 @@ export type RankingsBoardEntry = {
 
 export type RankingsLevel = "BEGINNER" | "INTERMEDIATE";
 
-/** Approved weight grid: women -55 / 55-65 / +65, men -55 / 55-65 / 65-75 / 75-85 / +85. */
+/** Approved weight grid: women -55 / -65 / +65, men -55 / 55-65 / 65-75 / 75-85 / +85. */
 const GROUPS: { gender: "FEMALE" | "MALE"; title: string; bands: { weightBand: string; label: string }[] }[] = [
   {
     gender: "FEMALE",
     title: "Women",
     bands: [
       { weightBand: "-55", label: "-55 kg" },
-      { weightBand: "55-65", label: "55-65 kg" },
+      { weightBand: "55-65", label: "-65 kg" },
       { weightBand: "+65", label: "+65 kg" },
     ],
   },

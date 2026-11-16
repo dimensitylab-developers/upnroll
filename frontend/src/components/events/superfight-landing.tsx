@@ -169,14 +169,11 @@ export function SuperfightLanding({
         </section>
 
         {/* Rules board — poster layout on cream */}
-        <section className="mt-10 space-y-4 text-black sm:mt-12 sm:space-y-5">
+        <section id="rules" className="mt-10 scroll-mt-24 space-y-4 text-black sm:mt-12 sm:space-y-5">
           <div className="overflow-hidden border-2 border-black bg-[#f3efe8] shadow-[10px_10px_0_0_#c8102e]">
             <div className="bg-brand-red px-5 py-4 text-center sm:px-8">
               <p className="text-display text-2xl font-semibold italic uppercase tracking-tight text-white sm:text-3xl">
-                No-Gi Tournament
-              </p>
-              <p className="mt-1 text-[11px] font-semibold uppercase tracking-[0.22em] text-white/85">
-                Rules &amp; format
+                Rules Set
               </p>
             </div>
 
