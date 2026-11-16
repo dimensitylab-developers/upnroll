@@ -77,7 +77,7 @@ function AboutHomeTeaser() {
               alt=""
               width={1066}
               height={1600}
-              className="block h-auto w-full"
+              className="block h-auto w-full transition-transform duration-700 group-hover:scale-110"
               sizes="19rem"
             />
           </div>
