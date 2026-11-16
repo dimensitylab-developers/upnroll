@@ -27,6 +27,24 @@ function FooterHeading({ children }: { children: string }) {
   );
 }
 
+/** Inline SVG so the flag renders everywhere (flag emoji do not render on Windows). */
+function IndiaFlag() {
+  return (
+    <svg
+      viewBox="0 0 30 20"
+      className="h-4 w-6 shrink-0 rounded-[2px] border border-black/15"
+      role="img"
+      aria-label="Flag of India"
+    >
+      <rect width="30" height="20" fill="#fff" />
+      <rect width="30" height="6.67" fill="#FF9933" />
+      <rect y="13.33" width="30" height="6.67" fill="#138808" />
+      <circle cx="15" cy="10" r="2.6" fill="none" stroke="#000080" strokeWidth="0.7" />
+      <circle cx="15" cy="10" r="0.5" fill="#000080" />
+    </svg>
+  );
+}
+
 export function SiteFooter({ contact = SITE_CONTACT }: { contact?: SiteContact }) {
   const hasEmail = Boolean(contact.email);
 
@@ -110,8 +128,14 @@ export function SiteFooter({ contact = SITE_CONTACT }: { contact?: SiteContact }
                     <span>@{contact.instagramHandle}</span>
                   </p>
                   {hasEmail && <p className="mt-2 text-sm text-neutral-600">{contact.email}</p>}
-                  <address className="mt-2 text-sm not-italic text-neutral-600">India</address>
                 </a>
+                <div className="mt-3 rounded-3xl border border-white/25 bg-white/95 p-4 text-black shadow-[0_16px_48px_-24px_rgba(200,16,46,0.7)] backdrop-blur-md">
+                  <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-brand-red">Address</p>
+                  <address className="mt-2 inline-flex items-center gap-2 text-base font-semibold not-italic sm:text-lg">
+                    <IndiaFlag />
+                    <span>India</span>
+                  </address>
+                </div>
               </div>
             </div>
           </div>
