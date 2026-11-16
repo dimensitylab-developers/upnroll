@@ -15,10 +15,10 @@ const BRACKET_FACTORS = [
 ] as const;
 
 const DOORS = [
-  { href: "/events", title: "Events", body: "The event, the date, the venue." },
-  { href: "/brackets", title: "Brackets", body: "Live board and published trees." },
-  { href: "/rankings", title: "Rankings", body: "Points and public profiles." },
-  { href: "/faq", title: "FAQ", body: "Straight answers from the book." },
+  { href: "/events", title: "Events" },
+  { href: "/brackets", title: "Brackets" },
+  { href: "/rankings", title: "Rankings" },
+  { href: "/faq", title: "FAQ" },
 ];
 
 function AboutHomeTeaser() {
@@ -220,7 +220,6 @@ function AboutPageStory() {
                 >
                   <div>
                     <p className="text-display text-2xl font-semibold">{door.title}</p>
-                    <p className="mt-2 text-sm leading-relaxed">{door.body}</p>
                   </div>
                   <p className="mt-6 text-sm font-semibold text-brand-red group-hover:underline">Open →</p>
                 </Link>
