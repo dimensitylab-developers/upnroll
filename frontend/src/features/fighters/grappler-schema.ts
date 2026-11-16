@@ -15,7 +15,7 @@ export const grapplerDetailsSchema = z.object({
   nationality: z.string().trim().min(2, "Enter your nationality.").max(60),
   cityState: z.string().trim().min(2, "Enter your city and state.").max(80),
   emergencyContactName: z.string().trim().min(2, "Enter an emergency contact.").max(80),
-  emergencyRelationship: z.string().trim().min(2, "Enter how you know them.").max(40),
+  emergencyRelationship: z.string().trim().max(40).default(""),
   bloodGroup: z.string().trim().min(1, "Enter your blood group.").max(8),
   instagramHandle: z
     .string()
@@ -139,7 +139,7 @@ export function grapplerFromForm(formData: FormData) {
     nationality: formData.get("nationality"),
     cityState: formData.get("cityState"),
     emergencyContactName: formData.get("emergencyContactName"),
-    emergencyRelationship: formData.get("emergencyRelationship"),
+    emergencyRelationship: formData.get("emergencyRelationship") ?? "",
     bloodGroup: formData.get("bloodGroup") ?? "",
     instagramHandle: formData.get("instagramHandle") ?? "",
     academy: formData.get("academy"),

@@ -311,7 +311,6 @@ export function GrapplerForm({
             <TextField label="Nationality" name="nationality" errors={errors} defaultValue={values?.nationality} autoComplete="country-name" />
             <TextField label="State" name="cityState" errors={errors} defaultValue={values?.cityState} />
             <TextField label="Emergency contact name" name="emergencyContactName" errors={errors} defaultValue={values?.emergencyContactName} />
-            <TextField label="Relationship" name="emergencyRelationship" errors={errors} defaultValue={values?.emergencyRelationship} />
             <TextField label="Blood group" name="bloodGroup" errors={errors} defaultValue={values?.bloodGroup} />
             <TextField
               label="Instagram ID"
