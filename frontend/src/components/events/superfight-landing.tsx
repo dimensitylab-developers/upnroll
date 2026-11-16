@@ -1,5 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
+import { MapPin } from "lucide-react";
 import { EVENT_POINTS_RULES } from "@/server/services/divisionTaxonomy";
 
 const BANNER = "/banners/up-n-roll-no-gi-2.jpg";
@@ -131,9 +132,11 @@ export function SuperfightLanding({
                 href={mapsUrl(place)}
                 target="_blank"
                 rel="noreferrer"
-                className="mt-1 block text-sm font-semibold uppercase tracking-wide underline decoration-brand-red decoration-2 underline-offset-4 transition-colors hover:text-brand-red"
+                aria-label={`${place} (opens Google Maps)`}
+                className="mt-1 block text-sm font-semibold uppercase tracking-wide transition-colors hover:text-brand-red"
               >
-                {place}
+                <span className="underline decoration-brand-red decoration-2 underline-offset-4">{place}</span>
+                <MapPin className="ml-1.5 inline-block size-4 -translate-y-px text-brand-red" aria-hidden="true" />
               </a>
             </div>
             <div className="sm:px-4 sm:py-4">
