@@ -243,7 +243,7 @@
 
   /* Homepage fight-card ticker: dual opposing loops; pause on hover to read */
   .home-marquee-track {
-    animation: home-marquee-scroll 28s linear infinite;
+    animation: home-marquee-scroll 70s linear infinite;
   }
   .home-marquee-track-reverse {
     animation-name: home-marquee-scroll-reverse;

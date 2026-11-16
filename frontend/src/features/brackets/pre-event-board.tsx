@@ -1,11 +1,5 @@
 import Link from "next/link";
 
-const PROMISES = [
-  { title: "The draw", body: "Every division's bracket is published here." },
-  { title: "On the mat", body: "See who is called up next, as it happens." },
-  { title: "The result", body: "Winners move up the bracket the moment a match ends." },
-];
-
 const R1_Y = [30, 90, 150, 210];
 const SEMI_Y = [60, 180];
 const FINAL_Y = 120;
@@ -119,17 +113,6 @@ export function PreEventBoard({
         </div>
       </div>
 
-      <ol className="grid border-t-2 border-white/20 sm:grid-cols-3 sm:divide-x-2 sm:divide-white/20">
-        {PROMISES.map((item, index) => (
-          <li key={item.title} className="flex gap-4 border-b-2 border-white/20 p-5 last:border-b-0 sm:border-b-0 sm:p-6">
-            <span className="text-display text-3xl font-semibold leading-none text-brand-red">0{index + 1}</span>
-            <div>
-              <h2 className="text-display text-lg font-semibold uppercase tracking-wide">{item.title}</h2>
-              <p className="mt-1 text-sm leading-relaxed text-white/70">{item.body}</p>
-            </div>
-          </li>
-        ))}
-      </ol>
     </section>
   );
 }
