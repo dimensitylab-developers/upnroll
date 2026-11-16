@@ -29,10 +29,6 @@ const STOPS = [
 export function EventStory() {
   return (
     <div>
-      <p className="copy-slab mb-6 max-w-xl text-sm leading-relaxed">
-        From the form to the mat to the board. Five steps.
-      </p>
-
       <ol className="grid gap-3 sm:grid-cols-2 lg:grid-cols-5">
         {STOPS.map((stop) => (
           <li key={stop.n} className="flex flex-col border-2 border-black bg-white p-5 shadow-[4px_4px_0_0_#000]">
