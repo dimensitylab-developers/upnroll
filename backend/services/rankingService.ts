@@ -5,6 +5,7 @@ import { Match } from "@/server/models/Match";
 import { Registration } from "@/server/models/Registration";
 import { RankingRecord } from "@/server/models/RankingRecord";
 import { FighterProfile } from "@/server/models/FighterProfile";
+import { Division } from "@/server/models/Division";
 import { writeAuditLog } from "@/server/audit/log";
 import { computeRecord, winLossPointsStrategy, type DecidedMatch } from "./rankingEngine";
 import { bindSession, sessionOpts, withTransaction } from "@/server/db/transaction";
@@ -99,4 +100,60 @@ export async function listPublicRankings() {
     points: r.points,
     computedAt: r.computedAt,
   }));
+}
+
+export type RankingBoardEntry = {
+  gender: "MALE" | "FEMALE";
+  weightBand: string;
+  level: "BEGINNER" | "INTERMEDIATE";
+  displayName: string;
+  slug: string;
+  academy: string;
+  hasPhoto: boolean;
+  wins: number;
+  losses: number;
+  points: number;
+};
+
+/**
+ * Public board source: one entry per confirmed registration, placed in the division the grappler
+ * registered for. Wins, losses and points come from the ranking record (zero until results exist).
+ */
+export async function listRankingBoardEntries(): Promise<RankingBoardEntry[]> {
+  await connectDB();
+  const registrations = await Registration.find({ status: "CONFIRMED" }).select("userId divisionId").lean();
+  if (registrations.length === 0) return [];
+
+  const userIds = [...new Set(registrations.map((row) => String(row.userId)))];
+  const divisionIds = [...new Set(registrations.map((row) => String(row.divisionId)))];
+  const [divisions, profiles, records] = await Promise.all([
+    Division.find({ _id: { $in: divisionIds } }).select("gender weightBand experienceLevel").lean(),
+    FighterProfile.find({ userId: { $in: userIds } }).select("userId displayName slug academy gym photoKey").lean(),
+    RankingRecord.find({ userId: { $in: userIds } }).select("userId wins losses points").lean(),
+  ]);
+  const divisionById = new Map(divisions.map((row) => [String(row._id), row]));
+  const profileByUser = new Map(profiles.map((row) => [String(row.userId), row]));
+  const recordByUser = new Map(records.map((row) => [String(row.userId), row]));
+
+  const entries: RankingBoardEntry[] = [];
+  for (const registration of registrations) {
+    const division = divisionById.get(String(registration.divisionId));
+    const profile = profileByUser.get(String(registration.userId));
+    if (!division || !profile) continue;
+    if (!division.gender || !division.weightBand || !division.experienceLevel) continue;
+    const record = recordByUser.get(String(registration.userId));
+    entries.push({
+      gender: division.gender as "MALE" | "FEMALE",
+      weightBand: division.weightBand,
+      level: division.experienceLevel as "BEGINNER" | "INTERMEDIATE",
+      displayName: profile.displayName?.trim() || "Grappler",
+      slug: profile.slug || "",
+      academy: profile.academy?.trim() || profile.gym?.trim() || "",
+      hasPhoto: Boolean(profile.photoKey?.trim()),
+      wins: record?.wins ?? 0,
+      losses: record?.losses ?? 0,
+      points: record?.points ?? 0,
+    });
+  }
+  return entries;
 }
