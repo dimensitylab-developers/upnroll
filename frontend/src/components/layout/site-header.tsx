@@ -2,6 +2,8 @@ import { Suspense } from "react";
 import Link from "next/link";
 import { connection } from "next/server";
 import { getSession } from "@/server/auth/session";
+import { resolveDisplayName } from "@/server/auth/display-name";
+import { SignOutButton } from "@/features/auth/sign-out-button";
 import { HeaderLockup } from "./header-lockup";
 import { ComicNav } from "./comic-nav";
 import { comicCell, comicCellActive, comicCellIdle } from "./comic-cell";
@@ -44,14 +46,23 @@ async function HeaderSessionChrome() {
   await connection();
   const session = await getSession();
   const dashboardHref = session ? (session.user.role === "ADMIN" ? "/admin" : "/grappler/dashboard") : null;
+  const displayName = session
+    ? await resolveDisplayName(session.user._id, session.user.email)
+    : null;
 
   return (
     <>
       <div className="ml-auto hidden items-center gap-2 md:flex">
-        {dashboardHref ? (
-          <Link href={dashboardHref} className={`${comicCell} ${comicCellActive}`}>
-            Dashboard
-          </Link>
+        {dashboardHref && displayName ? (
+          <>
+            <Link href={dashboardHref} className={`${comicCell} ${comicCellActive}`}>
+              Dashboard
+            </Link>
+            <SignOutButton
+              name={displayName}
+              className="h-9 min-h-9 rounded-none border-2 border-black bg-white px-3 text-xs font-semibold uppercase tracking-wider shadow-[3px_3px_0_0_#000] hover:bg-black hover:text-white"
+            />
+          </>
         ) : (
           <>
             <Link href="/login?from=%2F" className={`${comicCell} ${comicCellIdle}`}>
@@ -64,7 +75,7 @@ async function HeaderSessionChrome() {
         )}
       </div>
 
-      <MobileNavToggle links={NAV_LINKS} dashboardHref={dashboardHref} />
+      <MobileNavToggle links={NAV_LINKS} dashboardHref={dashboardHref} displayName={displayName} />
     </>
   );
 }
