@@ -1,5 +1,27 @@
+import { Suspense } from "react";
+import Link from "next/link";
+import { connection } from "next/server";
+import { getSession } from "@/server/auth/session";
 import { FunkyHeadline } from "./funky-headline";
 import { HeroFightTape } from "./hero-fight-tape";
+
+const HERO_CTA_CLASS =
+  "inline-flex min-h-11 -skew-x-12 items-center border-2 border-black bg-brand-red px-6 py-3 text-display text-sm font-semibold uppercase tracking-wider text-white shadow-[6px_6px_0_0_#000] sm:px-7";
+
+/** Signed-out only — Dashboard / Sign out live in the navbar. */
+async function HomeHeroSignUp() {
+  await connection();
+  const session = await getSession();
+  if (session) return null;
+
+  return (
+    <div className="mt-5 sm:mt-7">
+      <Link href="/register?from=%2F" className={HERO_CTA_CLASS}>
+        <span className="inline-block skew-x-12">Sign up</span>
+      </Link>
+    </div>
+  );
+}
 
 export function HomeHero() {
   return (
@@ -20,6 +42,10 @@ export function HomeHero() {
               <img src="/logo-wordmark.png" alt="Up 'n Roll" className="h-auto w-full" width={640} height={160} />
             </h1>
           </div>
+
+          <Suspense fallback={null}>
+            <HomeHeroSignUp />
+          </Suspense>
 
           <ul className="mt-5 space-y-2.5 sm:mt-6 sm:space-y-3">
             <li className="max-w-lg">
