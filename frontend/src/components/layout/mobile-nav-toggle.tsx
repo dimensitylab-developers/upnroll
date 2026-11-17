@@ -4,6 +4,7 @@ import { useEffect, useId, useRef, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Menu, X } from "lucide-react";
+import { SignOutButton } from "@/features/auth/sign-out-button";
 import { comicCell, comicCellActive, comicCellIdle } from "./comic-cell";
 
 function withFrom(href: string, from: string) {
@@ -14,9 +15,11 @@ function withFrom(href: string, from: string) {
 export function MobileNavToggle({
   links,
   dashboardHref,
+  displayName,
 }: {
   links: { href: string; label: string }[];
   dashboardHref: string | null;
+  displayName?: string | null;
 }) {
   const [open, setOpen] = useState(false);
   const pathname = usePathname();
@@ -101,13 +104,21 @@ export function MobileNavToggle({
               );
             })}
             {dashboardHref ? (
-              <Link
-                href={dashboardHref}
-                className={`${comicCell} ${comicCellActive} min-h-11`}
-                onClick={closeAndReturnFocus}
-              >
-                Dashboard
-              </Link>
+              <>
+                <Link
+                  href={dashboardHref}
+                  className={`${comicCell} ${comicCellActive} min-h-11`}
+                  onClick={closeAndReturnFocus}
+                >
+                  Dashboard
+                </Link>
+                {displayName ? (
+                  <SignOutButton
+                    name={displayName}
+                    className="min-h-11 w-full justify-center rounded-none border-2 border-black bg-white px-3 text-xs font-semibold uppercase tracking-wider shadow-[3px_3px_0_0_#000] hover:bg-black hover:text-white"
+                  />
+                ) : null}
+              </>
             ) : (
               <Link
                 href={withFrom("/register", pathname || "/")}

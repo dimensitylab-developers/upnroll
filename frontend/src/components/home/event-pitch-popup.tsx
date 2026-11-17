@@ -9,7 +9,15 @@ const AUTO_HIDE_MS = 4000;
 const BANNER_SRC = "/banners/up-n-roll-no-gi-2.jpg";
 const EVENT_HREF = "/events/up-n-roll-superfight-series";
 
-export function EventPitchPopup() {
+type EventPitchPopupProps = {
+  authHref?: string;
+  authLabel?: string;
+};
+
+export function EventPitchPopup({
+  authHref = "/register",
+  authLabel = "Sign up",
+}: EventPitchPopupProps) {
   const [open, setOpen] = useState(false);
   const [leaving, setLeaving] = useState(false);
 
@@ -110,11 +118,11 @@ export function EventPitchPopup() {
               <span className="inline-block skew-x-12">Open the event</span>
             </Link>
             <Link
-              href="/register"
+              href={authHref}
               onClick={markSeen}
               className="inline-flex border-2 border-black bg-black px-4 py-2 text-xs font-semibold uppercase tracking-wider text-white shadow-[4px_4px_0_0_#c8102e]"
             >
-              Sign up
+              {authLabel}
             </Link>
           </div>
 
