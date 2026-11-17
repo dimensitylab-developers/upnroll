@@ -1,6 +1,7 @@
 "use server";
 
 import { redirect } from "next/navigation";
+import { revalidatePath } from "next/cache";
 import { randomBytes } from "node:crypto";
 import { connectDB } from "@/server/db/connect";
 import { User } from "@/server/models/User";
@@ -159,11 +160,15 @@ export async function loginAction(
     throw err;
   }
 
+  // Drop cached public pages so the header switches from Sign In / Sign up to Dashboard.
+  revalidatePath("/", "layout");
   if (role === "ADMIN") {
     redirect("/admin");
   }
   const from = String(formData.get("from") ?? "");
-  redirect(resolveAuthReturnPath(from, { current: "/login", fallback: "/grappler/dashboard" }));
+  // Signing in from the home page lands on the dashboard rather than back on the public page.
+  const destination = resolveAuthReturnPath(from, { current: "/login", fallback: "/grappler/dashboard" });
+  redirect(destination === "/" ? "/grappler/dashboard" : destination);
 }
 
 export async function verifyEmailAction(
@@ -191,8 +196,9 @@ export async function verifyEmailAction(
     targetId: confirmed.userId,
     after: { via: "email_verify" },
   });
+  revalidatePath("/", "layout");
   const from = String(formData.get("from") ?? "");
-  redirect(isSafeAppPath(from) ? from : "/grappler/dashboard");
+  redirect(isSafeAppPath(from) && from !== "/" ? from : "/grappler/dashboard");
 }
 
 export async function resendCodeAction(
@@ -225,5 +231,6 @@ export async function logoutAction(): Promise<void> {
       targetId: String(current.user._id),
     });
   }
+  revalidatePath("/", "layout");
   redirect("/login");
 }
