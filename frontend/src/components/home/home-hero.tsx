@@ -1,6 +1,44 @@
+import { Suspense } from "react";
 import Link from "next/link";
+import { connection } from "next/server";
+import { getSession } from "@/server/auth/session";
 import { FunkyHeadline } from "./funky-headline";
 import { HeroFightTape } from "./hero-fight-tape";
+
+const HERO_CTA_CLASS =
+  "inline-flex min-h-11 -skew-x-12 items-center border-2 border-black bg-brand-red px-6 py-3 text-display text-sm font-semibold uppercase tracking-wider text-white shadow-[6px_6px_0_0_#000] sm:px-7";
+
+function HeroAuthCtaFallback() {
+  return (
+    <Link href="/register?from=%2F" className={`${HERO_CTA_CLASS} pointer-events-none opacity-50`}>
+      <span className="inline-block skew-x-12">Sign up</span>
+    </Link>
+  );
+}
+
+async function HomeHeroAuthCta() {
+  await connection();
+  const session = await getSession();
+  const dashboardHref = session
+    ? session.user.role === "ADMIN"
+      ? "/admin"
+      : "/grappler/dashboard"
+    : null;
+
+  if (dashboardHref) {
+    return (
+      <Link href={dashboardHref} className={HERO_CTA_CLASS}>
+        <span className="inline-block skew-x-12">Dashboard</span>
+      </Link>
+    );
+  }
+
+  return (
+    <Link href="/register?from=%2F" className={HERO_CTA_CLASS}>
+      <span className="inline-block skew-x-12">Sign up</span>
+    </Link>
+  );
+}
 
 export function HomeHero() {
   return (
@@ -23,12 +61,9 @@ export function HomeHero() {
           </div>
 
           <div className="mt-5 sm:mt-7">
-            <Link
-              href="/register?from=%2F"
-              className="inline-flex min-h-11 -skew-x-12 items-center border-2 border-black bg-brand-red px-6 py-3 text-display text-sm font-semibold uppercase tracking-wider text-white shadow-[6px_6px_0_0_#000] sm:px-7"
-            >
-              <span className="inline-block skew-x-12">Sign up</span>
-            </Link>
+            <Suspense fallback={<HeroAuthCtaFallback />}>
+              <HomeHeroAuthCta />
+            </Suspense>
           </div>
 
           <ul className="mt-5 space-y-2.5 sm:mt-6 sm:space-y-3">
