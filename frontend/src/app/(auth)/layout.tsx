@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { BrandMark, BuiltBy, FounderCredit, SiteCopyright } from "@/components/layout/brand";
+import { BuiltBy, FounderCredit, SiteCopyright } from "@/components/layout/brand";
 
 export default function AuthLayout({ children }: { children: React.ReactNode }) {
   return (
@@ -12,10 +12,16 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
       <div className="relative z-10 w-full max-w-lg sm:max-w-5xl">
         <Link
           href="/"
-          className="mb-5 flex min-h-11 items-center justify-center gap-2 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-black sm:mb-8 sm:justify-start"
+          className="mb-5 flex min-h-11 items-center justify-center focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-black sm:mb-8 sm:justify-start"
         >
-          <BrandMark className="h-9 w-9 sm:h-10 sm:w-10" />
-          <span className="text-display text-xl font-semibold sm:text-2xl">Up &apos;n Roll</span>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src="/logo-wordmark.png"
+            alt="Up 'n Roll"
+            width={912}
+            height={244}
+            className="h-auto w-full max-w-[16rem] object-contain object-center sm:max-w-[18rem]"
+          />
         </Link>
 
         <div className="overflow-hidden border-2 border-black bg-white shadow-[8px_8px_0_0_#000] sm:grid sm:grid-cols-[0.95fr_1.05fr]">
