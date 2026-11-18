@@ -9,6 +9,8 @@ type Logo = {
   className: string;
   /** Partner role shown under the logo. */
   role?: string;
+  /** Instagram (or other) profile for the partner mark. */
+  href?: string;
 };
 
 const LOGOS: Logo[] = [
@@ -22,12 +24,14 @@ const LOGOS: Logo[] = [
     src: "/sponsors/perspective-box.png?v=2",
     className: "h-10 w-auto sm:h-12",
     role: "Event Coverage Partner",
+    href: "https://www.instagram.com/theperspectivebox/",
   },
   {
     name: "Clutch Hydration",
     src: "/sponsors/hydration.png?v=4",
     className: "h-9 w-auto sm:h-11",
     role: "Hydration Partner",
+    href: "https://www.instagram.com/clutch_hydration/",
   },
 ];
 
@@ -42,8 +46,8 @@ function Separator() {
 }
 
 function LogoSlot({ logo }: { logo: Logo }) {
-  return (
-    <span className="inline-flex shrink-0 flex-col items-center justify-center py-1">
+  const mark = (
+    <>
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img
         src={logo.src}
@@ -60,8 +64,24 @@ function LogoSlot({ logo }: { logo: Logo }) {
           </span>
         </span>
       ) : null}
-    </span>
+    </>
   );
+
+  if (logo.href) {
+    return (
+      <a
+        href={logo.href}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="inline-flex shrink-0 flex-col items-center justify-center py-1 transition-opacity hover:opacity-80"
+        aria-label={`${logo.name} on Instagram`}
+      >
+        {mark}
+      </a>
+    );
+  }
+
+  return <span className="inline-flex shrink-0 flex-col items-center justify-center py-1">{mark}</span>;
 }
 
 function Track({ ariaHidden }: { ariaHidden?: boolean }) {
