@@ -24,22 +24,30 @@ const STOPS = [
   },
   {
     n: "05",
-    title: "Result",
+    title: "Standings",
     body: "Your win will display as per your division.",
   },
 ];
+
+const CARD_CLASS =
+  "group flex cursor-pointer flex-col border-2 border-black bg-white p-5 shadow-[4px_4px_0_0_#000] transition-[color,background-color,box-shadow,transform] duration-150 ease-out hover:bg-brand-red hover:text-white hover:shadow-[6px_6px_0_0_#000] active:translate-y-0.5 active:shadow-[2px_2px_0_0_#000]";
 
 export function EventStory({ rulesHref = "/events" }: { rulesHref?: string }) {
   return (
     <div>
       <ol className="grid gap-3 sm:grid-cols-2 lg:grid-cols-5">
         {STOPS.map((stop) => (
-          <li key={stop.n} className="flex flex-col border-2 border-black bg-white p-5 shadow-[4px_4px_0_0_#000]">
-            <p className="text-display text-3xl font-semibold leading-none text-brand-red">{stop.n}</p>
+          <li key={stop.n} className={CARD_CLASS}>
+            <p className="text-display text-3xl font-semibold leading-none text-brand-red transition-colors group-hover:text-white">
+              {stop.n}
+            </p>
             <h3 className="mt-4 text-display text-xl font-semibold">{stop.title}</h3>
             <p className="mt-2 text-sm leading-relaxed">{stop.body}</p>
             {"link" in stop && stop.link ? (
-              <Link href={rulesHref} className="mt-3 text-sm font-semibold text-brand-red underline underline-offset-4">
+              <Link
+                href={rulesHref}
+                className="mt-3 text-sm font-semibold text-brand-red underline underline-offset-4 transition-colors group-hover:text-white"
+              >
                 Read the rules
               </Link>
             ) : null}
