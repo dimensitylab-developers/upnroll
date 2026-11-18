@@ -72,6 +72,14 @@ function profileChecklist(profile: Awaited<ReturnType<typeof getFighterProfile>>
   return { checks, done, total: checks.length, percent: Math.round((done / checks.length) * 100) };
 }
 
+/** Parse free-text past record like "0-1" / "3–2" for the desk badge before platform fights exist. */
+export function parsePastRecord(pastRecord?: string | null): { wins: number; losses: number } | null {
+  if (!pastRecord?.trim()) return null;
+  const match = pastRecord.trim().match(/^(\d{1,3})\s*[-–—]\s*(\d{1,3})\b/);
+  if (!match) return null;
+  return { wins: Number(match[1]), losses: Number(match[2]) };
+}
+
 /** Composes existing services into the data the fighter dashboard needs  every call is already scoped to `userId`. */
 export async function getFighterDashboardData(actor: Actor) {
   assertFighter(actor);
@@ -92,9 +100,13 @@ export async function getFighterDashboardData(actor: Actor) {
         ? (ownRegistrationIds.has(String(m.winnerRegistrationId)) ? ("WIN" as const) : ("LOSS" as const))
         : null,
     }));
-  // Full career record for the desk / playing card (not truncated).
-  const wins = decided.filter((m) => m.outcome === "WIN").length;
-  const losses = decided.filter((m) => m.outcome === "LOSS").length;
+  // Platform W–L from decided matches; until the first one, show self-reported past record.
+  const platformWins = decided.filter((m) => m.outcome === "WIN").length;
+  const platformLosses = decided.filter((m) => m.outcome === "LOSS").length;
+  const past = parsePastRecord(profile?.pastRecord);
+  const hasPlatformRecord = platformWins + platformLosses > 0;
+  const wins = hasPlatformRecord ? platformWins : (past?.wins ?? platformWins);
+  const losses = hasPlatformRecord ? platformLosses : (past?.losses ?? platformLosses);
   const recentResults = [...decided]
     .sort((a, b) => new Date(b.updatedAt as Date).getTime() - new Date(a.updatedAt as Date).getTime())
     .slice(0, 5);
