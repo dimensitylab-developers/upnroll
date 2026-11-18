@@ -8,7 +8,7 @@ import { getSession } from "@/server/auth/session";
 import { portalGreeting, portalTabTitle, resolveDisplayName } from "@/server/auth/display-name";
 import { SignOutButton } from "@/features/auth/sign-out-button";
 import { AdminNav } from "@/features/admin/admin-nav";
-import { BrandMark, BuiltBy, FounderCredit, SiteCopyright } from "@/components/layout/brand";
+import { BrandWordmark, BuiltBy, FounderCredit, SiteCopyright } from "@/components/layout/brand";
 
 /** Admin is cookie/session-bound  never try to instant-prerender the portal. */
 export const instant = false;
@@ -51,16 +51,11 @@ async function AdminShell({ children }: { children: React.ReactNode }) {
       <header className="sticky top-0 z-40 border-b-2 border-black bg-black text-white">
         <div className="mx-auto flex max-w-6xl flex-col gap-3 px-3 py-3 sm:gap-4 sm:px-6 sm:py-4 lg:px-8">
           <div className="flex items-center justify-between gap-2">
-            <Link href="/admin" className="flex min-h-11 min-w-0 items-center gap-2 sm:gap-3">
-              <span className="shrink-0 border-2 border-white bg-white p-1.5 shadow-[4px_4px_0_0_#c8102e]">
-                <BrandMark className="h-7 w-7 sm:h-8 sm:w-8" />
+            <Link href="/admin" className="flex min-h-11 min-w-0 items-center gap-2 sm:gap-3" aria-label="Up 'n Roll Admin">
+              <span className="shrink-0 border-2 border-white bg-white px-2.5 py-1.5 shadow-[4px_4px_0_0_#c8102e]">
+                <BrandWordmark className="h-7 w-auto max-w-[9rem] sm:h-8 sm:max-w-[11rem]" alt="" />
               </span>
-              <span className="min-w-0">
-                <span className="text-display block truncate text-base font-semibold sm:text-lg lg:text-xl">
-                  <span className="sm:hidden">Admin</span>
-                  <span className="hidden sm:inline">Up &apos;n Roll Admin</span>
-                </span>
-              </span>
+              <span className="text-display truncate text-base font-semibold sm:text-lg lg:text-xl">Admin</span>
             </Link>
             <div className="flex shrink-0 items-center gap-2 sm:gap-3">
               <div className="hidden text-right md:block">

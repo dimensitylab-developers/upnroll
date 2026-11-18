@@ -15,7 +15,14 @@ export function PreviewNav() {
         aria-label="Showroom chapters"
         className="hidden lg:block fixed left-0 top-0 h-screen w-64 overflow-y-auto border-r border-black/10 bg-sidebar px-4 py-6"
       >
-        <p className="text-display text-lg font-semibold mb-1 px-2">Up &apos;n Roll</p>
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          src="/logo-wordmark.png"
+          alt="Up 'n Roll"
+          width={912}
+          height={244}
+          className="mb-1 h-8 w-auto max-w-[10rem] object-contain px-2"
+        />
         <p className="text-xs text-muted-foreground px-2 mb-6">/ui-preview showroom</p>
         <ul className="space-y-0.5">
           {CHAPTERS.map((c) => (
@@ -33,7 +40,17 @@ export function PreviewNav() {
 
       {/* Mobile top bar + drawer */}
       <div className="lg:hidden fixed top-0 left-0 right-0 z-40 flex items-center justify-between border-b border-black/10 bg-sidebar px-4 py-3">
-        <span className="text-display font-semibold">Up &apos;n Roll  /ui-preview</span>
+        <span className="flex min-w-0 items-center gap-2">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src="/logo-wordmark.png"
+            alt="Up 'n Roll"
+            width={912}
+            height={244}
+            className="h-6 w-auto max-w-[7.5rem] object-contain"
+          />
+          <span className="text-xs text-muted-foreground">/ui-preview</span>
+        </span>
         <Button variant="ghost" size="icon" aria-label="Open chapter navigation" onClick={() => setOpen(true)}>
           <Menu className="size-5" />
         </Button>

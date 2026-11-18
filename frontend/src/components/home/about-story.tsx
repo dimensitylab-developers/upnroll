@@ -1,6 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import { BrandMark, FounderCredit } from "@/components/layout/brand";
+import { BrandWordmark, FounderCredit } from "@/components/layout/brand";
 import { HappyStack } from "@/components/home/happy-stack";
 import { SectionBanner } from "@/components/home/section-banner";
 import { HAPPY_PHOTOS } from "@/components/home/site-photos";
@@ -42,16 +42,16 @@ function AboutHomeTeaser() {
       <div className="relative grid gap-0 lg:grid-cols-[1.15fr_0.85fr]">
         <div className="flex flex-col justify-between gap-8 p-6 sm:p-8 lg:p-10">
           <div>
-            <div className="mb-4 flex items-center gap-3">
-              <span className="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-md border-2 border-white bg-white shadow-[3px_3px_0_0_#c8102e]">
-                <BrandMark className="h-8 w-8" />
+            <div className="mb-4 flex flex-wrap items-center gap-3">
+              <span className="inline-flex shrink-0 items-center rounded-md border-2 border-white bg-white px-3 py-2 shadow-[3px_3px_0_0_#c8102e]">
+                <BrandWordmark className="h-8 w-auto max-w-[11rem]" alt="" />
               </span>
               <p className="rounded-sm bg-brand-red px-2.5 py-1 text-[11px] font-semibold uppercase tracking-[0.28em] text-white shadow-[2px_2px_0_0_#000]">
                 About Us
               </p>
             </div>
             <h2 className="text-display max-w-xl text-4xl font-semibold leading-[0.95] sm:text-5xl lg:text-6xl">
-              About Up &apos;n Roll
+              About the platform
             </h2>
             <p className="mt-5 max-w-lg text-sm leading-relaxed text-white/85 sm:text-base">
               A no-gi grappling platform built for grapplers everywhere, first time on the mat or chasing the next
@@ -104,16 +104,16 @@ function AboutPageStory() {
         </div>
 
         <div className="relative mx-auto flex min-h-[48vh] max-w-6xl flex-col justify-end px-4 pb-12 pt-20 sm:px-6 sm:pb-14 lg:px-8">
-          <div className="mb-5 flex items-center gap-3">
-            <span className="inline-flex h-12 w-12 shrink-0 items-center justify-center rounded-md border-2 border-white bg-white shadow-[3px_3px_0_0_#c8102e]">
-              <BrandMark className="h-9 w-9" />
+          <div className="mb-5 flex flex-wrap items-center gap-3">
+            <span className="inline-flex shrink-0 items-center rounded-md border-2 border-white bg-white px-3 py-2 shadow-[3px_3px_0_0_#c8102e]">
+              <BrandWordmark className="h-9 w-auto max-w-[12rem] sm:h-10 sm:max-w-[14rem]" alt="" />
             </span>
             <p className="rounded-sm bg-brand-red px-2.5 py-1 text-[11px] font-semibold uppercase tracking-[0.28em] text-white shadow-[2px_2px_0_0_#000]">
               About Us
             </p>
           </div>
           <h1 className="text-display max-w-3xl text-4xl font-semibold leading-[0.95] sm:text-6xl">
-            About Up &apos;n Roll
+            About the platform
           </h1>
           <p className="mt-5 max-w-xl text-sm leading-relaxed text-white/80 sm:text-base">
             Up &apos;n Roll is a no-gi grappling platform built for grapplers everywhere, whether you are stepping on

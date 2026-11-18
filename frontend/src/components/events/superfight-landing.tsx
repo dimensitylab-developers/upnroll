@@ -113,9 +113,16 @@ export function SuperfightLanding({
         </Link>
 
         <section className="mt-7 max-w-2xl sm:mt-9">
-          <p className="text-[11px] font-semibold uppercase tracking-[0.28em] text-brand-red">
-            Up &apos;n Roll
-          </p>
+          <div className="inline-flex border-2 border-white bg-white px-3 py-1.5 shadow-[3px_3px_0_0_#c8102e]">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src="/logo-wordmark.png"
+              alt="Up 'n Roll"
+              width={912}
+              height={244}
+              className="h-7 w-auto max-w-[11rem] object-contain sm:h-8 sm:max-w-[13rem]"
+            />
+          </div>
           <h1 className="text-display mt-3 text-4xl font-semibold italic leading-[0.92] tracking-tight sm:text-5xl lg:text-6xl">
             No-Gi Tournament{editionNumber ? ` #${editionNumber}` : ""}
           </h1>

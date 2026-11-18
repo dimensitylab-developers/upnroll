@@ -104,7 +104,14 @@ export function ChatbotWidget() {
           <header className="flex items-center gap-3 px-4 py-3.5">
             <LogoRobot small soft />
             <div className="min-w-0 flex-1">
-              <p className="text-sm font-semibold leading-none">Up &apos;n Roll</p>
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src="/logo-wordmark.png"
+                alt="Up 'n Roll"
+                width={912}
+                height={244}
+                className="h-6 w-auto max-w-[8.5rem] object-contain object-left"
+              />
               <p className="mt-1 text-xs text-muted-foreground">How can I help you?</p>
             </div>
             <button
