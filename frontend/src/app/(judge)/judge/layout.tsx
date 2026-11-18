@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { connection } from "next/server";
-import { BrandMark } from "@/components/layout/brand";
+import { BrandWordmark } from "@/components/layout/brand";
 
 export const instant = false;
 
@@ -17,7 +17,7 @@ export default async function JudgeLayout({ children }: { children: React.ReactN
       <header className="border-b-2 border-black bg-background/95 backdrop-blur-[2px]">
         <div className="mx-auto flex max-w-3xl items-center gap-3 px-4 py-3">
           <Link href="/judge" className="flex items-center gap-2 text-display text-sm font-semibold" aria-label="Scoring home">
-            <BrandMark className="h-7 w-7" />
+            <BrandWordmark className="h-7 w-auto max-w-[9rem]" alt="" />
             <span>Judge</span>
           </Link>
         </div>

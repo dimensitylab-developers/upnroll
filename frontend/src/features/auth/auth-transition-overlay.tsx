@@ -52,12 +52,16 @@ export function AuthTransitionOverlay({ mode, name }: AuthTransitionOverlayProps
       <div className="auth-gate-halftone pointer-events-none absolute inset-0 opacity-40" aria-hidden="true" />
 
       <div className="relative z-10 flex w-full max-w-lg flex-col items-center gap-6 px-6 text-center">
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img
-          src="/logo-mark.png"
-          alt=""
-          className="auth-gate-mark h-16 w-16 object-contain drop-shadow-[4px_4px_0_0_#c8102e]"
-        />
+        <div className="auth-gate-mark border-4 border-white bg-white px-5 py-3 shadow-[6px_6px_0_0_#c8102e]">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src="/logo-wordmark.png"
+            alt="Up 'n Roll"
+            width={912}
+            height={244}
+            className="mx-auto h-12 w-auto max-w-[14rem] object-contain sm:h-14 sm:max-w-[16rem]"
+          />
+        </div>
 
         <div className="auth-gate-stamp border-4 border-white bg-brand-red px-5 py-2 shadow-[6px_6px_0_0_#fff]">
           <p className="text-display text-sm font-semibold uppercase tracking-[0.28em] sm:text-base">{stamp}</p>
@@ -76,8 +80,6 @@ export function AuthTransitionOverlay({ mode, name }: AuthTransitionOverlayProps
         >
           <span className="auth-gate-progress block h-full bg-brand-red" />
         </div>
-
-        <p className="text-[10px] font-semibold uppercase tracking-[0.24em] text-brand-red">Up &apos;n Roll</p>
       </div>
     </div>,
     document.body

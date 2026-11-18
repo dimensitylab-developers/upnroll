@@ -12,6 +12,26 @@ export function BrandMark({ className = "h-10 w-10" }: { className?: string }) {
   );
 }
 
+/** Full original wordmark — use for brand lockups instead of typed “Up 'n Roll”. */
+export function BrandWordmark({
+  className = "h-10 w-auto",
+  alt = "Up 'n Roll",
+}: {
+  className?: string;
+  alt?: string;
+}) {
+  return (
+    // eslint-disable-next-line @next/next/no-img-element
+    <img
+      src="/logo-wordmark.png"
+      alt={alt}
+      width={912}
+      height={244}
+      className={`object-contain object-left ${className}`}
+    />
+  );
+}
+
 export function FounderCredit({ className = "" }: { className?: string }) {
   return (
     <address className={`not-italic text-[11px] leading-none text-muted-foreground ${className}`.trim()}>

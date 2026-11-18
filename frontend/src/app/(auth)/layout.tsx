@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { BuiltBy, FounderCredit, SiteCopyright } from "@/components/layout/brand";
+import { BrandWordmark, BuiltBy, FounderCredit, SiteCopyright } from "@/components/layout/brand";
 
 export default function AuthLayout({ children }: { children: React.ReactNode }) {
   return (
@@ -14,14 +14,7 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
           href="/"
           className="mb-5 flex min-h-11 items-center justify-center focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-black sm:mb-8 sm:justify-start"
         >
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            src="/logo-wordmark.png"
-            alt="Up 'n Roll"
-            width={912}
-            height={244}
-            className="h-auto w-full max-w-[16rem] object-contain object-center sm:max-w-[18rem]"
-          />
+          <BrandWordmark className="h-auto w-full max-w-[16rem] object-center sm:max-w-[18rem]" />
         </Link>
 
         <div className="overflow-hidden border-2 border-black bg-white shadow-[8px_8px_0_0_#000] sm:grid sm:grid-cols-[0.95fr_1.05fr]">

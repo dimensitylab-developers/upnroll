@@ -9,7 +9,7 @@ import { getSession } from "@/server/auth/session";
 import { portalTabTitle, resolveDisplayName } from "@/server/auth/display-name";
 import { SignOutButton } from "@/features/auth/sign-out-button";
 import { FighterNav } from "@/features/fighter/fighter-nav";
-import { BrandMark, BuiltBy, FounderCredit, SiteCopyright } from "@/components/layout/brand";
+import { BrandWordmark, BuiltBy, FounderCredit, SiteCopyright } from "@/components/layout/brand";
 import { isSafeAppPath } from "@/lib/safe-app-path";
 
 /** Grappler portal is cookie/session-bound  never try to instant-prerender it. */
@@ -63,7 +63,7 @@ async function GrapplerShell({ children }: { children: React.ReactNode }) {
               className="flex shrink-0 items-center gap-2 text-display text-sm font-semibold"
               aria-label="Grappler home"
             >
-              <BrandMark className="h-8 w-8" />
+              <BrandWordmark className="h-7 w-auto max-w-[8.5rem] sm:h-8 sm:max-w-[10rem]" alt="" />
               <span className="leading-none">Grappler</span>
             </Link>
             <div className="ml-auto flex items-center gap-2">
