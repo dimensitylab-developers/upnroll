@@ -154,7 +154,7 @@
   .manga-panel {
     @apply bg-card border-2 border-black relative rounded-md;
     box-shadow: var(--shadow-panel);
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.15s ease, color 0.15s ease;
   }
   .manga-panel:hover {
     transform: translate(-2px, -2px);
@@ -162,6 +162,24 @@
   }
   .manga-panel-red:hover {
     box-shadow: var(--shadow-panel-red);
+  }
+
+  /*
+    Site-wide Sign-up red punch on hover for comic controls (links/buttons).
+    Desktop fine-pointer only — no moving cursor follower.
+  */
+  @media (hover: hover) and (pointer: fine) {
+    :is(a, button, [role="button"], summary):where(
+        .bg-white,
+        [class~="bg-white"],
+        .bg-background,
+        [class~="bg-background"],
+        .bg-card,
+        [class~="bg-card"]
+      ):hover:not(:disabled) {
+      background-color: var(--color-brand-red) !important;
+      color: #fff !important;
+    }
   }
 
   .manga-speech-bubble {
