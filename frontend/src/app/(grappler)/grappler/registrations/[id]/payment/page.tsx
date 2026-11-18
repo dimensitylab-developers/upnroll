@@ -73,16 +73,18 @@ export default async function RegistrationPaymentPage({ params }: { params: Prom
                 appliedCouponCode={feeView.couponCode}
               />
             )}
-            <div className="mx-auto mb-4 flex w-full max-w-[22rem] aspect-square items-center justify-center overflow-hidden rounded-md border-2 border-black bg-white shadow-[4px_4px_0_0_#000] sm:max-w-md">
+            <div className="mx-auto mb-4 w-full max-w-[22rem] rounded-md border-2 border-black bg-white p-2 shadow-[4px_4px_0_0_#000] sm:max-w-md sm:p-3">
               {hasQr && qrSrc ? (
                 // eslint-disable-next-line @next/next/no-img-element
                 <img
                   src={qrSrc}
                   alt="Payment QR code"
-                  className="h-full w-full object-contain p-1 sm:p-1.5"
+                  className="h-auto w-full object-contain"
                 />
               ) : (
-                <QrCode className="size-20 text-muted-foreground sm:size-24" />
+                <div className="flex aspect-square items-center justify-center">
+                  <QrCode className="size-20 text-muted-foreground sm:size-24" />
+                </div>
               )}
             </div>
             <p className="mb-6 text-center text-xs text-muted-foreground">
