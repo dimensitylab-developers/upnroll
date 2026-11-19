@@ -1,16 +1,13 @@
 import { SiteHeader } from "@/components/layout/site-header";
-import { SiteFooter } from "@/components/layout/site-footer";
+import { SiteFooterBoundary } from "@/components/layout/site-footer-contact";
 import { ChatbotWidget } from "@/features/chatbot/chatbot-widget";
-import { cachedPublicSiteContact } from "@/lib/public-reads";
 
-export default async function PublicLayout({ children }: { children: React.ReactNode }) {
-  const contact = await cachedPublicSiteContact();
-
+export default function PublicLayout({ children }: { children: React.ReactNode }) {
   return (
     <div className="min-h-screen flex flex-col halftone-bg">
       <SiteHeader />
       <div className="flex-1">{children}</div>
-      <SiteFooter contact={contact} />
+      <SiteFooterBoundary />
       <ChatbotWidget />
     </div>
   );
