@@ -1,3 +1,7 @@
+import {
+  EVENT_WHATSAPP_COMMUNITY_CTA,
+  EVENT_WHATSAPP_COMMUNITY_URL,
+} from "@/server/content/eventCommunity";
 import { escapeHtml } from "./escape";
 import { wrapEmailLayout } from "./layout";
 import { getPublicSiteUrl } from "./site";
@@ -33,6 +37,10 @@ export function tournamentConfirmedEmail(input: TournamentConfirmedInput): Email
     "Status: Confirmed",
     "",
     "Your registration is confirmed. See you on the mats.",
+    "",
+    "Join the event WhatsApp community for further updates:",
+    EVENT_WHATSAPP_COMMUNITY_URL,
+    "",
     `Visit: ${siteUrl}/`,
   ].join("\n");
 
@@ -41,6 +49,8 @@ export function tournamentConfirmedEmail(input: TournamentConfirmedInput): Email
   const eDivision = escapeHtml(division);
   const eRef = escapeHtml(reference);
   const eSite = escapeHtml(siteUrl);
+  const eWhatsApp = escapeHtml(EVENT_WHATSAPP_COMMUNITY_URL);
+  const eWhatsAppCta = escapeHtml(EVENT_WHATSAPP_COMMUNITY_CTA);
 
   const bodyHtml = `
 <tr><td class="pad" bgcolor="#0a0a0a" style="padding:34px 40px 38px;background-color:#0a0a0a;">
@@ -60,15 +70,19 @@ export function tournamentConfirmedEmail(input: TournamentConfirmedInput): Email
 <tr><td valign="top" style="padding:10px 10px 0 0;border-top:1px solid #ded9d1;color:#666666;">Status</td><td valign="top" style="padding:10px 0 0;border-top:1px solid #ded9d1;font-weight:bold;color:#c8102e;">Confirmed</td></tr>
 </table></td></tr></table>
 <table role="presentation" width="100%" style="margin-top:24px;"><tr><td style="border-left:3px solid #c8102e;padding:2px 0 2px 17px;">
-<p style="margin:0 0 5px;font-size:13px;line-height:20px;font-weight:bold;">You’re confirmed for this division.</p><p style="margin:0;font-size:13px;line-height:22px;color:#555555;">Keep this email for your records and check the website for event information and updates.</p>
+<p style="margin:0 0 5px;font-size:13px;line-height:20px;font-weight:bold;">You’re confirmed for this division.</p><p style="margin:0;font-size:13px;line-height:22px;color:#555555;">Keep this email for your records. Further event updates go out in the WhatsApp community — join so you do not miss brackets, mats, and day-of notes.</p>
 </td></tr></table>
-<table role="presentation" style="margin-top:28px;"><tr><td bgcolor="#c8102e" align="center" style="background-color:#c8102e;mso-padding-alt:15px 24px;"><a href="${eSite}/" style="display:inline-block;padding:15px 24px;border:1px solid #c8102e;font-size:13px;line-height:18px;font-weight:bold;letter-spacing:0.3px;color:#ffffff;text-decoration:none;">Visit Up &#x27;n Roll &nbsp; &#8594;</a></td></tr></table>
+<table role="presentation" style="margin-top:28px;"><tr>
+<td bgcolor="#25D366" align="center" style="background-color:#25D366;mso-padding-alt:15px 24px;"><a href="${eWhatsApp}" style="display:inline-block;padding:15px 24px;border:1px solid #128C7E;font-size:13px;line-height:18px;font-weight:bold;letter-spacing:0.3px;color:#111111;text-decoration:none;">${eWhatsAppCta} &nbsp; &#8594;</a></td>
+<td width="12" style="font-size:0;line-height:0;">&nbsp;</td>
+<td bgcolor="#c8102e" align="center" style="background-color:#c8102e;mso-padding-alt:15px 24px;"><a href="${eSite}/" style="display:inline-block;padding:15px 24px;border:1px solid #c8102e;font-size:13px;line-height:18px;font-weight:bold;letter-spacing:0.3px;color:#ffffff;text-decoration:none;">Visit Up &#x27;n Roll &nbsp; &#8594;</a></td>
+</tr></table>
 <p style="margin:28px 0 30px;font-size:14px;line-height:23px;">See you on the mats.<br><strong>Team Up 'n Roll</strong></p>
 </td></tr>`;
 
   const html = wrapEmailLayout({
     title: subject,
-    preheader: "Your payment has been verified and your registration is confirmed.",
+    preheader: "You’re confirmed — join the WhatsApp community for event updates.",
     bodyHtml,
   });
 
