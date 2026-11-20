@@ -5,6 +5,7 @@ import { getRegistrationForFighter } from "@/server/services/registrationService
 import { canSubmitPayment } from "@/server/services/registrationStateMachine";
 import { PaymentForm } from "@/features/payments/payment-form";
 import { PaymentCouponField } from "@/features/payments/payment-coupon-field";
+import { WhatsAppCommunityInvite } from "@/features/payments/whatsapp-community-invite";
 import { QrCode } from "lucide-react";
 import { PageBackLink } from "@/components/layout/page-back-link";
 
@@ -100,11 +101,15 @@ export default async function RegistrationPaymentPage({ params }: { params: Prom
             <p className="text-xs text-muted-foreground">
               Payment received for review. An organizer will review your UPI submission before your place is confirmed.
             </p>
+            <WhatsAppCommunityInvite storageKey={`upnroll-wa-invite:${id}`} autoOpen />
           </div>
         ) : registration.status === "CONFIRMED" ? (
           <div className="space-y-2 text-center">
             <p className="text-display text-3xl font-bold uppercase tracking-wide text-brand-cyan sm:text-4xl">Thank you!</p>
-            <p className="text-xs text-muted-foreground">Your place is confirmed. Payment approved and your registration is locked for this event.</p>
+            <p className="text-xs text-muted-foreground">
+              Your place is confirmed. Payment approved and your registration is locked for this event.
+            </p>
+            <WhatsAppCommunityInvite storageKey={`upnroll-wa-invite:${id}`} autoOpen />
           </div>
         ) : (
           <p className="text-sm text-muted-foreground">No action available for this registration&apos;s current status.</p>
