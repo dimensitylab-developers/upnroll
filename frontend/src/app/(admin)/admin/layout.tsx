@@ -18,8 +18,7 @@ export async function generateMetadata(): Promise<Metadata> {
   if (!session || session.user.role !== "ADMIN") {
     return { robots: { index: false, follow: false }, title: "Admin" };
   }
-  const displayName = await resolveDisplayName(session.user._id, session.user.email);
-  const who = portalTabTitle(displayName, "ADMIN");
+  const who = portalTabTitle("", "ADMIN");
   return {
     robots: { index: false, follow: false },
     title: {

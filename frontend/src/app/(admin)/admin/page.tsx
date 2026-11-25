@@ -116,10 +116,10 @@ export default async function AdminOverviewPage() {
         />
         <AdminStatCard
           label="Pending payments"
-          value={data.pendingPayments.length}
+          value={data.pendingPaymentCount}
           href="/admin/payments"
           hint="Needs review"
-          accent={data.pendingPayments.length > 0}
+          accent={data.pendingPaymentCount > 0}
         />
       </div>
 
@@ -171,14 +171,14 @@ export default async function AdminOverviewPage() {
 
         <AdminSection title="Needs attention" actionHref="/admin/payments" actionLabel="All payments">
           <div className="space-y-2">
-            {data.pendingPayments.slice(0, 5).map((p) => (
+            {data.pendingPayments.map((p) => (
               <div key={p.id} className="flex items-center justify-between gap-3 border-2 border-black bg-white p-3 shadow-[4px_4px_0_0_#000]">
                 <span className="text-sm font-medium">{p.user?.email ?? "Unknown"}</span>
                 <Badge variant="secondary">{p.event?.name ?? "Event"}</Badge>
               </div>
             ))}
-            {data.pendingPayments.length === 0 && <AdminEmpty>No payments awaiting review.</AdminEmpty>}
-            {data.pendingRequests.slice(0, 3).map((r) => (
+            {data.pendingPaymentCount === 0 && <AdminEmpty>No payments awaiting review.</AdminEmpty>}
+            {data.pendingRequests.map((r) => (
               <Link
                 key={String(r._id)}
                 href="/admin/requests"

@@ -61,6 +61,8 @@ export default async function AdminFightersPage({
                   <img
                     src={`/api/v1/admin/grapplers/${fighter.userId}/photo`}
                     alt=""
+                    loading="lazy"
+                    decoding="async"
                     className="h-full w-full object-contain"
                   />
                 ) : (

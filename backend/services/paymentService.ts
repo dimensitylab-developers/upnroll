@@ -275,6 +275,7 @@ export type PaymentQueueFilters = {
   q?: string;
   from?: string;
   to?: string;
+  limit?: number;
 };
 
 function normalizePaymentQueueFilters(
@@ -331,7 +332,8 @@ export async function listPaymentQueue(
     ];
   }
 
-  const rows = await PaymentSubmission.find(query).sort({ createdAt: -1 }).limit(PAYMENT_QUEUE_LIMIT).lean();
+  const limit = Math.min(Math.max(filters.limit ?? PAYMENT_QUEUE_LIMIT, 1), PAYMENT_QUEUE_LIMIT);
+  const rows = await PaymentSubmission.find(query).sort({ createdAt: -1 }).limit(limit).lean();
   const userIds = [...new Set(rows.map((s) => String(s.userId)))];
   const eventIds = [...new Set(rows.map((s) => String(s.eventId)))];
   const [users, events] = await Promise.all([

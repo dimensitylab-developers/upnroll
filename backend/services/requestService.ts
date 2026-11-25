@@ -170,3 +170,18 @@ export async function listRequestsForAdmin(actor: Actor) {
   const emailByUserId = new Map(users.map((u) => [String(u._id), u.email]));
   return requests.map((r) => ({ ...r, userEmail: emailByUserId.get(String(r.userId)) ?? "Unknown" }));
 }
+
+/** Thin desk feed — pending only, capped. */
+export async function listPendingRequestsForAdmin(actor: Actor, limit = 3) {
+  assertAdmin(actor);
+  await connectDB();
+  const capped = Math.min(Math.max(limit, 1), 50);
+  const requests = await RegistrationRequest.find({ status: "PENDING" })
+    .sort({ createdAt: -1 })
+    .limit(capped)
+    .lean();
+  const userIds = [...new Set(requests.map((r) => String(r.userId)))];
+  const users = await User.find({ _id: { $in: userIds } }).select("email").lean();
+  const emailByUserId = new Map(users.map((u) => [String(u._id), u.email]));
+  return requests.map((r) => ({ ...r, userEmail: emailByUserId.get(String(r.userId)) ?? "Unknown" }));
+}

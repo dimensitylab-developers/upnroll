@@ -14,7 +14,10 @@ export async function GET(_request: Request, { params }: { params: Promise<{ use
     await connectDB();
     const profile = await FighterProfile.findOne({ userId }).select("photoKey").lean();
     if (!profile?.photoKey?.trim()) return new NextResponse("No photograph yet.", { status: 404 });
-    return await serveStoredImage(profile.photoKey.trim());
+    // Short private cache so roster thumbs are not re-fetched on every navigation.
+    return await serveStoredImage(profile.photoKey.trim(), {
+      cacheControl: "private, max-age=300",
+    });
   } catch (err) {
     return fail(err);
   }

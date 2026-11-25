@@ -274,7 +274,10 @@ export async function updateEventMatCount(actor: Actor, eventId: string, matCoun
 export async function listEventsForAdmin(actor: Actor) {
   assertAdmin(actor);
   await connectDB();
-  return Event.find().sort({ createdAt: -1 }).lean();
+  return Event.find()
+    .sort({ createdAt: -1 })
+    .select("name slug status startDate endDate venue city createdAt")
+    .lean();
 }
 
 /** Admin-dashboard feed: events that haven't started yet, soonest first. */
