@@ -93,7 +93,7 @@ function TextField({
   required?: boolean;
   autoComplete?: string;
   hint?: string;
-} & Pick<ComponentProps<"input">, "inputMode" | "maxLength" | "min" | "max" | "step">) {
+} & Pick<ComponentProps<"input">, "inputMode" | "maxLength" | "min" | "max" | "step" | "placeholder" | "pattern">) {
   return (
     <div>
       <Label htmlFor={name} className="mb-1.5 block">{label}</Label>
@@ -435,7 +435,11 @@ export function GrapplerForm({
             name="pastRecord"
             errors={errors}
             defaultValue={values?.pastRecord}
-            hint="e.g. 2-1, first tournament, or club record."
+            placeholder="0-1"
+            inputMode="numeric"
+            pattern="\d{1,3}\s*-\s*\d{1,3}"
+            maxLength={7}
+            hint="Numbers only as wins-losses, e.g. 0-1."
           />
           <div>
             <Label htmlFor="weightDivision" className="mb-1.5 block">

@@ -1,5 +1,4 @@
 import "server-only";
-import { cache } from "react";
 import { connectDB } from "@/server/db/connect";
 import { Event, type EventStatus } from "@/server/models/Event";
 import { Division } from "@/server/models/Division";
@@ -286,10 +285,11 @@ export async function listUpcomingEventsForAdmin(actor: Actor, limit = 5) {
   return Event.find({ startDate: { $gte: now } }).sort({ startDate: 1 }).limit(limit).lean();
 }
 
-export const listPublicEvents = cache(async function listPublicEvents() {
+/** Plain async — do not wrap in React `cache()`. Next `"use cache"` cannot await React-cache promises. */
+export async function listPublicEvents() {
   await connectDB();
   return Event.find({ status: { $in: PUBLIC_EVENT_STATUSES } }).sort({ startDate: 1 }).lean();
-});
+}
 
 export async function getEventBySlug(slug: string) {
   await connectDB();

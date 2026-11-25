@@ -28,7 +28,11 @@ export const grapplerDetailsSchema = z.object({
   headCoach: z.string().trim().min(2, "Enter your coach.").max(80),
   beltRank: z.enum(["White", "Blue", "Purple"], { message: "Select White, Blue, or Purple." }),
   yearsTraining: z.coerce.number().min(0, "Enter years training.").max(60),
-  pastRecord: z.string().trim().min(1, "Enter your past record.").max(120),
+  pastRecord: z
+    .string()
+    .trim()
+    .min(1, "Enter your past record as wins-losses (e.g. 0-1).")
+    .regex(/^\d{1,3}\s*-\s*\d{1,3}$/, "Use numbers only in wins-losses format, e.g. 0-1."),
   weightDivision: z.string().trim().min(1, "Enter your weight division.").max(40),
   heardAbout: z.string().trim().min(2, "Tell us how you heard about Up ’n Roll.").max(120),
   hasMedicalCondition: yesNo,
@@ -158,9 +162,9 @@ export function grapplerFromForm(formData: FormData) {
   };
 }
 
-/** Prefer an explicit win count when the past-record text starts with a number. */
+/** Wins from a wins-losses past record like "0-1" or "12-4". */
 function careerWinsFromPastRecord(pastRecord: string): number {
-  const match = pastRecord.trim().match(/^(\d{1,3})\b/);
+  const match = pastRecord.trim().match(/^(\d{1,3})\s*-\s*\d{1,3}$/);
   if (!match) return 0;
   return Math.min(500, Number(match[1]));
 }
