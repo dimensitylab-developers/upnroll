@@ -7,7 +7,10 @@ Swap these files anytime  keep the **same filenames** so metadata keeps working.
 | `og-default.jpg` | Open Graph / Facebook / LinkedIn / WhatsApp preview | 1200×630 (16:9 ok) |
 | `twitter-card.jpg` | X / Twitter large card | Same as OG (or 1200×600) |
 | `og-square.jpg` | Optional square share / Pinterest-style | 1:1 |
-| `icon.png` | Favicon / app icon fallback | Square PNG |
+| `icon.png` | App icon / large favicon (512×512 square, mark contained — not stretched) | Square PNG |
+| `favicon-16.png` / `favicon-32.png` | Browser tab favicons | 16×16 / 32×32 square |
+| `apple-touch-icon.png` | iOS home-screen icon | 180×180 square |
+| `/favicon.ico` (site root) | Legacy shortcut icon | Multi-size ICO |
 
 After replacing a file, hard-refresh and re-check with:
 
