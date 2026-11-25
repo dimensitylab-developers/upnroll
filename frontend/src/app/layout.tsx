@@ -67,9 +67,13 @@ export const metadata: Metadata = {
     canonical: "/",
   },
   icons: {
-    icon: [{ url: "/logo-mark.png", type: "image/png" }],
-    apple: [{ url: "/seo/icon.png" }],
-    shortcut: ["/logo-mark.png"],
+    icon: [
+      { url: "/seo/favicon-16.png", sizes: "16x16", type: "image/png" },
+      { url: "/seo/favicon-32.png", sizes: "32x32", type: "image/png" },
+      { url: "/seo/icon.png", sizes: "512x512", type: "image/png" },
+    ],
+    apple: [{ url: "/seo/apple-touch-icon.png", sizes: "180x180", type: "image/png" }],
+    shortcut: ["/favicon.ico"],
   },
   manifest: "/seo/site.webmanifest",
   openGraph: {
