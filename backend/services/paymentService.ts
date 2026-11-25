@@ -260,11 +260,77 @@ export async function rejectPayment(actor: Actor, paymentId: string, note: strin
 
 const PAYMENT_QUEUE_LIMIT = 200;
 
-export async function listPaymentQueue(actor: Actor, filterStatus?: PaymentSubmissionDoc["status"]) {
+export async function countPaymentsByStatus(
+  actor: Actor,
+  status: PaymentSubmissionDoc["status"]
+) {
+  assertAdmin(actor);
+  await connectDB();
+  return PaymentSubmission.countDocuments({ status });
+}
+
+export type PaymentQueueFilters = {
+  status?: PaymentSubmissionDoc["status"];
+  eventId?: string;
+  q?: string;
+  from?: string;
+  to?: string;
+};
+
+function normalizePaymentQueueFilters(
+  filterStatusOrFilters?: PaymentSubmissionDoc["status"] | PaymentQueueFilters
+): PaymentQueueFilters {
+  if (filterStatusOrFilters == null) return {};
+  if (typeof filterStatusOrFilters === "string") return { status: filterStatusOrFilters };
+  return filterStatusOrFilters;
+}
+
+function parseDayBound(value: string | undefined, endOfDay: boolean): Date | undefined {
+  if (!value?.trim()) return undefined;
+  const raw = value.trim();
+  const iso = /^\d{4}-\d{2}-\d{2}$/.test(raw)
+    ? `${raw}T${endOfDay ? "23:59:59.999" : "00:00:00.000"}Z`
+    : raw;
+  const date = new Date(iso);
+  return Number.isNaN(date.getTime()) ? undefined : date;
+}
+
+export async function listPaymentQueue(
+  actor: Actor,
+  filterStatusOrFilters?: PaymentSubmissionDoc["status"] | PaymentQueueFilters
+) {
   assertAdmin(actor);
   await connectDB();
 
-  const query = filterStatus ? { status: filterStatus } : {};
+  const filters = normalizePaymentQueueFilters(filterStatusOrFilters);
+  const query: Record<string, unknown> = {};
+
+  if (filters.status) query.status = filters.status;
+  if (filters.eventId) {
+    query.eventId = requireObjectId(filters.eventId, "event");
+  }
+
+  const from = parseDayBound(filters.from, false);
+  const to = parseDayBound(filters.to, true);
+  if (from || to) {
+    const createdAt: Record<string, Date> = {};
+    if (from) createdAt.$gte = from;
+    if (to) createdAt.$lte = to;
+    query.createdAt = createdAt;
+  }
+
+  const needle = filters.q?.trim();
+  if (needle) {
+    const emailMatches = await User.find({ email: { $regex: needle, $options: "i" } })
+      .select("_id")
+      .lean();
+    const matchedUserIds = emailMatches.map((u) => u._id);
+    query.$or = [
+      { submittedUtr: { $regex: needle, $options: "i" } },
+      ...(matchedUserIds.length > 0 ? [{ userId: { $in: matchedUserIds } }] : []),
+    ];
+  }
+
   const rows = await PaymentSubmission.find(query).sort({ createdAt: -1 }).limit(PAYMENT_QUEUE_LIMIT).lean();
   const userIds = [...new Set(rows.map((s) => String(s.userId)))];
   const eventIds = [...new Set(rows.map((s) => String(s.eventId)))];
