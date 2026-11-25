@@ -47,6 +47,9 @@ const grapplerProfileSchema = new Schema(
   { timestamps: true }
 );
 
+grapplerProfileSchema.index({ createdAt: -1 });
+grapplerProfileSchema.index({ displayName: 1 });
+
 export type GrapplerProfileDoc = InferSchemaType<typeof grapplerProfileSchema>;
 /** @deprecated Prefer GrapplerProfileDoc */
 export type FighterProfileDoc = GrapplerProfileDoc;

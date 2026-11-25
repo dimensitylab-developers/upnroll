@@ -20,6 +20,8 @@ const registrationRequestSchema = new Schema(
   { timestamps: true }
 );
 
+registrationRequestSchema.index({ status: 1, createdAt: -1 });
+
 export type RegistrationRequestDoc = InferSchemaType<typeof registrationRequestSchema>;
 
 export const RegistrationRequest: Model<RegistrationRequestDoc> =

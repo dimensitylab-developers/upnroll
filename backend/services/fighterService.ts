@@ -253,11 +253,15 @@ function toPublicCard(
   };
 }
 
+/** Roster list fields only — full PII stays on the detail sheet via getFighterForAdmin. */
+const ADMIN_LIST_FIELDS = "userId displayName academy gym cityState weightDivision photoKey createdAt";
+
 /** Full grappler form for organizers. Aadhaar and medical answers stay off public pages. */
 export async function listFightersForAdmin(actor: Actor) {
   assertAdmin(actor);
   await connectDB();
-  const profiles = await FighterProfile.find().sort({ createdAt: -1 }).lean();
+  // Project roster-card fields only (same list UI; skip medical / ID payload).
+  const profiles = await FighterProfile.find().sort({ createdAt: -1 }).select(ADMIN_LIST_FIELDS).lean();
   const users = await User.find({ _id: { $in: profiles.map((profile) => profile.userId) } })
     .select("email")
     .lean();

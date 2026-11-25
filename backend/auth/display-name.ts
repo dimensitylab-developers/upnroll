@@ -28,15 +28,14 @@ function titleFromEmail(email: string): string {
 export const resolveDisplayName = cache(async function resolveDisplayName(userId: string, email: string): Promise<string> {
   await connectDB();
   const userObjectId = Types.ObjectId.isValid(userId) ? new Types.ObjectId(userId) : null;
-  const [user, profile] = await Promise.all([
-    // Collection read so a stale in-memory schema cannot hide displayName.
-    userObjectId
-      ? User.collection.findOne({ _id: userObjectId }, { projection: { displayName: 1 } })
-      : Promise.resolve(null),
-    FighterProfile.findOne({ userId }).select("displayName").lean(),
-  ]);
+  // Collection read so a stale in-memory schema cannot hide displayName.
+  const user = userObjectId
+    ? await User.collection.findOne({ _id: userObjectId }, { projection: { displayName: 1 } })
+    : null;
   const fromUser = typeof user?.displayName === "string" ? user.displayName.trim() : "";
   if (fromUser) return fromUser;
+
+  const profile = await FighterProfile.findOne({ userId }).select("displayName").lean();
   const fromProfile = profile?.displayName?.trim();
   if (fromProfile) return fromProfile;
   return titleFromEmail(email);

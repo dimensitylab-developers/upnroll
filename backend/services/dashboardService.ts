@@ -2,8 +2,8 @@ import "server-only";
 import type { Actor } from "@/server/auth/actor";
 import { assertAdmin, assertFighter } from "@/server/auth/actor";
 import { listUpcomingEventsForAdmin } from "./eventService";
-import { listPaymentQueue } from "./paymentService";
-import { listRequestsForAdmin, listRequestsForFighter } from "./requestService";
+import { countPaymentsByStatus, listPaymentQueue } from "./paymentService";
+import { listPendingRequestsForAdmin, listRequestsForFighter } from "./requestService";
 import { listRecentRegistrationsForAdmin, listMyRegistrations } from "./registrationService";
 import { countFighters, getFighterProfile } from "./fighterService";
 import {
@@ -24,8 +24,9 @@ export async function getAdminDashboardData(actor: Actor) {
   const [
     fighterCount,
     upcomingEvents,
+    pendingPaymentCount,
     pendingPayments,
-    allRequests,
+    pendingRequests,
     recentRegistrations,
     recentActivity,
     recentEntries,
@@ -35,8 +36,9 @@ export async function getAdminDashboardData(actor: Actor) {
   ] = await Promise.all([
     countFighters(actor),
     listUpcomingEventsForAdmin(actor, 5),
-    listPaymentQueue(actor, "PENDING_REVIEW"),
-    listRequestsForAdmin(actor),
+    countPaymentsByStatus(actor, "PENDING_REVIEW"),
+    listPaymentQueue(actor, { status: "PENDING_REVIEW", limit: 5 }),
+    listPendingRequestsForAdmin(actor, 3),
     listRecentRegistrationsForAdmin(actor, 8),
     listRecentAuditLogs(actor, 10),
     listRecentAuditLogsByActions(actor, [...ENTRY_ACTIONS], 8),
@@ -48,8 +50,9 @@ export async function getAdminDashboardData(actor: Actor) {
   return {
     fighterCount,
     upcomingEvents,
+    pendingPaymentCount,
     pendingPayments,
-    pendingRequests: allRequests.filter((r) => r.status === "PENDING"),
+    pendingRequests,
     recentRegistrations,
     recentActivity,
     recentEntries,
