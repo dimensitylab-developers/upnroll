@@ -1,0 +1,59 @@
+%% Up 'n Roll — website sitemap (51 pages)
+%% Source: docs/handover/_research/01-architecture-stats.md
+flowchart LR
+  Home["/"] --> Events["/events"]
+  Home --> Rankings["/rankings"]
+  Home --> BracketsHub["/brackets"]
+  Home --> FAQ["/faq"]
+  Home --> About["/about"]
+  Home --> Login["/login"]
+  Home --> Register["/register"]
+  Home --> Policies["/policies"]
+  Home --> Announcements["/announcements"]
+
+  Events --> EventSlug["/events/slug"]
+  EventSlug --> EvBrackets["…/brackets"]
+  EventSlug --> EvResults["…/results"]
+  EventSlug --> EvSchedule["…/schedule"]
+  Events --> Held["/events/held/slug"]
+
+  Rankings --> RankDemo["/rankings/demo"]
+  Rankings --> GrapplerSlug["/grapplers/slug"]
+  GrapplersDir["/grapplers"] -.->|redirect| Rankings
+
+  Login --> Verify["/verify"]
+  Register --> Verify
+
+  Login --> GDash["/grappler/dashboard"]
+  GDash --> GProfile["/grappler/profile"]
+  GDash --> GRegs["/grappler/registrations"]
+  GRegs --> GNew["…/new"]
+  GRegs --> GPay["…/id/payment"]
+  GDash --> GMatches["/grappler/matches"]
+  GDash --> GReq["/grappler/requests"]
+  GDash --> GNotif["/grappler/notifications"]
+  GTransfer["/grappler/transfer/token"]
+
+  Login --> Admin["/admin"]
+  Admin --> APay["/admin/payments"]
+  Admin --> AGrapplers["/admin/grapplers"]
+  AGrapplers --> ASheet["…/userId"]
+  Admin --> AEvents["/admin/events"]
+  AEvents --> AHub["…/id"]
+  AHub --> ADiv["…/divisions"]
+  AHub --> ABr["…/brackets"]
+  AHub --> AMat["…/matches"]
+  AHub --> AFees["…/payments"]
+  AHub --> AScore["…/scoring-rules"]
+  Admin --> AReq["/admin/requests"]
+  Admin --> ARank["/admin/rankings"]
+  Admin --> AContent["/admin/content"]
+  Admin --> AMedia["/admin/media"]
+  Admin --> ASettings["/admin/settings"]
+  Admin --> ANotif["/admin/notifications"]
+  Admin --> AAudit["/admin/audit"]
+
+  JudgeLogin["/judge/login"] --> Judge["/judge"]
+  Preview["/ui-preview"]
+  Store["/store — ComingSoon"]
+  Seminars["/seminars — ComingSoon"]

@@ -1,0 +1,54 @@
+%% Up 'n Roll — high-level system architecture
+%% Source: docs/handover/_research/01-architecture-stats.md
+flowchart TB
+  subgraph Clients
+    Browser[Browser]
+    JudgeDevice[Judge device]
+  end
+
+  subgraph NextJS["frontend/ — Next.js 16 App Router"]
+    PublicPages["(public) pages"]
+    AuthPages["(auth) pages"]
+    GrapplerPages["(grappler) portal"]
+    AdminPages["(admin) portal"]
+    JudgePages["(judge) scoring"]
+    API["api/v1 + auth/google + cron"]
+    ServerActions["Server Actions"]
+  end
+
+  subgraph Backend["backend/ — server-only"]
+    Auth["auth/session + judge-session"]
+    Services["services/* business rules"]
+    Models["models/* Mongoose"]
+    Storage["storage adapter"]
+    Email["email + outbox"]
+  end
+
+  subgraph Data
+    Mongo[(MongoDB)]
+    DiskOrGrid[(Local disk or GridFS)]
+    SMTP[SMTP]
+  end
+
+  Browser --> PublicPages
+  Browser --> AuthPages
+  Browser --> GrapplerPages
+  Browser --> AdminPages
+  Browser --> API
+  Browser --> ServerActions
+  JudgeDevice --> JudgePages
+
+  PublicPages --> Services
+  GrapplerPages --> Auth
+  AdminPages --> Auth
+  JudgePages --> Auth
+  ServerActions --> Auth
+  ServerActions --> Services
+  API --> Services
+  Auth --> Models
+  Services --> Models
+  Services --> Storage
+  Services --> Email
+  Models --> Mongo
+  Storage --> DiskOrGrid
+  Email --> SMTP

@@ -1,0 +1,44 @@
+%% Up 'n Roll — database ERD (core collections)
+%% Source: docs/handover/_research/05-database.md
+%% Note: GrapplerProfile maps to collection fighterprofiles
+erDiagram
+  User ||--o| GrapplerProfile : "userId"
+  User ||--o{ Session : "userId"
+  User ||--o{ EmailVerification : "userId"
+  User ||--o{ Registration : "userId"
+  User ||--o{ RankingRecord : "userId"
+  User ||--o{ Notification : "userId"
+  User ||--o{ AuditLog : "actorId"
+  User ||--o{ ManualRankingEntry : "userId optional"
+
+  Event ||--o{ Division : "eventId"
+  Event ||--o{ Bracket : "eventId"
+  Event ||--o{ Match : "eventId"
+  Event ||--o{ Registration : "eventId"
+  Event ||--o{ PaymentSubmission : "eventId"
+  Event ||--o{ Coupon : "eventId"
+  Event ||--o{ MediaAsset : "eventId optional"
+  Event ||--o{ MatchJudgeCredential : "eventId"
+  Event ||--o{ MatchScoreEvent : "eventId"
+  Event ||--o{ Notification : "eventId optional"
+
+  Division ||--o| Bracket : "divisionId unique"
+  Division ||--o{ Match : "divisionId"
+  Division ||--o{ Registration : "divisionId"
+
+  Bracket ||--o{ Match : "bracketId"
+
+  Registration ||--o{ PaymentSubmission : "registrationId"
+  Registration ||--o{ RegistrationRequest : "registrationId"
+  Registration ||--o{ TransferInvite : "registrationId"
+  Registration }o--o| Coupon : "couponId / redeemedBy"
+
+  Match ||--o{ MatchScoreEvent : "matchId"
+  Match ||--o{ MatchJudgeCredential : "matchId"
+  MatchJudgeCredential ||--o{ JudgeSession : "credentialId"
+
+  Coupon }o--|| Event : "eventId"
+  ContentEntry }o--|| User : "createdBy"
+  MediaAsset }o--|| User : "createdBy"
+  SiteSettings ||--|| SiteSettings : "singleton key=default"
+  OutboxJob ||--o| OutboxJob : "supersededBy"

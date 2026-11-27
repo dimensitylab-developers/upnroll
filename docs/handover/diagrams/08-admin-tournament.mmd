@@ -1,0 +1,34 @@
+%% Up 'n Roll — admin tournament setup & ops hub
+%% Source: docs/handover/_research/02-admin-complete.md
+flowchart TD
+  Desk["/admin desk"] --> Events["/admin/events"]
+  Events --> Create["createEvent → DRAFT"]
+  Create --> Hub["Event hub /admin/events/id"]
+
+  Hub --> Status["updateEventStatus"]
+  Hub --> Mats["updateEventMatCount"]
+  Hub --> Fees["Fees and coupons /payments"]
+  Hub --> Rules["Scoring rules"]
+  Hub --> DivDoor["Divisions door"]
+  Hub --> BrDoor["Brackets door"]
+  Hub --> MatDoor["Matches door"]
+  Hub --> Regs["Registrations + withdraw"]
+
+  DivDoor --> Seed["seedRoadToSuperFightDivisions"]
+  DivDoor --> CreateDiv["createDivision"]
+
+  BrDoor --> Gen["generateBracket DRAFT"]
+  Gen --> Pub["publishBracket PUBLISHED"]
+
+  MatDoor --> Sched["updateMatchSchedule"]
+  MatDoor --> JudgeCred["Issue judge credentials"]
+  MatDoor --> Record["recordMatchResult / correct"]
+
+  Fees --> Options["Payment options + QR"]
+  Fees --> Coupons["createCoupon / disable / release"]
+
+  Desk --> PayQ["/admin/payments queue"]
+  Desk --> ReqQ["/admin/requests cancel/transfer"]
+  Desk --> Rank["/admin/rankings"]
+  Desk --> Content["Content / Media / Settings"]
+  Desk --> Audit["Audit + Outbox"]

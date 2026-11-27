@@ -1,0 +1,39 @@
+%% Up 'n Roll — deployment architecture (Vercel + Mongo + cron)
+%% Source: docs/handover/_research/07-deployment.md
+flowchart TB
+  subgraph CI["CI — GitHub Actions"]
+    CIBuild["ci.yml: tsc · vitest · next build Node 22"]
+    GHCron["process-outbox.yml every 5m optional"]
+  end
+
+  subgraph Vercel["Vercel — Next.js 16"]
+    Install["installCommand: npm ci --prefix frontend"]
+    Build["buildCommand: npm run build --prefix frontend"]
+    App["frontend/.next App Router + Server Actions"]
+    VCron["vercel.json cron daily /api/cron/process-outbox"]
+  end
+
+  subgraph Runtime["Runtime deps"]
+    Atlas[(MongoDB Atlas)]
+    SMTP[SMTP provider]
+    Storage["STORAGE_DRIVER gridfs or local"]
+    Secrets["SESSION_SECRET · CRON_SECRET · MONGODB_URI"]
+  end
+
+  subgraph Ops["Ops"]
+    CreateAdmin["npm run create-admin"]
+    Seed["npm run seed-demo"]
+    Backup["mongodump / mongorestore"]
+  end
+
+  CIBuild --> Vercel
+  Install --> Build --> App
+  App --> Atlas
+  App --> SMTP
+  App --> Storage
+  Secrets --> App
+  VCron --> App
+  GHCron --> App
+  CreateAdmin --> Atlas
+  Seed --> Atlas
+  Backup --> Atlas

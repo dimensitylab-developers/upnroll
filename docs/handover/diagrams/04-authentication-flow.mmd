@@ -1,0 +1,32 @@
+%% Up 'n Roll — authentication flow (app + judge)
+%% Source: docs/handover/_research/06-auth-security-rbac.md
+flowchart TD
+  subgraph Entry
+    P[Public visitor]
+    R["Register email/password"]
+    L["Login email/password"]
+    G[Google OAuth]
+    J[Judge login]
+  end
+
+  P --> R
+  P --> L
+  P --> G
+  P --> J
+
+  R --> V["Email verification code"]
+  V --> S["createSession → upnroll_session"]
+  L --> S
+  G --> S
+
+  S --> Role{User.role}
+  Role -->|ADMIN| Admin["/admin layout + requireActor ADMIN"]
+  Role -->|GRAPPLER| Grappler["/grappler layout + requireActor GRAPPLER"]
+
+  J --> JC{"MatchJudgeCredential ACTIVE + scorable match"}
+  JC --> JS["JudgeSession → upnroll_judge_session"]
+  JS --> Score["Judge scoring actions for one matchId"]
+
+  Proxy["proxy.ts cookie presence"] -.->|UX_redirect_only| Admin
+  Proxy -.-> Grappler
+  Proxy -.-> Score

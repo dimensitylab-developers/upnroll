@@ -1,0 +1,31 @@
+%% Up 'n Roll — request lifecycle (Server Actions primary; REST for media/OAuth/cron)
+%% Source: docs/handover/_research/05-api-actions.md
+flowchart TD
+  Client[Browser / Judge device] --> Entry{Entry point}
+
+  Entry -->|Page_mutation| SA["Server Action use server"]
+  Entry -->|Binary_or_OAuth_or_cron| REST["API route.ts"]
+  Entry -->|Public_read| Page["RSC page + cachedPublicReads"]
+
+  SA --> Proxy{"proxy.ts cookie presence UX only"}
+  REST --> Proxy
+  Page --> Layout
+
+  Proxy --> Layout["Layout getSession / getJudgeSession"]
+  Layout --> Actor{"requireActor / requireJudgeSession"}
+  Actor -->|fail| Err401["Unauthorized / redirect login"]
+  Actor -->|ok| Svc["backend/services/*"]
+
+  Svc --> Assert["assertAdmin / assertGrappler / assertJudgeCanMutateMatch"]
+  Assert --> Txn["Mongo transaction when needed"]
+  Txn --> Models[(Mongoose models)]
+  Models --> Mongo[(MongoDB)]
+
+  Svc --> Storage["storage adapter private files"]
+  Svc --> Outbox["OutboxJob enqueue"]
+  Svc --> Mail["Email adapter"]
+  Outbox --> Cron["/api/cron/process-outbox Bearer CRON_SECRET"]
+
+  REST --> Media["Stream photo / QR / screenshot"]
+  REST --> OAuth["/api/auth/google"]
+  REST --> Health["/api/health"]

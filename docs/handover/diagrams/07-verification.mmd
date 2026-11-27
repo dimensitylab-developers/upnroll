@@ -1,0 +1,33 @@
+%% Up 'n Roll — payment / registration verification (admin desk)
+%% Distinct from /verify email OTP (auth). Source: docs/handover/_research/02-verification.md
+flowchart TD
+  subgraph GrapplerSide["Grappler"]
+    Pay["Pay UPI offline using QR / coupon tier"]
+    Submit["submitPayment UTR + screenshot"]
+    Resubmit["Resubmit if REJECTED"]
+  end
+
+  subgraph States["Registration ↔ PaymentSubmission"]
+    AP["AWAITING_PAYMENT"]
+    PV["PENDING_VERIFICATION + PENDING_REVIEW"]
+    Conf[CONFIRMED + APPROVED]
+    Rej[REJECTED + REJECTED]
+  end
+
+  subgraph AdminSide["Admin only — no VERIFIER role"]
+    Queue["/admin/payments Review"]
+    Dup["flagDuplicateUtrs advisory"]
+    Decide{"approvePayment / rejectPayment"}
+  end
+
+  Pay --> Submit
+  Submit --> PV
+  AP --> Submit
+  PV --> Queue
+  Queue --> Dup
+  Queue --> Decide
+  Decide -->|APPROVED| Conf
+  Decide -->|REJECTED note required| Rej
+  Rej --> Resubmit
+  Resubmit --> Submit
+  Conf --> Eligible["Bracket-eligible CONFIRMED"]

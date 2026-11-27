@@ -1,0 +1,17 @@
+%% Up 'n Roll — ranking recalculation path
+%% Source: docs/handover/_research/04-brackets-rankings.md
+flowchart TD
+  F["Match finalized OFFICIAL or admin recalculate"] --> O{Trigger}
+  O -->|outbox| Q[RANKINGS_RECALC job]
+  O -->|admin_button| S[recalculateRankings]
+  Q --> W[processOutboxJob]
+  W --> S2[recalculateRankingsSystem]
+  S --> T[recalculateRankingsInTransaction]
+  S2 --> T
+  T --> U["Load COMPLETED + BYE matches"]
+  U --> V[computeRecord per userId]
+  V --> X["winLossPointsStrategy: wins * 3"]
+  X --> Y["Upsert RankingRecord GLOBAL"]
+  Y --> Z1["Admin table: listPublicRankings"]
+  Y --> Z2["Public board: listRankingBoardEntries"]
+  M["ManualRankingEntry published"] -.->|NOT_WIRED| Z2

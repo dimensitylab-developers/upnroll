@@ -1,0 +1,27 @@
+%% Up 'n Roll — payment + coupon end-to-end (manual UPI proof)
+%% Source: docs/handover/_research/03-payment-coupon.md
+sequenceDiagram
+  participant G as Grappler UI
+  participant SA as Server Actions
+  participant RS as registrationService
+  participant PS as paymentService
+  participant Admin as Admin payment queue
+  participant Mail as Email adapter
+
+  G->>SA: createRegistrationAction
+  SA->>RS: createRegistration (+ optional coupon redeem)
+  RS-->>G: redirect /grappler/registrations/:id/payment
+  Note over G: Shows QR from feeSnapshot / payment option
+  opt Coupon on payment page
+    G->>SA: applyPaymentCouponAction
+    SA->>SA: reserveCoupon → applyCouponToRegistration
+  end
+  G->>G: Pay UPI outside app
+  G->>SA: submitPaymentAction (UTR + screenshot)
+  SA->>PS: submitPayment
+  PS->>PS: store file, PaymentSubmission PENDING_REVIEW
+  PS->>PS: Registration → PENDING_VERIFICATION
+  PS->>Mail: Payment submission received
+  Admin->>PS: approvePayment / rejectPayment
+  PS->>PS: Registration CONFIRMED / REJECTED + seats
+  PS->>Mail: confirmed or rejection note

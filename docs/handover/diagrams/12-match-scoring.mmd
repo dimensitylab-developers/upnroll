@@ -1,0 +1,30 @@
+%% Up 'n Roll — live match scoring (judge console)
+%% Source: docs/handover/_research/04-judge-panel.md
+sequenceDiagram
+  participant UI as ScoringConsole
+  participant Act as judge actions
+  participant Auth as assertJudgeCanMutateMatch
+  participant SS as scoringService
+  participant DB as MongoDB
+  participant OB as Outbox
+
+  UI->>Act: score / undo / finalize (+ idempotencyKey, expectedVersion)
+  Act->>Auth: requireJudgeSession + match scope
+  Auth->>DB: credential generation / session / status
+  Act->>SS: applyScoreEvent | undoScoreEvent | finalizeMatchResult
+
+  alt duplicate idempotencyKey
+    SS-->>Act: replayed existing event
+  else version mismatch
+    SS-->>Act: ConflictError refresh
+  else apply
+    SS->>DB: bump scoreVersion/seq, MatchScoreEvent
+    opt first point
+      SS->>DB: status SCHEDULED|DELAYED → LIVE
+    end
+    opt finalize
+      SS->>DB: COMPLETED OFFICIAL + advanceWinner
+      SS->>OB: RANKINGS_RECALC + MATCH_RESULT_NOTIFY
+    end
+  end
+  Act-->>UI: ok / error → router.refresh()

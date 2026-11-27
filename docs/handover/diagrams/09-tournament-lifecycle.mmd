@@ -1,0 +1,31 @@
+%% Up 'n Roll — 20-step tournament lifecycle
+%% Source: docs/handover/_research/04-tournament-lifecycle.md
+flowchart TD
+  S1["1. Create admin CLI Manual"] --> S2["2. createEvent DRAFT"]
+  S2 --> S3["3. Configure QR / mats / payment options / scoring"]
+  S3 --> S4["4. Create or seed divisions"]
+  S4 --> S5["5. Status → REGISTRATION_OPEN Manual"]
+  S5 --> S6["6. Grappler register + verify"]
+  S6 --> S7["7. Profile + photo"]
+  S7 --> S8["8. createRegistration AWAITING_PAYMENT + seat"]
+  S8 --> S9["9. Optional coupon"]
+  S9 --> S10["10. submitPayment PENDING_VERIFICATION"]
+  S10 --> S11{"11. Admin payment decide"}
+  S11 -->|approve| S12[CONFIRMED]
+  S11 -->|reject| S10
+  S12 --> S13["12. REGISTRATION_CLOSED Manual"]
+  S13 --> S14["13. generateBracket DRAFT"]
+  S14 --> S15["14. publishBracket + reminders"]
+  S15 --> S16["15. updateMatchSchedule"]
+  S16 --> S17["16. Judge credentials"]
+  S17 --> S18{"17. Result entry dual-path"}
+  S18 -->|Judge| J["finalizeMatchResult LIVE + OFFICIAL"]
+  S18 -->|Admin| A["recordMatchResult SCHEDULED only"]
+  J --> S19["18. advanceWinnerIfApplicable"]
+  A --> S19
+  S19 --> S20{"More rounds?"}
+  S20 -->|yes| S16
+  S20 -->|final| S21["19. Rankings recalc outbox/cron"]
+  S21 --> S22["20. Event COMPLETED Manual; requests Implemented"]
+  S15 --> Pub["Public brackets / schedule / results"]
+  S21 --> Board["Public /rankings board"]

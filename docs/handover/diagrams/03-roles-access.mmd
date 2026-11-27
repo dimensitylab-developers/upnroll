@@ -1,0 +1,27 @@
+%% Up 'n Roll — roles and access planes
+%% Source: docs/handover/_research/06-auth-security-rbac.md
+flowchart LR
+  subgraph UserPlane["User roles (Mongo User)"]
+    GRAPPLER[GRAPPLER]
+    ADMIN[ADMIN]
+    FIGHTER_legacy["FIGHTER legacy → GRAPPLER"]
+  end
+
+  subgraph JudgePlane["Separate judge plane"]
+    Cred[MatchJudgeCredential]
+    JSess[JudgeSession]
+    Cred --> JSess
+  end
+
+  Public[Unauthenticated]
+  Public --> GRAPPLER
+  Public --> Cred
+
+  ADMIN -->|issues_revokes| Cred
+  GRAPPLER -->|portal_payments| AppData[(Registrations / Payments)]
+  ADMIN -->|full_ops| AppData
+  JSess -->|score_only| Match[(Assigned Match)]
+
+  Proxy["proxy.ts cookie presence"] -.->|UX_redirect_only| GRAPPLER
+  Proxy -.-> ADMIN
+  Proxy -.-> JSess

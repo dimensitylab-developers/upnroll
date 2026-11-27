@@ -1,0 +1,22 @@
+%% Up 'n Roll — single-elim bracket generate → publish → advance
+%% Source: docs/handover/_research/04-brackets-rankings.md
+flowchart TD
+  A["Admin selects CONFIRMED regs"] --> B{mode}
+  B -->|manual| C[Keep order]
+  B -->|random| D["shuffleDeterministic seed"]
+  C --> E[buildBracket]
+  D --> E
+  E --> F["Bracket DRAFT + Matches"]
+  F --> G["publishBracket → PUBLISHED"]
+  G --> H[Reminders scheduled]
+  H --> I["Match SCHEDULED / BYE / PENDING"]
+  I --> J{Result path}
+  J -->|Judge_finalize| K[scoringService.finalizeMatchResult]
+  J -->|Admin_dialog| L[matchService.recordMatchResult]
+  K --> M[advanceWinnerIfApplicable]
+  L --> M
+  M --> N["Fill next slot A/B"]
+  N --> O{"Both set and PENDING?"}
+  O -->|yes| P["Next → SCHEDULED"]
+  O -->|no_or_final| Q["Stop or wait"]
+  K --> R["Outbox RANKINGS_RECALC"]

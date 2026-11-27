@@ -1,0 +1,18 @@
+%% Up 'n Roll — grappler lifecycle / registration journey
+%% Source: docs/handover/_research/03-grappler-lifecycle.md
+flowchart TD
+  A["Register account /register"] --> B["Verify email /verify"]
+  B --> C["Login → /grappler/dashboard"]
+  C --> D["Complete profile photo · identity · consent · waiver"]
+  D --> E["Discover events /events or /registrations/new"]
+  E --> F["Register for division AWAITING_PAYMENT + feeSnapshot"]
+  F --> G["Payment desk QR · coupon · UTR + screenshot"]
+  G --> H{Admin review}
+  H -->|APPROVED| I[CONFIRMED]
+  H -->|REJECTED| J["REJECTED — resubmit payment"]
+  J --> G
+  I --> K["Matches · notifications"]
+  F --> L["Cancel / division transfer request"]
+  F --> M["Teammate transfer token"]
+  L --> N["Admin decide → CANCELLED or new division"]
+  M --> O["Claimant completes form → owns seat"]

@@ -1,0 +1,90 @@
+[
+  {
+    "_id": "6af8798d91ea1bae237f0cd6",
+    "email": "admin@upnroll.in",
+    "displayName": "Suketu",
+    "passwordHash": "6a40d75983544d4fecefc8afb81b0a37:61e8bea36765edd65734225419c2b87e39fc2abf1189ec956b3c921b3acf962e956e68ebc4f2e09c4afc82bacaada9dfcc0d732cee06bb2fd9ff70c622abc416",
+    "role": "ADMIN",
+    "status": "ACTIVE",
+    "createdAt": "2026-11-14T15:09:01.817Z",
+    "updatedAt": "2026-11-14T15:09:01.817Z",
+    "__v": 0
+  },
+  {
+    "_id": "6af8858f3e4659596e127e48",
+    "email": "dimensitylabs.work@gmail.com",
+    "displayName": "Dimensity Labs",
+    "passwordHash": "206615107b208b667331bbd15a68ca65:5b520c3e1c60360e36216180f6e64ba6c2d834d07c22da963d18d6f8fdd549e0e43ec77215e07666077ee15ece5c15d032c444214d0e76db8d60e82387704d50",
+    "role": "FIGHTER",
+    "status": "ACTIVE",
+    "emailVerified": true,
+    "emailVerifiedAt": "2026-11-14T16:00:15.260Z",
+    "createdAt": "2026-11-14T16:00:15.271Z",
+    "updatedAt": "2026-11-14T16:00:15.271Z",
+    "__v": 0
+  },
+  {
+    "_id": "6af885f53e4659596e127e4e",
+    "email": "deep10d43@gmail.com",
+    "displayName": "DEEP GODHANI",
+    "passwordHash": "f00660b1ab4135a144a0a35be4b2a975:d6413c0ad2028fbe85d6d8aa1b445b93e8534d4703bb87fc81f767f04be927237b59e8e42086754ac6dfc10db9ef57f5601fb09b0b7daafceebd797fc3958ad2",
+    "role": "FIGHTER",
+    "status": "ACTIVE",
+    "emailVerified": true,
+    "emailVerifiedAt": "2026-11-14T16:01:57.010Z",
+    "createdAt": "2026-11-14T16:01:57.011Z",
+    "updatedAt": "2026-11-14T16:01:57.011Z",
+    "__v": 0
+  },
+  {
+    "_id": "6af88e49e8560149d106d874",
+    "email": "surajphirke3@gmail.com",
+    "displayName": "Suraj phirke",
+    "passwordHash": "f35b1dba9a8a777d021f58da8a0e6ecd:cf75c8710421d65737dc158e5a1b968ef92286e534a3d8f8f1111e56c6209bfb8c1882d270787fba816f89cacf93b75c784a8efa2811098823f6542fbd2f63d9",
+    "role": "FIGHTER",
+    "status": "ACTIVE",
+    "emailVerified": true,
+    "emailVerifiedAt": "2026-11-14T16:37:29.319Z",
+    "createdAt": "2026-11-14T16:37:29.327Z",
+    "updatedAt": "2026-11-14T19:19:51.031Z",
+    "__v": 0
+  },
+  {
+    "_id": "6af963b372a8e62e815bde59",
+    "email": "deepapple101@gmail.com",
+    "displayName": "Deep Godhani_VCET Solecthon",
+    "passwordHash": "14b718db012f8cdeb44956abc88c479a:213fccb953c004c5aa1159203605518abcf23ac3666d1a15797ceb41d29c86778ef637ae57ad04735c05cb5844fc1af36866736b2126d1eaa62efbb6026a2c50",
+    "role": "GRAPPLER",
+    "status": "ACTIVE",
+    "emailVerified": true,
+    "emailVerifiedAt": "2026-11-15T07:48:03.415Z",
+    "createdAt": "2026-11-15T07:48:03.422Z",
+    "updatedAt": "2026-11-15T07:48:03.422Z",
+    "__v": 0
+  },
+  {
+    "_id": "6af963bcc20738f49cebe5e2",
+    "email": "sp08052006@gmail.com",
+    "displayName": "random acccess",
+    "passwordHash": "c62743e2bd36a9b0adef87d4f864165f:d73be486e1bd454e1ca0ad4fb9e1c6f67a632c1c827bc8a826f2c0fc536c97724d8134be33f68c012c8d5049be82251c5381d6276488fff6b86279a8a67f90fc",
+    "role": "GRAPPLER",
+    "status": "ACTIVE",
+    "emailVerified": false,
+    "createdAt": "2026-11-15T07:48:12.139Z",
+    "updatedAt": "2026-11-15T07:48:12.139Z",
+    "__v": 0
+  },
+  {
+    "_id": "6af994e8d18a862a0364e1ce",
+    "email": "suraj.s2409467105@vcet.edu.in",
+    "displayName": "SURAJ PHIRKE",
+    "passwordHash": "46bbef6023e53c0254e232c92793535c:60e0ec14c1c775fd3f6c77e42e1420fc2519314609e11ad0f48234d478c2c3a6dda78f6cf5575d8ada96950af9cbc84a95ca1853fb197c2cfbe0f22c3c3696c7",
+    "role": "GRAPPLER",
+    "status": "ACTIVE",
+    "emailVerified": true,
+    "emailVerifiedAt": "2026-11-15T11:18:00.358Z",
+    "createdAt": "2026-11-15T11:18:00.359Z",
+    "updatedAt": "2026-11-15T11:18:00.359Z",
+    "__v": 0
+  }
+]

@@ -1,0 +1,26 @@
+%% Up 'n Roll — judge credential issue + login sequence
+%% Source: docs/handover/_research/04-judge-panel.md
+sequenceDiagram
+  participant Admin as Admin UI
+  participant JCS as judgeCredentialService
+  participant DB as MongoDB
+  participant Judge as Judge browser
+  participant Auth as judge-session
+  participant Cookie as Cookie jar
+
+  Admin->>JCS: generateMatchJudgeCredentials(matchId)
+  JCS->>DB: assert PUBLISHED bracket, competitors, no ACTIVE cred
+  JCS->>DB: insert MatchJudgeCredential (hash only)
+  JCS-->>Admin: username + password (once)
+
+  Judge->>Auth: loginJudge(username, password)
+  Auth->>DB: find ACTIVE cred + verifyPassword
+  Auth->>DB: Match status in SCORABLE
+  Auth->>DB: create JudgeSession(tokenHash, generation)
+  Auth->>Cookie: set upnroll_judge_session (12h)
+  Auth-->>Judge: JudgeActor
+
+  Judge->>Auth: getJudgeSession / requireJudgeSession
+  Auth->>Cookie: read packed token
+  Auth->>DB: session + ACTIVE cred + generation + scorable match
+  Auth-->>Judge: JudgeActor or null → /judge/login

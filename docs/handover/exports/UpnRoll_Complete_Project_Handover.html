@@ -1,0 +1,3293 @@
+<!DOCTYPE html><html><head><meta charset="utf-8"><title>Up n Roll — Project Handover</title>
+<style>body{font-family:Calibri,Arial,sans-serif;font-size:11pt;line-height:1.35;max-width:900px;margin:24px auto;color:#111} h1{font-size:22pt} h2{font-size:16pt;border-bottom:1px solid #ccc;padding-bottom:4px;margin-top:28px} h3{font-size:13pt} pre,code{font-family:Consolas,monospace;font-size:9pt} pre{background:#f5f5f5;padding:10px;overflow:auto;white-space:pre-wrap} table{border-collapse:collapse;width:100%;margin:12px 0;font-size:10pt} th,td{border:1px solid #bbb;padding:4px 8px;vertical-align:top} th{background:#eee} .meta{background:#f8f8f8;padding:12px;border:1px solid #ddd} </style></head><body>
+<p class="meta"><strong>Up 'n Roll</strong> — Project Handover &amp; Technical Documentation<br/>Prepared by Dimensity Labs · v1.0.0 · 2026-11-27 · Git main @ 4ffb794<br/><em>Confidential — credentials transfer separately.</em></p>
+<h1>Project Up &#39;n Roll</h1>
+<h2 id="sec">Project Handover &amp; Technical Documentation</h2>
+<table>
+<tr>
+<th>Field</th>
+<th>Value</th>
+</tr>
+<tr>
+<td><strong>Project</strong></td>
+<td>Up &#39;n Roll</td>
+</tr>
+<tr>
+<td><strong>Document</strong></td>
+<td>Project Handover &amp; Technical Documentation (Master)</td>
+</tr>
+<tr>
+<td><strong>Prepared by</strong></td>
+<td>Dimensity Labs</td>
+</tr>
+<tr>
+<td><strong>Version</strong></td>
+<td>1.0.0</td>
+</tr>
+<tr>
+<td><strong>Date</strong></td>
+<td>2026-11-27</td>
+</tr>
+<tr>
+<td><strong>Git branch</strong></td>
+<td><code>main</code></td>
+</tr>
+<tr>
+<td><strong>Git commit</strong></td>
+<td><code>4ffb794</code></td>
+</tr>
+<tr>
+<td><strong>Client</strong></td>
+<td>*[Requires confirmation]*</td>
+</tr>
+</table>
+<hr/>
+<h3>Confidentiality notice</h3>
+<p>This document and the accompanying handover pack under <code>docs/handover/</code> are confidential project materials prepared by <strong>Dimensity Labs</strong>. They are intended solely for the named client and authorised technical custodians.</p>
+<ul><li>Do <strong>not</strong> distribute secrets, production credentials, SMTP passwords, session secrets, cron secrets, or MongoDB URIs containing credentials in this document or related tickets.</li></ul>
+<ul><li>Transfer credentials via a <strong>secure channel separately</strong> (password manager share, encrypted vault, or agreed offline handoff).</li></ul>
+<ul><li>Status tags used throughout: <strong>Implemented</strong>, <strong>Partial</strong> / <strong>Partially Implemented</strong>, <strong>Not Implemented</strong>, <strong>Requires confirmation</strong>, <strong>Verified</strong> (from repository at <code>4ffb794</code>).</li></ul>
+<p><strong>Companion documents</strong> (detail expansions of this master):</p>
+<table>
+<tr>
+<th>Document</th>
+<th>Purpose</th>
+</tr>
+<tr>
+<td><a href="./UpnRoll_Client_Operating_Manual.md">UpnRoll_Client_Operating_Manual.md</a></td>
+<td>Non-technical admin operating procedures</td>
+</tr>
+<tr>
+<td><a href="./UpnRoll_Technical_Documentation.md">UpnRoll_Technical_Documentation.md</a></td>
+<td>Developer / architect deep dive</td>
+</tr>
+<tr>
+<td><a href="./UpnRoll_API_Reference.md">UpnRoll_API_Reference.md</a></td>
+<td>REST + Server Actions inventory</td>
+</tr>
+<tr>
+<td><a href="./UpnRoll_Database_Documentation.md">UpnRoll_Database_Documentation.md</a></td>
+<td>Full model field lists</td>
+</tr>
+<tr>
+<td><a href="./UpnRoll_Deployment_Guide.md">UpnRoll_Deployment_Guide.md</a></td>
+<td>Install, env, deploy, backups</td>
+</tr>
+<tr>
+<td><a href="./UpnRoll_Feature_Delivery_Matrix.md">UpnRoll_Feature_Delivery_Matrix.md</a></td>
+<td>Feature-by-feature status</td>
+</tr>
+<tr>
+<td><a href="./UpnRoll_Testing_Report.md">UpnRoll_Testing_Report.md</a></td>
+<td>Automated &amp; manual QA status</td>
+</tr>
+<tr>
+<td><a href="./UpnRoll_Handover_Checklist.md">UpnRoll_Handover_Checklist.md</a></td>
+<td>Formal checklist &amp; sign-off</td>
+</tr>
+</table>
+<p>Research sources synthesised: <code>docs/handover/_research/*.md</code>, split docs above, and <code>docs/handover/diagrams/*.mmd</code>.</p>
+<hr/>
+<h2 id="sec">Table of contents</h2>
+<ol><li><a href="#1-executive-summary">Executive Summary</a></li></ol>
+<ol><li><a href="#2-project-statistics">Project Statistics</a></li></ol>
+<ol><li><a href="#3-technology-stack">Technology Stack</a></li></ol>
+<ol><li><a href="#4-system-architecture">System Architecture</a></li></ol>
+<ol><li><a href="#5-complete-page-inventory">Complete Page Inventory</a></li></ol>
+<ol><li><a href="#6-public-website">Public Website</a></li></ol>
+<ol><li><a href="#7-user-roles--rbac">User Roles &amp; RBAC</a></li></ol>
+<ol><li><a href="#8-grappler-registration--dashboard">Grappler Registration &amp; Dashboard</a></li></ol>
+<ol><li><a href="#9-admin-dashboard-complete">Admin Dashboard Complete</a></li></ol>
+<ol><li><a href="#10-judge-panel-complete">Judge Panel Complete</a></li></ol>
+<ol><li><a href="#11-verification-system">Verification System</a></li></ol>
+<ol><li><a href="#12-tournament-lifecycle">Tournament Lifecycle</a></li></ol>
+<ol><li><a href="#13-business-rules">Business Rules</a></li></ol>
+<ol><li><a href="#14-database">Database</a></li></ol>
+<ol><li><a href="#15-api--server-actions">API &amp; Server Actions</a></li></ol>
+<ol><li><a href="#16-authentication--security">Authentication &amp; Security</a></li></ol>
+<ol><li><a href="#17-email--notifications">Email &amp; Notifications</a></li></ol>
+<ol><li><a href="#18-integrations">Integrations</a></li></ol>
+<ol><li><a href="#19-directory-structure">Directory Structure</a></li></ol>
+<ol><li><a href="#20-installation">Installation</a></li></ol>
+<ol><li><a href="#21-environment-variables">Environment Variables</a></li></ol>
+<ol><li><a href="#22-deployment">Deployment</a></li></ol>
+<ol><li><a href="#23-performance">Performance</a></li></ol>
+<ol><li><a href="#24-testing">Testing</a></li></ol>
+<ol><li><a href="#25-maintenance--troubleshooting">Maintenance &amp; Troubleshooting</a></li></ol>
+<ol><li><a href="#26-client-operating-manual-summary">Client Operating Manual (Summary)</a></li></ol>
+<ol><li><a href="#27-feature-delivery-matrix-summary">Feature Delivery Matrix (Summary)</a></li></ol>
+<ol><li><a href="#28-known-limitations">Known Limitations</a></li></ol>
+<ol><li><a href="#29-handover-checklist">Handover Checklist</a></li></ol>
+<ol><li><a href="#30-client-acceptance-sign-off">Client Acceptance Sign-Off</a></li></ol>
+<ol><li><a href="#31-glossary">Glossary</a></li></ol>
+<hr/>
+<h2 id="sec">1. Executive Summary</h2>
+<p><strong>Up &#39;n Roll</strong> is a full-stack tournament management platform for combat sports (BJJ / grappling). Dimensity Labs has delivered a production-shaped Next.js application covering public marketing and live boards, grappler self-service, admin operations, and a match-scoped judge scoring console.</p>
+<h3>What was delivered</h3>
+<table>
+<tr>
+<th>Area</th>
+<th>Outcome</th>
+<th>Status</th>
+</tr>
+<tr>
+<td>Public website</td>
+<td>Marketing home, events, brackets, results, schedule, rankings, FAQ/policies/announcements, grappler public cards</td>
+<td><strong>Implemented</strong> (Store/Seminars stubs <strong>Partial</strong>)</td>
+</tr>
+<tr>
+<td>Auth</td>
+<td>Email/password register + verify + login; optional Google OAuth; admin CLI bootstrap</td>
+<td><strong>Implemented</strong> (OAuth <strong>Partial</strong> / env-gated; password reset <strong>Not Implemented</strong>)</td>
+</tr>
+<tr>
+<td>Grappler portal</td>
+<td>Profile, registration, UPI/QR payment desk, matches, requests, teammate transfer, alerts</td>
+<td><strong>Implemented</strong></td>
+</tr>
+<tr>
+<td>Admin portal</td>
+<td>Events, divisions, brackets, matches, fees/coupons, payment verification, requests, rankings, CMS, media, settings, outbox, audit</td>
+<td><strong>Implemented</strong> (media & manual-rankings wiring <strong>Partial</strong>)</td>
+</tr>
+<tr>
+<td>Judge panel</td>
+<td>Per-match credentials, scoring console, finalize + bracket advance</td>
+<td><strong>Implemented</strong></td>
+</tr>
+<tr>
+<td>Payments</td>
+<td>Manual UPI proof + admin UTR/screenshot review — no card gateway</td>
+<td><strong>Implemented</strong> (by design)</td>
+</tr>
+<tr>
+<td>Rankings</td>
+<td>Computed <code>wins * 3</code> placeholder + admin manual entries</td>
+<td><strong>Partial</strong> (manual board not wired to public page; OD-004 open)</td>
+</tr>
+</table>
+<h3>Architecture in one paragraph</h3>
+<p>One Next.js 16 App Router project (<code>frontend/</code>) with server-only business logic in <code>backend/</code> (Mongoose models + services). There is no separate backend package; <code>@/server/*</code> aliases into <code>../backend/*</code>. Auth is custom cookie sessions in MongoDB. Payments are manual UPI/QR + screenshot/UTR review. Private files use a pluggable storage adapter (<code>local</code> or <code>gridfs</code>).</p>
+<h3>Terminology</h3>
+<p>User-facing product language is <strong>Grappler</strong> (<code>/grappler/*</code>, role <code>GRAPPLER</code>). Legacy <strong>Fighter</strong> URLs redirect permanently. Internal code still uses names such as <code>fighterService</code> and collection <code>fighterprofiles</code> — see §19.</p>
+<h3>Honest readiness</h3>
+<p>The codebase at <code>4ffb794</code> is feature-complete for the shipped single-elimination tournament loop. Items that remain <strong>Requires confirmation</strong> before calling production “ready” include hosting ownership (OD-012), SMTP inbox proof, backup ownership/retention (OD-011), storage driver choice for multi-instance hosts, occupancy backfill if needed, and client sign-off on open decisions (rankings methodology, fees, refund policy). See §28–§30.</p>
+<p>*Sources: <code>docs/handover/_research/01-architecture-stats.md</code>, <code>07-limitations.md</code>, <code>UpnRoll_Feature_Delivery_Matrix.md</code>.*</p>
+<hr/>
+<h2 id="sec">2. Project Statistics</h2>
+<p>Verified 2026-11-27 at commit <code>4ffb794</code> (<code>docs/handover/_research/01-architecture-stats.md</code>).</p>
+<h3>Counts</h3>
+<table>
+<tr>
+<th>Metric</th>
+<th>Count</th>
+</tr>
+<tr>
+<td><code>page.tsx</code> routes</td>
+<td>51</td>
+</tr>
+<tr>
+<td>API <code>route.ts</code> handlers</td>
+<td>18</td>
+</tr>
+<tr>
+<td>Mongoose models</td>
+<td>24</td>
+</tr>
+<tr>
+<td>Backend services (non-test)</td>
+<td>34</td>
+</tr>
+<tr>
+<td>Feature folders (<code>frontend/src/features</code>)</td>
+<td>20</td>
+</tr>
+<tr>
+<td><code>components/ui</code> primitives</td>
+<td>58</td>
+</tr>
+<tr>
+<td>Test files (<code>*.test.ts</code> / <code>*.test.tsx</code>)</td>
+<td>50</td>
+</tr>
+<tr>
+<td>Frontend source files (LOC set)</td>
+<td>342</td>
+</tr>
+<tr>
+<td>Backend source files (LOC set)</td>
+<td>98</td>
+</tr>
+</table>
+<h3>Lines of code</h3>
+<p>Non-blank lines via PowerShell <code>Measure-Object -Line</code> (excl. <code>*.test.*</code>, <code>node_modules</code>):</p>
+<table>
+<tr>
+<th>Scope</th>
+<th>Files</th>
+<th>Lines</th>
+</tr>
+<tr>
+<td><code>frontend/src</code></td>
+<td>342</td>
+<td>24,384</td>
+</tr>
+<tr>
+<td><code>backend</code></td>
+<td>98</td>
+<td>8,400</td>
+</tr>
+<tr>
+<td><strong>Combined</strong></td>
+<td><strong>440</strong></td>
+<td><strong>32,784</strong></td>
+</tr>
+</table>
+<p>Including blank lines: 25,027 frontend + 9,336 backend = <strong>34,363</strong>.</p>
+<h3>Page status roll-up</h3>
+<table>
+<tr>
+<th>Group</th>
+<th>Pages</th>
+<th>Implemented</th>
+<th>Partial</th>
+</tr>
+<tr>
+<td>Public</td>
+<td>18</td>
+<td>15</td>
+<td>3 (<code>/grapplers</code>, <code>/store</code>, <code>/seminars</code>)</td>
+</tr>
+<tr>
+<td>Auth</td>
+<td>3</td>
+<td>3</td>
+<td>0</td>
+</tr>
+<tr>
+<td>Grappler</td>
+<td>9</td>
+<td>9</td>
+<td>0</td>
+</tr>
+<tr>
+<td>Admin</td>
+<td>18</td>
+<td>18</td>
+<td>0</td>
+</tr>
+<tr>
+<td>Judge</td>
+<td>2</td>
+<td>2</td>
+<td>0</td>
+</tr>
+<tr>
+<td>Preview</td>
+<td>1</td>
+<td>1</td>
+<td>0</td>
+</tr>
+<tr>
+<td><strong>Total</strong></td>
+<td><strong>51</strong></td>
+<td><strong>48</strong></td>
+<td><strong>3</strong></td>
+</tr>
+</table>
+<hr/>
+<h2 id="sec">3. Technology Stack</h2>
+<p>Source: <code>frontend/package.json</code> at <code>4ffb794</code>.</p>
+<table>
+<tr>
+<th>Package</th>
+<th>Version</th>
+<th>Role</th>
+</tr>
+<tr>
+<td><code>next</code></td>
+<td>16.4.5</td>
+<td>App Router (Cache Components on)</td>
+</tr>
+<tr>
+<td><code>react</code> / <code>react-dom</code></td>
+<td>19.2.3</td>
+<td>UI runtime</td>
+</tr>
+<tr>
+<td><code>typescript</code></td>
+<td>^5</td>
+<td>Types</td>
+</tr>
+<tr>
+<td><code>mongoose</code></td>
+<td>^9.3.0</td>
+<td>MongoDB ODM (shared with <code>backend/</code>)</td>
+</tr>
+<tr>
+<td><code>zod</code></td>
+<td>^4.3.6</td>
+<td>Validation</td>
+</tr>
+<tr>
+<td><code>react-hook-form</code> + <code>@hookform/resolvers</code></td>
+<td>^7.71.2 / ^5.2.2</td>
+<td>Forms</td>
+</tr>
+<tr>
+<td><code>nodemailer</code></td>
+<td>^10.3.1</td>
+<td>SMTP email</td>
+</tr>
+<tr>
+<td><code>tailwindcss</code></td>
+<td>^4</td>
+<td>Styling</td>
+</tr>
+<tr>
+<td><code>framer-motion</code> / <code>gsap</code></td>
+<td>^12 / ^3</td>
+<td>Motion</td>
+</tr>
+<tr>
+<td><code>lucide-react</code></td>
+<td>^0.577.0</td>
+<td>Icons</td>
+</tr>
+<tr>
+<td><code>recharts</code></td>
+<td>^3.7.0</td>
+<td>Charts</td>
+</tr>
+<tr>
+<td><code>date-fns</code></td>
+<td>^4.1.0</td>
+<td>Dates</td>
+</tr>
+<tr>
+<td><code>sonner</code></td>
+<td>^2.0.7</td>
+<td>Toasts</td>
+</tr>
+<tr>
+<td><code>server-only</code></td>
+<td>^0.0.1</td>
+<td>Server module boundary</td>
+</tr>
+<tr>
+<td>Radix / shadcn primitives</td>
+<td>various</td>
+<td>UI primitives (<code>components/ui</code>)</td>
+</tr>
+<tr>
+<td><code>vitest</code></td>
+<td>^3.0.5</td>
+<td>Unit / integration tests</td>
+</tr>
+<tr>
+<td><code>tsx</code></td>
+<td>^4.19.2</td>
+<td>CLI scripts</td>
+</tr>
+<tr>
+<td><code>eslint</code> / <code>eslint-config-next</code></td>
+<td>^9 / 16.4.5</td>
+<td>Lint</td>
+</tr>
+</table>
+<p><strong>Not in stack (by design):</strong> Stripe/Razorpay, Redis, Sentry/OTel, Docker Compose, React Query, LLM chatbot providers.</p>
+<p>Root scripts delegate into <code>frontend/</code>: <code>npm run dev|build|start|lint|test|create-admin|seed-demo</code>.</p>
+<hr/>
+<h2 id="sec">4. System Architecture</h2>
+<h3>Route groups</h3>
+<p>Auth is enforced in layouts (and re-checked in actions/services). There is no authoritative <code>middleware.ts</code>; <code>frontend/src/proxy.ts</code> only checks cookie <strong>presence</strong> for UX redirects.</p>
+<table>
+<tr>
+<th>Group</th>
+<th>Path prefix</th>
+<th>Who</th>
+</tr>
+<tr>
+<td><code>(public)</code></td>
+<td><code>/</code>, <code>/events</code>, <code>/rankings</code>, …</td>
+<td>Anyone</td>
+</tr>
+<tr>
+<td><code>(auth)</code></td>
+<td><code>/login</code>, <code>/register</code>, <code>/verify</code></td>
+<td>Guests</td>
+</tr>
+<tr>
+<td><code>(grappler)</code></td>
+<td><code>/grappler/*</code></td>
+<td>Role <code>GRAPPLER</code></td>
+</tr>
+<tr>
+<td><code>(admin)</code></td>
+<td><code>/admin/*</code></td>
+<td>Role <code>ADMIN</code></td>
+</tr>
+<tr>
+<td><code>(judge)</code></td>
+<td><code>/judge/*</code></td>
+<td>Judge cookie session</td>
+</tr>
+<tr>
+<td><code>(preview)</code></td>
+<td><code>/ui-preview</code></td>
+<td>Dev / <code>UI_PREVIEW_ENABLED</code></td>
+</tr>
+</table>
+<h3>Layering</h3>
+<p>Pages, Server Actions, and thin <code>api/v1/{public,grappler,admin}</code> handlers call <code>backend/services/*</code> through <code>@/server/*</code>. Business rules live in services — not re-implemented in routes or components. Public pages prefer tagged cached reads (<code>frontend/src/lib/public-reads</code>). Email and reminders use an outbox + cron pattern.</p>
+<p><strong>Figure — High-level system architecture</strong></p>
+<pre><code>flowchart TB
+  subgraph Clients
+    Browser[Browser]
+    JudgeDevice[Judge device]
+  end
+
+  subgraph NextJS[&quot;frontend/ — Next.js 16 App Router&quot;]
+    PublicPages[&quot;(public) pages&quot;]
+    AuthPages[&quot;(auth) pages&quot;]
+    GrapplerPages[&quot;(grappler) portal&quot;]
+    AdminPages[&quot;(admin) portal&quot;]
+    JudgePages[&quot;(judge) scoring&quot;]
+    API[&quot;api/v1 + auth/google + cron&quot;]
+    ServerActions[&quot;Server Actions&quot;]
+  end
+
+  subgraph Backend[&quot;backend/ — server-only&quot;]
+    Auth[&quot;auth/session + judge-session&quot;]
+    Services[&quot;services/* business rules&quot;]
+    Models[&quot;models/* Mongoose&quot;]
+    Storage[&quot;storage adapter&quot;]
+    Email[&quot;email + outbox&quot;]
+  end
+
+  subgraph Data
+    Mongo[(MongoDB)]
+    DiskOrGrid[(Local disk or GridFS)]
+    SMTP[SMTP]
+  end
+
+  Browser --&gt; PublicPages
+  Browser --&gt; AuthPages
+  Browser --&gt; GrapplerPages
+  Browser --&gt; AdminPages
+  Browser --&gt; API
+  Browser --&gt; ServerActions
+  JudgeDevice --&gt; JudgePages
+
+  PublicPages --&gt; Services
+  GrapplerPages --&gt; Auth
+  AdminPages --&gt; Auth
+  JudgePages --&gt; Auth
+  ServerActions --&gt; Auth
+  ServerActions --&gt; Services
+  API --&gt; Services
+  Auth --&gt; Models
+  Services --&gt; Models
+  Services --&gt; Storage
+  Services --&gt; Email
+  Models --&gt; Mongo
+  Storage --&gt; DiskOrGrid
+  Email --&gt; SMTP</code></pre>
+<p>*Source diagram:* <code>docs/handover/diagrams/01-system-architecture.mmd</code></p>
+<p><strong>Figure — API / Server Action request lifecycle</strong></p>
+<pre><code>flowchart TD
+  Client[Browser / Judge device] --&gt; Entry{Entry point}
+
+  Entry --&gt;|Page_mutation| SA[&quot;Server Action use server&quot;]
+  Entry --&gt;|Binary_or_OAuth_or_cron| REST[&quot;API route.ts&quot;]
+  Entry --&gt;|Public_read| Page[&quot;RSC page + cachedPublicReads&quot;]
+
+  SA --&gt; Proxy{&quot;proxy.ts cookie presence UX only&quot;}
+  REST --&gt; Proxy
+  Page --&gt; Layout
+
+  Proxy --&gt; Layout[&quot;Layout getSession / getJudgeSession&quot;]
+  Layout --&gt; Actor{&quot;requireActor / requireJudgeSession&quot;}
+  Actor --&gt;|fail| Err401[&quot;Unauthorized / redirect login&quot;]
+  Actor --&gt;|ok| Svc[&quot;backend/services/*&quot;]
+
+  Svc --&gt; Assert[&quot;assertAdmin / assertGrappler / assertJudgeCanMutateMatch&quot;]
+  Assert --&gt; Txn[&quot;Mongo transaction when needed&quot;]
+  Txn --&gt; Models[(Mongoose models)]
+  Models --&gt; Mongo[(MongoDB)]
+
+  Svc --&gt; Storage[&quot;storage adapter private files&quot;]
+  Svc --&gt; Outbox[&quot;OutboxJob enqueue&quot;]
+  Svc --&gt; Mail[&quot;Email adapter&quot;]
+  Outbox --&gt; Cron[&quot;/api/cron/process-outbox Bearer CRON_SECRET&quot;]
+
+  REST --&gt; Media[&quot;Stream photo / QR / screenshot&quot;]
+  REST --&gt; OAuth[&quot;/api/auth/google&quot;]
+  REST --&gt; Health[&quot;/api/health&quot;]</code></pre>
+<p>*Source diagram:* <code>docs/handover/diagrams/15-api-request-lifecycle.mmd</code></p>
+<p>*Sources: <code>_research/01-architecture-stats.md</code>, <code>CLAUDE.md</code>, <code>backend/README.md</code>.*</p>
+<hr/>
+<h2 id="sec">5. Complete Page Inventory</h2>
+<p>All <strong>51</strong> <code>page.tsx</code> routes under <code>frontend/src/app</code>. Status from reading pages at <code>4ffb794</code>.</p>
+<h3>5.1 Public (18)</h3>
+<table>
+<tr>
+<th>#</th>
+<th>Page</th>
+<th>URL</th>
+<th>Auth</th>
+<th>Purpose</th>
+<th>Status</th>
+</tr>
+<tr>
+<td>1</td>
+<td>Home</td>
+<td><code>/</code></td>
+<td>No</td>
+<td>Marketing landing</td>
+<td>Implemented</td>
+</tr>
+<tr>
+<td>2</td>
+<td>About</td>
+<td><code>/about</code></td>
+<td>No</td>
+<td>Brand / story</td>
+<td>Implemented</td>
+</tr>
+<tr>
+<td>3</td>
+<td>Events list</td>
+<td><code>/events</code></td>
+<td>No</td>
+<td>Upcoming events</td>
+<td>Implemented</td>
+</tr>
+<tr>
+<td>4</td>
+<td>Event detail</td>
+<td><code>/events/[slug]</code></td>
+<td>No</td>
+<td>Event landing</td>
+<td>Implemented</td>
+</tr>
+<tr>
+<td>5</td>
+<td>Event brackets</td>
+<td><code>/events/[slug]/brackets</code></td>
+<td>No</td>
+<td>Published brackets</td>
+<td>Implemented</td>
+</tr>
+<tr>
+<td>6</td>
+<td>Event results</td>
+<td><code>/events/[slug]/results</code></td>
+<td>No</td>
+<td>Results table</td>
+<td>Implemented</td>
+</tr>
+<tr>
+<td>7</td>
+<td>Event schedule</td>
+<td><code>/events/[slug]/schedule</code></td>
+<td>No</td>
+<td>Schedule + call board</td>
+<td>Implemented</td>
+</tr>
+<tr>
+<td>8</td>
+<td>Held archive</td>
+<td><code>/events/held/[slug]</code></td>
+<td>No</td>
+<td>Static held record</td>
+<td>Implemented</td>
+</tr>
+<tr>
+<td>9</td>
+<td>Live brackets hub</td>
+<td><code>/brackets</code></td>
+<td>No</td>
+<td>Focus-event live board</td>
+<td>Implemented</td>
+</tr>
+<tr>
+<td>10</td>
+<td>Rankings</td>
+<td><code>/rankings</code></td>
+<td>No</td>
+<td>Public rankings</td>
+<td>Implemented*</td>
+</tr>
+<tr>
+<td>11</td>
+<td>Seeding demo</td>
+<td><code>/rankings/demo</code></td>
+<td>No</td>
+<td>Non-indexed demo</td>
+<td>Implemented</td>
+</tr>
+<tr>
+<td>12</td>
+<td>Grapplers directory</td>
+<td><code>/grapplers</code></td>
+<td>No</td>
+<td>Redirects to <code>/rankings</code></td>
+<td><strong>Partial</strong></td>
+</tr>
+<tr>
+<td>13</td>
+<td>Grappler public profile</td>
+<td><code>/grapplers/[slug]</code></td>
+<td>No</td>
+<td>Public athlete card</td>
+<td>Implemented</td>
+</tr>
+<tr>
+<td>14</td>
+<td>FAQ</td>
+<td><code>/faq</code></td>
+<td>No</td>
+<td>CMS FAQ</td>
+<td>Implemented</td>
+</tr>
+<tr>
+<td>15</td>
+<td>Store</td>
+<td><code>/store</code></td>
+<td>No</td>
+<td>Merchandise</td>
+<td><strong>Partial</strong> (ComingSoon)</td>
+</tr>
+<tr>
+<td>16</td>
+<td>Seminars</td>
+<td><code>/seminars</code></td>
+<td>No</td>
+<td>Seminars</td>
+<td><strong>Partial</strong> (ComingSoon)</td>
+</tr>
+<tr>
+<td>17</td>
+<td>Policies</td>
+<td><code>/policies</code></td>
+<td>No</td>
+<td>Published policies</td>
+<td>Implemented</td>
+</tr>
+<tr>
+<td>18</td>
+<td>Announcements</td>
+<td><code>/announcements</code></td>
+<td>No</td>
+<td>House announcements</td>
+<td>Implemented</td>
+</tr>
+</table>
+<p>\*Public rankings page is Implemented as a board; ranking methodology / manual wiring remain <strong>Partial</strong> (see §28).</p>
+<h3>5.2 Auth (3)</h3>
+<table>
+<tr>
+<th>#</th>
+<th>Page</th>
+<th>URL</th>
+<th>Purpose</th>
+<th>Status</th>
+</tr>
+<tr>
+<td>19</td>
+<td>Sign in</td>
+<td><code>/login</code></td>
+<td>Email login + Google link</td>
+<td>Implemented</td>
+</tr>
+<tr>
+<td>20</td>
+<td>Sign up</td>
+<td><code>/register</code></td>
+<td>Create grappler account</td>
+<td>Implemented</td>
+</tr>
+<tr>
+<td>21</td>
+<td>Verify email</td>
+<td><code>/verify</code></td>
+<td>Email OTP confirm</td>
+<td>Implemented</td>
+</tr>
+</table>
+<h3>5.3 Grappler (9)</h3>
+<p>Gate: session required; role ≠ <code>GRAPPLER</code> → <code>/admin</code>.</p>
+<table>
+<tr>
+<th>#</th>
+<th>Page</th>
+<th>URL</th>
+<th>Purpose</th>
+<th>Status</th>
+</tr>
+<tr>
+<td>22</td>
+<td>Desk</td>
+<td><code>/grappler/dashboard</code></td>
+<td>Portal home</td>
+<td>Implemented</td>
+</tr>
+<tr>
+<td>23</td>
+<td>Profile</td>
+<td><code>/grappler/profile</code></td>
+<td>Full registration sheet</td>
+<td>Implemented</td>
+</tr>
+<tr>
+<td>24</td>
+<td>My events</td>
+<td><code>/grappler/registrations</code></td>
+<td>List seats</td>
+<td>Implemented</td>
+</tr>
+<tr>
+<td>25</td>
+<td>New registration</td>
+<td><code>/grappler/registrations/new</code></td>
+<td>Enter an event</td>
+<td>Implemented</td>
+</tr>
+<tr>
+<td>26</td>
+<td>Payment desk</td>
+<td><code>/grappler/registrations/[id]/payment</code></td>
+<td>Pay / upload UTR</td>
+<td>Implemented</td>
+</tr>
+<tr>
+<td>27</td>
+<td>Matches</td>
+<td><code>/grappler/matches</code></td>
+<td>Assigned matches</td>
+<td>Implemented</td>
+</tr>
+<tr>
+<td>28</td>
+<td>Requests</td>
+<td><code>/grappler/requests</code></td>
+<td>Cancel / transfer</td>
+<td>Implemented</td>
+</tr>
+<tr>
+<td>29</td>
+<td>Notifications</td>
+<td><code>/grappler/notifications</code></td>
+<td>In-app inbox</td>
+<td>Implemented</td>
+</tr>
+<tr>
+<td>30</td>
+<td>Claim transfer</td>
+<td><code>/grappler/transfer/[token]</code></td>
+<td>Take teammate seat</td>
+<td>Implemented</td>
+</tr>
+</table>
+<h3>5.4 Admin (18)</h3>
+<p>Gate: session + role <code>ADMIN</code> (else <code>/grappler/dashboard</code>).</p>
+<table>
+<tr>
+<th>#</th>
+<th>Page</th>
+<th>URL</th>
+<th>Purpose</th>
+<th>Status</th>
+</tr>
+<tr>
+<td>31</td>
+<td>Admin desk</td>
+<td><code>/admin</code></td>
+<td>Ops overview</td>
+<td>Implemented</td>
+</tr>
+<tr>
+<td>32</td>
+<td>Payment queue</td>
+<td><code>/admin/payments</code></td>
+<td>Verify UPI submissions</td>
+<td>Implemented</td>
+</tr>
+<tr>
+<td>33</td>
+<td>Grapplers roster</td>
+<td><code>/admin/grapplers</code></td>
+<td>Searchable roster</td>
+<td>Implemented</td>
+</tr>
+<tr>
+<td>34</td>
+<td>Grappler sheet</td>
+<td><code>/admin/grapplers/[userId]</code></td>
+<td>Full admin record</td>
+<td>Implemented</td>
+</tr>
+<tr>
+<td>35</td>
+<td>Events list</td>
+<td><code>/admin/events</code></td>
+<td>Create / list</td>
+<td>Implemented</td>
+</tr>
+<tr>
+<td>36</td>
+<td>Event hub</td>
+<td><code>/admin/events/[id]</code></td>
+<td>Control center</td>
+<td>Implemented</td>
+</tr>
+<tr>
+<td>37</td>
+<td>Divisions</td>
+<td><code>/admin/events/[id]/divisions</code></td>
+<td>Taxonomy</td>
+<td>Implemented</td>
+</tr>
+<tr>
+<td>38</td>
+<td>Brackets</td>
+<td><code>/admin/events/[id]/brackets</code></td>
+<td>Seed / generate / publish</td>
+<td>Implemented</td>
+</tr>
+<tr>
+<td>39</td>
+<td>Matches</td>
+<td><code>/admin/events/[id]/matches</code></td>
+<td>Schedule &amp; results</td>
+<td>Implemented</td>
+</tr>
+<tr>
+<td>40</td>
+<td>Fees &amp; coupons</td>
+<td><code>/admin/events/[id]/payments</code></td>
+<td>Payment options</td>
+<td>Implemented</td>
+</tr>
+<tr>
+<td>41</td>
+<td>Scoring rules</td>
+<td><code>/admin/events/[id]/scoring-rules</code></td>
+<td>Event scoring config</td>
+<td>Implemented</td>
+</tr>
+<tr>
+<td>42</td>
+<td>Requests</td>
+<td><code>/admin/requests</code></td>
+<td>Cancel/transfer decide</td>
+<td>Implemented</td>
+</tr>
+<tr>
+<td>43</td>
+<td>Rankings</td>
+<td><code>/admin/rankings</code></td>
+<td>Manual + recalculate</td>
+<td>Implemented*</td>
+</tr>
+<tr>
+<td>44</td>
+<td>Content</td>
+<td><code>/admin/content</code></td>
+<td>FAQ / policy / announcement</td>
+<td>Implemented</td>
+</tr>
+<tr>
+<td>45</td>
+<td>Media</td>
+<td><code>/admin/media</code></td>
+<td>External media links</td>
+<td>Implemented*</td>
+</tr>
+<tr>
+<td>46</td>
+<td>Settings</td>
+<td><code>/admin/settings</code></td>
+<td>House name + contact</td>
+<td>Implemented</td>
+</tr>
+<tr>
+<td>47</td>
+<td>Outbox</td>
+<td><code>/admin/notifications</code></td>
+<td>Failed job recovery</td>
+<td>Implemented</td>
+</tr>
+<tr>
+<td>48</td>
+<td>Audit</td>
+<td><code>/admin/audit</code></td>
+<td>Audit trail</td>
+<td>Implemented</td>
+</tr>
+</table>
+<h3>5.5 Judge (2) &amp; Preview (1)</h3>
+<table>
+<tr>
+<th>#</th>
+<th>Page</th>
+<th>URL</th>
+<th>Purpose</th>
+<th>Status</th>
+</tr>
+<tr>
+<td>49</td>
+<td>Scoring console</td>
+<td><code>/judge</code></td>
+<td>Live match scoring</td>
+<td>Implemented</td>
+</tr>
+<tr>
+<td>50</td>
+<td>Judge login</td>
+<td><code>/judge/login</code></td>
+<td>Match credential login</td>
+<td>Implemented</td>
+</tr>
+<tr>
+<td>51</td>
+<td>UI preview</td>
+<td><code>/ui-preview</code></td>
+<td>Design showroom (env-gated)</td>
+<td>Implemented</td>
+</tr>
+</table>
+<p><strong>Figure — Website sitemap (51 pages)</strong></p>
+<pre><code>flowchart LR
+  Home[&quot;/&quot;] --&gt; Events[&quot;/events&quot;]
+  Home --&gt; Rankings[&quot;/rankings&quot;]
+  Home --&gt; BracketsHub[&quot;/brackets&quot;]
+  Home --&gt; FAQ[&quot;/faq&quot;]
+  Home --&gt; About[&quot;/about&quot;]
+  Home --&gt; Login[&quot;/login&quot;]
+  Home --&gt; Register[&quot;/register&quot;]
+  Home --&gt; Policies[&quot;/policies&quot;]
+  Home --&gt; Announcements[&quot;/announcements&quot;]
+
+  Events --&gt; EventSlug[&quot;/events/slug&quot;]
+  EventSlug --&gt; EvBrackets[&quot;…/brackets&quot;]
+  EventSlug --&gt; EvResults[&quot;…/results&quot;]
+  EventSlug --&gt; EvSchedule[&quot;…/schedule&quot;]
+  Events --&gt; Held[&quot;/events/held/slug&quot;]
+
+  Rankings --&gt; RankDemo[&quot;/rankings/demo&quot;]
+  Rankings --&gt; GrapplerSlug[&quot;/grapplers/slug&quot;]
+  GrapplersDir[&quot;/grapplers&quot;] -.-&gt;|redirect| Rankings
+
+  Login --&gt; Verify[&quot;/verify&quot;]
+  Register --&gt; Verify
+
+  Login --&gt; GDash[&quot;/grappler/dashboard&quot;]
+  GDash --&gt; GProfile[&quot;/grappler/profile&quot;]
+  GDash --&gt; GRegs[&quot;/grappler/registrations&quot;]
+  GRegs --&gt; GNew[&quot;…/new&quot;]
+  GRegs --&gt; GPay[&quot;…/id/payment&quot;]
+  GDash --&gt; GMatches[&quot;/grappler/matches&quot;]
+  GDash --&gt; GReq[&quot;/grappler/requests&quot;]
+  GDash --&gt; GNotif[&quot;/grappler/notifications&quot;]
+  GTransfer[&quot;/grappler/transfer/token&quot;]
+
+  Login --&gt; Admin[&quot;/admin&quot;]
+  Admin --&gt; APay[&quot;/admin/payments&quot;]
+  Admin --&gt; AGrapplers[&quot;/admin/grapplers&quot;]
+  AGrapplers --&gt; ASheet[&quot;…/userId&quot;]
+  Admin --&gt; AEvents[&quot;/admin/events&quot;]
+  AEvents --&gt; AHub[&quot;…/id&quot;]
+  AHub --&gt; ADiv[&quot;…/divisions&quot;]
+  AHub --&gt; ABr[&quot;…/brackets&quot;]
+  AHub --&gt; AMat[&quot;…/matches&quot;]
+  AHub --&gt; AFees[&quot;…/payments&quot;]
+  AHub --&gt; AScore[&quot;…/scoring-rules&quot;]
+  Admin --&gt; AReq[&quot;/admin/requests&quot;]
+  Admin --&gt; ARank[&quot;/admin/rankings&quot;]
+  Admin --&gt; AContent[&quot;/admin/content&quot;]
+  Admin --&gt; AMedia[&quot;/admin/media&quot;]
+  Admin --&gt; ASettings[&quot;/admin/settings&quot;]
+  Admin --&gt; ANotif[&quot;/admin/notifications&quot;]
+  Admin --&gt; AAudit[&quot;/admin/audit&quot;]
+
+  JudgeLogin[&quot;/judge/login&quot;] --&gt; Judge[&quot;/judge&quot;]
+  Preview[&quot;/ui-preview&quot;]
+  Store[&quot;/store — ComingSoon&quot;]
+  Seminars[&quot;/seminars — ComingSoon&quot;]</code></pre>
+<p>*Source diagram:* <code>docs/handover/diagrams/02-website-sitemap.mmd</code></p>
+<hr/>
+<h2 id="sec">6. Public Website</h2>
+<p>Public chrome: <code>SiteHeader</code>, <code>SiteFooterBoundary</code>, <code>ChatbotWidget</code> (deterministic FAQ keyword engine — <strong>not</strong> an LLM). Data via <code>frontend/src/lib/public-reads.ts</code> cached helpers.</p>
+<table>
+<tr>
+<th>Page</th>
+<th>Data source(s)</th>
+<th>Notes</th>
+</tr>
+<tr>
+<td><code>/</code></td>
+<td><code>cachedPublicEvents()</code>; static media</td>
+<td>Featured = first <code>REGISTRATION_OPEN</code> else first event</td>
+</tr>
+<tr>
+<td><code>/about</code></td>
+<td><code>cachedPublicEvents()</code></td>
+<td>Featured slug into AboutStory</td>
+</tr>
+<tr>
+<td><code>/events</code></td>
+<td><code>cachedPublicEvents()</code></td>
+<td>Featured + later</td>
+</tr>
+<tr>
+<td><code>/events/[slug]</code></td>
+<td>event, divisions, announcements; completed → media/results</td>
+<td>Special slug <code>up-n-roll-superfight-series</code> → SuperfightLanding</td>
+</tr>
+<tr>
+<td><code>…/brackets</code></td>
+<td><code>cachedPublishedBracket</code></td>
+<td>Empty if none published</td>
+</tr>
+<tr>
+<td><code>…/results</code></td>
+<td><code>cachedPublicResults</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>…/schedule</code></td>
+<td><code>cachedPublicSchedule</code> + announcement board</td>
+<td>Live call banner</td>
+</tr>
+<tr>
+<td><code>/events/held/[slug]</code></td>
+<td>static <code>HELD_ARCHIVE</code></td>
+<td>Not Mongo</td>
+</tr>
+<tr>
+<td><code>/brackets</code></td>
+<td>events, schedule, published brackets</td>
+<td>Soft refresh ~8s when live</td>
+</tr>
+<tr>
+<td><code>/rankings</code></td>
+<td><code>cachedRankingBoardEntries()</code></td>
+<td><code>?level=</code> beginner/intermediate</td>
+</tr>
+<tr>
+<td><code>/grapplers/[slug]</code></td>
+<td><code>getPublicFighterBySlug</code> / held-card</td>
+<td>Private fields omitted</td>
+</tr>
+<tr>
+<td><code>/faq</code>, <code>/policies</code>, <code>/announcements</code></td>
+<td><code>cachedPublishedContent</code></td>
+<td>Admin CMS</td>
+</tr>
+<tr>
+<td><code>/store</code>, <code>/seminars</code></td>
+<td>—</td>
+<td>ComingSoon</td>
+</tr>
+</table>
+<p>*Sources: <code>_research/01-architecture-stats.md</code> §8.*</p>
+<hr/>
+<h2 id="sec">7. User Roles &amp; RBAC</h2>
+<p>Actors: <strong>Public</strong>, <strong>Grappler</strong> (<code>User.role=GRAPPLER</code>), <strong>Admin</strong> (<code>ADMIN</code>), <strong>Judge-credential</strong> (separate session — not a User role). Legacy <code>FIGHTER</code> normalises to <code>GRAPPLER</code>. <strong>There is no VERIFIER role.</strong></p>
+<table>
+<tr>
+<th>Capability</th>
+<th>Public</th>
+<th>Grappler</th>
+<th>Admin</th>
+<th>Judge</th>
+</tr>
+<tr>
+<td>Marketing / public content / public photo by slug</td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+<tr>
+<td>Register / login / verify / Google OAuth</td>
+<td>✓</td>
+<td>—</td>
+<td>—</td>
+<td>—</td>
+</tr>
+<tr>
+<td>Grappler portal</td>
+<td>✗</td>
+<td>✓</td>
+<td>✗</td>
+<td>✗</td>
+</tr>
+<tr>
+<td>Own profile, registrations, payment submit</td>
+<td>✗</td>
+<td>✓</td>
+<td>✗</td>
+<td>✗</td>
+</tr>
+<tr>
+<td>Admin portal / payment queue / brackets / CMS</td>
+<td>✗</td>
+<td>✗</td>
+<td>✓</td>
+<td>✗</td>
+</tr>
+<tr>
+<td>Issue/revoke judge credentials</td>
+<td>✗</td>
+<td>✗</td>
+<td>✓</td>
+<td>✗</td>
+</tr>
+<tr>
+<td>Score assigned match</td>
+<td>✗</td>
+<td>✗</td>
+<td>✗</td>
+<td>✓</td>
+</tr>
+<tr>
+<td>Create ADMIN user</td>
+<td>CLI only</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>Cron process-outbox</td>
+<td>Bearer <code>CRON_SECRET</code></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+</table>
+<p>Defense in depth: <code>proxy.ts</code> (presence) → layout <code>getSession</code>/<code>requireRole</code> → <code>requireActor</code> → service <code>assertAdmin</code> / <code>assertGrappler</code> / <code>assertJudgeCanMutateMatch</code>.</p>
+<p><strong>Figure — Roles and access planes</strong></p>
+<pre><code>flowchart LR
+  subgraph UserPlane[&quot;User roles (Mongo User)&quot;]
+    GRAPPLER[GRAPPLER]
+    ADMIN[ADMIN]
+    FIGHTER_legacy[&quot;FIGHTER legacy → GRAPPLER&quot;]
+  end
+
+  subgraph JudgePlane[&quot;Separate judge plane&quot;]
+    Cred[MatchJudgeCredential]
+    JSess[JudgeSession]
+    Cred --&gt; JSess
+  end
+
+  Public[Unauthenticated]
+  Public --&gt; GRAPPLER
+  Public --&gt; Cred
+
+  ADMIN --&gt;|issues_revokes| Cred
+  GRAPPLER --&gt;|portal_payments| AppData[(Registrations / Payments)]
+  ADMIN --&gt;|full_ops| AppData
+  JSess --&gt;|score_only| Match[(Assigned Match)]
+
+  Proxy[&quot;proxy.ts cookie presence&quot;] -.-&gt;|UX_redirect_only| GRAPPLER
+  Proxy -.-&gt; ADMIN
+  Proxy -.-&gt; JSess</code></pre>
+<p>*Source diagram:* <code>docs/handover/diagrams/03-roles-access.mmd</code></p>
+<p><strong>Figure — Authentication flow (app + judge)</strong></p>
+<pre><code>flowchart TD
+  subgraph Entry
+    P[Public visitor]
+    R[&quot;Register email/password&quot;]
+    L[&quot;Login email/password&quot;]
+    G[Google OAuth]
+    J[Judge login]
+  end
+
+  P --&gt; R
+  P --&gt; L
+  P --&gt; G
+  P --&gt; J
+
+  R --&gt; V[&quot;Email verification code&quot;]
+  V --&gt; S[&quot;createSession → upnroll_session&quot;]
+  L --&gt; S
+  G --&gt; S
+
+  S --&gt; Role{User.role}
+  Role --&gt;|ADMIN| Admin[&quot;/admin layout + requireActor ADMIN&quot;]
+  Role --&gt;|GRAPPLER| Grappler[&quot;/grappler layout + requireActor GRAPPLER&quot;]
+
+  J --&gt; JC{&quot;MatchJudgeCredential ACTIVE + scorable match&quot;}
+  JC --&gt; JS[&quot;JudgeSession → upnroll_judge_session&quot;]
+  JS --&gt; Score[&quot;Judge scoring actions for one matchId&quot;]
+
+  Proxy[&quot;proxy.ts cookie presence&quot;] -.-&gt;|UX_redirect_only| Admin
+  Proxy -.-&gt; Grappler
+  Proxy -.-&gt; Score</code></pre>
+<p>*Source diagram:* <code>docs/handover/diagrams/04-authentication-flow.mmd</code></p>
+<p>*Sources: <code>_research/06-auth-security-rbac.md</code>.*</p>
+<hr/>
+<h2 id="sec">8. Grappler Registration &amp; Dashboard</h2>
+<p>Portal shell: <code>frontend/src/app/(grappler)/grappler/layout.tsx</code>. Nav: Desk, Profile, Events, Matches, Requests, Alerts.</p>
+<h3>Journey (summary)</h3>
+<ol><li><strong>Register</strong> at <code>/register</code> → User <code>GRAPPLER</code> + GrapplerProfile stub → verification email → <code>/verify</code>.</li></ol>
+<ol><li><strong>Login</strong> → <code>/grappler/dashboard</code>.</li></ol>
+<ol><li><strong>Complete profile</strong> (photo, identity/Aadhaar, parental consent if under 18, waiver).</li></ol>
+<ol><li><strong>Register for a division</strong> when event is <code>REGISTRATION_OPEN</code> → seat claim + <code>AWAITING_PAYMENT</code> + feeSnapshot.</li></ol>
+<ol><li><strong>Pay offline (UPI)</strong> using QR; optional coupon; upload UTR + screenshot → <code>PENDING_VERIFICATION</code>.</li></ol>
+<ol><li>Admin approves → <code>CONFIRMED</code> (bracket-eligible) or rejects → resubmit.</li></ol>
+<ol><li>View matches / notifications; optional cancel/transfer request or teammate transfer token.</li></ol>
+<p><strong>Figure — Grappler lifecycle / registration journey</strong></p>
+<pre><code>flowchart TD
+  A[&quot;Register account /register&quot;] --&gt; B[&quot;Verify email /verify&quot;]
+  B --&gt; C[&quot;Login → /grappler/dashboard&quot;]
+  C --&gt; D[&quot;Complete profile photo &#183; identity &#183; consent &#183; waiver&quot;]
+  D --&gt; E[&quot;Discover events /events or /registrations/new&quot;]
+  E --&gt; F[&quot;Register for division AWAITING_PAYMENT + feeSnapshot&quot;]
+  F --&gt; G[&quot;Payment desk QR &#183; coupon &#183; UTR + screenshot&quot;]
+  G --&gt; H{Admin review}
+  H --&gt;|APPROVED| I[CONFIRMED]
+  H --&gt;|REJECTED| J[&quot;REJECTED — resubmit payment&quot;]
+  J --&gt; G
+  I --&gt; K[&quot;Matches &#183; notifications&quot;]
+  F --&gt; L[&quot;Cancel / division transfer request&quot;]
+  F --&gt; M[&quot;Teammate transfer token&quot;]
+  L --&gt; N[&quot;Admin decide → CANCELLED or new division&quot;]
+  M --&gt; O[&quot;Claimant completes form → owns seat&quot;]</code></pre>
+<p>*Source diagram:* <code>docs/handover/diagrams/05-grappler-registration.mmd</code></p>
+<h3>Registration statuses</h3>
+<table>
+<tr>
+<th>Status</th>
+<th>Meaning</th>
+</tr>
+<tr>
+<td><code>AWAITING_PAYMENT</code></td>
+<td>Seat held; pay / upload pending</td>
+</tr>
+<tr>
+<td><code>PENDING_VERIFICATION</code></td>
+<td>UTR+screenshot awaiting admin</td>
+</tr>
+<tr>
+<td><code>CONFIRMED</code></td>
+<td>Payment approved; locked for event</td>
+</tr>
+<tr>
+<td><code>REJECTED</code></td>
+<td>Payment rejected; may resubmit</td>
+</tr>
+<tr>
+<td><code>CANCELLED</code></td>
+<td>Withdrawn / cancel approved</td>
+</tr>
+</table>
+<p><strong>Active</strong> (capacity + uniqueness): first three. Guards in <code>backend/services/registrationStateMachine.ts</code>.</p>
+<h3>Payment &amp; coupons (essential)</h3>
+<p>Platform is a <strong>manual UPI proof + admin verification</strong> desk with automated seat/fee/coupon bookkeeping — <strong>not</strong> a payment processor. Coupons are not percentage discounts; each points at a <strong>payment option</strong> (alternate price/QR).</p>
+<p><strong>Figure — Payment + coupon end-to-end (manual UPI proof)</strong></p>
+<pre><code>sequenceDiagram
+  participant G as Grappler UI
+  participant SA as Server Actions
+  participant RS as registrationService
+  participant PS as paymentService
+  participant Admin as Admin payment queue
+  participant Mail as Email adapter
+
+  G-&gt;&gt;SA: createRegistrationAction
+  SA-&gt;&gt;RS: createRegistration (+ optional coupon redeem)
+  RS--&gt;&gt;G: redirect /grappler/registrations/:id/payment
+  Note over G: Shows QR from feeSnapshot / payment option
+  opt Coupon on payment page
+    G-&gt;&gt;SA: applyPaymentCouponAction
+    SA-&gt;&gt;SA: reserveCoupon → applyCouponToRegistration
+  end
+  G-&gt;&gt;G: Pay UPI outside app
+  G-&gt;&gt;SA: submitPaymentAction (UTR + screenshot)
+  SA-&gt;&gt;PS: submitPayment
+  PS-&gt;&gt;PS: store file, PaymentSubmission PENDING_REVIEW
+  PS-&gt;&gt;PS: Registration → PENDING_VERIFICATION
+  PS-&gt;&gt;Mail: Payment submission received
+  Admin-&gt;&gt;PS: approvePayment / rejectPayment
+  PS-&gt;&gt;PS: Registration CONFIRMED / REJECTED + seats
+  PS-&gt;&gt;Mail: confirmed or rejection note</code></pre>
+<p>*Source diagram:* <code>docs/handover/diagrams/06-payment-coupon.mmd</code></p>
+<h3>Teammate transfer vs admin TRANSFER</h3>
+<table>
+<tr>
+<th>Flow</th>
+<th>What it does</th>
+</tr>
+<tr>
+<td>Admin <code>TRANSFER</code> request</td>
+<td>Same event, other division — admin decides</td>
+</tr>
+<tr>
+<td>Teammate transfer token</td>
+<td>Peer seat handoff; claimant completes form; reassigns <code>registration.userId</code></td>
+</tr>
+</table>
+<p>*Sources: <code>_research/03-grappler-lifecycle.md</code>, <code>03-payment-coupon.md</code>.*</p>
+<p>Full operational steps for administrators: <a href="./UpnRoll_Client_Operating_Manual.md">UpnRoll_Client_Operating_Manual.md</a>.</p>
+<hr/>
+<h2 id="sec">9. Admin Dashboard Complete</h2>
+<p>Every <code>/admin/**</code> route requires <code>ADMIN</code>. Nav: Dashboard, Events, Grapplers, Payments, Requests, Rankings, Content, Settings, Media, Outbox, Audit.</p>
+<p><strong>Figure — Admin tournament setup &amp; ops hub</strong></p>
+<pre><code>flowchart TD
+  Desk[&quot;/admin desk&quot;] --&gt; Events[&quot;/admin/events&quot;]
+  Events --&gt; Create[&quot;createEvent → DRAFT&quot;]
+  Create --&gt; Hub[&quot;Event hub /admin/events/id&quot;]
+
+  Hub --&gt; Status[&quot;updateEventStatus&quot;]
+  Hub --&gt; Mats[&quot;updateEventMatCount&quot;]
+  Hub --&gt; Fees[&quot;Fees and coupons /payments&quot;]
+  Hub --&gt; Rules[&quot;Scoring rules&quot;]
+  Hub --&gt; DivDoor[&quot;Divisions door&quot;]
+  Hub --&gt; BrDoor[&quot;Brackets door&quot;]
+  Hub --&gt; MatDoor[&quot;Matches door&quot;]
+  Hub --&gt; Regs[&quot;Registrations + withdraw&quot;]
+
+  DivDoor --&gt; Seed[&quot;seedRoadToSuperFightDivisions&quot;]
+  DivDoor --&gt; CreateDiv[&quot;createDivision&quot;]
+
+  BrDoor --&gt; Gen[&quot;generateBracket DRAFT&quot;]
+  Gen --&gt; Pub[&quot;publishBracket PUBLISHED&quot;]
+
+  MatDoor --&gt; Sched[&quot;updateMatchSchedule&quot;]
+  MatDoor --&gt; JudgeCred[&quot;Issue judge credentials&quot;]
+  MatDoor --&gt; Record[&quot;recordMatchResult / correct&quot;]
+
+  Fees --&gt; Options[&quot;Payment options + QR&quot;]
+  Fees --&gt; Coupons[&quot;createCoupon / disable / release&quot;]
+
+  Desk --&gt; PayQ[&quot;/admin/payments queue&quot;]
+  Desk --&gt; ReqQ[&quot;/admin/requests cancel/transfer&quot;]
+  Desk --&gt; Rank[&quot;/admin/rankings&quot;]
+  Desk --&gt; Content[&quot;Content / Media / Settings&quot;]
+  Desk --&gt; Audit[&quot;Audit + Outbox&quot;]</code></pre>
+<p>*Source diagram:* <code>docs/handover/diagrams/08-admin-tournament.mmd</code></p>
+<h3>Capability catalogue (11-point summaries)</h3>
+<p>Full operational detail for day-to-day operators: <a href="./UpnRoll_Client_Operating_Manual.md">UpnRoll_Client_Operating_Manual.md</a>. Research detail: <code>_research/02-admin-complete.md</code>.</p>
+<h4>9.1 Admin desk — <code>/admin</code></h4>
+<table>
+<tr>
+<th>#</th>
+<th>Item</th>
+<th>Detail</th>
+</tr>
+<tr>
+<td>1</td>
+<td>Feature</td>
+<td>Ops overview</td>
+</tr>
+<tr>
+<td>2</td>
+<td>Purpose</td>
+<td>Presence, pending money/requests, next-event shortcuts</td>
+</tr>
+<tr>
+<td>3</td>
+<td>Path</td>
+<td><code>/admin</code></td>
+</tr>
+<tr>
+<td>4</td>
+<td>Permissions</td>
+<td>ADMIN</td>
+</tr>
+<tr>
+<td>5</td>
+<td>Ops</td>
+<td>Review stats → chase payments/requests → open event hub</td>
+</tr>
+<tr>
+<td>6</td>
+<td>Fields</td>
+<td>Grappler count, logins today, new accounts, pending payments; timelines</td>
+</tr>
+<tr>
+<td>7</td>
+<td>Validation</td>
+<td>Read-only</td>
+</tr>
+<tr>
+<td>8</td>
+<td>Backend</td>
+<td><code>dashboardService.getAdminDashboardData</code></td>
+</tr>
+<tr>
+<td>9</td>
+<td>DB</td>
+<td>None</td>
+</tr>
+<tr>
+<td>10</td>
+<td>Outcome</td>
+<td>Operator sees what needs attention</td>
+</tr>
+<tr>
+<td>11</td>
+<td>Limits</td>
+<td>Feeds capped (e.g. 5 pending payments)</td>
+</tr>
+</table>
+<h4>9.2 Events list & create — <code>/admin/events</code></h4>
+<p>Create: name, slug, venue, dates, fee, mats → status <code>DRAFT</code>. <strong>No delete/archive UI.</strong> Zod + unique slug. Service: <code>eventService.createEvent</code>.</p>
+<h4>9.3 Event hub — <code>/admin/events/[id]</code></h4>
+<p>Doors: Divisions, Brackets, Matches, Fees & coupons, Scoring rules. Status: <code>DRAFT</code> → <code>REGISTRATION_OPEN</code> → <code>REGISTRATION_CLOSED</code> → <code>COMPLETED</code> (manual). Mats, default QR, overview edit, inline division edits, registrations + admin withdraw.</p>
+<h4>9.4 Divisions — <code>…/divisions</code></h4>
+<p>Seed Road-to-Super-Fight grid and/or create custom. <strong>No delete division UI</strong>; edit capacity on hub.</p>
+<h4>9.5 Brackets — <code>…/brackets</code></h4>
+<p>Order CONFIRMED participants → generate DRAFT (manual or random seed) → publish once. <strong>Unpublish not supported.</strong></p>
+<h4>9.6 Matches — <code>…/matches</code></h4>
+<p>Schedule mats/times (conflict detection), record/correct results, issue judge credentials. Dual result path with judge finalize (prefer one path per match).</p>
+<h4>9.7 Fees & coupons — <code>…/payments</code></h4>
+<p>Payment options (tiers + QR) and single-use coupons linked to a tier. Global verification is on <code>/admin/payments</code>, not this page.</p>
+<h4>9.8 Scoring rules — <code>…/scoring-rules</code></h4>
+<p>JSON editor for points/penalties/outcomes. New events start <code>configured: false</code>. Judges blocked until ready.</p>
+<h4>9.9 Grapplers roster &amp; sheet</h4>
+<p>Searchable list + read-only registration sheet with private ID images via admin API. <strong>No admin edit of grappler data.</strong></p>
+<h4>9.10 Payments queue — <code>/admin/payments</code></h4>
+<p>Approve/reject UTR + screenshot. Queue cap <strong>200</strong>. Duplicate UTR advisory only. See §11.</p>
+<h4>9.11 Requests — <code>/admin/requests</code></h4>
+<p>Decide CANCELLATION / TRANSFER. Refund % recorded on cancel approve (50% if ≥30 days before start, else 0) — <strong>no automated payout</strong>.</p>
+<h4>9.12 Rankings, content, media, settings, outbox, audit</h4>
+<table>
+<tr>
+<th>Area</th>
+<th>Path</th>
+<th>Key limits</th>
+</tr>
+<tr>
+<td>Rankings</td>
+<td><code>/admin/rankings</code></td>
+<td>Manual entries <strong>not</strong> consumed by public <code>/rankings</code> yet</td>
+</tr>
+<tr>
+<td>Content</td>
+<td><code>/admin/content</code></td>
+<td>No delete; unpublish → DRAFT</td>
+</tr>
+<tr>
+<td>Media</td>
+<td><code>/admin/media</code></td>
+<td>Create+list only; URL-only; always PUBLISHED</td>
+</tr>
+<tr>
+<td>Settings</td>
+<td><code>/admin/settings</code></td>
+<td>House name + public contact</td>
+</tr>
+<tr>
+<td>Outbox</td>
+<td><code>/admin/notifications</code></td>
+<td>Failed jobs only; cap 50</td>
+</tr>
+<tr>
+<td>Audit</td>
+<td><code>/admin/audit</code></td>
+<td>Latest ~80; no filter UI</td>
+</tr>
+</table>
+<h3>Admin private media APIs</h3>
+<table>
+<tr>
+<th>Route</th>
+<th>Purpose</th>
+</tr>
+<tr>
+<td><code>/api/v1/admin/payments/[id]/screenshot</code></td>
+<td>Payment proof</td>
+</tr>
+<tr>
+<td><code>/api/v1/admin/events/[id]/payment-qr</code></td>
+<td>Default event QR</td>
+</tr>
+<tr>
+<td><code>/api/v1/admin/events/[id]/payment-options/[optionId]/qr</code></td>
+<td>Tier QR</td>
+</tr>
+<tr>
+<td><code>/api/v1/admin/grapplers/[userId]/photo</code></td>
+<td>Passport photo</td>
+</tr>
+<tr>
+<td><code>/api/v1/admin/grapplers/[userId]/aadhaar</code></td>
+<td>ID proof</td>
+</tr>
+<tr>
+<td><code>/api/v1/admin/grapplers/[userId]/parental-consent</code></td>
+<td>Consent image</td>
+</tr>
+</table>
+<hr/>
+<h2 id="sec">10. Judge Panel Complete</h2>
+<p>Judges are <strong>not</strong> User accounts. Access = per-match <code>MatchJudgeCredential</code> + short-lived <code>JudgeSession</code> cookie (<code>upnroll_judge_session</code>, 12h).</p>
+<h3>Credentials</h3>
+<table>
+<tr>
+<th>Item</th>
+<th>Detail</th>
+</tr>
+<tr>
+<td>Alphabet</td>
+<td>57 chars; omits ambiguous 0/O/1/I/l</td>
+</tr>
+<tr>
+<td>Username / password</td>
+<td>10 chars each; password shown <strong>once</strong></td>
+</tr>
+<tr>
+<td>Preconditions</td>
+<td>PUBLISHED bracket; both competitors; match not completed/cancelled/bye for generate</td>
+</tr>
+<tr>
+<td>Regenerate</td>
+<td>Revokes ACTIVE + open sessions; bumps generation</td>
+</tr>
+<tr>
+<td>Login eligibility</td>
+<td>Match status ∈ SCHEDULED</td>
+<td>LIVE</td>
+<td>DELAYED</td>
+</tr>
+</table>
+<p><strong>Figure — Judge credential issue + login</strong></p>
+<pre><code>sequenceDiagram
+  participant Admin as Admin UI
+  participant JCS as judgeCredentialService
+  participant DB as MongoDB
+  participant Judge as Judge browser
+  participant Auth as judge-session
+  participant Cookie as Cookie jar
+
+  Admin-&gt;&gt;JCS: generateMatchJudgeCredentials(matchId)
+  JCS-&gt;&gt;DB: assert PUBLISHED bracket, competitors, no ACTIVE cred
+  JCS-&gt;&gt;DB: insert MatchJudgeCredential (hash only)
+  JCS--&gt;&gt;Admin: username + password (once)
+
+  Judge-&gt;&gt;Auth: loginJudge(username, password)
+  Auth-&gt;&gt;DB: find ACTIVE cred + verifyPassword
+  Auth-&gt;&gt;DB: Match status in SCORABLE
+  Auth-&gt;&gt;DB: create JudgeSession(tokenHash, generation)
+  Auth-&gt;&gt;Cookie: set upnroll_judge_session (12h)
+  Auth--&gt;&gt;Judge: JudgeActor
+
+  Judge-&gt;&gt;Auth: getJudgeSession / requireJudgeSession
+  Auth-&gt;&gt;Cookie: read packed token
+  Auth-&gt;&gt;DB: session + ACTIVE cred + generation + scorable match
+  Auth--&gt;&gt;Judge: JudgeActor or null → /judge/login</code></pre>
+<p>*Source diagram:* <code>docs/handover/diagrams/11-judge-authentication.mmd</code></p>
+<h3>Scoring console (<code>/judge</code>)</h3>
+<table>
+<tr>
+<th>UI action</th>
+<th>Service</th>
+</tr>
+<tr>
+<td>Point / penalty</td>
+<td><code>applyScoreEvent</code></td>
+</tr>
+<tr>
+<td>Undo</td>
+<td><code>undoScoreEvent</code></td>
+</tr>
+<tr>
+<td>Finalize</td>
+<td><code>finalizeMatchResult</code> → COMPLETED OFFICIAL + advance + outbox</td>
+</tr>
+</table>
+<p>Each mutation sends <code>idempotencyKey</code> + <code>expectedVersion</code> (optimistic concurrency). First score flips SCHEDULED/DELAYED → LIVE. Requires <code>isScoringRulesReady</code>.</p>
+<p><strong>Figure — Live match scoring sequence</strong></p>
+<pre><code>sequenceDiagram
+  participant UI as ScoringConsole
+  participant Act as judge actions
+  participant Auth as assertJudgeCanMutateMatch
+  participant SS as scoringService
+  participant DB as MongoDB
+  participant OB as Outbox
+
+  UI-&gt;&gt;Act: score / undo / finalize (+ idempotencyKey, expectedVersion)
+  Act-&gt;&gt;Auth: requireJudgeSession + match scope
+  Auth-&gt;&gt;DB: credential generation / session / status
+  Act-&gt;&gt;SS: applyScoreEvent | undoScoreEvent | finalizeMatchResult
+
+  alt duplicate idempotencyKey
+    SS--&gt;&gt;Act: replayed existing event
+  else version mismatch
+    SS--&gt;&gt;Act: ConflictError refresh
+  else apply
+    SS-&gt;&gt;DB: bump scoreVersion/seq, MatchScoreEvent
+    opt first point
+      SS-&gt;&gt;DB: status SCHEDULED|DELAYED → LIVE
+    end
+    opt finalize
+      SS-&gt;&gt;DB: COMPLETED OFFICIAL + advanceWinner
+      SS-&gt;&gt;OB: RANKINGS_RECALC + MATCH_RESULT_NOTIFY
+    end
+  end
+  Act--&gt;&gt;UI: ok / error → router.refresh()</code></pre>
+<p>*Source diagram:* <code>docs/handover/diagrams/12-match-scoring.mmd</code></p>
+<p><strong>Operator note:</strong> Prefer one result path per match — judge finalize <strong>or</strong> admin <code>recordMatchResult</code> (SCHEDULED-only, no score timeline).</p>
+<p>*Sources: <code>_research/04-judge-panel.md</code>.*</p>
+<hr/>
+<h2 id="sec">11. Verification System</h2>
+<p>Three distinct “verify” concepts — do not conflate them:</p>
+<table>
+<tr>
+<th>Concept</th>
+<th>Where</th>
+<th>Who</th>
+</tr>
+<tr>
+<td><strong>Payment / registration verification</strong></td>
+<td><code>/admin/payments</code></td>
+<td>ADMIN only</td>
+</tr>
+<tr>
+<td><strong>Email OTP verification</strong></td>
+<td><code>/verify</code></td>
+<td>New grappler (auth)</td>
+</tr>
+<tr>
+<td><strong>Request review</strong></td>
+<td><code>/admin/requests</code></td>
+<td>ADMIN (cancel/transfer)</td>
+</tr>
+</table>
+<h3>Payment verification state machine</h3>
+<table>
+<tr>
+<th>Stage</th>
+<th>Registration</th>
+<th>PaymentSubmission</th>
+</tr>
+<tr>
+<td>After register</td>
+<td><code>AWAITING_PAYMENT</code></td>
+<td>often <code>AWAITING_SUBMISSION</code></td>
+</tr>
+<tr>
+<td>After submit</td>
+<td><code>PENDING_VERIFICATION</code></td>
+<td><code>PENDING_REVIEW</code></td>
+</tr>
+<tr>
+<td>Approve</td>
+<td><code>CONFIRMED</code></td>
+<td><code>APPROVED</code></td>
+</tr>
+<tr>
+<td>Reject</td>
+<td><code>REJECTED</code></td>
+<td><code>REJECTED</code> (resubmit OK)</td>
+</tr>
+</table>
+<p><strong>Figure — Admin payment/registration verification desk</strong></p>
+<pre><code>flowchart TD
+  subgraph GrapplerSide[&quot;Grappler&quot;]
+    Pay[&quot;Pay UPI offline using QR / coupon tier&quot;]
+    Submit[&quot;submitPayment UTR + screenshot&quot;]
+    Resubmit[&quot;Resubmit if REJECTED&quot;]
+  end
+
+  subgraph States[&quot;Registration ↔ PaymentSubmission&quot;]
+    AP[&quot;AWAITING_PAYMENT&quot;]
+    PV[&quot;PENDING_VERIFICATION + PENDING_REVIEW&quot;]
+    Conf[CONFIRMED + APPROVED]
+    Rej[REJECTED + REJECTED]
+  end
+
+  subgraph AdminSide[&quot;Admin only — no VERIFIER role&quot;]
+    Queue[&quot;/admin/payments Review&quot;]
+    Dup[&quot;flagDuplicateUtrs advisory&quot;]
+    Decide{&quot;approvePayment / rejectPayment&quot;}
+  end
+
+  Pay --&gt; Submit
+  Submit --&gt; PV
+  AP --&gt; Submit
+  PV --&gt; Queue
+  Queue --&gt; Dup
+  Queue --&gt; Decide
+  Decide --&gt;|APPROVED| Conf
+  Decide --&gt;|REJECTED note required| Rej
+  Rej --&gt; Resubmit
+  Resubmit --&gt; Submit
+  Conf --&gt; Eligible[&quot;Bracket-eligible CONFIRMED&quot;]</code></pre>
+<p>*Source diagram:* <code>docs/handover/diagrams/07-verification.mmd</code></p>
+<p><strong>One-liner for handover:</strong> <code>/admin/payments</code> = money/registration confirmation by ADMIN. <code>/verify</code> = email ownership for account login.</p>
+<p>*Sources: <code>_research/02-verification.md</code>.*</p>
+<hr/>
+<h2 id="sec">12. Tournament Lifecycle</h2>
+<p>Status legend: <strong>Implemented</strong> · <strong>Partial</strong> · <strong>Manual</strong> · <strong>Missing</strong>.</p>
+<table>
+<tr>
+<th>#</th>
+<th>Step</th>
+<th>Status</th>
+</tr>
+<tr>
+<td>1</td>
+<td>Provision admin (CLI)</td>
+<td>Manual</td>
+</tr>
+<tr>
+<td>2</td>
+<td>Create event DRAFT</td>
+<td>Implemented</td>
+</tr>
+<tr>
+<td>3</td>
+<td>Configure QR / mats / options / scoring</td>
+<td>Implemented</td>
+</tr>
+<tr>
+<td>4</td>
+<td>Create / seed divisions</td>
+<td>Implemented</td>
+</tr>
+<tr>
+<td>5</td>
+<td>Open registration</td>
+<td>Manual status flip</td>
+</tr>
+<tr>
+<td>6</td>
+<td>Grappler account + email verify</td>
+<td>Implemented (OAuth Partial)</td>
+</tr>
+<tr>
+<td>7</td>
+<td>Complete profile</td>
+<td>Implemented</td>
+</tr>
+<tr>
+<td>8</td>
+<td>Create registration + seat</td>
+<td>Implemented</td>
+</tr>
+<tr>
+<td>9</td>
+<td>Optional coupon</td>
+<td>Implemented</td>
+</tr>
+<tr>
+<td>10</td>
+<td>Submit UTR + screenshot</td>
+<td>Implemented</td>
+</tr>
+<tr>
+<td>11</td>
+<td>Admin approve / reject</td>
+<td>Implemented</td>
+</tr>
+<tr>
+<td>12</td>
+<td>Close registration</td>
+<td>Manual</td>
+</tr>
+<tr>
+<td>13</td>
+<td>Generate DRAFT bracket</td>
+<td>Implemented</td>
+</tr>
+<tr>
+<td>14</td>
+<td>Publish bracket</td>
+<td>Implemented</td>
+</tr>
+<tr>
+<td>15</td>
+<td>Schedule mats / times</td>
+<td>Partial</td>
+</tr>
+<tr>
+<td>16</td>
+<td>Issue judge credentials</td>
+<td>Implemented</td>
+</tr>
+<tr>
+<td>17</td>
+<td>Live score / finalize or admin record</td>
+<td>Partial (dual path)</td>
+</tr>
+<tr>
+<td>18</td>
+<td>Advance winners</td>
+<td>Implemented</td>
+</tr>
+<tr>
+<td>19</td>
+<td>Rankings recalc + public boards</td>
+<td>Partial</td>
+</tr>
+<tr>
+<td>20</td>
+<td>Close event / post-event requests</td>
+<td>Partial (COMPLETED Manual; requests Implemented)</td>
+</tr>
+</table>
+<p><strong>Figure — End-to-end 20-step tournament lifecycle</strong></p>
+<pre><code>flowchart TD
+  S1[&quot;1. Create admin CLI Manual&quot;] --&gt; S2[&quot;2. createEvent DRAFT&quot;]
+  S2 --&gt; S3[&quot;3. Configure QR / mats / payment options / scoring&quot;]
+  S3 --&gt; S4[&quot;4. Create or seed divisions&quot;]
+  S4 --&gt; S5[&quot;5. Status → REGISTRATION_OPEN Manual&quot;]
+  S5 --&gt; S6[&quot;6. Grappler register + verify&quot;]
+  S6 --&gt; S7[&quot;7. Profile + photo&quot;]
+  S7 --&gt; S8[&quot;8. createRegistration AWAITING_PAYMENT + seat&quot;]
+  S8 --&gt; S9[&quot;9. Optional coupon&quot;]
+  S9 --&gt; S10[&quot;10. submitPayment PENDING_VERIFICATION&quot;]
+  S10 --&gt; S11{&quot;11. Admin payment decide&quot;}
+  S11 --&gt;|approve| S12[CONFIRMED]
+  S11 --&gt;|reject| S10
+  S12 --&gt; S13[&quot;12. REGISTRATION_CLOSED Manual&quot;]
+  S13 --&gt; S14[&quot;13. generateBracket DRAFT&quot;]
+  S14 --&gt; S15[&quot;14. publishBracket + reminders&quot;]
+  S15 --&gt; S16[&quot;15. updateMatchSchedule&quot;]
+  S16 --&gt; S17[&quot;16. Judge credentials&quot;]
+  S17 --&gt; S18{&quot;17. Result entry dual-path&quot;}
+  S18 --&gt;|Judge| J[&quot;finalizeMatchResult LIVE + OFFICIAL&quot;]
+  S18 --&gt;|Admin| A[&quot;recordMatchResult SCHEDULED only&quot;]
+  J --&gt; S19[&quot;18. advanceWinnerIfApplicable&quot;]
+  A --&gt; S19
+  S19 --&gt; S20{&quot;More rounds?&quot;}
+  S20 --&gt;|yes| S16
+  S20 --&gt;|final| S21[&quot;19. Rankings recalc outbox/cron&quot;]
+  S21 --&gt; S22[&quot;20. Event COMPLETED Manual; requests Implemented&quot;]
+  S15 --&gt; Pub[&quot;Public brackets / schedule / results&quot;]
+  S21 --&gt; Board[&quot;Public /rankings board&quot;]</code></pre>
+<p>*Source diagram:* <code>docs/handover/diagrams/09-tournament-lifecycle.mmd</code></p>
+<p><strong>Figure — Bracket generate → publish → advance</strong></p>
+<pre><code>flowchart TD
+  A[&quot;Admin selects CONFIRMED regs&quot;] --&gt; B{mode}
+  B --&gt;|manual| C[Keep order]
+  B --&gt;|random| D[&quot;shuffleDeterministic seed&quot;]
+  C --&gt; E[buildBracket]
+  D --&gt; E
+  E --&gt; F[&quot;Bracket DRAFT + Matches&quot;]
+  F --&gt; G[&quot;publishBracket → PUBLISHED&quot;]
+  G --&gt; H[Reminders scheduled]
+  H --&gt; I[&quot;Match SCHEDULED / BYE / PENDING&quot;]
+  I --&gt; J{Result path}
+  J --&gt;|Judge_finalize| K[scoringService.finalizeMatchResult]
+  J --&gt;|Admin_dialog| L[matchService.recordMatchResult]
+  K --&gt; M[advanceWinnerIfApplicable]
+  L --&gt; M
+  M --&gt; N[&quot;Fill next slot A/B&quot;]
+  N --&gt; O{&quot;Both set and PENDING?&quot;}
+  O --&gt;|yes| P[&quot;Next → SCHEDULED&quot;]
+  O --&gt;|no_or_final| Q[&quot;Stop or wait&quot;]
+  K --&gt; R[&quot;Outbox RANKINGS_RECALC&quot;]</code></pre>
+<p>*Source diagram:* <code>docs/handover/diagrams/10-bracket-progression.mmd</code></p>
+<p><strong>Figure — Ranking recalculation path</strong></p>
+<pre><code>flowchart TD
+  F[&quot;Match finalized OFFICIAL or admin recalculate&quot;] --&gt; O{Trigger}
+  O --&gt;|outbox| Q[RANKINGS_RECALC job]
+  O --&gt;|admin_button| S[recalculateRankings]
+  Q --&gt; W[processOutboxJob]
+  W --&gt; S2[recalculateRankingsSystem]
+  S --&gt; T[recalculateRankingsInTransaction]
+  S2 --&gt; T
+  T --&gt; U[&quot;Load COMPLETED + BYE matches&quot;]
+  U --&gt; V[computeRecord per userId]
+  V --&gt; X[&quot;winLossPointsStrategy: wins * 3&quot;]
+  X --&gt; Y[&quot;Upsert RankingRecord GLOBAL&quot;]
+  Y --&gt; Z1[&quot;Admin table: listPublicRankings&quot;]
+  Y --&gt; Z2[&quot;Public board: listRankingBoardEntries&quot;]
+  M[&quot;ManualRankingEntry published&quot;] -.-&gt;|NOT_WIRED| Z2</code></pre>
+<p>*Source diagram:* <code>docs/handover/diagrams/13-ranking-update.mmd</code></p>
+<p>*Sources: <code>_research/04-tournament-lifecycle.md</code>, <code>04-brackets-rankings.md</code>.*</p>
+<hr/>
+<h2 id="sec">13. Business Rules</h2>
+<p>Essential rules (full write-ups: <code>_research/05-business-rules.md</code>).</p>
+<table>
+<tr>
+<th>#</th>
+<th>Rule</th>
+<th>Summary</th>
+<th>Primary source</th>
+</tr>
+<tr>
+<td>1</td>
+<td>Eligibility</td>
+<td>Gender + belt↔experience when taxonomy set; BEGINNER=White; INTERMEDIATE=Blue/Purple</td>
+<td><code>registrationEligibility.ts</code></td>
+</tr>
+<tr>
+<td>2</td>
+<td>Division taxonomy</td>
+<td>Road-to-Super-Fight weight × gender × experience grid; weight bounds <strong>not</strong> scale-checked at register</td>
+<td><code>divisionTaxonomy.ts</code></td>
+</tr>
+<tr>
+<td>3</td>
+<td>Registration</td>
+<td>Event open window; consents; no duplicate active seat; server-authoritative fee</td>
+<td><code>registrationService.ts</code></td>
+</tr>
+<tr>
+<td>4</td>
+<td>Occupancy</td>
+<td>Atomic <code>filledCount</code> claim/release; missing counter errors (backfill)</td>
+<td><code>divisionOccupancy.ts</code></td>
+</tr>
+<tr>
+<td>5</td>
+<td>Payments</td>
+<td>Manual UTR review; feeSnapshot immutable; duplicate UTR flag only</td>
+<td><code>paymentService.ts</code></td>
+</tr>
+<tr>
+<td>6</td>
+<td>Coupons</td>
+<td>Reserve → redeem; hold minutes env-tunable; not % discount</td>
+<td><code>couponService.ts</code></td>
+</tr>
+<tr>
+<td>7</td>
+<td>Schedule conflicts</td>
+<td>Assumed match duration; mat/fighter overlap; override flag</td>
+<td><code>matchConflict.ts</code></td>
+</tr>
+<tr>
+<td>8</td>
+<td>Brackets</td>
+<td>Single-elim; power-of-two pad; byes; publish irreversible</td>
+<td><code>bracketEngine.ts</code></td>
+</tr>
+<tr>
+<td>9</td>
+<td>Scoring</td>
+<td>Event rules; version + idempotency; finalize OFFICIAL</td>
+<td><code>scoringService.ts</code></td>
+</tr>
+<tr>
+<td>10</td>
+<td>Rankings</td>
+<td>Placeholder <code>wins * 3</code>; manual board unwired</td>
+<td><code>rankingEngine.ts</code></td>
+</tr>
+<tr>
+<td>11</td>
+<td>Judge credentials</td>
+<td>Per-match; generation revoke; match-scoped</td>
+<td><code>judgeCredentialService.ts</code></td>
+</tr>
+<tr>
+<td>12</td>
+<td>Cancel/transfer</td>
+<td>Admin-reviewed; refund % informational</td>
+<td><code>requestService.ts</code></td>
+</tr>
+<tr>
+<td>13</td>
+<td>Teammate transfer</td>
+<td>Hashed invite token; eligibility on claim</td>
+<td><code>teammateTransfer.ts</code></td>
+</tr>
+</table>
+<hr/>
+<h2 id="sec">14. Database</h2>
+<p><strong>24</strong> Mongoose models in <code>backend/models/</code>. Timestamps on all except AuditLog (<code>createdAt</code> only).</p>
+<p><strong>Figure — Core Mongoose collections ERD</strong></p>
+<pre><code>erDiagram
+  User ||--o| GrapplerProfile : &quot;userId&quot;
+  User ||--o{ Session : &quot;userId&quot;
+  User ||--o{ EmailVerification : &quot;userId&quot;
+  User ||--o{ Registration : &quot;userId&quot;
+  User ||--o{ RankingRecord : &quot;userId&quot;
+  User ||--o{ Notification : &quot;userId&quot;
+  User ||--o{ AuditLog : &quot;actorId&quot;
+  User ||--o{ ManualRankingEntry : &quot;userId optional&quot;
+
+  Event ||--o{ Division : &quot;eventId&quot;
+  Event ||--o{ Bracket : &quot;eventId&quot;
+  Event ||--o{ Match : &quot;eventId&quot;
+  Event ||--o{ Registration : &quot;eventId&quot;
+  Event ||--o{ PaymentSubmission : &quot;eventId&quot;
+  Event ||--o{ Coupon : &quot;eventId&quot;
+  Event ||--o{ MediaAsset : &quot;eventId optional&quot;
+  Event ||--o{ MatchJudgeCredential : &quot;eventId&quot;
+  Event ||--o{ MatchScoreEvent : &quot;eventId&quot;
+  Event ||--o{ Notification : &quot;eventId optional&quot;
+
+  Division ||--o| Bracket : &quot;divisionId unique&quot;
+  Division ||--o{ Match : &quot;divisionId&quot;
+  Division ||--o{ Registration : &quot;divisionId&quot;
+
+  Bracket ||--o{ Match : &quot;bracketId&quot;
+
+  Registration ||--o{ PaymentSubmission : &quot;registrationId&quot;
+  Registration ||--o{ RegistrationRequest : &quot;registrationId&quot;
+  Registration ||--o{ TransferInvite : &quot;registrationId&quot;
+  Registration }o--o| Coupon : &quot;couponId / redeemedBy&quot;
+
+  Match ||--o{ MatchScoreEvent : &quot;matchId&quot;
+  Match ||--o{ MatchJudgeCredential : &quot;matchId&quot;
+  MatchJudgeCredential ||--o{ JudgeSession : &quot;credentialId&quot;
+
+  Coupon }o--|| Event : &quot;eventId&quot;
+  ContentEntry }o--|| User : &quot;createdBy&quot;
+  MediaAsset }o--|| User : &quot;createdBy&quot;
+  SiteSettings ||--|| SiteSettings : &quot;singleton key=default&quot;
+  OutboxJob ||--o| OutboxJob : &quot;supersededBy&quot;</code></pre>
+<p>*Source diagram:* <code>docs/handover/diagrams/14-database-erd.mmd</code></p>
+<h3>Model catalogue</h3>
+<table>
+<tr>
+<th>#</th>
+<th>Model</th>
+<th>Collection</th>
+<th>Purpose</th>
+</tr>
+<tr>
+<td>1</td>
+<td>User</td>
+<td><code>users</code></td>
+<td>Auth identity; GRAPPLER / ADMIN</td>
+</tr>
+<tr>
+<td>2</td>
+<td>GrapplerProfile (FighterProfile)</td>
+<td><code>fighterprofiles</code></td>
+<td>Public + private profile</td>
+</tr>
+<tr>
+<td>3</td>
+<td>Session</td>
+<td><code>sessions</code></td>
+<td>App cookie session (hashed token, TTL)</td>
+</tr>
+<tr>
+<td>4</td>
+<td>EmailVerification</td>
+<td><code>emailverifications</code></td>
+<td>Hashed OTP codes</td>
+</tr>
+<tr>
+<td>5</td>
+<td>Event</td>
+<td><code>events</code></td>
+<td>Tournament root</td>
+</tr>
+<tr>
+<td>6</td>
+<td>Division</td>
+<td><code>divisions</code></td>
+<td>Class + capacity</td>
+</tr>
+<tr>
+<td>7</td>
+<td>Registration</td>
+<td><code>registrations</code></td>
+<td>Seat + feeSnapshot</td>
+</tr>
+<tr>
+<td>8</td>
+<td>PaymentSubmission</td>
+<td><code>paymentsubmissions</code></td>
+<td>UTR + screenshot queue</td>
+</tr>
+<tr>
+<td>9</td>
+<td>Coupon</td>
+<td><code>coupons</code></td>
+<td>Single-use payment-option codes</td>
+</tr>
+<tr>
+<td>10</td>
+<td>Bracket</td>
+<td><code>brackets</code></td>
+<td>One single-elim per division</td>
+</tr>
+<tr>
+<td>11</td>
+<td>Match</td>
+<td><code>matches</code></td>
+<td>Bout + scores + result</td>
+</tr>
+<tr>
+<td>12</td>
+<td>MatchScoreEvent</td>
+<td><code>matchscoreevents</code></td>
+<td>Live scoring timeline</td>
+</tr>
+<tr>
+<td>13</td>
+<td>MatchJudgeCredential</td>
+<td><code>matchjudgecredentials</code></td>
+<td>Per-match judge login</td>
+</tr>
+<tr>
+<td>14</td>
+<td>JudgeSession</td>
+<td><code>judgesessions</code></td>
+<td>Judge cookie session (TTL)</td>
+</tr>
+<tr>
+<td>15</td>
+<td>RankingRecord</td>
+<td><code>rankingrecords</code></td>
+<td>Computed W/L/points</td>
+</tr>
+<tr>
+<td>16</td>
+<td>ManualRankingEntry</td>
+<td><code>manualrankingentries</code></td>
+<td>Admin-curated rows</td>
+</tr>
+<tr>
+<td>17</td>
+<td>RegistrationRequest</td>
+<td><code>registrationrequests</code></td>
+<td>Cancel / transfer</td>
+</tr>
+<tr>
+<td>18</td>
+<td>TransferInvite</td>
+<td><code>transferinvites</code></td>
+<td>Teammate handoff</td>
+</tr>
+<tr>
+<td>19</td>
+<td>Notification</td>
+<td><code>notifications</code></td>
+<td>In-app alerts</td>
+</tr>
+<tr>
+<td>20</td>
+<td>OutboxJob</td>
+<td><code>outboxjobs</code></td>
+<td>Durable async jobs</td>
+</tr>
+<tr>
+<td>21</td>
+<td>ContentEntry</td>
+<td><code>contententries</code></td>
+<td>FAQ / announcement / policy</td>
+</tr>
+<tr>
+<td>22</td>
+<td>MediaAsset</td>
+<td><code>mediaassets</code></td>
+<td>External media links</td>
+</tr>
+<tr>
+<td>23</td>
+<td>SiteSettings</td>
+<td><code>sitesettings</code></td>
+<td>Singleton contact card</td>
+</tr>
+<tr>
+<td>24</td>
+<td>AuditLog</td>
+<td><code>auditlogs</code></td>
+<td>Append-only action trail</td>
+</tr>
+</table>
+<h3>Essential field notes</h3>
+<ul><li><strong>User:</strong> <code>email</code> unique; <code>role</code> GRAPPLER\|ADMIN\|FIGHTER; <code>emailVerified</code>; <code>status</code> ACTIVE\|DISABLED.</li></ul>
+<ul><li><strong>Registration:</strong> active statuses hold capacity; partial unique <code>{userId, divisionId}</code>; <code>feeSnapshot</code> freezes amount/option/QR/coupon.</li></ul>
+<ul><li><strong>Event:</strong> nested <code>paymentOptions[]</code> + <code>scoringRules</code>; status DRAFT→…→COMPLETED.</li></ul>
+<ul><li><strong>Match:</strong> statuses include PENDING, SCHEDULED, LIVE, DELAYED, COMPLETED, BYE, CANCELLED, ERROR; <code>scoreVersion</code> for concurrency.</li></ul>
+<ul><li><strong>Privacy:</strong> Aadhaar / parental consent / payment screenshots are storage keys only — served via authenticated APIs.</li></ul>
+<p>Full operational detail (per-field tables, indexes, lifecycles): <a href="./UpnRoll_Database_Documentation.md">UpnRoll_Database_Documentation.md</a>.</p>
+<p>*Sources: <code>_research/05-database.md</code>.*</p>
+<hr/>
+<h2 id="sec">15. API &amp; Server Actions</h2>
+<p><strong>Primary mutation surface:</strong> Server Actions (<code>&quot;use server&quot;</code>). REST is mainly binary media, Google OAuth, health, and cron (<strong>18</strong> <code>route.ts</code> handlers).</p>
+<h3>REST essentials</h3>
+<table>
+<tr>
+<th>Method</th>
+<th>Path</th>
+<th>Auth</th>
+<th>Purpose</th>
+</tr>
+<tr>
+<td>GET</td>
+<td><code>/api/health</code></td>
+<td>Public</td>
+<td>Mongo ping</td>
+</tr>
+<tr>
+<td>GET\</td>
+<td>POST</td>
+<td><code>/api/cron/process-outbox</code></td>
+<td>Bearer <code>CRON_SECRET</code></td>
+<td>Outbox worker</td>
+</tr>
+<tr>
+<td>GET</td>
+<td><code>/api/auth/google</code> (+ callback)</td>
+<td>Public / OAuth</td>
+<td>Optional Google login</td>
+</tr>
+<tr>
+<td>GET</td>
+<td><code>/api/v1/public/grapplers/[slug]/photo</code></td>
+<td>Public</td>
+<td>Public passport photo</td>
+</tr>
+<tr>
+<td>GET</td>
+<td>`/api/v1/grappler/photo\</td>
+<td>aadhaar\</td>
+<td>parental-consent`</td>
+<td>GRAPPLER</td>
+<td>Own private images</td>
+</tr>
+<tr>
+<td>GET</td>
+<td><code>/api/v1/grappler/events/[eventId]/payment-qr</code></td>
+<td>Session</td>
+<td>Payment QR stream</td>
+</tr>
+<tr>
+<td>GET</td>
+<td><code>/api/v1/admin/…</code> (photo, aadhaar, consent, QR, screenshot)</td>
+<td>ADMIN</td>
+<td>Private bytes</td>
+</tr>
+</table>
+<p>Legacy <code>/api/v1/fighter/*</code> mirrors grappler routes (redirects also configured).</p>
+<h3>Server Actions by module (inventory)</h3>
+<table>
+<tr>
+<th>Module</th>
+<th>Actions (representative)</th>
+<th>Auth</th>
+</tr>
+<tr>
+<td><code>features/auth</code></td>
+<td>register, login, verify, resend, logout</td>
+<td>Public / session</td>
+</tr>
+<tr>
+<td><code>features/profile</code></td>
+<td>updateProfileAction</td>
+<td>GRAPPLER</td>
+</tr>
+<tr>
+<td><code>features/registrations</code></td>
+<td>createRegistration; withdraw (admin)</td>
+<td>GRAPPLER / ADMIN</td>
+</tr>
+<tr>
+<td><code>features/payments</code></td>
+<td>submitPayment; apply coupon; admin option/coupon CRUD</td>
+<td>Mixed</td>
+</tr>
+<tr>
+<td><code>features/admin-payments</code></td>
+<td>approve / reject</td>
+<td>ADMIN</td>
+</tr>
+<tr>
+<td><code>features/requests</code></td>
+<td>create/decide request; teammate transfer create/claim</td>
+<td>Mixed</td>
+</tr>
+<tr>
+<td><code>features/events</code></td>
+<td>create event/division; status; mats; details; seed</td>
+<td>ADMIN</td>
+</tr>
+<tr>
+<td><code>features/brackets</code></td>
+<td>generate; publish</td>
+<td>ADMIN</td>
+</tr>
+<tr>
+<td><code>features/matches</code></td>
+<td>record/correct result; schedule; judge credentials</td>
+<td>ADMIN</td>
+</tr>
+<tr>
+<td><code>features/judge</code></td>
+<td>login/logout; score; undo; finalize</td>
+<td>Judge session</td>
+</tr>
+<tr>
+<td><code>features/scoring</code></td>
+<td>saveScoringRules</td>
+<td>ADMIN</td>
+</tr>
+<tr>
+<td><code>features/rankings</code></td>
+<td>recalculate; manual upsert/delete</td>
+<td>ADMIN</td>
+</tr>
+<tr>
+<td><code>features/notifications</code></td>
+<td>mark read; retry outbox</td>
+<td>Mixed</td>
+</tr>
+<tr>
+<td><code>features/settings</code> / media / content</td>
+<td>site settings; media create; content CRUD/publish</td>
+<td>ADMIN</td>
+</tr>
+<tr>
+<td><code>features/chatbot</code></td>
+<td>askChatbotAction</td>
+<td>Public</td>
+</tr>
+</table>
+<p><strong>Rate limits:</strong> in-memory 10 tokens / 60s on register/login/verify/resend and judge-login — <strong>not</strong> multi-instance safe.</p>
+<p>Full field lists and fictional HTTP examples: <a href="./UpnRoll_API_Reference.md">UpnRoll_API_Reference.md</a>.</p>
+<p>*Sources: <code>_research/05-api-actions.md</code>.*</p>
+<hr/>
+<h2 id="sec">16. Authentication &amp; Security</h2>
+<h3>App session</h3>
+<table>
+<tr>
+<th>Item</th>
+<th>Detail</th>
+</tr>
+<tr>
+<td>Cookie</td>
+<td><code>upnroll_session</code></td>
+</tr>
+<tr>
+<td>Max age</td>
+<td>30 days</td>
+</tr>
+<tr>
+<td>Flags</td>
+<td>httpOnly, sameSite=lax, secure in production</td>
+</tr>
+<tr>
+<td>Value</td>
+<td>HMAC-packed token (<code>SESSION_SECRET</code>)</td>
+</tr>
+<tr>
+<td>Store</td>
+<td>SHA-256 of raw token in <code>Session</code> + TTL</td>
+</tr>
+<tr>
+<td>Password</td>
+<td>scrypt + timing-safe verify</td>
+</tr>
+<tr>
+<td>Register policy</td>
+<td>min 10 chars, letter + number</td>
+</tr>
+</table>
+<h3>Security controls (Implemented)</h3>
+<ul><li>Dual layout + service RBAC; proxy documented as non-authoritative</li></ul>
+<ul><li>Magic-byte upload validation; path traversal hardening; production <code>STORAGE_DRIVER</code> assert</li></ul>
+<ul><li>Security headers: HSTS, X-Frame-Options DENY, nosniff, restrictive Permissions-Policy</li></ul>
+<ul><li>CSP <strong>Report-Only</strong> (do not flip to enforcing without nonce/hash strategy)</li></ul>
+<ul><li>Safe client errors via <code>toAppError</code> / <code>fail()</code></li></ul>
+<ul><li>Audit logs on auth and credential events</li></ul>
+<h3>Recommended improvements (not blockers for understanding)</h3>
+<p>Distributed rate limiting; enforce CSP; shorter admin session / re-auth; MFA for Admin; real WhatsApp when required.</p>
+<p>*Sources: <code>_research/06-auth-security-rbac.md</code>.*</p>
+<hr/>
+<h2 id="sec">17. Email &amp; Notifications</h2>
+<h3>Transport</h3>
+<p>Nodemailer SMTP when all five <code>SMTP_*</code> set; otherwise console adapter in non-production. Production runtime <strong>fails closed</strong> without SMTP (<code>instrumentation.ts</code>).</p>
+<h3>Trigger matrix (essential)</h3>
+<table>
+<tr>
+<th>Trigger</th>
+<th>Channel</th>
+</tr>
+<tr>
+<td>Register / resend / verified welcome</td>
+<td>Email</td>
+</tr>
+<tr>
+<td>Payment submitted / approved / rejected</td>
+<td>Email</td>
+</tr>
+<tr>
+<td>Cancel/transfer decided</td>
+<td>Email</td>
+</tr>
+<tr>
+<td>Match schedule updated</td>
+<td>Email + WhatsApp <strong>mock</strong></td>
+</tr>
+<tr>
+<td>Reminders / result notify</td>
+<td>Outbox → in-app + email</td>
+</tr>
+<tr>
+<td>Rankings recalc</td>
+<td>Outbox (system, no user message)</td>
+</tr>
+</table>
+<h3>Outbox job types</h3>
+<p><code>MATCH_REMINDER</code> · <code>MATCH_SCHEDULE_CHANGED</code> · <code>MATCH_RESULT_NOTIFY</code> · <code>RANKINGS_RECALC</code> · <code>EMAIL_DISPATCH</code> (stub).</p>
+<p>Admin recovery: <code>/admin/notifications</code> (failed jobs + retry). Cron: <code>/api/cron/process-outbox</code>.</p>
+<p><strong>Gaps:</strong> WhatsApp is console-only; <code>PAYMENT_DECISION</code> in-app type exists but payment decisions are email-only today; SMTP inbox delivery <strong>Requires confirmation</strong>.</p>
+<p>*Sources: <code>_research/06-email-notifications.md</code>.*</p>
+<hr/>
+<h2 id="sec">18. Integrations</h2>
+<table>
+<tr>
+<th>Integration</th>
+<th>Status</th>
+<th>Notes</th>
+</tr>
+<tr>
+<td>MongoDB</td>
+<td>Wired</td>
+<td><code>MONGODB_URI</code> required</td>
+</tr>
+<tr>
+<td>Session crypto</td>
+<td>Wired</td>
+<td><code>SESSION_SECRET</code> ≥32</td>
+</tr>
+<tr>
+<td>SMTP / Nodemailer</td>
+<td>Wired (config-dependent)</td>
+<td>Prod requires all five</td>
+</tr>
+<tr>
+<td>Google OAuth</td>
+<td>Optional</td>
+<td>Soft-fail if unset</td>
+</tr>
+<tr>
+<td>Local disk / GridFS storage</td>
+<td>Wired</td>
+<td>Prod must set <code>STORAGE_DRIVER</code></td>
+</tr>
+<tr>
+<td>Outbox cron (Vercel + optional GH Actions)</td>
+<td>Wired</td>
+<td>Bearer <code>CRON_SECRET</code></td>
+</tr>
+<tr>
+<td>FAQ chatbot</td>
+<td>Local keyword engine</td>
+<td>No LLM</td>
+</tr>
+<tr>
+<td>Manual UPI payments</td>
+<td>Wired</td>
+<td>No Stripe/Razorpay</td>
+</tr>
+<tr>
+<td>WhatsApp Business</td>
+<td>Mock only</td>
+<td>console.log</td>
+</tr>
+<tr>
+<td>Redis / Sentry / S3 / Docker</td>
+<td>Absent</td>
+<td>—</td>
+</tr>
+</table>
+<p>*Sources: <code>_research/06-integrations-env.md</code>.*</p>
+<hr/>
+<h2 id="sec">19. Directory Structure</h2>
+<p>Excludes <code>node_modules/</code>, <code>.next/</code>. Companion detail: <code>_research/01-directory-tree.md</code>.</p>
+<pre><code>upnrol/
+├── .github/workflows/          # ci.yml, process-outbox.yml
+├── backend/
+│   ├── audit/ auth/ content/ db/ email/ http/
+│   ├── models/                 # 24 schemas
+│   ├── notifications/ observability/
+│   ├── services/               # 34 non-test services
+│   ├── storage/ validation/
+│   └── README.md
+├── docs/                       # architecture, decisions, handover, qa, …
+├── frontend/
+│   ├── public/
+│   ├── scripts/ensure-root-modules.mjs
+│   └── src/
+│       ├── app/                # route groups + api
+│       ├── components/         # ui + layout/home/…
+│       ├── features/           # 20 domain modules
+│       ├── lib/ hooks/ data/ test/
+│       └── proxy.ts
+├── scripts/                    # create-admin, seed-demo, backfills
+├── CLAUDE.md
+├── package.json                # delegates to frontend/
+├── vercel.json
+└── README.md</code></pre>
+<p><strong>Alias:</strong> <code>@/server/*</code> → <code>../backend/*</code> (<code>frontend/tsconfig.json</code>, <code>next.config.ts</code>).</p>
+<p><strong>Legacy Fighter → Grappler redirects</strong> (<code>frontend/next.config.ts</code>): <code>/fighter/*</code> → <code>/grappler/*</code>; <code>/fighters/*</code> → <code>/grapplers/*</code>; admin & API equivalents.</p>
+<hr/>
+<h2 id="sec">20. Installation</h2>
+<p>Prerequisites: Node.js <strong>20+</strong> (CI uses <strong>Node 22</strong>); MongoDB with database name in URI path.</p>
+<pre><code>git clone &lt;repo-url&gt;
+cd upnroll
+npm install --prefix frontend
+# Copy frontend/.env.example → frontend/.env.local and fill values (names only in &#167;21)
+npm run create-admin -- --email you@example.com --password &quot;a-real-password&quot;
+# optional:
+npm run seed-demo
+npm run dev   # http://localhost:3000</code></pre>
+<p>Root scripts delegate into <code>frontend/</code>. <code>predev</code>/<code>prebuild</code> run <code>ensure-root-modules.mjs</code> so <code>backend/</code> resolves packages.</p>
+<p>*Sources: <code>_research/07-deployment.md</code>, <a href="./UpnRoll_Deployment_Guide.md">UpnRoll_Deployment_Guide.md</a>.*</p>
+<hr/>
+<h2 id="sec">21. Environment Variables</h2>
+<p><strong>Names and purposes only — never paste real secrets into this pack.</strong> Authoritative template: <code>frontend/.env.example</code>.</p>
+<table>
+<tr>
+<th>Name</th>
+<th>Purpose</th>
+<th>Required?</th>
+</tr>
+<tr>
+<td><code>NEXT_PUBLIC_SITE_URL</code></td>
+<td>Public origin (SEO, email CTAs)</td>
+<td>Strongly recommended</td>
+</tr>
+<tr>
+<td><code>MONGODB_URI</code></td>
+<td>Mongo connection (must include DB name)</td>
+<td><strong>Required</strong></td>
+</tr>
+<tr>
+<td><code>SESSION_SECRET</code></td>
+<td>HMAC for cookies (≥32 chars)</td>
+<td><strong>Required</strong></td>
+</tr>
+<tr>
+<td><code>ADMIN_SEED_EMAIL</code> / <code>ADMIN_SEED_PASSWORD</code></td>
+<td>CLI create-admin only</td>
+<td>Optional (CLI)</td>
+</tr>
+<tr>
+<td><code>UI_PREVIEW_ENABLED</code></td>
+<td>Enable <code>/ui-preview</code> outside local</td>
+<td>Optional; never <code>true</code> on real prod</td>
+</tr>
+<tr>
+<td><code>SMTP_HOST/PORT/USER/PASS/FROM</code></td>
+<td>Email</td>
+<td><strong>Required in production runtime</strong></td>
+</tr>
+<tr>
+<td><code>STORAGE_DRIVER</code></td>
+<td><code>gridfs</code> \</td>
+<td><code>local</code></td>
+<td><strong>Required in production</strong></td>
+</tr>
+<tr>
+<td><code>GOOGLE_CLIENT_ID</code> / <code>GOOGLE_CLIENT_SECRET</code></td>
+<td>Optional OAuth</td>
+<td>Optional pair</td>
+</tr>
+<tr>
+<td><code>CRON_SECRET</code></td>
+<td>Bearer for outbox cron</td>
+<td>Required for cron</td>
+</tr>
+<tr>
+<td><code>COUPON_RESERVATION_MINUTES</code></td>
+<td>Coupon hold (default 15)</td>
+<td>Optional</td>
+</tr>
+<tr>
+<td><code>COUPON_MAX_OPEN_RESERVATIONS</code></td>
+<td>Max holds/user (default 3)</td>
+<td>Optional</td>
+</tr>
+<tr>
+<td><code>ASSUMED_MATCH_DURATION_MINUTES</code></td>
+<td>Schedule overlap (default 10)</td>
+<td>Optional</td>
+</tr>
+</table>
+<p>Platform-injected fallbacks: <code>VERCEL_URL</code>, <code>VERCEL_PROJECT_PRODUCTION_URL</code>, <code>NODE_ENV</code>, <code>CI</code>, <code>NEXT_PHASE</code>.</p>
+<p>Full sanitized <code>.env.example</code> copy and ops checklist: <a href="./UpnRoll_Deployment_Guide.md">UpnRoll_Deployment_Guide.md</a> and <code>_research/06-integrations-env.md</code>.</p>
+<hr/>
+<h2 id="sec">22. Deployment</h2>
+<p><strong>Figure — Deployment architecture (Vercel + Mongo + cron)</strong></p>
+<pre><code>flowchart TB
+  subgraph CI[&quot;CI — GitHub Actions&quot;]
+    CIBuild[&quot;ci.yml: tsc &#183; vitest &#183; next build Node 22&quot;]
+    GHCron[&quot;process-outbox.yml every 5m optional&quot;]
+  end
+
+  subgraph Vercel[&quot;Vercel — Next.js 16&quot;]
+    Install[&quot;installCommand: npm ci --prefix frontend&quot;]
+    Build[&quot;buildCommand: npm run build --prefix frontend&quot;]
+    App[&quot;frontend/.next App Router + Server Actions&quot;]
+    VCron[&quot;vercel.json cron daily /api/cron/process-outbox&quot;]
+  end
+
+  subgraph Runtime[&quot;Runtime deps&quot;]
+    Atlas[(MongoDB Atlas)]
+    SMTP[SMTP provider]
+    Storage[&quot;STORAGE_DRIVER gridfs or local&quot;]
+    Secrets[&quot;SESSION_SECRET &#183; CRON_SECRET &#183; MONGODB_URI&quot;]
+  end
+
+  subgraph Ops[&quot;Ops&quot;]
+    CreateAdmin[&quot;npm run create-admin&quot;]
+    Seed[&quot;npm run seed-demo&quot;]
+    Backup[&quot;mongodump / mongorestore&quot;]
+  end
+
+  CIBuild --&gt; Vercel
+  Install --&gt; Build --&gt; App
+  App --&gt; Atlas
+  App --&gt; SMTP
+  App --&gt; Storage
+  Secrets --&gt; App
+  VCron --&gt; App
+  GHCron --&gt; App
+  CreateAdmin --&gt; Atlas
+  Seed --&gt; Atlas
+  Backup --&gt; Atlas</code></pre>
+<p>*Source diagram:* <code>docs/handover/diagrams/16-deployment-architecture.mmd</code></p>
+<h3><code>vercel.json</code> (Verified in repo)</h3>
+<table>
+<tr>
+<th>Key</th>
+<th>Value</th>
+</tr>
+<tr>
+<td>installCommand</td>
+<td><code>npm ci --prefix frontend &amp;&amp; node frontend/scripts/ensure-root-modules.mjs</code></td>
+</tr>
+<tr>
+<td>buildCommand</td>
+<td><code>npm run build --prefix frontend</code></td>
+</tr>
+<tr>
+<td>outputDirectory</td>
+<td><code>frontend/.next</code></td>
+</tr>
+<tr>
+<td>crons</td>
+<td>Daily <code>0 0 * * *</code> → <code>/api/cron/process-outbox</code></td>
+</tr>
+</table>
+<p>Hosting provider selection remains <strong>Requires confirmation</strong> (OD-012). Prefer <code>STORAGE_DRIVER=gridfs</code> on multi-instance / ephemeral FS.</p>
+<h3>Cron</h3>
+<ul><li>Vercel daily cron (Hobby-friendly stuck-job sweep; force semantics).</li></ul>
+<ul><li>Optional GitHub Actions <code>.github/workflows/process-outbox.yml</code> every 5 minutes on fight day (<code>CRON_OUTBOX_URL</code> + <code>CRON_SECRET</code>).</li></ul>
+<h3>Backup / restore (documented)</h3>
+<pre><code>mongodump --uri=&quot;$MONGODB_URI&quot; --out=./backups/$(date +%Y%m%d-%H%M%S)
+mongorestore --uri=&quot;$MONGODB_URI&quot; ./backups/&lt;timestamp&gt;</code></pre>
+<p>Local-disk private files are <strong>not</strong> in mongodump. Backup owner + retention: <strong>Requires confirmation</strong> (OD-011).</p>
+<p>Full guide: <a href="./UpnRoll_Deployment_Guide.md">UpnRoll_Deployment_Guide.md</a>.</p>
+<hr/>
+<h2 id="sec">23. Performance</h2>
+<table>
+<tr>
+<th>Topic</th>
+<th>Status</th>
+</tr>
+<tr>
+<td>Cache Components + partialPrefetching</td>
+<td><strong>Implemented</strong> (<code>next.config.ts</code>)</td>
+</tr>
+<tr>
+<td>Public tagged caches (<code>cacheLife(&quot;minutes&quot;)</code>)</td>
+<td><strong>Implemented</strong> (<code>public-reads.ts</code>)</td>
+</tr>
+<tr>
+<td><code>connection()</code> before cookies/DB on dynamic routes</td>
+<td><strong>Implemented</strong></td>
+</tr>
+<tr>
+<td>Session request dedupe via React <code>cache()</code></td>
+<td><strong>Implemented</strong></td>
+</tr>
+<tr>
+<td>Model indexes</td>
+<td>Declared on schemas; Phase 6 review applied</td>
+</tr>
+<tr>
+<td><code>next/image</code> on key public surfaces</td>
+<td>Present</td>
+</tr>
+<tr>
+<td>Lighthouse / CWV field scores</td>
+<td><strong>Not claimed</strong> — no standing gate</td>
+</tr>
+</table>
+<p>Prefer timing judgments on <code>npm run build</code> + <code>npm run start</code>, not <code>next dev</code> cold compiles.</p>
+<p>*Sources: <code>_research/07-performance.md</code>.*</p>
+<hr/>
+<h2 id="sec">24. Testing</h2>
+<table>
+<tr>
+<th>Item</th>
+<th>Value</th>
+</tr>
+<tr>
+<td>Automated test files</td>
+<td><strong>50</strong> <code>*.test.ts</code></td>
+</tr>
+<tr>
+<td>Runner</td>
+<td>Vitest via <code>npm test</code></td>
+</tr>
+<tr>
+<td>Manual/browser UAT this pack</td>
+<td><strong>Not Tested</strong> (not re-executed)</td>
+</tr>
+<tr>
+<td>Standing Playwright/Cypress</td>
+<td>Not retained in-repo</td>
+</tr>
+<tr>
+<td>Historical Phase 6 / E2E</td>
+<td>Confidence only — not current sign-off</td>
+</tr>
+</table>
+<h3>Coverage clusters</h3>
+<p>Auth/session/HTTP &#183; registration/payments/coupons &#183; brackets/matches/scoring &#183; rankings/requests/chatbot/outbox &#183; storage/email/DB &#183; selected frontend schemas.</p>
+<h3>Commands</h3>
+<pre><code>npm install --prefix frontend
+cd frontend &amp;&amp; npx tsc --noEmit --pretty false
+npm test
+npm run build --prefix frontend
+npm run lint</code></pre>
+<p>Full inventory and feature matrix: <a href="./UpnRoll_Testing_Report.md">UpnRoll_Testing_Report.md</a>.</p>
+<hr/>
+<h2 id="sec">25. Maintenance &amp; Troubleshooting</h2>
+<p>Prefer diagnostics then safe fixes. Do not run destructive DB ops without owner approval.</p>
+<table>
+<tr>
+<th>Symptom</th>
+<th>Likely cause</th>
+<th>Safe direction</th>
+</tr>
+<tr>
+<td>Always redirected to <code>/login</code></td>
+<td>Session cookie / <code>SESSION_SECRET</code> mismatch</td>
+<td>One stable secret per environment</td>
+</tr>
+<tr>
+<td>Confirm email before sign in</td>
+<td>Unverified account</td>
+<td>Complete <code>/verify</code>; check console SMTP in dev</td>
+</tr>
+<tr>
+<td>Admin lands on grappler desk</td>
+<td>Role not ADMIN</td>
+<td><code>npm run create-admin -- --email …</code></td>
+</tr>
+<tr>
+<td>Capacity / cannot register</td>
+<td>Full division or missing <code>filledCount</code></td>
+<td>Assess backfill script after backup</td>
+</tr>
+<tr>
+<td>Payment stuck PENDING</td>
+<td>Design (manual review)</td>
+<td>Admin <code>/admin/payments</code></td>
+</tr>
+<tr>
+<td>Screenshot 404 on Vercel</td>
+<td>Local disk on ephemeral FS</td>
+<td>Prefer <code>gridfs</code> + migrate keys</td>
+</tr>
+<tr>
+<td>Judge login fails</td>
+<td>Wrong/revoked creds or unscorable match</td>
+<td>Regenerate credentials</td>
+</tr>
+<tr>
+<td>Public bracket empty</td>
+<td>Still DRAFT</td>
+<td>Admin publish</td>
+</tr>
+<tr>
+<td>Manual rankings missing on public</td>
+<td>Code gap</td>
+<td>Do not promise until wired</td>
+</tr>
+<tr>
+<td>Prod won&#39;t start</td>
+<td>Missing SMTP or <code>STORAGE_DRIVER</code></td>
+<td>Set all five SMTP + driver</td>
+</tr>
+<tr>
+<td>Cron 401/503</td>
+<td>Bad/missing <code>CRON_SECRET</code></td>
+<td>Align host + GH secrets</td>
+</tr>
+<tr>
+<td>Outbox always skipped</td>
+<td>Off event day without force</td>
+<td><code>?force=1</code> / Vercel cron / fight-day workflow</td>
+</tr>
+</table>
+<p>Rollback-oriented: redeploy last good SHA; restore Mongo to non-prod first; disable GH outbox workflow if jobs misbehave; rotate <code>SESSION_SECRET</code> only when full logout is acceptable.</p>
+<p>*Sources: <code>_research/07-troubleshooting.md</code>.*</p>
+<hr/>
+<h2 id="sec">26. Client Operating Manual (Summary)</h2>
+<p>This section is a <strong>summary</strong> for stakeholders. Day-to-day step-by-step procedures with screenshots placeholders live in:</p>
+<p><strong>→ &lt;a href=&quot;./UpnRoll_Client_Operating_Manual.md&quot;&gt;UpnRoll_Client_Operating_Manual.md&lt;/a&gt;</strong></p>
+<h3>Operator quick path</h3>
+<ol><li>Sign in at <code>/login</code> with an ADMIN account (CLI-provisioned — never public register).</li></ol>
+<ol><li>Create event at <code>/admin/events</code> → configure hub (status, mats, QR, fees, scoring rules).</li></ol>
+<ol><li>Seed/create divisions → open registration.</li></ol>
+<ol><li>Review payments at <code>/admin/payments</code> → approve/reject.</li></ol>
+<ol><li>Generate + publish brackets → schedule matches → issue judge credentials.</li></ol>
+<ol><li>Prefer judge console for live scoring; or admin record result for SCHEDULED matches.</li></ol>
+<ol><li>Recalculate rankings / ensure outbox cron runs; set event COMPLETED when done.</li></ol>
+<ol><li>Keep FAQ/policies/announcements and site settings current.</li></ol>
+<p>Remember: <strong>no verifier role</strong>; refunds are operational (percent recorded, no auto payout); published brackets cannot be unpublished.</p>
+<hr/>
+<h2 id="sec">27. Feature Delivery Matrix (Summary)</h2>
+<p>Full row-by-row inventory: <strong>&lt;a href=&quot;./UpnRoll_Feature_Delivery_Matrix.md&quot;&gt;UpnRoll_Feature_Delivery_Matrix.md&lt;/a&gt;</strong>.</p>
+<h3>Module roll-up (from matrix &#167;3)</h3>
+<table>
+<tr>
+<th>Module</th>
+<th>Rows</th>
+<th>Implemented</th>
+<th>Partially</th>
+<th>Not Implemented</th>
+</tr>
+<tr>
+<td>Public</td>
+<td>14</td>
+<td>11</td>
+<td>3</td>
+<td>0</td>
+</tr>
+<tr>
+<td>Auth</td>
+<td>7</td>
+<td>5</td>
+<td>1</td>
+<td>1 (password reset)</td>
+</tr>
+<tr>
+<td>Grappler</td>
+<td>12</td>
+<td>12</td>
+<td>0</td>
+<td>0</td>
+</tr>
+<tr>
+<td>Admin</td>
+<td>16</td>
+<td>14</td>
+<td>2</td>
+<td>0</td>
+</tr>
+<tr>
+<td>Judge</td>
+<td>6</td>
+<td>5</td>
+<td>1</td>
+<td>0</td>
+</tr>
+<tr>
+<td>Brackets &amp; matches</td>
+<td>8</td>
+<td>6</td>
+<td>0</td>
+<td>2 (RR, season locks)</td>
+</tr>
+<tr>
+<td>Payments</td>
+<td>8</td>
+<td>7</td>
+<td>1</td>
+<td>0</td>
+</tr>
+<tr>
+<td>Rankings</td>
+<td>5</td>
+<td>3</td>
+<td>2</td>
+<td>0</td>
+</tr>
+<tr>
+<td>Content &amp; media</td>
+<td>6</td>
+<td>4</td>
+<td>1</td>
+<td>1</td>
+</tr>
+<tr>
+<td>Notifications</td>
+<td>7</td>
+<td>5</td>
+<td>2</td>
+<td>0</td>
+</tr>
+<tr>
+<td>Security</td>
+<td>8</td>
+<td>7</td>
+<td>0</td>
+<td>1 (ext. monitoring)</td>
+</tr>
+</table>
+<p>Must-disclose <strong>Partial</strong> items before claiming production completeness: public rankings/manual wiring, media CRUD limits, Store/Seminars stubs, dual match-result path, OAuth env dependency.</p>
+<hr/>
+<h2 id="sec">28. Known Limitations</h2>
+<p>Nothing below is an approved production default. Priority from <code>_research/07-limitations.md</code> + open decisions.</p>
+<h3>P0 — production / integrity</h3>
+<table>
+<tr>
+<th>Item</th>
+<th>Notes</th>
+</tr>
+<tr>
+<td>Hosting / integrations (OD-012)</td>
+<td>Owner decisions</td>
+</tr>
+<tr>
+<td>SMTP delivery unproven</td>
+<td>Vars required; inbox proof <strong>Requires confirmation</strong></td>
+</tr>
+<tr>
+<td>Backup ownership + retention (OD-011)</td>
+<td>Payment screenshots PII-adjacent</td>
+</tr>
+<tr>
+<td>Multi-instance + local disk / in-memory rate limit</td>
+<td>Prefer GridFS; distributed limiter absent</td>
+</tr>
+<tr>
+<td>GridFS production readiness</td>
+<td>Adapter exists; owner-confirm key persistence</td>
+</tr>
+<tr>
+<td>Occupancy backfill</td>
+<td>Missing <code>filledCount</code> can block registrations</td>
+</tr>
+</table>
+<h3>P1 — product / polish (selected)</h3>
+<table>
+<tr>
+<th>Item</th>
+<th>Notes</th>
+</tr>
+<tr>
+<td>OD-004 ranking methodology</td>
+<td><code>wins * 3</code> placeholder</td>
+</tr>
+<tr>
+<td>Manual rankings unwired to <code>/rankings</code></td>
+<td>Admin copy overstates behaviour</td>
+</tr>
+<tr>
+<td>No bracket unpublish</td>
+<td>Publish is one-way</td>
+</tr>
+<tr>
+<td>Media create-only</td>
+<td>No edit/delete/unpublish</td>
+</tr>
+<tr>
+<td>Store / Seminars</td>
+<td>ComingSoon stubs</td>
+</tr>
+<tr>
+<td>Password reset</td>
+<td><strong>Not Implemented</strong></td>
+</tr>
+<tr>
+<td>Coupon apply rate limit</td>
+<td>Gap (BUG-QA-2026-03)</td>
+</tr>
+<tr>
+<td>Formats beyond single-elim (OD-003)</td>
+<td>RR / points open</td>
+</tr>
+<tr>
+<td>CSP Report-Only</td>
+<td>Do not enforce casually</td>
+</tr>
+<tr>
+<td>Fee/UTR/refund policy (OD-005–008)</td>
+<td>Workflow exists; policy open</td>
+</tr>
+</table>
+<h3>P2 — deferred</h3>
+<p>WhatsApp real send; REST CRUD product API (Server Actions by design); champion entity; standing Lighthouse/pen-test gates; <code>/ui-preview</code> must stay disabled in real production.</p>
+<hr/>
+<h2 id="sec">29. Handover Checklist</h2>
+<p>Executable checklist with ownership columns: <strong>&lt;a href=&quot;./UpnRoll_Handover_Checklist.md&quot;&gt;UpnRoll_Handover_Checklist.md&lt;/a&gt;</strong>.</p>
+<h3>Condensed checklist</h3>
+<table>
+<tr>
+<th>Area</th>
+<th>Key items</th>
+</tr>
+<tr>
+<td>Repository</td>
+<td>Access shared; pack at <code>docs/handover/</code> for <code>4ffb794</code></td>
+</tr>
+<tr>
+<td>Deployment</td>
+<td>Procedure understood; staging ≠ prod; rollback agreed</td>
+</tr>
+<tr>
+<td>Hosting</td>
+<td>Provider approved (OD-012); topology; monitoring</td>
+</tr>
+<tr>
+<td>Domain</td>
+<td>DNS/TLS; <code>NEXT_PUBLIC_SITE_URL</code>; OAuth redirect if used</td>
+</tr>
+<tr>
+<td>Database</td>
+<td>Prod Mongo; DB name in URI; network access; occupancy assessed</td>
+</tr>
+<tr>
+<td>Backups</td>
+<td>Owner named; retention; restore drill; private-file plan</td>
+</tr>
+<tr>
+<td>Secrets</td>
+<td>All env set on host; transferred via <strong>secure channel separately</strong></td>
+</tr>
+<tr>
+<td>External accounts</td>
+<td>SMTP, Atlas, host, GitHub Actions secrets</td>
+</tr>
+<tr>
+<td>Admin access</td>
+<td>Production ADMIN provisioned; credentials secure</td>
+</tr>
+<tr>
+<td>Documentation</td>
+<td>Full pack received; open-decisions path known</td>
+</tr>
+<tr>
+<td>Training</td>
+<td>Admin / grappler / judge / cron walkthroughs</td>
+</tr>
+<tr>
+<td>Testing</td>
+<td>Fresh <code>npm test</code> + staging smoke + SMTP proof</td>
+</tr>
+<tr>
+<td>Maintenance</td>
+<td>Deploy owner; outbox monitoring; CSP stays Report-Only</td>
+</tr>
+</table>
+<p>Mark items ☐ / ☑ in the dedicated checklist document — do not treat this summary as the signed artefact.</p>
+<hr/>
+<h2 id="sec">30. Client Acceptance Sign-Off</h2>
+<p>Placeholders for formal acceptance. Prefer also completing signatures in <a href="./UpnRoll_Handover_Checklist.md">UpnRoll_Handover_Checklist.md</a> §18.</p>
+<h3>Project identification</h3>
+<table>
+<tr>
+<th>Field</th>
+<th>Value</th>
+</tr>
+<tr>
+<td>Project</td>
+<td>Up &#39;n Roll</td>
+</tr>
+<tr>
+<td>Git commit handed over</td>
+<td><code>4ffb794</code></td>
+</tr>
+<tr>
+<td>Document version</td>
+<td>1.0.0</td>
+</tr>
+<tr>
+<td>Client organisation</td>
+<td>*[Requires confirmation]* ________________</td>
+</tr>
+<tr>
+<td>Date of acceptance</td>
+<td>________________</td>
+</tr>
+</table>
+<h3>Dimensity Labs (delivering party)</h3>
+<table>
+<tr>
+<th>Field</th>
+<th>Value</th>
+</tr>
+<tr>
+<td>Name</td>
+<td>______________________________</td>
+</tr>
+<tr>
+<td>Role</td>
+<td>______________________________</td>
+</tr>
+<tr>
+<td>Signature</td>
+<td>______________________________</td>
+</tr>
+<tr>
+<td>Date</td>
+<td>______________________________</td>
+</tr>
+</table>
+<p>I confirm that this master handover document and companion pack for commit <strong><code>4ffb794</code></strong> have been prepared in good faith from repository evidence. Items marked <strong>Requires confirmation</strong> remain operational responsibilities until closed by the receiving party.</p>
+<h3>Receiving party (client / owner)</h3>
+<table>
+<tr>
+<th>Field</th>
+<th>Value</th>
+</tr>
+<tr>
+<td>Name</td>
+<td>______________________________</td>
+</tr>
+<tr>
+<td>Organisation</td>
+<td>______________________________</td>
+</tr>
+<tr>
+<td>Role</td>
+<td>______________________________</td>
+</tr>
+<tr>
+<td>Signature</td>
+<td>______________________________</td>
+</tr>
+<tr>
+<td>Date</td>
+<td>______________________________</td>
+</tr>
+</table>
+<p>I confirm receipt of repository access (or agreed alternative), documentation, and that credentials (if any) were transferred via a <strong>secure channel separately</strong>. I understand known limitations and open decisions and accept ownership of items marked <strong>Requires confirmation</strong>.</p>
+<h3>Optional technical witness</h3>
+<table>
+<tr>
+<th>Field</th>
+<th>Value</th>
+</tr>
+<tr>
+<td>Name</td>
+<td>______________________________</td>
+</tr>
+<tr>
+<td>Role</td>
+<td>______________________________</td>
+</tr>
+<tr>
+<td>Signature</td>
+<td>______________________________</td>
+</tr>
+<tr>
+<td>Date</td>
+<td>______________________________</td>
+</tr>
+</table>
+<h3>Acceptance scope acknowledgement</h3>
+<table>
+<tr>
+<th>Statement</th>
+<th>Initials</th>
+</tr>
+<tr>
+<td>Single-elimination tournament loop understood</td>
+<td>______</td>
+</tr>
+<tr>
+<td>Manual UPI verification model accepted (no PSP)</td>
+<td>______</td>
+</tr>
+<tr>
+<td>Ranking methodology provisional until OD-004 closed</td>
+<td>______</td>
+</tr>
+<tr>
+<td>Store/Seminars stubs acknowledged</td>
+<td>______</td>
+</tr>
+<tr>
+<td>Password reset not included</td>
+<td>______</td>
+</tr>
+<tr>
+<td>Secrets not present in this document</td>
+<td>______</td>
+</tr>
+</table>
+<hr/>
+<h2 id="sec">31. Glossary</h2>
+<table>
+<tr>
+<th>Term</th>
+<th>Meaning</th>
+</tr>
+<tr>
+<td><strong>Grappler</strong></td>
+<td>Athlete user role and portal (<code>GRAPPLER</code>, <code>/grappler/*</code>)</td>
+</tr>
+<tr>
+<td><strong>Fighter</strong></td>
+<td>Legacy term / code identifiers; URLs redirect to Grappler</td>
+</tr>
+<tr>
+<td><strong>Admin</strong></td>
+<td>Operator role (<code>ADMIN</code>, <code>/admin/*</code>)</td>
+</tr>
+<tr>
+<td><strong>Judge</strong></td>
+<td>Match-scoped credential session — not a User role</td>
+</tr>
+<tr>
+<td><strong>UTR</strong></td>
+<td>Bank/UPI transaction reference submitted as payment proof</td>
+</tr>
+<tr>
+<td><strong>feeSnapshot</strong></td>
+<td>Frozen fee/QR/coupon on a Registration at create time</td>
+</tr>
+<tr>
+<td><strong>CONFIRMED</strong></td>
+<td>Registration status after payment approval; bracket-eligible</td>
+</tr>
+<tr>
+<td><strong>PENDING_VERIFICATION</strong></td>
+<td>Awaiting admin payment decision</td>
+</tr>
+<tr>
+<td><strong>Outbox</strong></td>
+<td>Durable async job queue (<code>OutboxJob</code>) processed by cron</td>
+</tr>
+<tr>
+<td><strong>OD-xxx</strong></td>
+<td>Open decision id in <code>docs/decisions/open-decisions.md</code></td>
+</tr>
+<tr>
+<td><strong>Server Action</strong></td>
+<td>Next.js <code>&quot;use server&quot;</code> mutation — primary API surface</td>
+</tr>
+<tr>
+<td><strong>Cache Components</strong></td>
+<td>Next.js 16 caching mode enabled in this project</td>
+</tr>
+<tr>
+<td><strong>GridFS</strong></td>
+<td>MongoDB file storage adapter for private blobs</td>
+</tr>
+<tr>
+<td><strong>Road to Super Fight</strong></td>
+<td>Seeded division taxonomy (gender &#215; weight &#215; experience)</td>
+</tr>
+<tr>
+<td><strong>Teammate transfer</strong></td>
+<td>Peer seat handoff via hashed invite token</td>
+</tr>
+<tr>
+<td><strong>TRANSFER request</strong></td>
+<td>Admin-reviewed same-event division move</td>
+</tr>
+<tr>
+<td><strong>Implemented / Partial / Requires confirmation</strong></td>
+<td>Status tags used throughout this handover</td>
+</tr>
+</table>
+<hr/>
+<p>*End of Master Project Handover & Technical Documentation — Dimensity Labs · Version 1.0.0 · 2026-11-27 · <code>main</code> @ <code>4ffb794</code>*</p>
+<p>*This document consolidates research under <code>docs/handover/_research/</code>, companion split docs, and all 16 diagrams under <code>docs/handover/diagrams/</code>.*</p>
+</body></html>
